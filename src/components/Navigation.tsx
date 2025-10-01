@@ -8,12 +8,6 @@ const Navigation = () => {
     label: "Services",
     href: "#services"
   }, {
-    label: "Lösungen",
-    href: "#solutions"
-  }, {
-    label: "Prozess",
-    href: "#process"
-  }, {
     label: "Über uns",
     href: "#about"
   }, {
