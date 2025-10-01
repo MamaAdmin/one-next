@@ -32,9 +32,9 @@ const Services = () => {
     },
     {
       icon: MessageIcon,
-      title: "Machine Learning Beratung",
+      title: "AI Strategie Beratung",
       description:
-        "Mit umfangreicher Expertise bei der Implementierung von KI-Lösungen überprüft unser Team Ihre Anforderungen und berät zu weiteren Schritten, um Ihr Geschäftsziel mit Wirkung zu erreichen.",
+        "Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt.",
     },
   ];
 
