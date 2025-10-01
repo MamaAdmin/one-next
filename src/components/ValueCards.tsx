@@ -35,7 +35,7 @@ const ValueCards = () => {
             <Button 
               variant="outline" 
               size="lg"
-              className="rounded-full border-background/20 hover:bg-background/10 text-background hover:text-background"
+              className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-foreground"
             >
               Neuesten Bericht lesen
             </Button>
