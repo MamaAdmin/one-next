@@ -34,7 +34,7 @@ const ValueCards = () => {
 
         {/* Erfolg Card */}
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="rounded-[2rem] p-12 space-y-6 bg-gray-100">
+          <div className="rounded-[2rem] p-12 space-y-6 bg-stone-300">
             <h2 className="text-4xl font-light">Erfolg</h2>
             <p className="text-foreground/80 leading-relaxed">
               Erst wenn unsere Kunden erfolgreich mit unseren Produkten sind sind wir zufrieden!
