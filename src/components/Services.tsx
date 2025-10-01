@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { StarburstIcon, ArrowsOutIcon, GridIcon } from "@/components/ui/custom-icons";
+import { StarburstIcon, ArrowsOutIcon, GridIcon, BracketsIcon, MessageIcon } from "@/components/ui/custom-icons";
 
 const Services = () => {
   const services = [
@@ -23,6 +23,18 @@ const Services = () => {
       title: "Datenqualitäts-Audit",
       description:
         "Professionelle Data Science Analyse für Ihr Modellvorschlag. Wir schlagen eine Datenerfassungsstrategie vor, die die Genauigkeit Ihres Modells verbessert und besseren Wert für Ihr Unternehmen liefert.",
+    },
+    {
+      icon: BracketsIcon,
+      title: "Maßgeschneiderte AI-Entwicklung",
+      description:
+        "Implementieren Sie Ihre eigene dedizierte AI-Lösung, verknüpft mit anderen Services. Mit unseren Computer Vision-Lösungen und NLP können Sie sich auf unser AI-Team verlassen.",
+    },
+    {
+      icon: MessageIcon,
+      title: "AI Strategie Beratung",
+      description:
+        "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt.",
     },
   ];
 
