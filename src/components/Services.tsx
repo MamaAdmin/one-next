@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lightbulb, Rocket, Database, Code, MessageSquare, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const services = [
@@ -77,13 +78,25 @@ const Services = () => {
                   <p className="text-muted-foreground leading-relaxed">
                     {service.description}
                   </p>
-                  <Button 
-                    variant="ghost" 
-                    className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
-                  >
-                    Mehr erfahren
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
+                  {index === 0 ? (
+                    <Link to="/ai-design-sprint">
+                      <Button 
+                        variant="ghost" 
+                        className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
+                      >
+                        Mehr erfahren
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button 
+                      variant="ghost" 
+                      className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
+                    >
+                      Mehr erfahren
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             );
