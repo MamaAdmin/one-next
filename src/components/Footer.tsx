@@ -2,7 +2,6 @@ import { Github, Linkedin, Twitter } from "lucide-react";
 const Footer = () => {
   const footerLinks = {
     Services: ["AI Design Sprint", "Proof of AI Development", "Data Quality Audit", "Custom AI Development", "ML Consulting"],
-    Lösungen: ["Automatisierung", "Data Science", "Computer Vision", "Natural Language Processing", "Empfehlungssysteme"],
     Unternehmen: ["Über uns", "Karriere", "Blog", "Case Studies", "Kontakt"]
   };
   return <footer className="bg-foreground text-background py-16">
