@@ -24,12 +24,6 @@ const Services = () => {
       description:
         "Professionelle Data Science Analyse für Ihr Modellvorschlag. Wir schlagen eine Datenerfassungsstrategie vor, die die Genauigkeit Ihres Modells verbessert und besseren Wert für Ihr Unternehmen liefert.",
     },
-    {
-      icon: ArrowsOutIcon,
-      title: "Automatisierung",
-      description:
-        "Optimieren Sie Ihre Geschäftsprozesse durch intelligente Automatisierung. Wir entwickeln maßgeschneiderte Lösungen, die repetitive Aufgaben eliminieren und Ihre Produktivität steigern.",
-    },
   ];
 
   return (
