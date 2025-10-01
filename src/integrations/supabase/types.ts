@@ -14,39 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
+      article_tags: {
+        Row: {
+          article_id: string
+          tag_id: string
+        }
+        Insert: {
+          article_id: string
+          tag_id: string
+        }
+        Update: {
+          article_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_tags_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           author: string | null
+          author_id: string | null
+          category_id: string | null
           content: string
           created_at: string
           excerpt: string | null
+          featured_image: string | null
           id: string
+          meta_description: string | null
+          meta_title: string | null
           published_at: string | null
           slug: string
+          status: string
           title: string
           updated_at: string
         }
         Insert: {
           author?: string | null
+          author_id?: string | null
+          category_id?: string | null
           content: string
           created_at?: string
           excerpt?: string | null
+          featured_image?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           published_at?: string | null
           slug: string
+          status?: string
           title: string
           updated_at?: string
         }
         Update: {
           author?: string | null
+          author_id?: string | null
+          category_id?: string | null
           content?: string
           created_at?: string
           excerpt?: string | null
+          featured_image?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           published_at?: string | null
           slug?: string
+          status?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "articles_featured_image_fkey"
+            columns: ["featured_image"]
+            isOneToOne: false
+            referencedRelation: "media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      media: {
+        Row: {
+          alt_text: string | null
+          caption: string | null
+          created_at: string
+          file_path: string
+          file_size: number | null
+          file_type: string
+          filename: string
+          id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          file_path: string
+          file_size?: number | null
+          file_type: string
+          filename: string
+          id?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string
+          filename?: string
+          id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
         }
         Relationships: []
       }
