@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import logo from "@/assets/one-next-logo.png";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,13 +17,12 @@ const Navigation = () => {
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50">
       <div className="container mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-foreground rounded-sm flex items-center justify-center">
-              <div className="w-6 h-6 border-2 border-background rounded-full" />
-            </div>
-            <span className="text-xl font-light tracking-wide">
-              one-next
-            </span>
+          <div className="flex items-center">
+            <img 
+              src={logo} 
+              alt="one-next logo" 
+              className="h-12 w-auto"
+            />
           </div>
 
           {/* Desktop Navigation */}
