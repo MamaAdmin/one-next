@@ -8,15 +8,15 @@ const Services = () => {
   const services = [
     {
       icon: StarburstIcon,
-      title: "Digitale Transformation mit KI starten",
+      title: "Digitale Transformation mit AI starten",
       description:
-        "Identifizieren Sie KI-Chancen und nutzen Sie diese für Resilienz und Geschäftsergebnisse. Wir organisieren AI Design Sprint Workshops, in denen Sie das KI-Potenzial freisetzen und neuen Wert für Ihr Unternehmen schaffen können.",
+        "Identifizieren Sie AI-Chancen und nutzen Sie diese für Resilienz und Geschäftsergebnisse. Wir organisieren AI Design Sprint Workshops, in denen Sie das AI-Potenzial freisetzen und neuen Wert für Ihr Unternehmen schaffen können.",
     },
     {
       icon: ArrowsOutIcon,
       title: "Proof of AI Development",
       description:
-        "Entwickeln Sie vom AI Design Sprint zur ersten Implementierung. Wir entwickeln eine wettbewerbsfähige KI-Lösung, die Ihre Anforderungen erfüllt und Feedback sammelt. Die MVP-Version garantiert deutlich reduziertes Risiko.",
+        "Entwickeln Sie vom AI Design Sprint zur ersten Implementierung. Wir entwickeln eine wettbewerbsfähige AI-Lösung, die Ihre Anforderungen erfüllt und Feedback sammelt. Die MVP-Version garantiert deutlich reduziertes Risiko.",
     },
     {
       icon: GridIcon,
@@ -26,15 +26,15 @@ const Services = () => {
     },
     {
       icon: BracketsIcon,
-      title: "Maßgeschneiderte KI-Entwicklung",
+      title: "Maßgeschneiderte AI-Entwicklung",
       description:
-        "Implementieren Sie Ihre eigene dedizierte KI-Lösung, verknüpft mit anderen Services. Mit unseren Computer Vision-Lösungen und NLP können Sie sich auf unser KI-Team verlassen.",
+        "Implementieren Sie Ihre eigene dedizierte AI-Lösung, verknüpft mit anderen Services. Mit unseren Computer Vision-Lösungen und NLP können Sie sich auf unser AI-Team verlassen.",
     },
     {
       icon: MessageIcon,
       title: "AI Strategie Beratung",
       description:
-        "Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt.",
+        "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt.",
     },
   ];
 
@@ -51,8 +51,8 @@ const Services = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Bei one-next glauben wir, dass maschinelles Lernen uns helfen kann, intelligente
             Produkte, Services und Systeme zu entwerfen, die das tägliche Leben der Menschen
-            verbessern. Unser Angebot umfasst fortschrittliche KI-Entwicklungsservices für jeden
-            Bedarf und jede Phase des KI-Lebenszyklus.
+            verbessern. Unser Angebot umfasst fortschrittliche AI-Entwicklungsservices für jeden
+            Bedarf und jede Phase des AI-Lebenszyklus.
           </p>
           <Button 
             size="lg" 

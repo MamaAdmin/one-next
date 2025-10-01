@@ -8,7 +8,7 @@ const Process = () => {
       title: "Briefing",
       duration: "2 Stunden",
       description:
-        "Erklären Sie Ihr Geschäft und teilen Sie Ihre Herausforderungen, um Einblicke in KI-Möglichkeiten und einen von unseren Experten entwickelten Ansatz zu erhalten.",
+        "Erklären Sie Ihr Geschäft und teilen Sie Ihre Herausforderungen, um Einblicke in AI-Möglichkeiten und einen von unseren Experten entwickelten Ansatz zu erhalten.",
       color: "bg-primary",
     },
     {
@@ -16,7 +16,7 @@ const Process = () => {
       title: "Sprint",
       duration: "2 Tage",
       description:
-        "Identifizieren Sie ein hochrelevantes Geschäftsproblem und arbeiten Sie mit unseren Experten zusammen, um eine KI-Lösung vorzuschlagen.",
+        "Identifizieren Sie ein hochrelevantes Geschäftsproblem und arbeiten Sie mit unseren Experten zusammen, um eine AI-Lösung vorzuschlagen.",
       color: "bg-secondary",
     },
     {
@@ -24,7 +24,7 @@ const Process = () => {
       title: "Development",
       duration: "4 – 12 Wochen",
       description:
-        "Entwickeln und implementieren Sie Ihre KI-Lösung mit unserem erfahrenen Team. Von der ersten Implementierung bis zur vollständigen Integration.",
+        "Entwickeln und implementieren Sie Ihre AI-Lösung mit unserem erfahrenen Team. Von der ersten Implementierung bis zur vollständigen Integration.",
       color: "bg-accent",
     },
     {
@@ -32,7 +32,7 @@ const Process = () => {
       title: "& Optimierung",
       duration: "Kontinuierlich",
       description:
-        "Skalieren Sie Ihre KI-Lösung und optimieren Sie kontinuierlich die Performance. Wir unterstützen Sie bei MLOps und Wartung.",
+        "Skalieren Sie Ihre AI-Lösung und optimieren Sie kontinuierlich die Performance. Wir unterstützen Sie bei MLOps und Wartung.",
       color: "bg-primary-glow",
     },
   ];
@@ -44,7 +44,7 @@ const Process = () => {
           <h2 className="text-4xl lg:text-5xl font-bold">
             Ein Entwicklungsprozess, der{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              KI-Ergebnisse
+              AI-Ergebnisse
             </span>
             <br />
             in Wochen liefert, nicht Jahren

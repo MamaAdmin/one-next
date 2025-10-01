@@ -7,7 +7,7 @@ const Applications = () => {
       icon: Cog,
       title: "Automatisierung und Kostenreduzierung",
       description:
-        "Erreichen Sie operative Effizienz durch KI-Technologie mit automatisierten Schritten und optimierten Prozessen. Produktivität, Zuverlässigkeit und Effizienz können durch Deep Learning-Techniken verbessert werden.",
+        "Erreichen Sie operative Effizienz durch AI-Technologie mit automatisierten Schritten und optimierten Prozessen. Produktivität, Zuverlässigkeit und Effizienz können durch Deep Learning-Techniken verbessert werden.",
     },
     {
       icon: TrendingUp,
@@ -25,7 +25,7 @@ const Applications = () => {
       icon: Users,
       title: "Kundenerlebnis auf Steroiden",
       description:
-        "Schaffen Sie natürliche Interaktionen mit Ihren Nutzern durch Natural Language Processing. Verbessern Sie die User Experience bei gleichzeitiger Kostenreduzierung mit KI-Automatisierung und Chatbots.",
+        "Schaffen Sie natürliche Interaktionen mit Ihren Nutzern durch Natural Language Processing. Verbessern Sie die User Experience bei gleichzeitiger Kostenreduzierung mit AI-Automatisierung und Chatbots.",
     },
     {
       icon: Target,
@@ -42,13 +42,13 @@ const Applications = () => {
           <h2 className="text-4xl lg:text-5xl font-bold">
             Wo können wir{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              KI für Sie einsetzen?
+              AI für Sie einsetzen?
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
             Künstliche Intelligenz hat die digitale Transformation auf den Agenden der meisten CEOs
-            ersetzt. Unternehmen, die sich für die Integration von KI-Technologie entscheiden,
-            profitieren vom wahrhaft transformativen Potenzial der KI.
+            ersetzt. Unternehmen, die sich für die Integration von AI-Technologie entscheiden,
+            profitieren vom wahrhaft transformativen Potenzial der AI.
           </p>
         </div>
 

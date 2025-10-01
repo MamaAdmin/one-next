@@ -28,7 +28,7 @@ const AIDesignSprint = () => {
               
               <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
                 Mit zwei Tagen intensiver Arbeit identifiziert Ihr Team zusammen mit unseren
-                KI-Ingenieuren und Design-Facilitatoren das Potenzial von KI-Lösungen, um neue
+                AI-Ingenieuren und Design-Facilitatoren das Potenzial von AI-Lösungen, um neue
                 Ideen und Visionen für Ihr Unternehmen zu schaffen.
               </p>
 

@@ -24,12 +24,12 @@ const AIDesignSprint = () => {
             </div>
             
             <h1 className="text-5xl lg:text-6xl font-bold text-primary-foreground">
-              Identifizieren und entfesseln Sie die Kraft der KI für Ihr Unternehmen in zwei Tagen
+              Identifizieren und entfesseln Sie die Kraft der AI für Ihr Unternehmen in zwei Tagen
             </h1>
             
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Mit nur zwei Tagen intensiver Arbeit identifiziert Ihr Team zusammen mit unseren KI-Ingenieuren 
-              und Design-Facilitatoren das Potenzial von KI-Lösungen, um neue Ideen und Visionen für Ihr 
+              Mit nur zwei Tagen intensiver Arbeit identifiziert Ihr Team zusammen mit unseren AI-Ingenieuren 
+              und Design-Facilitatoren das Potenzial von AI-Lösungen, um neue Ideen und Visionen für Ihr 
               Unternehmen zu schaffen.
             </p>
             
@@ -56,18 +56,18 @@ const AIDesignSprint = () => {
             
             <p className="text-lg text-muted-foreground leading-relaxed">
               Der AI Design Sprint von one-next ist eine praxisorientierte Erfahrung, bei der wir gemeinsam 
-              potenzielle KI-Anwendungsfälle für Ihr Unternehmen identifizieren und die verfügbaren 
-              Geschäftsmöglichkeiten erkunden. Heutzutage ist KI ein viel verwendetes Schlagwort, umgeben von 
+              potenzielle AI-Anwendungsfälle für Ihr Unternehmen identifizieren und die verfügbaren 
+              Geschäftsmöglichkeiten erkunden. Heutzutage ist AI ein viel verwendetes Schlagwort, umgeben von 
               Missverständnissen und Fragen bezüglich ihres Zwecks und ihrer Fähigkeiten. Abgesehen von den 
-              bekannten ethischen und philosophischen Herausforderungen kann KI der Katalysator für Innovation 
+              bekannten ethischen und philosophischen Herausforderungen kann AI der Katalysator für Innovation 
               und großartige Benutzererfahrungen sein.
             </p>
             
             <p className="text-lg text-muted-foreground leading-relaxed">
               Wir haben für jeden Schritt des Design-Thinking-Prozesses Tools entwickelt, um unseren Kunden 
-              zu helfen, KI in sozialen, Benutzer- und Geschäftswert zu verwandeln. Innerhalb von nur zwei 
-              Tagen kann Ihr Team, unterstützt von unseren KI-Ingenieuren und Design-Facilitatoren, die Kraft 
-              aufstrebender Technologien lernen und verstehen, KI-Möglichkeiten erkennen und neue Ideen und 
+              zu helfen, AI in sozialen, Benutzer- und Geschäftswert zu verwandeln. Innerhalb von nur zwei 
+              Tagen kann Ihr Team, unterstützt von unseren AI-Ingenieuren und Design-Facilitatoren, die Kraft 
+              aufstrebender Technologien lernen und verstehen, AI-Möglichkeiten erkennen und neue Ideen und 
               Visionen schaffen.
             </p>
           </div>
@@ -88,8 +88,8 @@ const AIDesignSprint = () => {
             <div className="space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
                 Zwei Tage intensiver kollaborativer Workshops, die von unseren Design-Leadern moderiert werden. 
-                Ihr Team arbeitet durch unsere dedizierten Canvases, KI-Ideenkarten und andere Tools, die 
-                speziell für KI-Softwareprojekte entwickelt wurden. Jede Session ist auf unternehmensspezifische 
+                Ihr Team arbeitet durch unsere dedizierten Canvases, AI-Ideenkarten und andere Tools, die 
+                speziell für AI-Softwareprojekte entwickelt wurden. Jede Session ist auf unternehmensspezifische 
                 Bedürfnisse und Anwendungsfälle zugeschnitten.
               </p>
               
@@ -128,7 +128,7 @@ const AIDesignSprint = () => {
                   <Users className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Expert-Team</h3>
                   <p className="text-muted-foreground">
-                    KI-Ingenieure, Data Scientists und Design-Facilitatoren arbeiten mit Ihrem Team zusammen.
+                    AI-Ingenieure, Data Scientists und Design-Facilitatoren arbeiten mit Ihrem Team zusammen.
                   </p>
                 </CardContent>
               </Card>
@@ -164,12 +164,12 @@ const AIDesignSprint = () => {
                   Wir beginnen Tag eins mit der Identifizierung des Ziels und der Kartierung der Herausforderung. 
                   Wir bitten Ihre Domain-Spezialisten, ihr Wissen zu teilen. Wir analysieren Geschäftsanforderungen 
                   und identifizieren erwartete Ergebnisse. Wir bestimmen, welche Probleme einzigartig mit einer 
-                  KI-Lösung gelöst werden könnten.
+                  AI-Lösung gelöst werden könnten.
                 </p>
                 
                 <p className="text-muted-foreground leading-relaxed">
                   Mit Hilfe unserer ML-Experten durchlaufen wir eine intensive Ideenfindungs-Session, um mögliche 
-                  KI-Lösungen zu kartieren.
+                  AI-Lösungen zu kartieren.
                 </p>
               </CardContent>
             </Card>
@@ -189,7 +189,7 @@ const AIDesignSprint = () => {
                 
                 <p className="text-muted-foreground leading-relaxed">
                   Sobald wir die Ideen ausgewählt haben, die wir verfolgen möchten, treten wir in die Phase der 
-                  Feedback- und Machbarkeitsstudie ein. Dieser Schritt erfordert KI-Wissen und Erfahrung, daher 
+                  Feedback- und Machbarkeitsstudie ein. Dieser Schritt erfordert AI-Wissen und Erfahrung, daher 
                   spielen unsere ML-Experten eine große Rolle.
                 </p>
                 
@@ -226,7 +226,7 @@ const AIDesignSprint = () => {
                   <Target className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Machbarkeitsbewertung</h3>
                   <p className="text-muted-foreground">
-                    Sie bestimmen die Machbarkeit Ihrer Ideen und wählen eine KI-Lösung für die Implementierung aus.
+                    Sie bestimmen die Machbarkeit Ihrer Ideen und wählen eine AI-Lösung für die Implementierung aus.
                   </p>
                 </CardContent>
               </Card>
@@ -283,7 +283,7 @@ const AIDesignSprint = () => {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
                   <Target className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold">KI-Chancen Erkennen</h3>
+                <h3 className="text-2xl font-bold">AI-Chancen Erkennen</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Identifizieren Sie Geschäftsbereiche, in denen maschinelles Lernen und analytische Lösungen 
                   hervorragende Ergebnisse liefern können. Steigern Sie Ihre Wettbewerbsfähigkeit und Resilienz.
@@ -334,7 +334,7 @@ const AIDesignSprint = () => {
             </h2>
             
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Sind Sie interessiert? Erleben Sie unseren einzigartigen menschenzentrierten Ansatz für KI und 
+              Sind Sie interessiert? Erleben Sie unseren einzigartigen menschenzentrierten Ansatz für AI und 
               finden Sie heraus, wie Technologie Ergebnisse für Ihr Unternehmen liefern kann. Kontaktieren Sie 
               uns und wir geben Ihnen gerne weitere Details.
             </p>

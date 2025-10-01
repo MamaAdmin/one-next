@@ -11,7 +11,7 @@ const About = () => {
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed">
             Wir lieben Herausforderungen, die Kreativität und innovative Technologien erfordern!
-            Als innovatives KI-Entwicklungsunternehmen kombinieren wir starke technische Fähigkeiten
+            Als innovatives AI-Entwicklungsunternehmen kombinieren wir starke technische Fähigkeiten
             mit strategischer Vision. Wir beginnen mit einer Geschäftsanalyse, die uns hilft, uns
             besser kennenzulernen und ein profitables Tech-Produkt zu liefern. Unser agiler
             Entwicklungsprozess ist perfekt auf Ihre Bedürfnisse zugeschnitten.

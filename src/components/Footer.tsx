@@ -14,7 +14,7 @@ const Footer = () => {
               <span className="text-2xl font-bold">one-next</span>
             </div>
             <p className="text-background/80 mb-6 leading-relaxed">
-              Ihr vertrauenswürdiger Partner für KI-Entwicklung. Wir bringen Ihr Unternehmen mit
+              Ihr vertrauenswürdiger Partner für AI-Entwicklung. Wir bringen Ihr Unternehmen mit
               maßgeschneiderter Machine Learning Software auf die nächste Stufe.
             </p>
             <div className="flex gap-4">
