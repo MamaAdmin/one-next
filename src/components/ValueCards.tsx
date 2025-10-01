@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
-
 const ValueCards = () => {
-  return (
-    <section className="py-16 bg-background">
+  return <section className="py-16 bg-[#fff0ed]">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Expertise Card */}
@@ -17,11 +15,7 @@ const ValueCards = () => {
                 Geschäftsprozesse und fördern digitale Kompetenz durch gezielte Schulungen und Workshops.
               </p>
             </div>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="rounded-full border-foreground/20 hover:bg-foreground/5"
-            >
+            <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
               Kostenlose Beratung vereinbaren
             </Button>
           </div>
@@ -32,11 +26,7 @@ const ValueCards = () => {
             <p className="text-background/80 leading-relaxed">
               Wir generieren Effizienz durch die neusten Technologien und Automatisierungen
             </p>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-foreground"
-            >
+            <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-foreground">
               Neuesten Bericht lesen
             </Button>
           </div>
@@ -49,11 +39,7 @@ const ValueCards = () => {
             <p className="text-foreground/80 leading-relaxed">
               Erst wenn unsere Kunden erfolgreich mit unseren Produkten sind sind wir zufrieden!
             </p>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="rounded-full border-foreground/20 hover:bg-foreground/5"
-            >
+            <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
               Unsere Lösungen
             </Button>
           </div>
@@ -62,32 +48,21 @@ const ValueCards = () => {
             <div className="w-48 h-48 relative">
               {/* Starburst icon */}
               <svg viewBox="0 0 200 200" className="w-full h-full">
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const angle = (i * 360) / 24;
-                  const x1 = 100 + Math.cos((angle * Math.PI) / 180) * 40;
-                  const y1 = 100 + Math.sin((angle * Math.PI) / 180) * 40;
-                  const x2 = 100 + Math.cos((angle * Math.PI) / 180) * 100;
-                  const y2 = 100 + Math.sin((angle * Math.PI) / 180) * 100;
-                  return (
-                    <line
-                      key={i}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      className="text-foreground"
-                    />
-                  );
-                })}
+                {Array.from({
+                length: 24
+              }).map((_, i) => {
+                const angle = i * 360 / 24;
+                const x1 = 100 + Math.cos(angle * Math.PI / 180) * 40;
+                const y1 = 100 + Math.sin(angle * Math.PI / 180) * 40;
+                const x2 = 100 + Math.cos(angle * Math.PI / 180) * 100;
+                const y2 = 100 + Math.sin(angle * Math.PI / 180) * 100;
+                return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth="3" className="text-foreground" />;
+              })}
               </svg>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ValueCards;
