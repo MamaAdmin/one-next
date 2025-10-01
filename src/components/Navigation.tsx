@@ -16,6 +16,9 @@ const Navigation = () => {
   }, {
     label: "Über uns",
     href: "#about"
+  }, {
+    label: "Blog",
+    href: "/blog"
   }];
   return <nav className="fixed top-0 w-full backdrop-blur-sm z-50 bg-[fffffff] bg-white">
       <div className="container mx-auto px-6 py-6">
