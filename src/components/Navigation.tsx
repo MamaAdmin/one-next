@@ -13,12 +13,14 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-lg border-b border-border z-50">
-      <div className="container mx-auto px-6 py-4">
+    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50">
+      <div className="container mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg" />
-            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-foreground rounded-sm flex items-center justify-center">
+              <div className="w-6 h-6 border-2 border-background rounded-full" />
+            </div>
+            <span className="text-xl font-light tracking-wide">
               one-next
             </span>
           </div>
@@ -29,14 +31,11 @@ const Navigation = () => {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-foreground/80 hover:text-primary transition-colors"
+                className="text-foreground/70 hover:text-foreground transition-colors font-light"
               >
                 {item.label}
               </a>
             ))}
-            <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity">
-              Kontakt aufnehmen
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -55,15 +54,12 @@ const Navigation = () => {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-foreground/80 hover:text-primary transition-colors"
+                className="text-foreground/70 hover:text-foreground transition-colors font-light"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
-            <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity w-full">
-              Kontakt aufnehmen
-            </Button>
           </div>
         )}
       </div>
