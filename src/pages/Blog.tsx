@@ -13,6 +13,7 @@ interface Article {
   excerpt: string;
   author: string;
   published_at: string;
+  featured_image?: string;
 }
 
 const Blog = () => {
@@ -66,7 +67,14 @@ const Blog = () => {
             <div className="space-y-6">
               {articles.map((article) => (
                 <Link key={article.id} to={`/blog/${article.slug}`}>
-                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer overflow-hidden">
+                    {article.featured_image && (
+                      <img
+                        src={article.featured_image}
+                        alt={article.title}
+                        className="w-full h-48 object-cover"
+                      />
+                    )}
                     <CardHeader>
                       <CardTitle className="text-2xl hover:text-primary transition-colors">
                         {article.title}

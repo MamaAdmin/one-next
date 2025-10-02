@@ -1,15 +1,23 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Menu, ChevronDown } from "lucide-react";
-import { useState } from "react";
-import logo from "@/assets/one-next-logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import oneNextLogo from "@/assets/one-next-logo.png";
+import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/hooks/useAdmin";
+
 const Navigation = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const { isAdmin } = useAdmin();
+
   const servicesItems = [
     { label: "AI Design Sprint", href: "/ai-design-sprint" },
     { label: "Proof of AI Development", href: "#services" },
@@ -24,21 +32,49 @@ const Navigation = () => {
     { label: "Case Studies", href: "#about" },
     { label: "Kontakt", href: "#about" },
   ];
-  return <nav className="fixed top-0 w-full backdrop-blur-sm z-50 bg-[fffffff] bg-white">
-      <div className="container mx-auto px-6 py-6">
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  return (
+    <nav className={`fixed top-0 w-full backdrop-blur-sm z-50 transition-all duration-300 ${
+      isScrolled ? "bg-white/90 shadow-md" : "bg-white"
+    }`}>
+      <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img src={logo} alt="one-next logo" className="h-12 w-auto" />
-          </div>
+          <Link to="/" className="flex items-center">
+            <img src={oneNextLogo} alt="one-next logo" className="h-12 w-auto" />
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-8">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/70 hover:text-foreground transition-colors font-light outline-none">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
                 Services <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-background border border-border z-50">
-                {servicesItems.map(item => (
+              <DropdownMenuContent className="z-50 bg-background">
+                {servicesItems.map((item) => (
                   <DropdownMenuItem key={item.label} asChild>
                     <a href={item.href} className="cursor-pointer">
                       {item.label}
@@ -49,11 +85,11 @@ const Navigation = () => {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/70 hover:text-foreground transition-colors font-light outline-none">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
                 Unternehmen <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-background border border-border z-50">
-                {companyItems.map(item => (
+              <DropdownMenuContent className="z-50 bg-background">
+                {companyItems.map((item) => (
                   <DropdownMenuItem key={item.label} asChild>
                     <a href={item.href} className="cursor-pointer">
                       {item.label}
@@ -63,56 +99,114 @@ const Navigation = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <a href="/blog" className="text-foreground/70 hover:text-foreground transition-colors font-light">
+            <Link to="/blog" className="text-foreground hover:text-primary transition-colors">
               Blog
-            </a>
-          </div>
+            </Link>
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Account
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="z-50 bg-background">
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer">
+                        Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button variant="default" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </nav>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <Menu className="w-6 h-6" />
+          <button
+            className="md:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && <div className="md:hidden mt-4 pb-4 flex flex-col gap-4 animate-fade-in">
-            <div className="flex flex-col gap-2">
-              <div className="text-foreground font-medium text-sm">Services</div>
-              {servicesItems.map(item => (
-                <a 
-                  key={item.label} 
-                  href={item.href} 
-                  className="text-foreground/70 hover:text-foreground transition-colors font-light pl-4" 
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-6 pb-4">
+            <div className="flex flex-col gap-4">
+              <div className="border-b pb-4">
+                <p className="text-sm font-semibold mb-2">Services</p>
+                {servicesItems.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="block py-2 px-4 hover:bg-accent rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <div className="text-foreground font-medium text-sm">Unternehmen</div>
-              {companyItems.map(item => (
-                <a 
-                  key={item.label} 
-                  href={item.href} 
-                  className="text-foreground/70 hover:text-foreground transition-colors font-light pl-4" 
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
+              <div className="border-b pb-4">
+                <p className="text-sm font-semibold mb-2">Unternehmen</p>
+                {companyItems.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="block py-2 px-4 hover:bg-accent rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
 
-            <a 
-              href="/blog" 
-              className="text-foreground/70 hover:text-foreground transition-colors font-light" 
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Blog
-            </a>
-          </div>}
+              <Link to="/blog" className="block py-2 px-4 hover:bg-accent rounded-md">
+                Blog
+              </Link>
+
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleSignOut}
+                    className="block w-full text-left py-2 px-4 hover:bg-accent rounded-md"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link to="/auth" className="block py-2 px-4 hover:bg-accent rounded-md">
+                  <Button variant="default" size="sm" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </div>
-    </nav>;
+    </nav>
+  );
 };
+
 export default Navigation;

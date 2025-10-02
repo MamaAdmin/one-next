@@ -14,6 +14,7 @@ interface Article {
   content: string;
   author: string;
   published_at: string;
+  featured_image?: string;
 }
 
 const Article = () => {
@@ -101,6 +102,14 @@ const Article = () => {
           <div className="text-muted-foreground mb-8">
             {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
           </div>
+
+          {article.featured_image && (
+            <img
+              src={article.featured_image}
+              alt={article.title}
+              className="w-full h-auto rounded-lg mb-8"
+            />
+          )}
 
           <div className="prose prose-lg max-w-none">
             <p className="whitespace-pre-wrap text-foreground/80 leading-relaxed">
