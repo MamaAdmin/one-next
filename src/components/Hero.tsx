@@ -4,7 +4,7 @@ import heroImage from "@/assets/hero-ai-illustration.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center bg-background pt-20">
+    <section className="relative min-h-[70vh] flex items-center bg-background pt-20">
       <div className="container mx-auto px-6 py-32">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6 animate-fade-in">
