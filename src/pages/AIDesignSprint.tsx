@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Target, Lightbulb, CheckCircle, Users, Clock, MapPin } from "lucide-react";
+import { SparklesIcon, TargetIcon, LightbulbIcon, CheckCircleIcon, UsersIcon, ClockIcon, MapPinIcon } from "@/components/ui/custom-icons";
 
 const AIDesignSprint = () => {
   return (
@@ -19,7 +19,7 @@ const AIDesignSprint = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full">
-              <Sparkles className="w-5 h-5" />
+              <SparklesIcon className="w-5 h-5" />
               <span className="font-semibold">AI Design Sprint</span>
             </div>
             
@@ -104,7 +104,7 @@ const AIDesignSprint = () => {
             <div className="grid md:grid-cols-3 gap-6 mt-12">
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <MapPin className="w-10 h-10 text-primary" />
+                  <MapPinIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Vor Ort & Remote</h3>
                   <p className="text-muted-foreground">
                     Unser AI Design Sprint kann vor Ort in unseren oder Ihren Büros durchgeführt werden. 
@@ -115,7 +115,7 @@ const AIDesignSprint = () => {
               
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Clock className="w-10 h-10 text-primary" />
+                  <ClockIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">2 Tage</h3>
                   <p className="text-muted-foreground">
                     Intensive Workshops mit strukturiertem Ablauf, die maximalen Wert in minimaler Zeit liefern.
@@ -125,7 +125,7 @@ const AIDesignSprint = () => {
               
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Users className="w-10 h-10 text-primary" />
+                  <UsersIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Expert-Team</h3>
                   <p className="text-muted-foreground">
                     AI-Ingenieure, Data Scientists und Design-Facilitatoren arbeiten mit Ihrem Team zusammen.
@@ -223,7 +223,7 @@ const AIDesignSprint = () => {
             <div className="grid md:grid-cols-2 gap-6 mt-12">
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Target className="w-10 h-10 text-primary" />
+                  <TargetIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Machbarkeitsbewertung</h3>
                   <p className="text-muted-foreground">
                     Sie bestimmen die Machbarkeit Ihrer Ideen und wählen eine AI-Lösung für die Implementierung aus.
@@ -233,7 +233,7 @@ const AIDesignSprint = () => {
               
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Lightbulb className="w-10 h-10 text-primary" />
+                  <LightbulbIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Entwicklungs-Roadmap</h3>
                   <p className="text-muted-foreground">
                     Planen Sie die mögliche Roadmap für die Feature-Entwicklung mit klaren nächsten Schritten.
@@ -243,7 +243,7 @@ const AIDesignSprint = () => {
               
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <CheckCircle className="w-10 h-10 text-primary" />
+                  <CheckCircleIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Detaillierter Bericht</h3>
                   <p className="text-muted-foreground">
                     Erhalten Sie einen umfassenden AI Design Sprint-Bericht mit Fallstudie, Konzeptdetails und 
@@ -254,7 +254,7 @@ const AIDesignSprint = () => {
               
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Users className="w-10 h-10 text-primary" />
+                  <UsersIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Follow-up Meeting</h3>
                   <p className="text-muted-foreground">
                     Innerhalb einer Woche nach dem Sprint planen wir ein einstündiges Meeting, um alle Ergebnisse 
@@ -281,7 +281,7 @@ const AIDesignSprint = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Target className="w-8 h-8 text-primary-foreground" />
+                  <TargetIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">AI-Chancen Erkennen</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -294,7 +294,7 @@ const AIDesignSprint = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Clock className="w-8 h-8 text-primary-foreground" />
+                  <ClockIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Schnell & Agil</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -307,7 +307,7 @@ const AIDesignSprint = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-primary-foreground" />
+                  <CheckCircleIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Roadmap mit Zuversicht</h3>
                 <p className="text-muted-foreground leading-relaxed">

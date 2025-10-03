@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Target, Lightbulb, TrendingUp, Users, Building2, Brain, Shield, Rocket, BarChart3, Cpu, GraduationCap, Scale } from "lucide-react";
+import { SparklesIcon, TargetIcon, LightbulbIcon, TrendingUpIcon, UsersIcon, BuildingIcon, BrainIcon, ShieldIcon, RocketIcon, ChartIcon, CpuIcon, GraduationCapIcon, ScaleIcon } from "@/components/ui/custom-icons";
 
 const AIConsultingServices = () => {
   return (
@@ -19,7 +19,7 @@ const AIConsultingServices = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full">
-              <Sparkles className="w-5 h-5" />
+              <SparklesIcon className="w-5 h-5" />
               <span className="font-semibold">AI Consulting Services</span>
             </div>
             
@@ -91,7 +91,7 @@ const AIConsultingServices = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
-                  <Target className="w-10 h-10 text-primary" />
+                  <TargetIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Geschäftsziele verstehen</h3>
                   <p className="text-muted-foreground">
                     Wir analysieren Ihre strategischen Ziele und identifizieren, wo AI den größten 
@@ -102,7 +102,7 @@ const AIConsultingServices = () => {
 
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
-                  <Brain className="w-10 h-10 text-primary" />
+                  <BrainIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">AI-Potenziale identifizieren</h3>
                   <p className="text-muted-foreground">
                     Erkennung konkreter Use Cases und Bewertung ihrer technischen Machbarkeit und 
@@ -113,7 +113,7 @@ const AIConsultingServices = () => {
 
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
-                  <Lightbulb className="w-10 h-10 text-primary" />
+                  <LightbulbIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Roadmap entwickeln</h3>
                   <p className="text-muted-foreground">
                     Erstellung einer detaillierten Implementierungsstrategie mit klaren Meilensteinen 
@@ -124,7 +124,7 @@ const AIConsultingServices = () => {
 
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
-                  <Cpu className="w-10 h-10 text-primary" />
+                  <CpuIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Technologie-Auswahl</h3>
                   <p className="text-muted-foreground">
                     Empfehlung der optimalen AI-Technologien und -Plattformen für Ihre spezifischen 
@@ -135,7 +135,7 @@ const AIConsultingServices = () => {
 
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
-                  <BarChart3 className="w-10 h-10 text-primary" />
+                  <ChartIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">ROI-Bewertung</h3>
                   <p className="text-muted-foreground">
                     Quantifizierung des erwarteten Business Value und Entwicklung von KPIs zur 
@@ -146,7 +146,7 @@ const AIConsultingServices = () => {
 
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
-                  <Users className="w-10 h-10 text-primary" />
+                  <UsersIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Change Management</h3>
                   <p className="text-muted-foreground">
                     Unterstützung bei der organisatorischen Transformation und Mitarbeiter-Enablement.
@@ -172,7 +172,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Target className="w-8 h-8 text-primary-foreground" />
+                  <TargetIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">AI-Strategie-Entwicklung</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -186,7 +186,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Lightbulb className="w-8 h-8 text-primary-foreground" />
+                  <LightbulbIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Machbarkeitsanalysen</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -199,7 +199,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Cpu className="w-8 h-8 text-primary-foreground" />
+                  <CpuIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Technologie-Evaluierung</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -212,7 +212,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Rocket className="w-8 h-8 text-primary-foreground" />
+                  <RocketIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Implementierungs-Roadmaps</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -225,7 +225,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <GraduationCap className="w-8 h-8 text-primary-foreground" />
+                  <GraduationCapIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Team-Training & Workshops</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -238,7 +238,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Scale className="w-8 h-8 text-primary-foreground" />
+                  <ScaleIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-bold">Ethik & Governance</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -270,7 +270,7 @@ const AIConsultingServices = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Building2 className="w-10 h-10 text-primary" />
+                  <BuildingIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Fertigung & Industrie</h3>
                   <p className="text-muted-foreground">
                     Predictive Maintenance, Qualitätskontrolle, Supply Chain Optimierung, 
@@ -281,7 +281,7 @@ const AIConsultingServices = () => {
 
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <TrendingUp className="w-10 h-10 text-primary" />
+                  <TrendingUpIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Finanzdienstleistungen</h3>
                   <p className="text-muted-foreground">
                     Fraud Detection, Risikomanagement, algorithmischer Handel, 
@@ -292,7 +292,7 @@ const AIConsultingServices = () => {
 
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Users className="w-10 h-10 text-primary" />
+                  <UsersIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Handel & E-Commerce</h3>
                   <p className="text-muted-foreground">
                     Personalisierung, Empfehlungssysteme, dynamische Preisgestaltung, 
@@ -303,7 +303,7 @@ const AIConsultingServices = () => {
 
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <Shield className="w-10 h-10 text-primary" />
+                  <ShieldIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Gesundheitswesen</h3>
                   <p className="text-muted-foreground">
                     Diagnostische Assistenzsysteme, Patientendatenanalyse, 
@@ -329,7 +329,7 @@ const AIConsultingServices = () => {
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <Brain className="w-10 h-10 text-primary" />
+                <BrainIcon className="w-10 h-10 text-primary" />
                 <h3 className="text-xl font-bold">Tiefe Expertise</h3>
                 <p className="text-muted-foreground">
                   Erfahrene AI-Experten, Data Scientists und Branchenspezialisten mit nachweislicher 
@@ -340,7 +340,7 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <Target className="w-10 h-10 text-primary" />
+                <TargetIcon className="w-10 h-10 text-primary" />
                 <h3 className="text-xl font-bold">Ganzheitlicher Ansatz</h3>
                 <p className="text-muted-foreground">
                   Von Strategie über Technologie bis Change Management – wir decken alle Aspekte 
@@ -351,7 +351,7 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <Rocket className="w-10 h-10 text-primary" />
+                <RocketIcon className="w-10 h-10 text-primary" />
                 <h3 className="text-xl font-bold">Praxiserfahrung</h3>
                 <p className="text-muted-foreground">
                   Wir kennen die Herausforderungen der Implementierung und bringen bewährte Best 
@@ -362,7 +362,7 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <BarChart3 className="w-10 h-10 text-primary" />
+                <ChartIcon className="w-10 h-10 text-primary" />
                 <h3 className="text-xl font-bold">Messbare Ergebnisse</h3>
                 <p className="text-muted-foreground">
                   Fokus auf ROI und Business Value – wir entwickeln Lösungen, die echten Mehrwert 
