@@ -19,7 +19,7 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <img src={oneNextLogo} alt="one-next logo" className="h-8 w-auto" />
+              <img src={oneNextLogo} alt="one-next logo" className="h-12 w-auto" />
               <InlineTextField
                 value={content.company_name || 'one-next'}
                 onSave={(value) => updateContent('company_name', value)}
