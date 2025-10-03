@@ -1,8 +1,17 @@
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { usePageContent } from "@/hooks/usePageContent";
+import { useContentManager } from "@/hooks/useContentManager";
+import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
 
 export default function DataQualityAuditPage() {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const { isContentManager } = useContentManager();
+  const { content, loading, updateContent } = usePageContent('data-quality-audit');
   const phases = [
     {
       title: "Phase 1 – Kick-off & Scope-Definition",
@@ -161,14 +170,27 @@ export default function DataQualityAuditPage() {
             <p className="inline-block rounded-full bg-accent text-accent-foreground text-xs font-medium px-3 py-1 mb-4">
               Data Quality Audit · 1-12 Wochen · Messbar · Umsetzbar
             </p>
-            <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
-              Datenqualität messbar machen und{" "}
-              <span className="text-primary">strategisch verbessern</span>
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Systematische Analyse Ihrer Datenlandschaft mit klaren Handlungsempfehlungen 
-              für nachhaltige Verbesserungen. Von Quick Scan bis umfassendem Assessment.
-            </p>
+            {isEditMode ? (
+              <InlineTextArea
+                value={content.hero_title || 'Datenqualität messbar machen und strategisch verbessern'}
+                onSave={(value) => updateContent('hero_title', value)}
+                isEditMode={isEditMode}
+                placeholder="Hero title"
+                minRows={2}
+              />
+            ) : (
+              <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
+                {content.hero_title || 'Datenqualität messbar machen und strategisch verbessern'}
+              </h1>
+            )}
+            <InlineTextArea
+              value={content.hero_description || 'Systematische Analyse Ihrer Datenlandschaft mit klaren Handlungsempfehlungen für nachhaltige Verbesserungen. Von Quick Scan bis umfassendem Assessment.'}
+              onSave={(value) => updateContent('hero_description', value)}
+              isEditMode={isEditMode}
+              className="mt-4 text-lg text-muted-foreground"
+              placeholder="Hero description"
+              minRows={3}
+            />
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#termin" className="rounded-2xl px-5 py-3 bg-primary text-primary-foreground font-medium shadow hover:bg-primary-glow transition-colors">
                 Erstgespräch buchen
@@ -408,6 +430,12 @@ export default function DataQualityAuditPage() {
       </section>
 
       <Footer />
+      {isContentManager && !loading && (
+        <EditToggleButton
+          isEditMode={isEditMode}
+          onToggle={() => setIsEditMode(!isEditMode)}
+        />
+      )}
     </div>
   );
 }

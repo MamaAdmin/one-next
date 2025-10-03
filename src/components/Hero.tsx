@@ -1,17 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
 import heroImage from "@/assets/hero-ai-illustration.jpg";
+import { usePageContent } from "@/hooks/usePageContent";
+import { InlineTextField } from "@/components/blog/InlineTextField";
 
-const Hero = () => {
+interface HeroProps {
+  isEditMode?: boolean;
+}
+
+const Hero = ({ isEditMode = false }: HeroProps) => {
+  const { content, updateContent } = usePageContent('index');
   return (
     <section className="relative min-h-[50vh] flex items-center bg-background pt-20">
       <div className="container mx-auto px-6 py-32">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6 animate-fade-in">
-            <h1 className="text-6xl lg:text-8xl font-light leading-tight lowercase">
-              we define<br />
-              your way forward
-            </h1>
+            <InlineTextField
+              value={content.hero_title || 'we define your way forward'}
+              onSave={(value) => updateContent('hero_title', value)}
+              isEditMode={isEditMode}
+              className="text-6xl lg:text-8xl font-light leading-tight lowercase"
+              placeholder="Hero title"
+              as="h1"
+            />
           </div>
 
           <div className="relative animate-fade-in-up flex justify-end">

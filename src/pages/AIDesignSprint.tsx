@@ -1,10 +1,19 @@
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SparklesIcon, TargetIcon, LightbulbIcon, CheckCircleIcon, UsersIcon, ClockIcon, MapPinIcon } from "@/components/ui/custom-icons";
+import { usePageContent } from "@/hooks/usePageContent";
+import { useContentManager } from "@/hooks/useContentManager";
+import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
 
 const AIDesignSprint = () => {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const { isContentManager } = useContentManager();
+  const { content, loading, updateContent } = usePageContent('ai-design-sprint');
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -23,15 +32,23 @@ const AIDesignSprint = () => {
               <span className="font-semibold">AI Design Sprint</span>
             </div>
             
-            <h1 className="text-5xl lg:text-6xl font-bold text-primary-foreground">
-              Identifizieren und entfesseln Sie die Kraft der AI für Ihr Unternehmen in zwei Tagen
-            </h1>
+            <InlineTextField
+              value={content.hero_title || 'Identifizieren und entfesseln Sie die Kraft der AI für Ihr Unternehmen in zwei Tagen'}
+              onSave={(value) => updateContent('hero_title', value)}
+              isEditMode={isEditMode}
+              className="text-5xl lg:text-6xl font-bold text-primary-foreground"
+              placeholder="Hero title"
+              as="h1"
+            />
             
-            <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Mit nur zwei Tagen intensiver Arbeit identifiziert Ihr Team zusammen mit unseren AI-Ingenieuren 
-              und Design-Facilitatoren das Potenzial von AI-Lösungen, um neue Ideen und Visionen für Ihr 
-              Unternehmen zu schaffen.
-            </p>
+            <InlineTextArea
+              value={content.hero_description || 'Mit nur zwei Tagen intensiver Arbeit identifiziert Ihr Team zusammen mit unseren AI-Ingenieuren und Design-Facilitatoren das Potenzial von AI-Lösungen, um neue Ideen und Visionen für Ihr Unternehmen zu schaffen.'}
+              onSave={(value) => updateContent('hero_description', value)}
+              isEditMode={isEditMode}
+              className="text-xl text-primary-foreground/90 leading-relaxed"
+              placeholder="Hero description"
+              minRows={3}
+            />
             
             <Button 
               size="lg" 
@@ -350,6 +367,12 @@ const AIDesignSprint = () => {
       </section>
 
       <Footer />
+      {isContentManager && !loading && (
+        <EditToggleButton
+          isEditMode={isEditMode}
+          onToggle={() => setIsEditMode(!isEditMode)}
+        />
+      )}
     </div>
   );
 };
