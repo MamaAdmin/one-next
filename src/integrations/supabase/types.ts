@@ -140,6 +140,54 @@ export type Database = {
         }
         Relationships: []
       }
+      design_sprint_sessions: {
+        Row: {
+          achievements: Json | null
+          challenge_data: Json | null
+          completion_percentage: number | null
+          created_at: string | null
+          current_day: number | null
+          id: string
+          last_active_day: number | null
+          session_token: string
+          streak_days: number | null
+          task_completion: Json | null
+          team_name: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          achievements?: Json | null
+          challenge_data?: Json | null
+          completion_percentage?: number | null
+          created_at?: string | null
+          current_day?: number | null
+          id?: string
+          last_active_day?: number | null
+          session_token: string
+          streak_days?: number | null
+          task_completion?: Json | null
+          team_name: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          achievements?: Json | null
+          challenge_data?: Json | null
+          completion_percentage?: number | null
+          created_at?: string | null
+          current_day?: number | null
+          id?: string
+          last_active_day?: number | null
+          session_token?: string
+          streak_days?: number | null
+          task_completion?: Json | null
+          team_name?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       media: {
         Row: {
           alt_text: string | null
