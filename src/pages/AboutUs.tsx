@@ -70,7 +70,7 @@ const AboutUs = () => {
                     Julia Haitz ist eine visionäre Unternehmerin mit langjähriger Erfahrung 
                     im Bereich künstliche Intelligenz und digitale Transformation. Mit ihrer 
                     Leidenschaft für innovative Technologien und strategischem Geschäftssinn 
-                    hat sie one-next gegründet, um Unternehmen dabei zu helfen, durch 
+                    hat sie one-next gegründet, um Unternehmen dabei zu unterstützen, durch 
                     maßgeschneiderte KI-Lösungen echte Wettbewerbsvorteile zu erzielen.
                   </p>
                   
@@ -78,6 +78,13 @@ const AboutUs = () => {
                     Ihre Mission ist es, die Lücke zwischen technologischer Innovation und 
                     praktischer Geschäftsanwendung zu schließen und Unternehmen auf ihrem 
                     Weg in die KI-gestützte Zukunft zu begleiten.
+                  </p>
+                  
+                  <p className="text-muted-foreground leading-relaxed">
+                    Dank ihrer umfassenden Erfahrung kennt sie alle relevanten Perspektiven 
+                    innerhalb eines Unternehmens – die agile Sicht, die strategische Sicht 
+                    sowie die technische Umsetzung. Dieses Zusammenspiel ermöglicht ihr stets, 
+                    das Gesamtbild im Blick zu behalten und nachhaltige Lösungen zu entwickeln.
                   </p>
                 </div>
               </div>
