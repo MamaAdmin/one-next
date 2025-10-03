@@ -32,7 +32,7 @@ const Services = () => {
     },
     {
       icon: MessageIcon,
-      title: "AI Strategie Beratung",
+      title: "AI Consulting Services",
       description:
         "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt.",
     },
@@ -81,6 +81,16 @@ const Services = () => {
                   </p>
                   {index === 0 ? (
                     <Link to="/ai-design-sprint">
+                      <Button 
+                        variant="ghost" 
+                        className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
+                      >
+                        Mehr erfahren
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+                  ) : index === 4 ? (
+                    <Link to="/ai-consulting-services">
                       <Button 
                         variant="ghost" 
                         className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
