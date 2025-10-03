@@ -27,7 +27,7 @@ const Navigation = () => {
   ];
 
   const companyItems = [
-    { label: "Über uns", href: "#about" },
+    { label: "Über uns", href: "/about-us" },
     { label: "Karriere", href: "#about" },
     { label: "Case Studies", href: "#about" },
     { label: "Kontakt", href: "#about" },
