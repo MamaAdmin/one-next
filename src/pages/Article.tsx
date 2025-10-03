@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
-import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
 
 interface Article {
@@ -170,21 +170,12 @@ const Article = () => {
             />
           )}
 
-          <div className="prose prose-lg max-w-none">
-            {isEditMode ? (
-              <InlineTextArea
-                value={article.content}
-                onSave={(value) => handleUpdateArticle("content", value)}
-                isEditMode={isEditMode}
-                placeholder="Article content"
-                minRows={10}
-              />
-            ) : (
-              <p className="whitespace-pre-wrap text-foreground/80 leading-relaxed">
-                {article.content}
-              </p>
-            )}
-          </div>
+          <RichTextEditor
+            value={article.content}
+            onSave={(value) => handleUpdateArticle("content", value)}
+            isEditMode={isEditMode}
+            placeholder="Write your article content here..."
+          />
         </article>
       </main>
       <Footer />

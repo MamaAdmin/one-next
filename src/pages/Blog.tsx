@@ -156,7 +156,10 @@ const Blog = () => {
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-muted-foreground">{article.excerpt}</p>
+                          <div 
+                            className="text-muted-foreground line-clamp-3"
+                            dangerouslySetInnerHTML={{ __html: article.excerpt || "" }}
+                          />
                         </CardContent>
                       </Card>
                     </Link>
