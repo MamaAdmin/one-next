@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,16 +7,8 @@ import Footer from "@/components/Footer";
 import { BrainIcon, TargetIcon, LightbulbIcon, RocketIcon } from "@/components/ui/custom-icons";
 import { Linkedin } from "lucide-react";
 import juliaProfile from "@/assets/julia-haitz-profile.jpg";
-import { usePageContent } from "@/hooks/usePageContent";
-import { useContentManager } from "@/hooks/useContentManager";
-import { EditToggleButton } from "@/components/blog/EditToggleButton";
-import { InlineTextField } from "@/components/blog/InlineTextField";
-import { InlineTextArea } from "@/components/blog/InlineTextArea";
 
 const AboutUs = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const { isContentManager } = useContentManager();
-  const { content, loading, updateContent } = usePageContent('about-us');
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Navigation />
@@ -26,22 +17,16 @@ const AboutUs = () => {
       <section className="pt-32 pb-20 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-6 animate-fade-in">
-            <InlineTextField
-              value={content.hero_title || 'Über one-next'}
-              onSave={(value) => updateContent('hero_title', value)}
-              isEditMode={isEditMode}
-              className="text-5xl lg:text-6xl font-bold"
-              placeholder="Hero title"
-              as="h1"
-            />
-            <InlineTextArea
-              value={content.hero_description || 'Wir sind ein innovatives AI-Entwicklungsunternehmen mit Sitz in Deutschland, das Unternehmen dabei hilft, das volle Potenzial künstlicher Intelligenz zu nutzen.'}
-              onSave={(value) => updateContent('hero_description', value)}
-              isEditMode={isEditMode}
-              className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-              placeholder="Hero description"
-              minRows={3}
-            />
+            <h1 className="text-5xl lg:text-6xl font-bold">
+              Über{" "}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                one-next
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Wir sind ein innovatives AI-Entwicklungsunternehmen mit Sitz in Deutschland, 
+              das Unternehmen dabei hilft, das volle Potenzial künstlicher Intelligenz zu nutzen.
+            </p>
           </div>
         </div>
       </section>
@@ -279,12 +264,6 @@ const AboutUs = () => {
       </section>
 
       <Footer />
-      {isContentManager && !loading && (
-        <EditToggleButton
-          isEditMode={isEditMode}
-          onToggle={() => setIsEditMode(!isEditMode)}
-        />
-      )}
     </div>
   );
 };

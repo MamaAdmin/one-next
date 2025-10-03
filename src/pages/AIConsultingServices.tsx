@@ -1,19 +1,10 @@
-import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SparklesIcon, TargetIcon, LightbulbIcon, TrendingUpIcon, UsersIcon, BuildingIcon, BrainIcon, ShieldIcon, RocketIcon, ChartIcon, CpuIcon, GraduationCapIcon, ScaleIcon } from "@/components/ui/custom-icons";
-import { usePageContent } from "@/hooks/usePageContent";
-import { useContentManager } from "@/hooks/useContentManager";
-import { EditToggleButton } from "@/components/blog/EditToggleButton";
-import { InlineTextField } from "@/components/blog/InlineTextField";
-import { InlineTextArea } from "@/components/blog/InlineTextArea";
 
 const AIConsultingServices = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const { isContentManager } = useContentManager();
-  const { content, loading, updateContent } = usePageContent('ai-consulting-services');
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -32,23 +23,15 @@ const AIConsultingServices = () => {
               <span className="font-semibold">AI Consulting Services</span>
             </div>
             
-            <InlineTextField
-              value={content.hero_title || 'Strategische KI-Beratung für Ihren nachhaltigen Wettbewerbsvorteil'}
-              onSave={(value) => updateContent('hero_title', value)}
-              isEditMode={isEditMode}
-              className="text-5xl lg:text-6xl font-bold text-primary-foreground"
-              placeholder="Hero title"
-              as="h1"
-            />
+            <h1 className="text-5xl lg:text-6xl font-bold text-primary-foreground">
+              Strategische KI-Beratung für Ihren nachhaltigen Wettbewerbsvorteil
+            </h1>
             
-            <InlineTextArea
-              value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
-              onSave={(value) => updateContent('hero_description', value)}
-              isEditMode={isEditMode}
-              className="text-xl text-primary-foreground/90 leading-relaxed"
-              placeholder="Hero description"
-              minRows={3}
-            />
+            <p className="text-xl text-primary-foreground/90 leading-relaxed">
+              Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre 
+              Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen 
+              Implementierungsplan für Ihre erfolgreiche digitale Transformation.
+            </p>
             
             <Button 
               size="lg" 
@@ -421,12 +404,6 @@ const AIConsultingServices = () => {
       </section>
 
       <Footer />
-      {isContentManager && !loading && (
-        <EditToggleButton
-          isEditMode={isEditMode}
-          onToggle={() => setIsEditMode(!isEditMode)}
-        />
-      )}
     </div>
   );
 };
