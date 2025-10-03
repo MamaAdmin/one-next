@@ -9,6 +9,7 @@ import Article from "./pages/Article";
 import AIDesignSprint from "./pages/AIDesignSprint";
 import AIConsultingServices from "./pages/AIConsultingServices";
 import AboutUs from "./pages/AboutUs";
+import DataQualityAudit from "./pages/DataQualityAudit";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/data-quality-audit" element={<DataQualityAudit />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

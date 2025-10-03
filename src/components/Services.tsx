@@ -89,6 +89,16 @@ const Services = () => {
                         <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
+                  ) : index === 2 ? (
+                    <Link to="/data-quality-audit">
+                      <Button 
+                        variant="ghost" 
+                        className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
+                      >
+                        Mehr erfahren
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
                   ) : index === 4 ? (
                     <Link to="/ai-consulting-services">
                       <Button 
