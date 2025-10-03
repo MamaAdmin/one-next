@@ -6,6 +6,11 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
+import { useContentManager } from "@/hooks/useContentManager";
+import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { useToast } from "@/hooks/use-toast";
 
 interface Article {
   id: string;
@@ -21,6 +26,9 @@ const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const { isContentManager } = useContentManager();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -42,6 +50,34 @@ const Article = () => {
 
     fetchArticle();
   }, [slug]);
+
+  const handleUpdateArticle = async (field: string, value: string) => {
+    if (!article) return;
+
+    try {
+      const { error } = await supabase
+        .from("articles")
+        .update({ [field]: value })
+        .eq("id", article.id);
+
+      if (error) throw error;
+
+      setArticle((prev) => (prev ? { ...prev, [field]: value } : null));
+
+      toast({
+        title: "Success",
+        description: "Article updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating article:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update article",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
 
   if (loading) {
     return (
@@ -98,9 +134,32 @@ const Article = () => {
             </Button>
           </Link>
 
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{article.title}</h1>
+          {isEditMode ? (
+            <InlineTextField
+              value={article.title}
+              onSave={(value) => handleUpdateArticle("title", value)}
+              isEditMode={isEditMode}
+              className="text-4xl md:text-5xl font-bold mb-4"
+              placeholder="Article title"
+              as="h1"
+            />
+          ) : (
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{article.title}</h1>
+          )}
+          
           <div className="text-muted-foreground mb-8">
-            {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
+            {isEditMode ? (
+              <InlineTextField
+                value={article.author || ""}
+                onSave={(value) => handleUpdateArticle("author", value)}
+                isEditMode={isEditMode}
+                placeholder="Author name"
+              />
+            ) : (
+              <span>{article.author}</span>
+            )}
+            {" • "}
+            {format(new Date(article.published_at), "MMMM d, yyyy")}
           </div>
 
           {article.featured_image && (
@@ -112,13 +171,29 @@ const Article = () => {
           )}
 
           <div className="prose prose-lg max-w-none">
-            <p className="whitespace-pre-wrap text-foreground/80 leading-relaxed">
-              {article.content}
-            </p>
+            {isEditMode ? (
+              <InlineTextArea
+                value={article.content}
+                onSave={(value) => handleUpdateArticle("content", value)}
+                isEditMode={isEditMode}
+                placeholder="Article content"
+                minRows={10}
+              />
+            ) : (
+              <p className="whitespace-pre-wrap text-foreground/80 leading-relaxed">
+                {article.content}
+              </p>
+            )}
           </div>
         </article>
       </main>
       <Footer />
+      {isContentManager && (
+        <EditToggleButton
+          isEditMode={isEditMode}
+          onToggle={() => setIsEditMode(!isEditMode)}
+        />
+      )}
     </div>
   );
 };

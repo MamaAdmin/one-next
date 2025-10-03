@@ -5,6 +5,11 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
+import { useContentManager } from "@/hooks/useContentManager";
+import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { useToast } from "@/hooks/use-toast";
 
 interface Article {
   id: string;
@@ -19,6 +24,9 @@ interface Article {
 const Blog = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const { isContentManager } = useContentManager();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -37,6 +45,36 @@ const Blog = () => {
 
     fetchArticles();
   }, []);
+
+  const handleUpdateArticle = async (articleId: string, field: string, value: string) => {
+    try {
+      const { error } = await supabase
+        .from("articles")
+        .update({ [field]: value })
+        .eq("id", articleId);
+
+      if (error) throw error;
+
+      setArticles((prev) =>
+        prev.map((article) =>
+          article.id === articleId ? { ...article, [field]: value } : article
+        )
+      );
+
+      toast({
+        title: "Success",
+        description: "Article updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating article:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update article",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -66,34 +104,76 @@ const Blog = () => {
           ) : (
             <div className="space-y-6">
               {articles.map((article) => (
-                <Link key={article.id} to={`/blog/${article.slug}`}>
-                  <Card className="hover:shadow-lg transition-shadow cursor-pointer overflow-hidden">
-                    {article.featured_image && (
-                      <img
-                        src={article.featured_image}
-                        alt={article.title}
-                        className="w-full h-48 object-cover"
-                      />
-                    )}
-                    <CardHeader>
-                      <CardTitle className="text-2xl hover:text-primary transition-colors">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription>
-                        {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{article.excerpt}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <div key={article.id}>
+                  {isEditMode ? (
+                    <Card className="overflow-hidden border-2 border-dashed border-primary/50">
+                      {article.featured_image && (
+                        <img
+                          src={article.featured_image}
+                          alt={article.title}
+                          className="w-full h-48 object-cover"
+                        />
+                      )}
+                      <CardHeader>
+                        <InlineTextField
+                          value={article.title}
+                          onSave={(value) => handleUpdateArticle(article.id, "title", value)}
+                          isEditMode={isEditMode}
+                          className="text-2xl font-semibold"
+                          placeholder="Article title"
+                          as="h2"
+                        />
+                        <CardDescription>
+                          {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <InlineTextArea
+                          value={article.excerpt || ""}
+                          onSave={(value) => handleUpdateArticle(article.id, "excerpt", value)}
+                          isEditMode={isEditMode}
+                          placeholder="Article excerpt"
+                          minRows={2}
+                        />
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <Link to={`/blog/${article.slug}`}>
+                      <Card className="hover:shadow-lg transition-shadow cursor-pointer overflow-hidden">
+                        {article.featured_image && (
+                          <img
+                            src={article.featured_image}
+                            alt={article.title}
+                            className="w-full h-48 object-cover"
+                          />
+                        )}
+                        <CardHeader>
+                          <CardTitle className="text-2xl hover:text-primary transition-colors">
+                            {article.title}
+                          </CardTitle>
+                          <CardDescription>
+                            {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-muted-foreground">{article.excerpt}</p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  )}
+                </div>
               ))}
             </div>
           )}
         </div>
       </main>
       <Footer />
+      {isContentManager && (
+        <EditToggleButton
+          isEditMode={isEditMode}
+          onToggle={() => setIsEditMode(!isEditMode)}
+        />
+      )}
     </div>
   );
 };
