@@ -109,10 +109,12 @@ export default {
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-hero': 'var(--gradient-hero)',
+        'gradient-online': 'var(--gradient-online)',
       },
       boxShadow: {
         'card': 'var(--shadow-card)',
         'hover': 'var(--shadow-hover)',
+        'glow': 'var(--shadow-glow)',
       },
     },
   },

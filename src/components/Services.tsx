@@ -10,7 +10,7 @@ const Services = () => {
       icon: StarburstIcon,
       title: "Digitale Transformation mit AI starten",
       description:
-        "Identifizieren Sie AI-Chancen und nutzen Sie diese für Resilienz und Geschäftsergebnisse. Wir organisieren AI Design Sprint Workshops, in denen Sie das AI-Potenzial freisetzen und neuen Wert für Ihr Unternehmen schaffen können.",
+        "Identifizieren Sie AI-Chancen durch unsere AI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler 6-Tage Online Sprint. Jetzt auch selbstgeführt mit digitalen Tools verfügbar.",
     },
     {
       icon: ArrowsOutIcon,
@@ -85,7 +85,7 @@ const Services = () => {
                         variant="ghost" 
                         className="group/btn p-0 h-auto text-primary hover:text-primary-glow"
                       >
-                        Mehr erfahren
+                        Workshop & Online Sprint
                         <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
                     </Link>

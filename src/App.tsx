@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Blog from "./pages/Blog";
 import Article from "./pages/Article";
 import AIDesignSprint from "./pages/AIDesignSprint";
+import OnlineSprintLanding from "./pages/OnlineSprintLanding";
 import AIConsultingServices from "./pages/AIConsultingServices";
 import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
@@ -28,7 +29,8 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Article />} />
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
-          <Route path="/ai-design-sprint/online" element={<OnlineDesignSprint />} />
+          <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
+          <Route path="/ai-design-sprint/sprint" element={<OnlineDesignSprint />} />
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/data-quality-audit" element={<DataQualityAudit />} />
