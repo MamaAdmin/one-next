@@ -99,19 +99,19 @@ const OnlineSprintLanding = () => {
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center bg-gradient-hero pt-20">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-online rounded-full blur-3xl" />
+          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
         </div>
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge className="bg-gradient-online text-white border-none text-lg px-6 py-2">
+            <Badge className="bg-accent text-accent-foreground border-none text-lg px-6 py-2">
               Neu verfügbar
             </Badge>
             
             <h1 className="text-5xl lg:text-7xl font-bold">
               Online Design Sprint
-              <span className="block mt-4 bg-gradient-online bg-clip-text text-transparent">
+              <span className="block mt-4 bg-gradient-primary bg-clip-text text-transparent">
                 6 Tage zur AI-Innovation
               </span>
             </h1>
@@ -121,7 +121,7 @@ const OnlineSprintLanding = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-              <Button size="lg" className="bg-gradient-online hover:opacity-90 text-white text-lg px-8 py-6" asChild>
+              <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
                 <Link to="/ai-design-sprint/setup">Sprint-Team erstellen</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
@@ -138,7 +138,7 @@ const OnlineSprintLanding = () => {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-8">
               Was ist der{" "}
-              <span className="bg-gradient-online bg-clip-text text-transparent">
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Online Design Sprint?
               </span>
             </h2>
@@ -151,7 +151,7 @@ const OnlineSprintLanding = () => {
 
             {/* Timeline Visualization */}
             <div className="relative">
-              <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-online -translate-x-1/2" />
+              <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-primary -translate-x-1/2" />
               
               <div className="space-y-8">
                 {days.map((day, index) => {
@@ -167,8 +167,8 @@ const OnlineSprintLanding = () => {
                         </Card>
                       </div>
                       
-                      <div className="w-12 h-12 rounded-full bg-gradient-online flex items-center justify-center z-10 flex-shrink-0">
-                        <Icon className="w-6 h-6 text-white" />
+                      <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center z-10 flex-shrink-0">
+                        <Icon className="w-6 h-6 text-primary-foreground" />
                       </div>
                       
                       <div className={`flex-1 ${index % 2 === 0 ? 'order-2' : ''}`} />
@@ -185,7 +185,7 @@ const OnlineSprintLanding = () => {
       <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16">
-            <span className="bg-gradient-online bg-clip-text text-transparent">
+            <span className="bg-gradient-primary bg-clip-text text-transparent">
               Feature Highlights
             </span>
           </h2>
@@ -196,8 +196,8 @@ const OnlineSprintLanding = () => {
               return (
                 <Card key={index} className="text-center hover:shadow-hover transition-all">
                   <CardContent className="p-6 space-y-4">
-                    <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-online flex items-center justify-center">
-                      <Icon className="w-7 h-7 text-white" />
+                    <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
+                      <Icon className="w-7 h-7 text-primary-foreground" />
                     </div>
                     <h3 className="font-bold text-lg">{feature.title}</h3>
                     <p className="text-muted-foreground text-sm">{feature.description}</p>
@@ -214,7 +214,7 @@ const OnlineSprintLanding = () => {
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16">
             Für wen ist der Online Sprint{" "}
-            <span className="bg-gradient-online bg-clip-text text-transparent">
+            <span className="bg-gradient-primary bg-clip-text text-transparent">
               geeignet?
             </span>
           </h2>
@@ -239,7 +239,7 @@ const OnlineSprintLanding = () => {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-12">
               Häufig gestellte{" "}
-              <span className="bg-gradient-online bg-clip-text text-transparent">
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Fragen
               </span>
             </h2>
@@ -298,10 +298,10 @@ const OnlineSprintLanding = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-online relative overflow-hidden">
+      <section className="py-24 bg-gradient-primary relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-black rounded-full blur-3xl" />
+          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
         </div>
         
         <div className="container mx-auto px-6 relative z-10">
@@ -309,7 +309,7 @@ const OnlineSprintLanding = () => {
             <CardContent className="p-12 text-center space-y-6">
               <h2 className="text-4xl font-bold">
                 Bereit für Ihren{" "}
-                <span className="bg-gradient-online bg-clip-text text-transparent">
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
                   Online Design Sprint?
                 </span>
               </h2>
@@ -319,7 +319,7 @@ const OnlineSprintLanding = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" className="bg-gradient-online hover:opacity-90 text-white text-lg px-8 py-6" asChild>
+                <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
                   <Link to="/ai-design-sprint/setup">Sprint-Team erstellen</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">

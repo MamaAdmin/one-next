@@ -64,14 +64,14 @@ const FormatComparisonSection = () => {
           </Card>
 
           {/* Online Sprint Card - Highlighted */}
-          <Card className="border-2 border-primary/20 hover:border-primary/40 shadow-glow hover:shadow-glow transition-all duration-300 relative">
-            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-online text-white border-none">
+          <Card className="border-2 border-primary/20 hover:border-primary/40 hover:shadow-hover transition-all duration-300 relative">
+            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground border-none">
               Neu verfügbar
             </Badge>
             
             <CardContent className="p-8 space-y-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-online flex items-center justify-center">
-                <Laptop className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
+                <Laptop className="w-8 h-8 text-primary-foreground" />
               </div>
               
               <div>
@@ -106,7 +106,7 @@ const FormatComparisonSection = () => {
 
               <div className="pt-4 border-t border-border">
                 <p className="text-sm text-muted-foreground mb-4">Preis auf Anfrage</p>
-                <Button className="w-full bg-gradient-online hover:opacity-90 text-white" asChild>
+                <Button className="w-full bg-gradient-primary hover:opacity-90" asChild>
                   <Link to="/ai-design-sprint/online">Online Sprint entdecken</Link>
                 </Button>
               </div>
