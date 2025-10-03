@@ -1,5 +1,15 @@
 import { Github, Linkedin, Twitter } from "lucide-react";
-const Footer = () => {
+import { usePageContent } from "@/hooks/usePageContent";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import oneNextLogo from "@/assets/one-next-logo.png";
+
+interface FooterProps {
+  isEditMode?: boolean;
+}
+
+const Footer = ({ isEditMode = false }: FooterProps) => {
+  const { content, updateContent } = usePageContent('footer');
   const footerLinks = {
     Services: ["AI Design Sprint", "Proof of AI Development", "Data Quality Audit", "Custom AI Development", "Strategy Consulting"],
     Unternehmen: ["Über uns", "Karriere", "Blog", "Case Studies", "Kontakt"]
@@ -9,13 +19,24 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              
-              <span className="text-2xl font-bold">one-next</span>
+              <img src={oneNextLogo} alt="one-next logo" className="h-8 w-auto" />
+              <InlineTextField
+                value={content.company_name || 'one-next'}
+                onSave={(value) => updateContent('company_name', value)}
+                isEditMode={isEditMode}
+                className="text-2xl font-bold"
+                placeholder="Company name"
+                as="span"
+              />
             </div>
-            <p className="text-background/80 mb-6 leading-relaxed">
-              Ihr vertrauenswürdiger Partner für AI-Entwicklung. Wir bringen Ihr Unternehmen mit
-              maßgeschneiderter Machine Learning Software auf die nächste Stufe.
-            </p>
+            <InlineTextArea
+              value={content.company_description || 'Ihr vertrauenswürdiger Partner für AI-Entwicklung. Wir bringen Ihr Unternehmen mit maßgeschneiderter Machine Learning Software auf die nächste Stufe.'}
+              onSave={(value) => updateContent('company_description', value)}
+              isEditMode={isEditMode}
+              className="text-background/80 mb-6 leading-relaxed"
+              placeholder="Company description"
+              minRows={2}
+            />
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
                 <Twitter className="w-5 h-5" />

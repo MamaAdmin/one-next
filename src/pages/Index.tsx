@@ -16,10 +16,10 @@ const Index = () => {
     <div className="min-h-screen">
       <Navigation />
       <Hero isEditMode={isEditMode} />
-      <ValueCards />
-      <About />
+      <ValueCards isEditMode={isEditMode} />
+      <About isEditMode={isEditMode} />
       <Services />
-      <Footer />
+      <Footer isEditMode={isEditMode} />
       {isContentManager && !loading && (
         <EditToggleButton
           isEditMode={isEditMode}

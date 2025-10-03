@@ -1,7 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
+import { usePageContent } from "@/hooks/usePageContent";
+import { InlineTextField } from "@/components/blog/InlineTextField";
 
-const Process = () => {
+interface ProcessProps {
+  isEditMode?: boolean;
+}
+
+const Process = ({ isEditMode = false }: ProcessProps) => {
+  const { content, updateContent } = usePageContent('process');
   const steps = [
     {
       phase: "Kickoff",
@@ -42,12 +49,14 @@ const Process = () => {
       <div className="container mx-auto px-6">
         <div className="text-center space-y-4 mb-16 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold">
-            Ein Entwicklungsprozess, der{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              AI-Ergebnisse
-            </span>
-            <br />
-            in Wochen liefert, nicht Jahren
+            <InlineTextField
+              value={content.title || 'Ein Entwicklungsprozess, der AI-Ergebnisse in Wochen liefert, nicht Jahren'}
+              onSave={(value) => updateContent('title', value)}
+              isEditMode={isEditMode}
+              className="text-4xl lg:text-5xl font-bold"
+              placeholder="Section title"
+              as="h2"
+            />
           </h2>
         </div>
 

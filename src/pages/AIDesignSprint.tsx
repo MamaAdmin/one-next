@@ -56,8 +56,12 @@ const AIDesignSprint = () => {
               size="lg" 
               className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6"
               onClick={() => {
-                const ctaSection = document.getElementById('cta-section');
-                ctaSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const workshopSection = document.getElementById('workshop-details');
+                if (workshopSection) {
+                  const yOffset = -100;
+                  const y = workshopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
               }}
             >
               Workshop buchen

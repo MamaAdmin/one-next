@@ -1,7 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Cog, TrendingUp, Eye, Users, Target } from "lucide-react";
+import { usePageContent } from "@/hooks/usePageContent";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
 
-const Applications = () => {
+interface ApplicationsProps {
+  isEditMode?: boolean;
+}
+
+const Applications = ({ isEditMode = false }: ApplicationsProps) => {
+  const { content, updateContent } = usePageContent('applications');
   const applications = [
     {
       icon: Cog,
@@ -40,16 +48,23 @@ const Applications = () => {
       <div className="container mx-auto px-6">
         <div className="text-center space-y-4 mb-16 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold">
-            Wo können wir{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              AI für Sie einsetzen?
-            </span>
+            <InlineTextField
+              value={content.title || 'Wo können wir AI für Sie einsetzen?'}
+              onSave={(value) => updateContent('title', value)}
+              isEditMode={isEditMode}
+              className="text-4xl lg:text-5xl font-bold"
+              placeholder="Section title"
+              as="h2"
+            />
           </h2>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-            Künstliche Intelligenz hat die digitale Transformation auf den Agenden der meisten CEOs
-            ersetzt. Unternehmen, die sich für die Integration von AI-Technologie entscheiden,
-            profitieren vom wahrhaft transformativen Potenzial der AI.
-          </p>
+          <InlineTextArea
+            value={content.description || 'Künstliche Intelligenz hat die digitale Transformation auf den Agenden der meisten CEOs ersetzt. Unternehmen, die sich für die Integration von AI-Technologie entscheiden, profitieren vom wahrhaft transformativen Potenzial der AI.'}
+            onSave={(value) => updateContent('description', value)}
+            isEditMode={isEditMode}
+            className="text-xl text-muted-foreground max-w-4xl mx-auto"
+            placeholder="Section description"
+            minRows={3}
+          />
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
