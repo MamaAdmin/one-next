@@ -52,9 +52,16 @@ const AIDesignSprint = () => {
             />
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6">
-                Workshop buchen
-              </Button>
+            <Button 
+              size="lg" 
+              className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6"
+              onClick={() => {
+                const ctaSection = document.getElementById('cta-section');
+                ctaSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              Workshop buchen
+            </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
                 <Link to="/ai-design-sprint/online">Online Sprint starten</Link>
               </Button>
@@ -255,7 +262,7 @@ const AIDesignSprint = () => {
       </section>
 
       {/* CTA Section - Dual Option */}
-      <section className="py-24 bg-gradient-primary relative overflow-hidden">
+      <section id="cta-section" className="py-24 bg-gradient-primary relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />

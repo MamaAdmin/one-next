@@ -56,9 +56,21 @@ const FormatComparisonSection = () => {
 
               <div className="pt-4 border-t border-border">
                 <p className="text-sm text-muted-foreground mb-4">Preis auf Anfrage</p>
-                <Button variant="outline" className="w-full" asChild>
-                  <a href="#workshop-details">Workshop Details</a>
-                </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  const section = document.getElementById('workshop-details');
+                  if (section) {
+                    const navHeight = 80;
+                    const elementPosition = section.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                  }
+                }}
+              >
+                Workshop Details
+              </Button>
               </div>
             </CardContent>
           </Card>

@@ -14,6 +14,7 @@ import DataQualityAudit from "./pages/DataQualityAudit";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import OnlineDesignSprint from "./pages/OnlineDesignSprint";
+import SprintSetup from "./pages/sprint/SprintSetup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/blog/:slug" element={<Article />} />
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
+          <Route path="/ai-design-sprint/setup" element={<SprintSetup />} />
           <Route path="/ai-design-sprint/sprint" element={<OnlineDesignSprint />} />
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />
