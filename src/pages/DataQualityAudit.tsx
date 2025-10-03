@@ -151,62 +151,62 @@ export default function DataQualityAuditPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation />
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-white to-gray-50 pt-24">
+      <section className="bg-gradient-hero pt-24">
         <div className="mx-auto max-w-7xl px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
           <div>
-            <p className="inline-block rounded-full bg-green-100 text-green-900 text-xs font-medium px-3 py-1 mb-4">
+            <p className="inline-block rounded-full bg-accent text-accent-foreground text-xs font-medium px-3 py-1 mb-4">
               Data Quality Audit · 1-12 Wochen · Messbar · Umsetzbar
             </p>
             <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
               Datenqualität messbar machen und{" "}
-              <span className="text-green-700">strategisch verbessern</span>
+              <span className="text-primary">strategisch verbessern</span>
             </h1>
-            <p className="mt-4 text-lg text-gray-700">
+            <p className="mt-4 text-lg text-muted-foreground">
               Systematische Analyse Ihrer Datenlandschaft mit klaren Handlungsempfehlungen 
               für nachhaltige Verbesserungen. Von Quick Scan bis umfassendem Assessment.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#termin" className="rounded-2xl px-5 py-3 bg-green-600 text-white font-medium shadow hover:bg-green-700">
+              <a href="#termin" className="rounded-2xl px-5 py-3 bg-primary text-primary-foreground font-medium shadow hover:bg-primary-glow transition-colors">
                 Erstgespräch buchen
               </a>
-              <a href="#pakete" className="rounded-2xl px-5 py-3 bg-white border border-gray-300 font-medium hover:bg-gray-100">
+              <a href="#pakete" className="rounded-2xl px-5 py-3 bg-card border border-border font-medium hover:bg-secondary transition-colors">
                 Pakete & Preise
               </a>
             </div>
-            <ul className="mt-6 text-sm text-gray-600 list-disc pl-5">
+            <ul className="mt-6 text-sm text-muted-foreground list-disc pl-5">
               <li>DSGVO/DSG-konform · Need-to-know-Prinzip</li>
               <li>Tool-gestützte Analysen mit etablierten Standards</li>
               <li>Von Quick Wins bis langfristige Roadmap</li>
             </ul>
           </div>
           <div className="md:pl-8">
-            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
               <h3 className="font-semibold text-lg">Warum Data Quality?</h3>
-              <p className="mt-2 text-gray-700 text-sm">
+              <p className="mt-2 text-muted-foreground text-sm">
                 Schlechte Datenqualität kostet Unternehmen durchschnittlich 15-25% ihres Umsatzes 
                 und führt zu Fehlinvestitionen in AI/Analytics. Ein systematisches Audit schafft 
                 Transparenz und eine fundierte Grundlage für Verbesserungen.
               </p>
               <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-xl border p-3">
+                <div className="rounded-xl border border-border p-3">
                   <span className="font-medium">Kosten ↓</span>
-                  <p className="text-gray-600">Fehler und Nacharbeit reduzieren</p>
+                  <p className="text-muted-foreground">Fehler und Nacharbeit reduzieren</p>
                 </div>
-                <div className="rounded-xl border p-3">
+                <div className="rounded-xl border border-border p-3">
                   <span className="font-medium">Vertrauen ↑</span>
-                  <p className="text-gray-600">Verlässliche Daten für Entscheidungen</p>
+                  <p className="text-muted-foreground">Verlässliche Daten für Entscheidungen</p>
                 </div>
-                <div className="rounded-xl border p-3">
+                <div className="rounded-xl border border-border p-3">
                   <span className="font-medium">Compliance ✓</span>
-                  <p className="text-gray-600">DSGVO/DSG-konform und audit-ready</p>
+                  <p className="text-muted-foreground">DSGVO/DSG-konform und audit-ready</p>
                 </div>
-                <div className="rounded-xl border p-3">
+                <div className="rounded-xl border border-border p-3">
                   <span className="font-medium">AI-Ready ✓</span>
-                  <p className="text-gray-600">Fundament für erfolgreiche AI-Projekte</p>
+                  <p className="text-muted-foreground">Fundament für erfolgreiche AI-Projekte</p>
                 </div>
               </div>
             </div>
@@ -215,26 +215,26 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* Was ist ein Data Quality Audit */}
-      <section className="py-14 border-t border-gray-200">
+      <section className="py-14 border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Was ist ein Data Quality Audit?</h2>
           <div className="mt-6 grid md:grid-cols-2 gap-8">
             <div>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Ein Data Quality Audit ist eine systematische Bewertung Ihrer Datenlandschaft 
                 nach etablierten Qualitätsdimensionen. Anders als Ad-hoc-Prüfungen liefert ein 
                 strukturiertes Audit messbare Ergebnisse, klare Ursachenanalysen und konkrete 
                 Handlungsempfehlungen.
               </p>
-              <p className="mt-4 text-gray-700 leading-relaxed">
+              <p className="mt-4 text-muted-foreground leading-relaxed">
                 Wir kombinieren Interviews mit Stakeholdern, tool-gestützte Datenanalysen und 
                 Governance-Checks, um ein vollständiges Bild Ihrer Datenqualität zu erhalten – 
                 von technischen Metriken bis zu organisatorischen Prozessen.
               </p>
             </div>
-            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
               <h3 className="font-semibold mb-3">Typische Trigger für ein Audit:</h3>
-              <ul className="text-sm text-gray-700 space-y-2 list-disc pl-5">
+              <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
                 <li>Wiederkehrende Probleme mit Datenqualität</li>
                 <li>Vorbereitung auf AI/Analytics-Projekte</li>
                 <li>Compliance-Anforderungen (DSGVO, Audits)</li>
@@ -248,18 +248,18 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* Audit-Prozess */}
-      <section id="prozess" className="py-14 bg-white border-t border-gray-200">
+      <section id="prozess" className="py-14 bg-card border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Der Audit-Prozess</h2>
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-muted-foreground">
             6 Phasen für eine systematische und fundierte Bewertung Ihrer Datenqualität.
           </p>
           <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {phases.map((p, i) => (
-              <div key={i} className="rounded-3xl bg-white border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-xs text-gray-500 mb-2">{String(i + 1).padStart(2, '0')} / 06</div>
+              <div key={i} className="rounded-3xl bg-card border border-border p-6 shadow-card hover:shadow-hover transition-shadow">
+                <div className="text-xs text-muted-foreground mb-2">{String(i + 1).padStart(2, '0')} / 06</div>
                 <h3 className="font-semibold">{p.title}</h3>
-                <ul className="mt-3 text-sm text-gray-700 list-disc pl-5 space-y-1">
+                <ul className="mt-3 text-sm text-muted-foreground list-disc pl-5 space-y-1">
                   {p.points.map((point, j) => (
                     <li key={j}>{point}</li>
                   ))}
@@ -271,18 +271,18 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* Qualitätsdimensionen */}
-      <section id="dimensionen" className="py-14 border-t border-gray-200">
+      <section id="dimensionen" className="py-14 border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Die 6 Qualitätsdimensionen</h2>
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-muted-foreground">
             Etablierte Standards für die Bewertung von Datenqualität.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {dimensions.map((d, i) => (
-              <div key={i} className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div key={i} className="rounded-3xl border border-border bg-card p-6 shadow-card hover:shadow-hover transition-shadow">
                 <h3 className="font-semibold text-lg">{d.title}</h3>
-                <p className="text-xs text-green-700 font-medium mt-1">{d.subtitle}</p>
-                <p className="mt-3 text-gray-700 text-sm">{d.desc}</p>
+                <p className="text-xs text-accent-foreground font-medium mt-1">{d.subtitle}</p>
+                <p className="mt-3 text-muted-foreground text-sm">{d.desc}</p>
               </div>
             ))}
           </div>
@@ -290,14 +290,14 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* Nutzen */}
-      <section id="nutzen" className="py-14 bg-white border-t border-gray-200">
+      <section id="nutzen" className="py-14 bg-card border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Ihr Nutzen</h2>
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {benefits.map((b, i) => (
-              <div key={i} className="rounded-3xl border border-gray-200 p-6 shadow-sm">
+              <div key={i} className="rounded-3xl border border-border p-6 shadow-card">
                 <h3 className="font-medium">{b.title}</h3>
-                <p className="mt-2 text-gray-700 text-sm">{b.desc}</p>
+                <p className="mt-2 text-muted-foreground text-sm">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -305,45 +305,45 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* Deliverables */}
-      <section id="deliverables" className="py-14 border-t border-gray-200">
+      <section id="deliverables" className="py-14 border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Ergebnisse & Artefakte</h2>
-          <ul className="mt-6 grid md:grid-cols-2 gap-4 text-sm text-gray-800">
+          <ul className="mt-6 grid md:grid-cols-2 gap-4 text-sm">
             {deliverables.map((d, i) => (
-              <li key={i} className="rounded-2xl bg-white border p-4 shadow-sm">{d}</li>
+              <li key={i} className="rounded-2xl bg-card border border-border p-4 shadow-card">{d}</li>
             ))}
           </ul>
-          <p className="mt-4 text-sm text-gray-600">
+          <p className="mt-4 text-sm text-muted-foreground">
             Optional: PoC/Pilot für DQ-Tools, Data Governance Setup, Schulungen (Add-ons).
           </p>
         </div>
       </section>
 
       {/* Pakete & Preise */}
-      <section id="pakete" className="py-14 bg-white border-t border-gray-200">
+      <section id="pakete" className="py-14 bg-card border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Pakete & Preise</h2>
           <div className="mt-8 grid md:grid-cols-3 gap-6">
-            <div className="rounded-3xl border p-6 shadow-sm">
+            <div className="rounded-3xl border border-border p-6 shadow-card">
               <h3 className="font-semibold">Quick Scan</h3>
-              <p className="text-sm text-gray-600 mt-1">Data Health Check · 1-2 Wochen</p>
+              <p className="text-sm text-muted-foreground mt-1">Data Health Check · 1-2 Wochen</p>
               <ul className="mt-4 text-sm list-disc pl-5 space-y-1">
                 <li>Stakeholder-Interviews</li>
                 <li>High-Level Review der Datenlandschaft</li>
                 <li>Erste Findings & Quick Wins</li>
                 <li>Kompakter Bericht (5-10 Seiten)</li>
               </ul>
-              <div className="mt-6 font-semibold text-green-700">ab CHF 5'000 – 15'000</div>
-              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gray-800">
+              <div className="mt-6 font-semibold text-primary">ab CHF 5'000 – 15'000</div>
+              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-primary text-primary-foreground text-sm hover:bg-primary-glow transition-colors">
                 Anfragen
               </a>
             </div>
-            <div className="rounded-3xl border-2 border-green-600 p-6 shadow-sm">
-              <div className="inline-block rounded-full bg-green-100 text-green-900 text-xs font-medium px-2 py-1 mb-2">
+            <div className="rounded-3xl border-2 border-primary p-6 shadow-hover">
+              <div className="inline-block rounded-full bg-accent text-accent-foreground text-xs font-medium px-2 py-1 mb-2">
                 Empfohlen
               </div>
               <h3 className="font-semibold">Mittleres Audit</h3>
-              <p className="text-sm text-gray-600 mt-1">Standard · 4-6 Wochen</p>
+              <p className="text-sm text-muted-foreground mt-1">Standard · 4-6 Wochen</p>
               <ul className="mt-4 text-sm list-disc pl-5 space-y-1">
                 <li>Interviews + Tool-gestützte Analysen (DQ-Tools, Data Profiling)</li>
                 <li>Bewertung aller 6 Qualitätsdimensionen</li>
@@ -351,14 +351,14 @@ export default function DataQualityAuditPage() {
                 <li>Priorisierte Handlungsempfehlungen</li>
                 <li>Data Quality Dashboard</li>
               </ul>
-              <div className="mt-6 font-semibold text-green-700">Preis auf Anfrage</div>
-              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-green-600 text-white text-sm hover:bg-green-700">
+              <div className="mt-6 font-semibold text-primary">Preis auf Anfrage</div>
+              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-primary text-primary-foreground text-sm hover:bg-primary-glow transition-colors">
                 Anfragen
               </a>
             </div>
-            <div className="rounded-3xl border p-6 shadow-sm">
+            <div className="rounded-3xl border border-border p-6 shadow-card">
               <h3 className="font-semibold">Umfassendes Assessment</h3>
-              <p className="text-sm text-gray-600 mt-1">DQ & Governance · 8-12 Wochen</p>
+              <p className="text-sm text-muted-foreground mt-1">DQ & Governance · 8-12 Wochen</p>
               <ul className="mt-4 text-sm list-disc pl-5 space-y-1">
                 <li>Alles aus "Mittleres Audit"</li>
                 <li>Mehrere Datendomänen/Systeme</li>
@@ -367,8 +367,8 @@ export default function DataQualityAuditPage() {
                 <li>Schulungen & Change Management</li>
                 <li>Langfristige Roadmap (12+ Monate)</li>
               </ul>
-              <div className="mt-6 font-semibold text-green-700">Preis auf Anfrage</div>
-              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gray-800">
+              <div className="mt-6 font-semibold text-primary">Preis auf Anfrage</div>
+              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-primary text-primary-foreground text-sm hover:bg-primary-glow transition-colors">
                 Anfragen
               </a>
             </div>
@@ -377,14 +377,14 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-14 border-t border-gray-200">
+      <section id="faq" className="py-14 border-t border-border">
         <div className="mx-auto max-w-7xl px-4">
           <h2 className="text-2xl md:text-3xl font-semibold">Häufige Fragen</h2>
           <div className="mt-6 grid md:grid-cols-2 gap-4">
             {faqs.map((f, i) => (
-              <details key={i} className="rounded-2xl bg-white border p-5 shadow-sm">
+              <details key={i} className="rounded-2xl bg-card border border-border p-5 shadow-card">
                 <summary className="cursor-pointer font-medium">{f.q}</summary>
-                <p className="mt-2 text-sm text-gray-700">{f.a}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
               </details>
             ))}
           </div>
@@ -392,10 +392,10 @@ export default function DataQualityAuditPage() {
       </section>
 
       {/* CTA – Termin */}
-      <section id="termin" className="py-16 bg-gradient-to-b from-gray-50 to-white border-t border-gray-200">
+      <section id="termin" className="py-16 bg-gradient-hero border-t border-border">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-semibold">Loslegen mit einem 20‑Min‑Erstgespräch</h2>
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-muted-foreground">
             Wir klären Ziele, Scope und ob ein Data Quality Audit für Sie passt. 
             Auf Wunsch erhalten Sie im Anschluss einen 2‑seitigen Audit-Summary (PDF).
           </p>
