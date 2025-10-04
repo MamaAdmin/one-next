@@ -76,9 +76,15 @@ const Navigation = () => {
               <DropdownMenuContent className="z-50 bg-background">
                 {servicesItems.map((item) => (
                   <DropdownMenuItem key={item.label} asChild>
-                    <a href={item.href} className="cursor-pointer">
-                      {item.label}
-                    </a>
+                    {item.href.startsWith('/') ? (
+                      <Link to={item.href} className="cursor-pointer">
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a href={item.href} className="cursor-pointer">
+                        {item.label}
+                      </a>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -91,9 +97,15 @@ const Navigation = () => {
               <DropdownMenuContent className="z-50 bg-background">
                 {companyItems.map((item) => (
                   <DropdownMenuItem key={item.label} asChild>
-                    <a href={item.href} className="cursor-pointer">
-                      {item.label}
-                    </a>
+                    {item.href.startsWith('/') ? (
+                      <Link to={item.href} className="cursor-pointer">
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a href={item.href} className="cursor-pointer">
+                        {item.label}
+                      </a>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -151,28 +163,50 @@ const Navigation = () => {
               <div className="border-b pb-4">
                 <p className="text-sm font-semibold mb-2">Services</p>
                 {servicesItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="block py-2 px-4 hover:bg-accent rounded-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
+                  item.href.startsWith('/') ? (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      className="block py-2 px-4 hover:bg-accent rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="block py-2 px-4 hover:bg-accent rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  )
                 ))}
               </div>
 
               <div className="border-b pb-4">
                 <p className="text-sm font-semibold mb-2">Unternehmen</p>
                 {companyItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="block py-2 px-4 hover:bg-accent rounded-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
+                  item.href.startsWith('/') ? (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      className="block py-2 px-4 hover:bg-accent rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="block py-2 px-4 hover:bg-accent rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  )
                 ))}
               </div>
 
