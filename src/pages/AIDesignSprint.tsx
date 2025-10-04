@@ -36,7 +36,7 @@ const AIDesignSprint = () => {
             <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-7xl font-bold" placeholder="Hero title" as="h1" />
             
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Facilitiert oder Online selbstgeführt
+              Begleitet oder oder Online selbstgeführt
             </p>
             
             <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Hero description" />
