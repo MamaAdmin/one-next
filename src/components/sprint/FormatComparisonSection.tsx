@@ -93,7 +93,7 @@ const FormatComparisonSection = () => {
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>6 Tage strukturierter Prozess (Tag 0-5)</span>
+                  <span>strukturierter Prozesse)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
