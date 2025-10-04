@@ -103,70 +103,8 @@ const OnlineSprintLanding = () => {
         </div>
       </section>
 
-      {/* Was Sie erwartet */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16">
-            Was Sie{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              erwartet
-            </span>
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <Clipboard className="w-7 h-7 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold">Ein strukturierter Sprint-Prozess</h3>
-                <p className="text-muted-foreground">
-                  Bewährte Methodik mit klaren Schritten und Anleitungen für jeden Tag
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <Users className="w-7 h-7 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold">Begleitet oder online selbstgeführt</h3>
-                <p className="text-muted-foreground">
-                  Wählen Sie zwischen facilitiertem Workshop oder flexiblem Online-Format
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <TestTube className="w-7 h-7 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold">Testbare Prototypen und klare Entscheidungsgrundlagen</h3>
-                <p className="text-muted-foreground">
-                  Konkrete Ergebnisse durch User Testing und validierte Lösungsansätze
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <FileText className="w-7 h-7 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold">Automatischer PDF-Report mit allen Ergebnissen</h3>
-                <p className="text-muted-foreground">
-                  Professionelle Dokumentation aller Sprint-Ergebnisse für Stakeholder
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* Was ist es? */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-8">
