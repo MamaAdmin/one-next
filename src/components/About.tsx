@@ -23,9 +23,7 @@ const About = ({ isEditMode = false }: AboutProps) => {
             />
           </h2>
           <InlineTextArea
-            value={content.description || 'Wir glauben, dass jede Herausforderung die Chance auf Innovation in sich trägt.
-Mit künstlicher Intelligenz, Kreativität und klarem Fokus machen wir Ihre Prozesse smarter – und Ihre Vision greifbar.
-Unser agiler Entwicklungsansatz bringt Ideen in Bewegung und schafft messbare Ergebnisse.'}
+            value={content.description || 'Wir glauben, dass jede Herausforderung die Chance auf Innovation in sich trägt.Mit künstlicher Intelligenz, Kreativität und klarem Fokus machen wir Ihre Prozesse smarter – und Ihre Vision greifbar. Unser agiler Entwicklungsansatz bringt Ideen in Bewegung und schafft messbare Ergebnisse.'}
             onSave={(value) => updateContent('description', value)}
             isEditMode={isEditMode}
             className="text-xl text-muted-foreground leading-relaxed"
