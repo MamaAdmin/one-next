@@ -36,16 +36,16 @@ export const BookingStepIndicator = ({
                   {/* Circle */}
                   <div
                     className={cn(
-                      "w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-300",
+                      "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300",
                       isCompleted && "bg-foreground text-primary-foreground shadow-card",
                       isCurrent && "bg-gradient-primary text-primary-foreground shadow-hover scale-105 md:scale-110",
                       isUpcoming && "bg-background border-2 border-border text-muted-foreground"
                     )}
                   >
                     {isCompleted ? (
-                      <Check className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+                      <Check className="w-4 h-4 md:w-5 md:h-5" strokeWidth={2.5} />
                     ) : (
-                      <span className="text-xs md:text-sm font-bold">{stepNumber}</span>
+                      <span className="text-xs font-bold">{stepNumber}</span>
                     )}
                   </div>
 
