@@ -19,7 +19,7 @@ export const BookingStepIndicator = ({
   totalSteps,
 }: BookingStepIndicatorProps) => {
   return (
-    <div className="w-full bg-background border-b border-border py-8">
+    <div className="w-full bg-background border-b border-border py-12">
       <div className="container mx-auto px-6">
         <div className="overflow-x-auto">
           <div className="flex items-center justify-between min-w-max md:min-w-0 max-w-5xl mx-auto">
