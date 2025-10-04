@@ -14,7 +14,7 @@ const About = ({ isEditMode = false }: AboutProps) => {
         <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold">
             <InlineTextField
-              value={content.title || 'Wir sind ein Unternehmen für künstliche Intelligenz'}
+              value={content.title || 'Wir machen künstliche Intelligenz praktisch nutzbar – für schlankere Prozesse, klügere Entscheidungen und mehr Wirkung im Alltag.'}
               onSave={(value) => updateContent('title', value)}
               isEditMode={isEditMode}
               className="text-4xl lg:text-5xl font-bold"
