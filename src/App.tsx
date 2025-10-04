@@ -46,8 +46,8 @@ const App = () => (
             <Route path="session" element={<SprintSession />} />
           </Route>
           
-          {/* Standalone Booking with main navigation */}
-          <Route path="/sprint/booking" element={<SprintBooking />} />
+          {/* Standalone Assessment with main navigation */}
+          <Route path="/sprint/assessment" element={<SprintBooking />} />
           
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />

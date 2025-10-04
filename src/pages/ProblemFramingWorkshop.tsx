@@ -26,7 +26,7 @@ const ProblemFramingWorkshop = () => {
               strategisch relevante Fragestellung – perfekt vorbereitet für einen Design Sprint.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Link to="/sprint/booking">
+              <Link to="/sprint/assessment">
                 <Button size="lg" className="bg-gradient-primary hover:opacity-90">
                   Workshop anfragen
                   <ArrowRight className="ml-2 w-4 h-4" />
@@ -220,7 +220,7 @@ const ProblemFramingWorkshop = () => {
               für einen erfolgreichen Design Sprint.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Link to="/sprint/booking">
+              <Link to="/sprint/assessment">
                 <Button size="lg" className="bg-gradient-primary hover:opacity-90">
                   Jetzt Workshop anfragen
                   <ArrowRight className="ml-2 w-4 h-4" />

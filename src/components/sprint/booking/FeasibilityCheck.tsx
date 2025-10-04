@@ -109,10 +109,9 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-4">So starten Sie (unverbindlich)</h1>
+        <h1 className="text-3xl font-bold mb-4">Sprint-Assessment starten</h1>
         <p className="text-muted-foreground">
-          Willkommen zum Start Ihres Online Design Sprints. In <strong>3–5 Minuten</strong> klären Sie die wichtigsten Punkte zu Ihrer Challenge.
-          Am Ende erhalten Sie eine <strong>Einschätzung zur Sprint-Tauglichkeit</strong> und eine <strong>Empfehlung zum passenden Sprint-Typ</strong>.
+          In nur 3–5 Minuten klären Sie die wichtigsten Punkte zu Ihrer Challenge – und erhalten eine fundierte Einschätzung der Sprint-Tauglichkeit mit einer klaren Empfehlung, damit Sie die beste Wahl treffen.
         </p>
         <p className="text-sm text-muted-foreground mt-2">
           <strong>Wichtig:</strong> Bis zum Absenden des Buchungsformulars ist alles <strong>unverbindlich</strong> – eine Buchung kommt <strong>erst mit der Zahlung</strong> zustande.
