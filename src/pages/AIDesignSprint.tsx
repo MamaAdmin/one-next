@@ -39,7 +39,7 @@ const AIDesignSprint = () => {
               Facilitiert oder Online selbstgeführt
             </p>
             
-            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler 6-Tage Online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Hero description" />
+            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Hero description" />
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6" onClick={() => {
