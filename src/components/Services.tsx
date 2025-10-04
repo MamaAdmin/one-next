@@ -49,7 +49,7 @@ const Services = () => {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Bei one-next glauben wir, dass maschinelles Lernen uns helfen kann, intelligente
+            Bei one-next glauben wir, dass AI uns helfen kann, intelligente
             Produkte, Services und Systeme zu entwerfen, die das tägliche Leben der Menschen
             verbessern. Unser Angebot umfasst fortschrittliche AI-Entwicklungsservices für jeden
             Bedarf und jede Phase des AI-Lebenszyklus.
