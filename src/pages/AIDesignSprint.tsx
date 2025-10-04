@@ -11,14 +11,17 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { useState } from "react";
 import FormatComparisonSection from "@/components/sprint/FormatComparisonSection";
 import { Link } from "react-router-dom";
-
 const AIDesignSprint = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const { isContentManager, loading } = useContentManager();
-  const { content, updateContent } = usePageContent('ai-design-sprint');
-
-  return (
-    <div className="min-h-screen">
+  const {
+    isContentManager,
+    loading
+  } = useContentManager();
+  const {
+    content,
+    updateContent
+  } = usePageContent('ai-design-sprint');
+  return <div className="min-h-screen">
       <Navigation />
       
       {/* Hero Section */}
@@ -30,40 +33,26 @@ const AIDesignSprint = () => {
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <InlineTextField
-              value={content.hero_title || 'AI Design Sprint'}
-              onSave={(value) => updateContent('hero_title', value)}
-              isEditMode={isEditMode}
-              className="text-5xl lg:text-7xl font-bold"
-              placeholder="Hero title"
-              as="h1"
-            />
+            <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-7xl font-bold" placeholder="Hero title" as="h1" />
             
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
               Facilitiert oder Online selbstgeführt
             </p>
             
-            <InlineTextArea
-              value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler 6-Tage Online Sprint'}
-              onSave={(value) => updateContent('hero_description', value)}
-              isEditMode={isEditMode}
-              className="text-lg text-muted-foreground max-w-3xl mx-auto"
-              placeholder="Hero description"
-            />
+            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler 6-Tage Online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Hero description" />
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button 
-              size="lg" 
-              className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6"
-              onClick={() => {
-                const workshopSection = document.getElementById('workshop-details');
-                if (workshopSection) {
-                  const yOffset = -80;
-                  const y = workshopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                  window.scrollTo({ top: y, behavior: 'smooth' });
-                }
-              }}
-            >
+            <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6" onClick={() => {
+              const workshopSection = document.getElementById('workshop-details');
+              if (workshopSection) {
+                const yOffset = -80;
+                const y = workshopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({
+                  top: y,
+                  behavior: 'smooth'
+                });
+              }
+            }}>
               Workshop buchen
             </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
@@ -83,22 +72,9 @@ const AIDesignSprint = () => {
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-6">
               <h2 className="text-4xl font-bold">
-                <InlineTextField
-                  value={content.what_is_title || 'Der AI Design Sprint Workshop'}
-                  onSave={(value) => updateContent('what_is_title', value)}
-                  isEditMode={isEditMode}
-                  className="text-4xl font-bold"
-                  placeholder="Section title"
-                  as="h2"
-                />
+                <InlineTextField value={content.what_is_title || 'Der AI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Section title" as="h2" />
               </h2>
-              <InlineTextArea
-                value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, AI-Potenziale zu identifizieren und zu nutzen.'}
-                onSave={(value) => updateContent('what_is_description', value)}
-                isEditMode={isEditMode}
-                className="text-xl text-muted-foreground leading-relaxed"
-                placeholder="Section description"
-              />
+              <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, AI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Section description" />
             </div>
           </div>
         </div>
@@ -109,14 +85,7 @@ const AIDesignSprint = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">
-              <InlineTextField
-                value={content.expect_title || 'Was können Sie erwarten?'}
-                onSave={(value) => updateContent('expect_title', value)}
-                isEditMode={isEditMode}
-                className="text-3xl font-bold"
-                placeholder="Section title"
-                as="h2"
-              />
+              <InlineTextField value={content.expect_title || 'Was können Sie erwarten?'} onSave={value => updateContent('expect_title', value)} isEditMode={isEditMode} className="text-3xl font-bold" placeholder="Section title" as="h2" />
             </h2>
           </div>
 
@@ -205,7 +174,7 @@ const AIDesignSprint = () => {
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <Card className="text-center hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="text-3xl mb-2">🎯</div>
+                <div className="text-3xl mb-2">1</div>
                 <h3 className="text-lg font-bold">Machbarkeitsanalyse</h3>
                 <p className="text-muted-foreground text-sm">Bewertung der AI-Potenziale</p>
               </CardContent>
@@ -213,7 +182,7 @@ const AIDesignSprint = () => {
 
             <Card className="text-center hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="text-3xl mb-2">🗺️</div>
+                <div className="text-3xl mb-2">2</div>
                 <h3 className="text-lg font-bold">Entwicklungs-Roadmap</h3>
                 <p className="text-muted-foreground text-sm">Klarer Implementierungsplan</p>
               </CardContent>
@@ -221,7 +190,7 @@ const AIDesignSprint = () => {
 
             <Card className="text-center hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="text-3xl mb-2">📊</div>
+                <div className="text-3xl mb-2">3</div>
                 <h3 className="text-lg font-bold">Detaillierter Report</h3>
                 <p className="text-muted-foreground text-sm">Dokumentation & Empfehlungen</p>
               </CardContent>
@@ -293,10 +262,7 @@ const AIDesignSprint = () => {
                     <p className="text-muted-foreground text-sm">
                       Facilitierter 2-Tage Workshop mit AI-Experten
                     </p>
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
-                    >
+                    <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
                       Kontakt aufnehmen
                     </Button>
                   </div>
@@ -306,12 +272,7 @@ const AIDesignSprint = () => {
                     <p className="text-muted-foreground text-sm">
                       Selbstgeführter 6-Tage Online Sprint
                     </p>
-                    <Button 
-                      size="lg" 
-                      variant="outline"
-                      className="w-full"
-                      asChild
-                    >
+                    <Button size="lg" variant="outline" className="w-full" asChild>
                       <Link to="/ai-design-sprint/online">Mehr erfahren</Link>
                     </Button>
                   </div>
@@ -324,14 +285,7 @@ const AIDesignSprint = () => {
 
       <Footer />
       
-      {isContentManager && !loading && (
-        <EditToggleButton
-          isEditMode={isEditMode}
-          onToggle={() => setIsEditMode(!isEditMode)}
-        />
-      )}
-    </div>
-  );
+      {isContentManager && !loading && <EditToggleButton isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />}
+    </div>;
 };
-
 export default AIDesignSprint;
