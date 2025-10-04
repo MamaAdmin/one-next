@@ -21,8 +21,8 @@ export const BookingStepIndicator = ({
   return (
     <div className="w-full bg-background border-b border-border py-12">
       <div className="container mx-auto px-6">
-        <div className="overflow-x-auto">
-          <div className="flex items-center justify-between min-w-max md:min-w-0 max-w-5xl mx-auto">
+        <div className="overflow-x-auto pb-2">
+          <div className="flex items-center justify-between min-w-max md:min-w-0 max-w-5xl mx-auto pt-2">
           {steps.slice(0, totalSteps).map((step, index) => {
             const stepNumber = index + 1;
             const isCompleted = stepNumber < currentStep;
