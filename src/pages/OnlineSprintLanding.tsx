@@ -88,12 +88,15 @@ const OnlineSprintLanding = () => {
               Selbstgeführter, strukturierter Prozess für verteilte Teams - flexibel, digital, mit Schritt-für-Schritt Anleitung
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-              <Link to="/ai-design-sprint/setup">Sprint-Team erstellen</Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center pt-6">
+              <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
+                <Link to="/ai-design-sprint/online/registration">Jetzt registrieren</Link>
+              </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
                 <Link to="/ai-design-sprint">Workshop-Variante ansehen</Link>
+              </Button>
+              <Button size="lg" variant="ghost" className="text-lg px-8 py-6" asChild>
+                <Link to="/ai-design-sprint/setup">Sprint-Team vorbereiten</Link>
               </Button>
             </div>
           </div>
