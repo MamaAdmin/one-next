@@ -22,7 +22,7 @@ const Services = () => {
       icon: GridIcon,
       title: "Datenqualitäts-Audit",
       description:
-        "Professionelle Data Science Analyse für Ihr Modellvorschlag. Wir schlagen eine Datenerfassungsstrategie vor, die die Genauigkeit Ihres Modells verbessert und besseren Wert für Ihr Unternehmen liefert.",
+        "Professionelle Daten Analyse für Ihr Unternehmen, denn Daten sind die Grundlage für alles. Wir schlagen eine Datenerfassungsstrategie vor die besseren Wert für Ihr Unternehmen liefert.",
     },
     {
       icon: MessageIcon,
