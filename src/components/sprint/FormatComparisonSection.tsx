@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Laptop, Check } from "lucide-react";
+import { Users, Laptop, Check, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 const FormatComparisonSection = () => {
   return <section className="py-16 bg-muted/30">
@@ -18,7 +18,49 @@ const FormatComparisonSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {/* Problem Framing Workshop Card */}
+          <Card className="border-border hover:shadow-hover transition-all duration-300">
+            <CardContent className="p-8 space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
+                <Target className="w-8 h-8 text-primary-foreground" />
+              </div>
+              
+              <div>
+                <h3 className="text-2xl font-bold mb-2">Problem-Framing-Workshop</h3>
+                <p className="text-muted-foreground">
+                  Ihre Challenge schärfen
+                </p>
+              </div>
+
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>1-2 Tage intensive Klärung</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Challenge präzise definieren</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Zielgruppe priorisieren</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Sprint-Ready machen</span>
+                </li>
+              </ul>
+
+              <div className="pt-4 border-t border-border">
+                <p className="text-sm text-muted-foreground mb-4">Preis auf Anfrage</p>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/problem-framing-workshop">Workshop Details</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Facilitated Workshop Card */}
           <Card className="border-border hover:shadow-hover transition-all duration-300">
             <CardContent className="p-8 space-y-6">
