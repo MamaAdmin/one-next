@@ -195,7 +195,7 @@ const AIDesignSprint = () => {
                 <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
                   <Target className="w-7 h-7 text-primary-foreground" />
                 </div>
-                <h3 className="text-lg font-bold">AI-Potenziale systematisch identifizieren</h3>
+                <h3 className="text-lg font-bold">Potenziale systematisch identifizieren</h3>
                 <p className="text-muted-foreground text-sm">
                   Mit Expertenbegleitung Chancen erkennen und bewerten
                 </p>
