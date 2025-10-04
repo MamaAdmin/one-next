@@ -270,7 +270,7 @@ const AIDesignSprint = () => {
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Online Sprint starten</h3>
                     <p className="text-muted-foreground text-sm">
-                      Selbstgeführter 6-Tage Online Sprint
+                      Selbstgeführter Online Sprint
                     </p>
                     <Button size="lg" variant="outline" className="w-full" asChild>
                       <Link to="/ai-design-sprint/online">Mehr erfahren</Link>
