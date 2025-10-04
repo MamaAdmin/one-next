@@ -25,53 +25,63 @@ const SprintBooking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto">
-        <BookingStepIndicator currentStep={state.currentStep} totalSteps={5} />
+    <div className="min-h-screen bg-gradient-hero">
+      {/* Breadcrumb - Integrated in Flow */}
+      <BookingStepIndicator currentStep={state.currentStep} totalSteps={5} />
 
-        {state.currentStep > 1 && (
-          <div className="max-w-3xl mx-auto px-4 mb-4">
-            <Button variant="ghost" onClick={handleBack} disabled={isLoading}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+      {/* Content Area */}
+      <div className="container mx-auto px-6 py-12">
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button - Subtle */}
+          {state.currentStep > 1 && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleBack} 
+              disabled={isLoading}
+              className="mb-6 text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="mr-2 h-3 w-3" />
               Zurück
             </Button>
-          </div>
-        )}
+          )}
 
-        {state.currentStep === 1 && (
-          <FeasibilityCheck onSubmit={submitFeasibilityCheck} />
-        )}
+          {/* Step Content */}
+          {state.currentStep === 1 && (
+            <FeasibilityCheck onSubmit={submitFeasibilityCheck} />
+          )}
 
-        {state.currentStep === 2 && state.sprintScore !== null && state.recommendedType && (
-          <ResultRecommendation
-            score={state.sprintScore}
-            sprintType={state.recommendedType}
-            onContinue={() => goToStep(3)}
-            onViewVideo={() => goToStep(3)}
-          />
-        )}
+          {state.currentStep === 2 && state.sprintScore !== null && state.recommendedType && (
+            <ResultRecommendation
+              score={state.sprintScore}
+              sprintType={state.recommendedType}
+              onContinue={() => goToStep(3)}
+              onViewVideo={() => goToStep(3)}
+            />
+          )}
 
-        {state.currentStep === 3 && (
-          <VideoSection onContinue={() => goToStep(4)} />
-        )}
+          {state.currentStep === 3 && (
+            <VideoSection onContinue={() => goToStep(4)} />
+          )}
 
-        {state.currentStep === 4 && state.recommendedType && (
-          <BookingForm
-            onSubmit={async (data) => {
-              await saveBooking(data);
-            }}
-            sprintType={state.recommendedType}
-            isLoading={isLoading}
-          />
-        )}
+          {state.currentStep === 4 && state.recommendedType && (
+            <BookingForm
+              onSubmit={async (data) => {
+                await saveBooking(data);
+              }}
+              sprintType={state.recommendedType}
+              isLoading={isLoading}
+            />
+          )}
 
-        {state.currentStep === 5 && state.recommendedType && (
-          <PaymentSection
-            onInitiatePayment={initiatePayment}
-            isLoading={isLoading}
-            sprintType={state.recommendedType}
-          />
-        )}
+          {state.currentStep === 5 && state.recommendedType && (
+            <PaymentSection
+              onInitiatePayment={initiatePayment}
+              isLoading={isLoading}
+              sprintType={state.recommendedType}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
