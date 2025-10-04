@@ -96,7 +96,7 @@ const OnlineSprintLanding = () => {
                 <Link to="/ai-design-sprint">Workshop-Variante ansehen</Link>
               </Button>
               <Button size="lg" variant="ghost" className="text-lg px-8 py-6" asChild>
-                <Link to="/sprint/setup">Sprint-Team vorbereiten</Link>
+                
               </Button>
             </div>
           </div>
