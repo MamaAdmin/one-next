@@ -20,6 +20,7 @@ const Navigation = () => {
 
   const servicesItems = [
     { label: "AI Design Sprint", href: "/ai-design-sprint" },
+    { label: "Online Design Sprint", href: "/sprint" },
     { label: "Proof of AI Development", href: "#services" },
     { label: "Data Quality Audit", href: "#services" },
     { label: "Custom AI Development", href: "#services" },

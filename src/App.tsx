@@ -16,6 +16,9 @@ import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import OnlineDesignSprint from "./pages/OnlineDesignSprint";
 import SprintSetup from "./pages/sprint/SprintSetup";
+import SprintIndex from "./pages/sprint/SprintIndex";
+import SprintSession from "./pages/sprint/SprintSession";
+import { SprintLayout } from "./layouts/SprintLayout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +38,14 @@ const App = () => (
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
           <Route path="/ai-design-sprint/setup" element={<SprintSetup />} />
           <Route path="/ai-design-sprint/sprint" element={<OnlineDesignSprint />} />
+          
+          {/* Standalone Sprint Container */}
+          <Route path="/sprint" element={<SprintLayout />}>
+            <Route index element={<SprintIndex />} />
+            <Route path="setup" element={<SprintSetup />} />
+            <Route path="session" element={<SprintSession />} />
+          </Route>
+          
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/data-quality-audit" element={<DataQualityAudit />} />
