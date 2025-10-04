@@ -41,24 +41,7 @@ const AIDesignSprint = () => {
             
             <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Hero description" />
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6" onClick={() => {
-              const workshopSection = document.getElementById('workshop-details');
-              if (workshopSection) {
-                const yOffset = -80;
-                const y = workshopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                window.scrollTo({
-                  top: y,
-                  behavior: 'smooth'
-                });
-              }
-            }}>
-              Workshop buchen
-            </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-                <Link to="/ai-design-sprint/online">Online Sprint starten</Link>
-              </Button>
-            </div>
+            
           </div>
         </div>
       </section>
