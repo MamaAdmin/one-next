@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import SprintSetup from "./pages/sprint/SprintSetup";
 import SprintIndex from "./pages/sprint/SprintIndex";
 import SprintSession from "./pages/sprint/SprintSession";
+import SprintBooking from "./pages/sprint/SprintBooking";
 import { SprintLayout } from "./layouts/SprintLayout";
 import NotFound from "./pages/NotFound";
 
@@ -39,6 +40,7 @@ const App = () => (
           {/* Standalone Sprint Container */}
           <Route path="/sprint" element={<SprintLayout />}>
             <Route index element={<SprintIndex />} />
+            <Route path="booking" element={<SprintBooking />} />
             <Route path="setup" element={<SprintSetup />} />
             <Route path="session" element={<SprintSession />} />
           </Route>

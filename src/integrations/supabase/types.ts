@@ -281,6 +281,78 @@ export type Database = {
         }
         Relationships: []
       }
+      sprint_bookings: {
+        Row: {
+          booking_status: string | null
+          challenge_description: string
+          company: string | null
+          consequences: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          notes: string | null
+          payment_id: string | null
+          payment_status: string | null
+          preferred_start_date: string | null
+          price_chf: number
+          recommended_sprint_type: string | null
+          relevance_reason: string
+          session_token: string | null
+          sprint_suitability_score: number | null
+          success_criteria: string
+          target_audience: string[]
+          team_size: number
+          updated_at: string
+        }
+        Insert: {
+          booking_status?: string | null
+          challenge_description: string
+          company?: string | null
+          consequences: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          notes?: string | null
+          payment_id?: string | null
+          payment_status?: string | null
+          preferred_start_date?: string | null
+          price_chf?: number
+          recommended_sprint_type?: string | null
+          relevance_reason: string
+          session_token?: string | null
+          sprint_suitability_score?: number | null
+          success_criteria: string
+          target_audience: string[]
+          team_size?: number
+          updated_at?: string
+        }
+        Update: {
+          booking_status?: string | null
+          challenge_description?: string
+          company?: string | null
+          consequences?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          payment_id?: string | null
+          payment_status?: string | null
+          preferred_start_date?: string | null
+          price_chf?: number
+          recommended_sprint_type?: string | null
+          relevance_reason?: string
+          session_token?: string | null
+          sprint_suitability_score?: number | null
+          success_criteria?: string
+          target_audience?: string[]
+          team_size?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string
