@@ -4,96 +4,66 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { 
-  Target, Map, Pencil, CheckCircle, Wrench, TestTube, 
-  Clipboard, Users, Clock, Zap, FileText, BarChart3
-} from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
+import { Target, Map, Pencil, CheckCircle, Wrench, TestTube, Clipboard, Users, Clock, Zap, FileText, BarChart3 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 const OnlineSprintLanding = () => {
-  const days = [
-    {
-      icon: Clipboard,
-      title: "Setup-Phase",
-      description: "Team zusammenstellen (4 Kern-Rollen), Kick-off Meeting planen, Experten einladen (optional für Tag 1 & 5)"
-    },
-    {
-      icon: Target,
-      title: "Tag 0: Problem Framing",
-      description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
-    },
-    {
-      icon: Map,
-      title: "Tag 1: Map",
-      description: "Langfristziel definieren, Journey Map erstellen, How-Might-We Fragen generieren, Experten-Input (optional)"
-    },
-    {
-      icon: Pencil,
-      title: "Tag 2: Sketch",
-      description: "Crazy 8 Ideation, detaillierte Solution Sketches, Team-Voting"
-    },
-    {
-      icon: CheckCircle,
-      title: "Tag 3: Decide",
-      description: "Heatmap Voting für beste Ideen, Storyboard erstellen, Prototyp-Plan festlegen"
-    },
-    {
-      icon: Wrench,
-      title: "Tag 4: Prototype",
-      description: "Prototyp entwickeln (digital oder Figma), Test-Szenarien vorbereiten"
-    },
-    {
-      icon: TestTube,
-      title: "Tag 5: Test",
-      description: "User Testing durchführen, Feedback sammeln, Experten-Review (optional), automatisierter Report-Generator"
-    }
-  ];
-
-  const features = [
-    {
-      icon: Clock,
-      title: "Flexible Durchführung",
-      description: "Arbeiten Sie in Ihrem eigenen Tempo - pausieren und fortsetzen wann Sie möchten"
-    },
-    {
-      icon: Users,
-      title: "Verteilte Teams",
-      description: "Perfekt für remote und async Zusammenarbeit über verschiedene Zeitzonen"
-    },
-    {
-      icon: Zap,
-      title: "Automatische Tools",
-      description: "Digitale Vorlagen, automatische E-Mail-Einladungen, Kalender-Integration"
-    },
-    {
-      icon: FileText,
-      title: "PDF-Report",
-      description: "Automatisch generierter Sprint-Report mit allen Ergebnissen nach Tag 5"
-    }
-  ];
-
-  const targetAudiences = [
-    {
-      title: "Startups & kleine Teams",
-      description: "Budget-freundliche Alternative für schnelle Validation und Ideenfindung"
-    },
-    {
-      title: "Verteilte Teams",
-      description: "Remote-friendly und async-kompatibel mit flexibler Zeiteinteilung"
-    },
-    {
-      title: "Innovation Teams",
-      description: "Experimentieren ohne große Investition mit iterativem Ansatz"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen">
+  const days = [{
+    icon: Clipboard,
+    title: "Setup-Phase",
+    description: "Team zusammenstellen (4 Kern-Rollen), Kick-off Meeting planen, Experten einladen (optional für Tag 1 & 5)"
+  }, {
+    icon: Target,
+    title: "Tag 0: Problem Framing",
+    description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
+  }, {
+    icon: Map,
+    title: "Tag 1: Map",
+    description: "Langfristziel definieren, Journey Map erstellen, How-Might-We Fragen generieren, Experten-Input (optional)"
+  }, {
+    icon: Pencil,
+    title: "Tag 2: Sketch",
+    description: "Crazy 8 Ideation, detaillierte Solution Sketches, Team-Voting"
+  }, {
+    icon: CheckCircle,
+    title: "Tag 3: Decide",
+    description: "Heatmap Voting für beste Ideen, Storyboard erstellen, Prototyp-Plan festlegen"
+  }, {
+    icon: Wrench,
+    title: "Tag 4: Prototype",
+    description: "Prototyp entwickeln (digital oder Figma), Test-Szenarien vorbereiten"
+  }, {
+    icon: TestTube,
+    title: "Tag 5: Test",
+    description: "User Testing durchführen, Feedback sammeln, Experten-Review (optional), automatisierter Report-Generator"
+  }];
+  const features = [{
+    icon: Clock,
+    title: "Flexible Durchführung",
+    description: "Arbeiten Sie in Ihrem eigenen Tempo - pausieren und fortsetzen wann Sie möchten"
+  }, {
+    icon: Users,
+    title: "Verteilte Teams",
+    description: "Perfekt für remote und async Zusammenarbeit über verschiedene Zeitzonen"
+  }, {
+    icon: Zap,
+    title: "Automatische Tools",
+    description: "Digitale Vorlagen, automatische E-Mail-Einladungen, Kalender-Integration"
+  }, {
+    icon: FileText,
+    title: "PDF-Report",
+    description: "Automatisch generierter Sprint-Report mit allen Ergebnissen nach Tag 5"
+  }];
+  const targetAudiences = [{
+    title: "Startups & kleine Teams",
+    description: "Budget-freundliche Alternative für schnelle Validation und Ideenfindung"
+  }, {
+    title: "Verteilte Teams",
+    description: "Remote-friendly und async-kompatibel mit flexibler Zeiteinteilung"
+  }, {
+    title: "Innovation Teams",
+    description: "Experimentieren ohne große Investition mit iterativem Ansatz"
+  }];
+  return <div className="min-h-screen">
       <Navigation />
       
       {/* Hero Section */}
@@ -111,9 +81,7 @@ const OnlineSprintLanding = () => {
             
             <h1 className="text-5xl lg:text-7xl font-bold">
               Online Design Sprint
-              <span className="block mt-4 bg-gradient-primary bg-clip-text text-transparent">
-                6 Tage zur AI-Innovation
-              </span>
+              <span className="block mt-4 bg-gradient-primary bg-clip-text text-transparent">zur Problemlösung</span>
             </h1>
             
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
@@ -121,11 +89,7 @@ const OnlineSprintLanding = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Button 
-              size="lg" 
-              className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6"
-              asChild
-            >
+            <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
               <Link to="/ai-design-sprint/setup">Sprint-Team erstellen</Link>
             </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
@@ -159,9 +123,8 @@ const OnlineSprintLanding = () => {
               
               <div className="space-y-8">
                 {days.map((day, index) => {
-                  const Icon = day.icon;
-                  return (
-                    <div key={index} className="relative flex items-center gap-8">
+                const Icon = day.icon;
+                return <div key={index} className="relative flex items-center gap-8">
                       <div className={`flex-1 ${index % 2 === 0 ? 'text-right' : 'order-2'}`}>
                         <Card className="inline-block text-left max-w-md">
                           <CardContent className="p-6">
@@ -176,9 +139,8 @@ const OnlineSprintLanding = () => {
                       </div>
                       
                       <div className={`flex-1 ${index % 2 === 0 ? 'order-2' : ''}`} />
-                    </div>
-                  );
-                })}
+                    </div>;
+              })}
               </div>
             </div>
           </div>
@@ -196,9 +158,8 @@ const OnlineSprintLanding = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="text-center hover:shadow-hover transition-all">
+            const Icon = feature.icon;
+            return <Card key={index} className="text-center hover:shadow-hover transition-all">
                   <CardContent className="p-6 space-y-4">
                     <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
                       <Icon className="w-7 h-7 text-primary-foreground" />
@@ -206,9 +167,8 @@ const OnlineSprintLanding = () => {
                     <h3 className="font-bold text-lg">{feature.title}</h3>
                     <p className="text-muted-foreground text-sm">{feature.description}</p>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
         </div>
       </section>
@@ -224,15 +184,13 @@ const OnlineSprintLanding = () => {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {targetAudiences.map((audience, index) => (
-              <Card key={index} className="hover:shadow-hover transition-all">
+            {targetAudiences.map((audience, index) => <Card key={index} className="hover:shadow-hover transition-all">
                 <CardContent className="p-8 space-y-4">
                   <BarChart3 className="w-12 h-12 text-primary" />
                   <h3 className="text-xl font-bold">{audience.title}</h3>
                   <p className="text-muted-foreground">{audience.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -340,8 +298,6 @@ const OnlineSprintLanding = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default OnlineSprintLanding;
