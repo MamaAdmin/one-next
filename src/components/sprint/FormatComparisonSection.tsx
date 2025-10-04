@@ -3,10 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Laptop, Check } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const FormatComparisonSection = () => {
-  return (
-    <section className="py-16 bg-muted/30">
+  return <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold mb-4">
@@ -29,7 +27,7 @@ const FormatComparisonSection = () => {
               </div>
               
               <div>
-                <h3 className="text-2xl font-bold mb-2">AI Design Sprint Workshop</h3>
+                <h3 className="text-2xl font-bold mb-2">Design Sprint Workshop (Mit AI)</h3>
                 <p className="text-muted-foreground">
                   Intensiv, expert-geführt, maßgeschneidert
                 </p>
@@ -56,19 +54,18 @@ const FormatComparisonSection = () => {
 
               <div className="pt-4 border-t border-border">
                 <p className="text-sm text-muted-foreground mb-4">Preis auf Anfrage</p>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  const section = document.getElementById('workshop-details');
-                  if (section) {
-                    const navHeight = 80;
-                    const elementPosition = section.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - navHeight;
-                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                  }
-                }}
-              >
+              <Button variant="outline" className="w-full" onClick={() => {
+                const section = document.getElementById('workshop-details');
+                if (section) {
+                  const navHeight = 80;
+                  const elementPosition = section.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                  });
+                }
+              }}>
                 Workshop Details
               </Button>
               </div>
@@ -126,8 +123,6 @@ const FormatComparisonSection = () => {
           </Card>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default FormatComparisonSection;
