@@ -22,7 +22,7 @@ const Navigation = () => {
 
   const servicesItems = [
     { label: "Analyse", href: "/ai-design-sprint" },
-    { label: "Datenaudit", href: "#services" },
+    { label: "Datenaudit", href: "/data-quality-audit" },
     { label: "Custom AI Development", href: "#services" },
     { label: "AI Beratung", href: "/ai-consulting-services" },
   ];
