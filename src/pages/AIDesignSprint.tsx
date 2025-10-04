@@ -58,7 +58,7 @@ const AIDesignSprint = () => {
               onClick={() => {
                 const workshopSection = document.getElementById('workshop-details');
                 if (workshopSection) {
-                  const yOffset = -100;
+                  const yOffset = -80;
                   const y = workshopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
                   window.scrollTo({ top: y, behavior: 'smooth' });
                 }
