@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import oneNextLogo from "@/assets/one-next-logo.png";
+import oneNextLogo from "@/assets/one-next-logo-new.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 
