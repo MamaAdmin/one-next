@@ -15,6 +15,8 @@ import { useAdmin } from "@/hooks/useAdmin";
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [companyOpen, setCompanyOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const { isAdmin } = useAdmin();
 
@@ -68,7 +70,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <DropdownMenu>
+            <DropdownMenu open={servicesOpen} onOpenChange={setServicesOpen}>
               <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
                 Services <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
@@ -76,11 +78,11 @@ const Navigation = () => {
                 {servicesItems.map((item) => (
                   <DropdownMenuItem key={item.label} asChild>
                     {item.href.startsWith('/') ? (
-                      <Link to={item.href} className="cursor-pointer">
+                      <Link to={item.href} className="cursor-pointer" onClick={() => setServicesOpen(false)}>
                         {item.label}
                       </Link>
                     ) : (
-                      <a href={item.href} className="cursor-pointer">
+                      <a href={item.href} className="cursor-pointer" onClick={() => setServicesOpen(false)}>
                         {item.label}
                       </a>
                     )}
@@ -89,7 +91,7 @@ const Navigation = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <DropdownMenu>
+            <DropdownMenu open={companyOpen} onOpenChange={setCompanyOpen}>
               <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
                 Unternehmen <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
@@ -97,11 +99,11 @@ const Navigation = () => {
                 {companyItems.map((item) => (
                   <DropdownMenuItem key={item.label} asChild>
                     {item.href.startsWith('/') ? (
-                      <Link to={item.href} className="cursor-pointer">
+                      <Link to={item.href} className="cursor-pointer" onClick={() => setCompanyOpen(false)}>
                         {item.label}
                       </Link>
                     ) : (
-                      <a href={item.href} className="cursor-pointer">
+                      <a href={item.href} className="cursor-pointer" onClick={() => setCompanyOpen(false)}>
                         {item.label}
                       </a>
                     )}
