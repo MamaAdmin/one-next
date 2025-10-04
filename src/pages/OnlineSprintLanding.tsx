@@ -111,11 +111,7 @@ const OnlineSprintLanding = () => {
               </span>
             </h2>
             
-            <p className="text-xl text-muted-foreground text-center mb-12">
-              Ein selbstgeführter, digitaler Prozess über 6 Tage, der Ihrem Team hilft, 
-              AI-Innovationen zu identifizieren, zu bewerten und zu prototypisieren - 
-              ohne teure Facilitatoren und in Ihrem eigenen Tempo.
-            </p>
+            <p className="text-xl text-muted-foreground text-center mb-12">Ein selbstgeführter, digitaler Prozess über mehrere Tage, der Ihrem Team hilft, Probleme zu identifizieren, zu bewerten und zu prototypisieren - ohne teure Tainer und in Ihrem eigenen Tempo.</p>
 
             {/* Timeline Visualization */}
             <div className="relative">
