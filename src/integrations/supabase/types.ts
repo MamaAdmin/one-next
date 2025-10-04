@@ -288,8 +288,11 @@ export type Database = {
           company: string | null
           consequences: string
           created_at: string
+          decider_available: boolean | null
           email: string
+          gates_ok: boolean | null
           id: string
+          impact_scale: number | null
           name: string
           notes: string | null
           payment_id: string | null
@@ -303,7 +306,9 @@ export type Database = {
           success_criteria: string
           target_audience: string[]
           team_size: number
+          testable_in_5_days: string | null
           updated_at: string
+          user_access_count: number | null
         }
         Insert: {
           booking_status?: string | null
@@ -311,8 +316,11 @@ export type Database = {
           company?: string | null
           consequences: string
           created_at?: string
+          decider_available?: boolean | null
           email: string
+          gates_ok?: boolean | null
           id?: string
+          impact_scale?: number | null
           name: string
           notes?: string | null
           payment_id?: string | null
@@ -326,7 +334,9 @@ export type Database = {
           success_criteria: string
           target_audience: string[]
           team_size?: number
+          testable_in_5_days?: string | null
           updated_at?: string
+          user_access_count?: number | null
         }
         Update: {
           booking_status?: string | null
@@ -334,8 +344,11 @@ export type Database = {
           company?: string | null
           consequences?: string
           created_at?: string
+          decider_available?: boolean | null
           email?: string
+          gates_ok?: boolean | null
           id?: string
+          impact_scale?: number | null
           name?: string
           notes?: string | null
           payment_id?: string | null
@@ -349,7 +362,9 @@ export type Database = {
           success_criteria?: string
           target_audience?: string[]
           team_size?: number
+          testable_in_5_days?: string | null
           updated_at?: string
+          user_access_count?: number | null
         }
         Relationships: []
       }

@@ -56,14 +56,15 @@ const SprintBooking = () => {
               <FeasibilityCheck onSubmit={submitFeasibilityCheck} />
             )}
 
-            {state.currentStep === 2 && state.sprintScore !== null && state.recommendedType && (
-              <ResultRecommendation
-                score={state.sprintScore}
-                sprintType={state.recommendedType}
-                onContinue={() => goToStep(3)}
-                onViewVideo={() => goToStep(3)}
-              />
-            )}
+      {state.currentStep === 2 && state.sprintScore !== null && state.recommendedType && (
+        <ResultRecommendation
+          score={state.sprintScore}
+          sprintType={state.recommendedType}
+          gatesOk={state.gatesOk || false}
+          onContinue={() => goToStep(3)}
+          onViewVideo={() => goToStep(3)}
+        />
+      )}
 
             {state.currentStep === 3 && (
               <VideoSection onContinue={() => goToStep(4)} />
@@ -79,13 +80,28 @@ const SprintBooking = () => {
               />
             )}
 
-            {state.currentStep === 5 && state.recommendedType && (
-              <PaymentSection
-                onInitiatePayment={initiatePayment}
-                isLoading={isLoading}
-                sprintType={state.recommendedType}
-              />
-            )}
+      {state.currentStep === 5 && state.showPaymentStep && state.recommendedType && (
+        <PaymentSection
+          onInitiatePayment={initiatePayment}
+          isLoading={isLoading}
+          sprintType={state.recommendedType}
+        />
+      )}
+
+      {state.currentStep === 5 && !state.showPaymentStep && (
+        <div className="max-w-2xl mx-auto text-center p-8 bg-card rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">
+            Buchung erfasst – Zahlung wird später angefordert
+          </h2>
+          <p className="text-muted-foreground mb-6">
+            Wir melden uns innerhalb von 24h, um das weitere Vorgehen 
+            (Pre-Sprint Setup oder Problem-Framing) zu besprechen.
+          </p>
+          <Button onClick={() => window.location.href = "/"}>
+            Zur Startseite
+          </Button>
+        </div>
+      )}
           </div>
         </div>
       </div>

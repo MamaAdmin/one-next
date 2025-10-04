@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 interface ResultRecommendationProps {
   score: number;
   sprintType: string;
+  gatesOk: boolean;
   onContinue: () => void;
   onViewVideo: () => void;
 }
@@ -12,11 +13,12 @@ interface ResultRecommendationProps {
 export const ResultRecommendation = ({
   score,
   sprintType,
+  gatesOk,
   onContinue,
   onViewVideo,
 }: ResultRecommendationProps) => {
-  const isSuitable = score >= 50;
-  const scoreColor = score >= 75 ? "text-green-600" : score >= 50 ? "text-yellow-600" : "text-red-600";
+  const isSuitable = score >= 60;
+  const scoreColor = score >= 80 ? "text-green-600" : score >= 60 ? "text-yellow-600" : "text-orange-600";
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -30,7 +32,7 @@ export const ResultRecommendation = ({
           <h1 className="text-4xl font-bold">{score}/100</h1>
         </div>
         <h2 className="text-2xl font-semibold mb-2">
-          {isSuitable ? "Ihr Thema ist sprint-tauglich!" : "Ihr Thema benötigt Anpassungen"}
+          {isSuitable ? "Ihr Thema ist sprint-tauglich!" : "Wir empfehlen eine Vorbereitung"}
         </h2>
       </div>
 
@@ -51,24 +53,35 @@ export const ResultRecommendation = ({
           <div>
             <h3 className="text-lg font-semibold mb-2">Begründung</h3>
             <p className="text-muted-foreground">
-              {score >= 75 && (
+              {score >= 80 && (
                 <>
-                  Ihre Challenge ist klar definiert, strategisch wichtig und betrifft mehrere
-                  Stakeholder. Ein Strategy Sprint hilft Ihnen, langfristige Visionen zu
-                  entwickeln und fundierte Entscheidungen zu treffen.
+                  Ihre Challenge ist klar, strategisch relevant und sprint-ready. Ein{" "}
+                  <strong>Strategy Sprint</strong> hilft Ihnen, langfristige Visionen zu entwickeln
+                  und fundierte Entscheidungen zu treffen.
                 </>
               )}
-              {score >= 50 && score < 75 && (
+              {score >= 60 && score < 80 && sprintType.includes("Discovery") && (
                 <>
-                  Ihr Thema zeigt gutes Potenzial für einen Design Sprint. Ein Discovery Sprint
-                  ermöglicht es Ihnen, Kundenbedürfnisse zu verstehen, Ideen zu validieren und
-                  schnell testbare Prototypen zu erstellen.
+                  Ihr Thema zeigt gutes Potenzial. Ein <strong>Discovery Sprint</strong> ermöglicht
+                  es Ihnen, Kundenbedürfnisse zu verstehen und testbare Prototypen zu erstellen.
                 </>
               )}
-              {score < 50 && (
+              {score >= 60 && score < 80 && sprintType.includes("Process") && (
                 <>
-                  Ihre Challenge eignet sich am besten für einen Process Sprint, bei dem wir
-                  bestehende Abläufe optimieren und schnelle Verbesserungen implementieren können.
+                  Ihre Challenge eignet sich für einen <strong>Process Sprint</strong>, bei dem wir
+                  bestehende Abläufe optimieren und schnelle Verbesserungen implementieren.
+                </>
+              )}
+              {score >= 40 && score < 60 && (
+                <>
+                  Ihre Challenge benötigt noch Vorbereitung. Ein <strong>Pre-Sprint</strong> hilft
+                  Ihnen, die nötigen Voraussetzungen (Entscheider, Nutzer, Testbarkeit) zu schaffen.
+                </>
+              )}
+              {score < 40 && (
+                <>
+                  Wir empfehlen zunächst einen <strong>Problem-Framing-Workshop</strong>, um die
+                  Challenge zu schärfen und die richtigen Zielgruppen zu identifizieren.
                 </>
               )}
             </p>
@@ -98,13 +111,49 @@ export const ResultRecommendation = ({
         </ul>
       </div>
 
+      {!gatesOk && score >= 60 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+          <h3 className="font-semibold text-amber-900 mb-2">
+            Fast geschafft! Bitte sichern Sie:
+          </h3>
+          <ul className="text-sm text-amber-800 space-y-1 ml-4 list-disc">
+            <li>Entscheider:in für Tag 3</li>
+            <li>Zugang zu ≥ 5 Nutzer:innen</li>
+            <li>Testbarkeit in 5 Tagen</li>
+          </ul>
+          <p className="text-sm text-amber-700 mt-2">
+            Wir unterstützen Sie beim <strong>Pre-Sprint Setup</strong>.
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Button variant="outline" size="lg" onClick={onViewVideo}>
           2-Minuten-Video ansehen
         </Button>
-        <Button size="lg" onClick={onContinue}>
-          Unverbindlich fortfahren
-        </Button>
+        
+        {score >= 60 && gatesOk && (
+          <>
+            <Button size="lg" onClick={onContinue}>
+              Zum Buchungsformular (unverbindlich)
+            </Button>
+            <Button size="lg" variant="default" onClick={onContinue}>
+              Direkt buchen & starten
+            </Button>
+          </>
+        )}
+        
+        {score >= 60 && !gatesOk && (
+          <Button size="lg" onClick={onContinue}>
+            Pre-Sprint Setup vereinbaren
+          </Button>
+        )}
+        
+        {score < 60 && (
+          <Button size="lg" onClick={onContinue}>
+            Problem-Framing anfragen
+          </Button>
+        )}
       </div>
     </div>
   );

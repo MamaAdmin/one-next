@@ -8,6 +8,10 @@ export interface FeasibilityData {
   targetAudience: string[];
   consequences: string;
   successCriteria: string;
+  testableIn5Days: "Ja" | "Teilweise" | "Nein";
+  deciderAvailable: "Ja" | "Nein";
+  userAccessCount: number;
+  impactScale: number;
 }
 
 export interface BookingData {
@@ -27,6 +31,8 @@ export interface BookingState {
   bookingData: BookingData | null;
   bookingId: string | null;
   sessionToken: string | null;
+  gatesOk: boolean | null;
+  showPaymentStep: boolean;
 }
 
 export const useSprintBooking = () => {
@@ -38,6 +44,8 @@ export const useSprintBooking = () => {
     bookingData: null,
     bookingId: null,
     sessionToken: null,
+    gatesOk: null,
+    showPaymentStep: false,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -45,57 +53,100 @@ export const useSprintBooking = () => {
   const calculateSprintSuitability = (answers: FeasibilityData): number => {
     let score = 0;
 
-    // Challenge clarity (0-25 points)
-    if (answers.challenge.length > 100) score += 25;
-    else if (answers.challenge.length > 50) score += 15;
-
-    // Urgency (0-25 points)
-    if (["Marktveränderungen", "Wettbewerb"].includes(answers.relevance)) {
-      score += 25;
-    } else {
-      score += 15;
+    // === DESIRABILITY (0-25) ===
+    if (/\b(für|bei|weil|damit)\b/i.test(answers.challenge)) {
+      score += 5;
+    }
+    if (/\b\d+|\b%|\bTage|\bWochen\b/i.test(answers.challenge)) {
+      score += 5;
+    }
+    if (/[A-ZÄÖÜ][a-zäöüß]+/.test(answers.challenge)) {
+      score += 5;
+    }
+    if (answers.targetAudience.length === 1) {
+      score += 10;
+    } else if (answers.targetAudience.length > 1) {
+      score += 5;
     }
 
-    // Complexity - multiple target audiences (0-20 points)
-    score += Math.min(answers.targetAudience.length * 10, 20);
+    // === VIABILITY (0-25) ===
+    score += answers.impactScale * 4;
+    if (answers.consequences.length > 100) {
+      score += 5;
+    } else if (answers.consequences.length > 30) {
+      score += 3;
+    }
 
-    // Clear consequences (0-20 points)
-    if (answers.consequences.length > 100) score += 20;
-    else if (answers.consequences.length > 30) score += 10;
+    // === FEASIBILITY (0-25) ===
+    if (answers.testableIn5Days === "Ja") {
+      score += 25;
+    } else if (answers.testableIn5Days === "Teilweise") {
+      score += 15;
+    } else {
+      score += 5;
+    }
 
-    // Measurable success criteria (0-20 points)
-    const keywords = ["Prototyp", "Test", "Entscheidung", "Validierung", "Feedback"];
-    const hasKeyword = keywords.some((kw) =>
+    // === SPRINTABILITY (0-25) ===
+    const keywords = [
+      "Prototyp", "Test", "Nutzertest", "Entscheidung", 
+      "Validierung", "Feedback", "Hypothese", "MVP", 
+      "A/B", "Wizard", "Fake Door", "Smoke Test"
+    ];
+    const hasKeyword = keywords.some(kw =>
       answers.successCriteria.toLowerCase().includes(kw.toLowerCase())
     );
-    if (hasKeyword) score += 20;
-    else score += 10;
+    score += hasKeyword ? 15 : 8;
+    if (answers.deciderAvailable === "Ja") {
+      score += 10;
+    }
 
     return Math.min(score, 100);
   };
 
-  const recommendSprintType = (score: number): string => {
-    if (score >= 75) return "Strategy Sprint";
-    if (score >= 50) return "Discovery Sprint";
-    return "Process Sprint";
+  const calculateGatesOk = (answers: FeasibilityData): boolean => {
+    return (
+      answers.testableIn5Days !== "Nein" &&
+      answers.deciderAvailable === "Ja" &&
+      answers.userAccessCount >= 5
+    );
+  };
+
+  const recommendSprintType = (score: number, relevance: string): string => {
+    if (score >= 80) {
+      return "Strategy Sprint";
+    }
+    if (score >= 60 && score <= 79) {
+      if (["Kundenbedürfnisse", "Interne Probleme"].includes(relevance)) {
+        return "Process Sprint";
+      }
+      return "Discovery Sprint";
+    }
+    if (score >= 40 && score <= 59) {
+      return "Pre-Sprint (1 Woche Vorbereitung)";
+    }
+    return "Problem-Framing-Workshop";
   };
 
   const submitFeasibilityCheck = async (data: FeasibilityData) => {
     const score = calculateSprintSuitability(data);
-    const type = recommendSprintType(score);
+    const gatesOk = calculateGatesOk(data);
+    const type = recommendSprintType(score, data.relevance);
+    const showPaymentStep = score >= 60 && gatesOk;
 
     setState((prev) => ({
       ...prev,
       feasibilityData: data,
       sprintScore: score,
       recommendedType: type,
+      gatesOk,
+      showPaymentStep,
       currentStep: 2,
     }));
 
-    // Save to localStorage
     localStorage.setItem("sprint_booking_feasibility", JSON.stringify(data));
     localStorage.setItem("sprint_booking_score", score.toString());
     localStorage.setItem("sprint_booking_type", type);
+    localStorage.setItem("sprint_booking_gates_ok", gatesOk.toString());
   };
 
   const saveBooking = async (data: BookingData) => {
@@ -121,6 +172,11 @@ export const useSprintBooking = () => {
           success_criteria: state.feasibilityData.successCriteria,
           sprint_suitability_score: state.sprintScore,
           recommended_sprint_type: state.recommendedType,
+          testable_in_5_days: state.feasibilityData.testableIn5Days,
+          decider_available: state.feasibilityData.deciderAvailable === "Ja",
+          user_access_count: state.feasibilityData.userAccessCount,
+          impact_scale: state.feasibilityData.impactScale,
+          gates_ok: state.gatesOk,
         })
         .select()
         .single();

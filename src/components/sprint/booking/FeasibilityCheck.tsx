@@ -1,7 +1,8 @@
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -11,7 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -19,32 +19,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Info, AlertCircle } from "lucide-react";
 import { FeasibilityData } from "@/hooks/useSprintBooking";
 
 const feasibilitySchema = z.object({
   challenge: z
     .string()
-    .min(50, "Bitte beschreiben Sie Ihre Herausforderung ausführlicher (mind. 50 Zeichen)")
+    .min(50, "Bitte beschreiben Sie Ihre Herausforderung mit mindestens 50 Zeichen.")
     .max(1000, "Bitte kürzen Sie Ihre Beschreibung (max. 1000 Zeichen)"),
-  relevance: z.enum([
-    "Marktveränderungen",
-    "Kundenbedürfnisse",
-    "Interne Probleme",
-    "Wettbewerb",
-    "Sonstiges",
-  ]),
+  relevance: z.enum(
+    ["Marktveränderungen", "Wettbewerb", "Kundenbedürfnisse", "Interne Probleme", "Sonstiges"],
+    {
+      required_error: "Bitte wählen Sie einen Grund für die Relevanz.",
+    }
+  ),
   targetAudience: z
     .array(z.string())
-    .min(1, "Bitte wählen Sie mindestens eine Zielgruppe"),
+    .min(1, "Bitte wählen Sie mindestens eine Zielgruppe aus."),
   consequences: z
     .string()
-    .min(30, "Bitte beschreiben Sie die Konsequenzen ausführlicher (mind. 30 Zeichen)")
-    .max(1000),
+    .min(30, "Bitte schildern Sie die Folgen in mindestens 30 Zeichen.")
+    .max(1000, "Bitte kürzen Sie Ihre Beschreibung (max. 1000 Zeichen)"),
   successCriteria: z
     .string()
-    .min(20, "Bitte beschreiben Sie Ihre Erfolgskriterien (mind. 20 Zeichen)")
-    .max(500),
+    .min(20, "Bitte formulieren Sie das gewünschte Ergebnis in mindestens 20 Zeichen.")
+    .max(500, "Bitte kürzen Sie Ihre Beschreibung (max. 500 Zeichen)"),
+  testableIn5Days: z.enum(["Ja", "Teilweise", "Nein"], {
+    required_error: "Bitte geben Sie an, ob die Idee in 5 Tagen testbar ist.",
+  }),
+  deciderAvailable: z.enum(["Ja", "Nein"], {
+    required_error: "Bitte bestätigen Sie die Verfügbarkeit einer/s Entscheider:in für Tag 3.",
+  }),
+  userAccessCount: z.coerce.number({
+    required_error: "Bitte geben Sie die Anzahl erreichbarer Nutzer:innen an.",
+    invalid_type_error: "Bitte geben Sie eine gültige Zahl ein.",
+  }).min(0, "Die Anzahl muss mindestens 0 sein."),
+  impactScale: z.number({
+    required_error: "Bitte bewerten Sie den geschäftlichen Impact (1–5).",
+  }).min(1, "Mindestens 1").max(5, "Maximal 5"),
 });
 
 const targetAudienceOptions = [
@@ -67,8 +84,27 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
       targetAudience: [],
       consequences: "",
       successCriteria: "",
+      testableIn5Days: "Ja",
+      deciderAvailable: "Ja",
+      userAccessCount: 0,
+      impactScale: 3,
     },
   });
+
+  const challengeValue = form.watch("challenge");
+  const targetAudienceValue = form.watch("targetAudience");
+  const successCriteriaValue = form.watch("successCriteria");
+  const userAccessCountValue = form.watch("userAccessCount");
+  const impactScaleValue = form.watch("impactScale");
+
+  const keywords = [
+    "Prototyp", "Test", "Nutzertest", "Entscheidung", 
+    "Validierung", "Feedback", "Hypothese", "MVP", 
+    "A/B", "Wizard", "Fake Door", "Smoke Test"
+  ];
+  const hasKeyword = keywords.some(kw =>
+    successCriteriaValue?.toLowerCase().includes(kw.toLowerCase())
+  );
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -86,14 +122,20 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit((data) => {
           const feasibilityData: FeasibilityData = {
-            challenge: data.challenge || "",
-            relevance: data.relevance || "Kundenbedürfnisse",
-            targetAudience: data.targetAudience || [],
-            consequences: data.consequences || "",
-            successCriteria: data.successCriteria || "",
+            challenge: data.challenge,
+            relevance: data.relevance,
+            targetAudience: data.targetAudience,
+            consequences: data.consequences,
+            successCriteria: data.successCriteria,
+            testableIn5Days: data.testableIn5Days,
+            deciderAvailable: data.deciderAvailable,
+            userAccessCount: data.userAccessCount,
+            impactScale: data.impactScale,
           };
           onSubmit(feasibilityData);
         })} className="space-y-8">
+          
+          {/* Challenge */}
           <FormField
             control={form.control}
             name="challenge"
@@ -110,13 +152,26 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
                   />
                 </FormControl>
                 <FormDescription>
-                  Bitte beschreiben Sie ausführlich (mindestens 50 Zeichen)
+                  Konkrete Zielgruppe, Zeitraum oder Zahl erhöhen die Klarheit.
                 </FormDescription>
                 <FormMessage />
+                {challengeValue && challengeValue.length >= 50 && challengeValue.length < 100 && (
+                  <div className="text-sm text-blue-600 bg-blue-50 p-2 rounded mt-2 flex items-start gap-2">
+                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>Gut! Mit konkreter Zielgruppe, Zahl oder Zeitraum wird es noch klarer.</span>
+                  </div>
+                )}
+                {(challengeValue && challengeValue.length > 350 || /\b(und|sowie|ausserdem)\b/i.test(challengeValue || "")) && (
+                  <div className="text-sm text-orange-600 bg-orange-50 p-2 rounded mt-2 flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>Der Umfang wirkt breit. Für Sprint-Tempo empfehlen wir die Challenge zu <strong>fokussieren</strong> oder in <strong>Teilvorhaben</strong> zu splitten.</span>
+                  </div>
+                )}
               </FormItem>
             )}
           />
 
+          {/* Relevance */}
           <FormField
             control={form.control}
             name="relevance"
@@ -144,6 +199,7 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
             )}
           />
 
+          {/* Target Audience */}
           <FormField
             control={form.control}
             name="targetAudience"
@@ -186,10 +242,17 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
                   ))}
                 </div>
                 <FormMessage />
+                {targetAudienceValue && targetAudienceValue.length > 1 && (
+                  <div className="text-sm text-amber-600 bg-amber-50 p-2 rounded mt-2 flex items-start gap-2">
+                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>Für das Sprint-Tempo empfehlen wir eine <strong>primäre</strong> Zielgruppe.</span>
+                  </div>
+                )}
               </FormItem>
             )}
           />
 
+          {/* Consequences */}
           <FormField
             control={form.control}
             name="consequences"
@@ -213,6 +276,7 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
             )}
           />
 
+          {/* Success Criteria */}
           <FormField
             control={form.control}
             name="successCriteria"
@@ -229,8 +293,139 @@ export const FeasibilityCheck = ({ onSubmit }: FeasibilityCheckProps) => {
                   />
                 </FormControl>
                 <FormDescription>
-                  Beschreiben Sie Ihre Erfolgskriterien (mindestens 20 Zeichen)
+                  Formulieren Sie ein <strong>testbares</strong> Ergebnis (z. B. Nutzertest eines Klick-Prototyps).
                 </FormDescription>
+                <FormMessage />
+                {successCriteriaValue && !hasKeyword && successCriteriaValue.length >= 20 && (
+                  <div className="text-sm text-blue-600 bg-blue-50 p-2 rounded mt-2 flex items-start gap-2">
+                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>Tipp: Benennen Sie ein <strong>testbares</strong> Ergebnis (z. B. Nutzertest eines Klick-Prototyps).</span>
+                  </div>
+                )}
+              </FormItem>
+            )}
+          />
+
+          {/* Testable in 5 Days */}
+          <FormField
+            control={form.control}
+            name="testableIn5Days"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg">
+                  Lässt sich Ihre Idee in 5 Tagen als Prototyp testen? *
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Ja" id="testable-ja" />
+                      <Label htmlFor="testable-ja" className="font-normal">Ja</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Teilweise" id="testable-teilweise" />
+                      <Label htmlFor="testable-teilweise" className="font-normal">Teilweise</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Nein" id="testable-nein" />
+                      <Label htmlFor="testable-nein" className="font-normal">Nein</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Decider Available */}
+          <FormField
+            control={form.control}
+            name="deciderAvailable"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg">
+                  Steht am Tag 3 eine Entscheidungsperson zur Verfügung? *
+                </FormLabel>
+                <FormDescription>
+                  Eine Person, die finale Entscheidungen treffen kann
+                </FormDescription>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Ja" id="decider-ja" />
+                      <Label htmlFor="decider-ja" className="font-normal">Ja</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Nein" id="decider-nein" />
+                      <Label htmlFor="decider-nein" className="font-normal">Nein</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* User Access Count */}
+          <FormField
+            control={form.control}
+            name="userAccessCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg">
+                  Wie viele Nutzer:innen können Sie für Tests erreichen? *
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    placeholder="z.B. 10"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+                {userAccessCountValue !== undefined && userAccessCountValue < 5 && userAccessCountValue >= 0 && (
+                  <div className="text-sm text-amber-600 bg-amber-50 p-2 rounded mt-2 flex items-start gap-2">
+                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>Für Tag 5 empfehlen wir Zugang zu <strong>mindestens 5 Nutzer:innen</strong>.</span>
+                  </div>
+                )}
+              </FormItem>
+            )}
+          />
+
+          {/* Impact Scale */}
+          <FormField
+            control={form.control}
+            name="impactScale"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg">
+                  Geschäftlicher Impact bei Erfolg (1 = gering, 5 = sehr hoch) *
+                </FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    <Slider
+                      min={1}
+                      max={5}
+                      step={1}
+                      value={[field.value || 3]}
+                      onValueChange={(vals) => field.onChange(vals[0])}
+                      className="w-full"
+                    />
+                    <div className="text-center text-2xl font-bold text-primary">
+                      {field.value || 3}
+                    </div>
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

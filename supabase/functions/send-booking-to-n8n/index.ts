@@ -47,6 +47,7 @@ serve(async (req) => {
         preferred_start_date: booking.preferred_start_date,
         suitability_score: booking.sprint_suitability_score,
         price_chf: booking.price_chf,
+        gates_ok: booking.gates_ok,
       },
       feasibility_check: {
         challenge: booking.challenge_description,
@@ -54,6 +55,10 @@ serve(async (req) => {
         target_audience: booking.target_audience,
         consequences: booking.consequences,
         success_criteria: booking.success_criteria,
+        testable_in_5_days: booking.testable_in_5_days,
+        decider_available: booking.decider_available,
+        user_access_count: booking.user_access_count,
+        impact_scale: booking.impact_scale,
       },
       status: {
         booking: booking.booking_status,
