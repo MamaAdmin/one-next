@@ -25,12 +25,6 @@ const Services = () => {
         "Professionelle Data Science Analyse für Ihr Modellvorschlag. Wir schlagen eine Datenerfassungsstrategie vor, die die Genauigkeit Ihres Modells verbessert und besseren Wert für Ihr Unternehmen liefert.",
     },
     {
-      icon: BracketsIcon,
-      title: "Maßgeschneiderte AI-Entwicklung",
-      description:
-        "Implementieren Sie Ihre eigene dedizierte AI-Lösung, verknüpft mit anderen Services. Mit unseren Computer Vision-Lösungen und NLP können Sie sich auf unser AI-Team verlassen.",
-    },
-    {
       icon: MessageIcon,
       title: "AI Consulting Services",
       description:
@@ -99,7 +93,7 @@ const Services = () => {
                         <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
-                  ) : index === 4 ? (
+                  ) : index === 3 ? (
                     <Link to="/ai-consulting-services">
                       <Button 
                         variant="ghost" 
