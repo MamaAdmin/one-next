@@ -135,7 +135,7 @@ export const ResultRecommendation = ({
               Workshop buchen
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="/ai-design-sprint">Mehr zum Workshop</a>
+              <a href="/design-sprint-workshop">Mehr zum Workshop</a>
             </Button>
           </>
         )}
