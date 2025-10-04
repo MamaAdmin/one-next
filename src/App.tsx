@@ -9,13 +9,11 @@ import Blog from "./pages/Blog";
 import Article from "./pages/Article";
 import AIDesignSprint from "./pages/AIDesignSprint";
 import OnlineSprintLanding from "./pages/OnlineSprintLanding";
-import OnlineDesignSprintRegistration from "./pages/OnlineDesignSprintRegistration";
 import AIConsultingServices from "./pages/AIConsultingServices";
 import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
-import OnlineDesignSprint from "./pages/OnlineDesignSprint";
 import SprintSetup from "./pages/sprint/SprintSetup";
 import SprintIndex from "./pages/sprint/SprintIndex";
 import SprintSession from "./pages/sprint/SprintSession";
@@ -37,9 +35,6 @@ const App = () => (
           <Route path="/blog/:slug" element={<Article />} />
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
-          <Route path="/ai-design-sprint/setup" element={<SprintSetup />} />
-          <Route path="/ai-design-sprint/online/registration" element={<OnlineDesignSprintRegistration />} />
-          <Route path="/ai-design-sprint/sprint" element={<OnlineDesignSprint />} />
           
           {/* Standalone Sprint Container */}
           <Route path="/sprint" element={<SprintLayout />}>
