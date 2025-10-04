@@ -10,7 +10,7 @@ const Services = () => {
       icon: StarburstIcon,
       title: "Digitale Transformation mit AI starten",
       description:
-        "Identifizieren Sie AI-Chancen durch unsere AI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler 6-Tage Online Sprint. Jetzt auch selbstgeführt mit digitalen Tools verfügbar.",
+        "Identifizieren Sie AI-Chancen durch unsere AI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler Online Sprint. Jetzt auch selbstgeführt mit digitalen Tools verfügbar.",
     },
     {
       icon: ArrowsOutIcon,
