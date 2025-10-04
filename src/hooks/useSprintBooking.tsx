@@ -112,14 +112,11 @@ export const useSprintBooking = () => {
   };
 
   const recommendSprintType = (score: number, relevance: string): string => {
-    if (score >= 80) {
-      return "Strategy Sprint";
-    }
-    if (score >= 60 && score <= 79) {
+    if (score >= 60) {
       if (["Kundenbedürfnisse", "Interne Probleme"].includes(relevance)) {
-        return "Process Sprint";
+        return "Online Design Sprint";
       }
-      return "Discovery Sprint";
+      return "Design Sprint Workshop (Mit AI)";
     }
     if (score >= 40 && score <= 59) {
       return "Pre-Sprint (1 Woche Vorbereitung)";

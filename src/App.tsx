@@ -9,6 +9,7 @@ import Blog from "./pages/Blog";
 import Article from "./pages/Article";
 import AIDesignSprint from "./pages/AIDesignSprint";
 import OnlineSprintLanding from "./pages/OnlineSprintLanding";
+import ProblemFramingWorkshop from "./pages/ProblemFramingWorkshop";
 import AIConsultingServices from "./pages/AIConsultingServices";
 import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/blog/:slug" element={<Article />} />
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
+          <Route path="/problem-framing-workshop" element={<ProblemFramingWorkshop />} />
           
           {/* Standalone Sprint Container */}
           <Route path="/sprint" element={<SprintLayout />}>

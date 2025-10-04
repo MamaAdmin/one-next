@@ -53,23 +53,19 @@ export const ResultRecommendation = ({
           <div>
             <h3 className="text-lg font-semibold mb-2">Begründung</h3>
             <p className="text-muted-foreground">
-              {score >= 80 && (
+              {score >= 60 && sprintType === "Design Sprint Workshop (Mit AI)" && (
                 <>
                   Ihre Challenge ist klar, strategisch relevant und sprint-ready. Ein{" "}
-                  <strong>Strategy Sprint</strong> hilft Ihnen, langfristige Visionen zu entwickeln
-                  und fundierte Entscheidungen zu treffen.
+                  <strong>Design Sprint Workshop (Mit AI)</strong> hilft Ihnen, innovative Lösungen 
+                  zu entwickeln, Prototypen zu erstellen und mit echten Nutzern zu testen – begleitet 
+                  von KI-gestützten Tools und erfahrenen Facilitators.
                 </>
               )}
-              {score >= 60 && score < 80 && sprintType.includes("Discovery") && (
+              {score >= 60 && sprintType === "Online Design Sprint" && (
                 <>
-                  Ihr Thema zeigt gutes Potenzial. Ein <strong>Discovery Sprint</strong> ermöglicht
-                  es Ihnen, Kundenbedürfnisse zu verstehen und testbare Prototypen zu erstellen.
-                </>
-              )}
-              {score >= 60 && score < 80 && sprintType.includes("Process") && (
-                <>
-                  Ihre Challenge eignet sich für einen <strong>Process Sprint</strong>, bei dem wir
-                  bestehende Abläufe optimieren und schnelle Verbesserungen implementieren.
+                  Ihre Challenge eignet sich perfekt für einen <strong>Online Design Sprint</strong>. 
+                  Optimieren Sie interne Prozesse oder Kundenerlebnisse flexibel und selbstgeführt – 
+                  mit digitalen Tools, die Sie durch den gesamten Sprint-Prozess begleiten.
                 </>
               )}
               {score >= 40 && score < 60 && (
@@ -81,7 +77,8 @@ export const ResultRecommendation = ({
               {score < 40 && (
                 <>
                   Wir empfehlen zunächst einen <strong>Problem-Framing-Workshop</strong>, um die
-                  Challenge zu schärfen und die richtigen Zielgruppen zu identifizieren.
+                  Challenge zu schärfen und die richtigen Zielgruppen zu identifizieren. So stellen 
+                  Sie sicher, dass Ihr nachfolgender Design Sprint auf einem soliden Fundament steht.
                 </>
               )}
             </p>
@@ -132,13 +129,24 @@ export const ResultRecommendation = ({
           2-Minuten-Video ansehen
         </Button>
         
-        {score >= 60 && gatesOk && (
+        {score >= 60 && gatesOk && sprintType === "Design Sprint Workshop (Mit AI)" && (
           <>
             <Button size="lg" onClick={onContinue}>
-              Zum Buchungsformular (unverbindlich)
+              Workshop buchen
             </Button>
-            <Button size="lg" variant="default" onClick={onContinue}>
-              Direkt buchen & starten
+            <Button size="lg" variant="outline" asChild>
+              <a href="/ai-design-sprint">Mehr zum Workshop</a>
+            </Button>
+          </>
+        )}
+        
+        {score >= 60 && gatesOk && sprintType === "Online Design Sprint" && (
+          <>
+            <Button size="lg" onClick={onContinue}>
+              Online Sprint starten
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href="/ai-design-sprint/online">Mehr zum Online Sprint</a>
             </Button>
           </>
         )}
@@ -150,9 +158,14 @@ export const ResultRecommendation = ({
         )}
         
         {score < 60 && (
-          <Button size="lg" onClick={onContinue}>
-            Problem-Framing anfragen
-          </Button>
+          <>
+            <Button size="lg" onClick={onContinue}>
+              Problem-Framing anfragen
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href="/problem-framing-workshop">Mehr zum Workshop</a>
+            </Button>
+          </>
         )}
       </div>
     </div>
