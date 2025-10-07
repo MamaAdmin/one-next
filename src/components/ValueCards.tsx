@@ -12,7 +12,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
   return (
     <section className="py-16 bg-[#fff0ed]">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="space-y-8 mb-8">
           {/* Expertise Card */}
           <div className="bg-secondary rounded-[2rem] p-12 space-y-6">
             <InlineTextField
