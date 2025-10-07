@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { StarburstIcon, ArrowsOutIcon, GridIcon, BracketsIcon, MessageIcon } from "@/components/ui/custom-icons";
+import workshopImage from "@/assets/service-workshop.jpg";
+import aiImplementationImage from "@/assets/service-ai-implementation.jpg";
 
 const Services = () => {
   const services = [
@@ -12,6 +14,7 @@ const Services = () => {
       title: "Digitale Transformation mit AI starten",
       description:
         "Identifizieren Sie AI-Chancen durch unsere AI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler Online Sprint. Challenge noch unklar? Unser Problem-Framing-Workshop bereitet Sie optimal vor.",
+      image: workshopImage,
     },
     {
       icon: ArrowsOutIcon,
@@ -19,6 +22,7 @@ const Services = () => {
       title: "Proof of AI Development",
       description:
         "Entwickeln Sie vom AI Design Sprint zur ersten Implementierung. Wir entwickeln eine wettbewerbsfähige AI-Lösung, die Ihre Anforderungen erfüllt und Feedback sammelt. Die MVP-Version garantiert deutlich reduziertes Risiko.",
+      image: aiImplementationImage,
     },
     {
       icon: GridIcon,
@@ -26,6 +30,7 @@ const Services = () => {
       title: "Datenqualitäts-Audit",
       description:
         "Professionelle Daten Analyse für Ihr Unternehmen, denn Daten sind die Grundlage für alles. Wir schlagen eine Datenerfassungsstrategie vor die besseren Wert für Ihr Unternehmen liefert.",
+      image: aiImplementationImage,
     },
     {
       icon: MessageIcon,
@@ -33,6 +38,7 @@ const Services = () => {
       title: "AI Consulting Services",
       description:
         "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt.",
+      image: workshopImage,
     },
   ];
 
@@ -69,6 +75,13 @@ const Services = () => {
                 className="group hover:shadow-hover transition-all duration-300 border-border hover:border-primary/50 animate-scale-in overflow-hidden"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={service.image} 
+                    alt={service.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
                 <CardContent className="p-6 md:p-8 space-y-3 md:space-y-4">
                   <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-primary flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Icon className="w-7 h-7 md:w-8 md:h-8 text-primary-foreground" />
