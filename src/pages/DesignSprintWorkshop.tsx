@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, Target, Users, Lightbulb, ArrowRight, Calendar, Rocket, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
+import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
+import workshopImage from "@/assets/workshop-collaboration.jpg";
 
 const DesignSprintWorkshop = () => {
   return (
@@ -11,30 +14,51 @@ const DesignSprintWorkshop = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-background via-muted/30 to-background">
+      <section className="relative py-20 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-              Der AI Design Sprint Workshop:
-              <span className="block mt-2 bg-gradient-primary bg-clip-text text-transparent">
-                Intensiv, expert-geführt, maßgeschneidert
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, AI-Potenziale systematisch zu 
-              identifizieren, innovative Lösungen zu entwickeln und direkt umsetzbare Roadmaps zu erstellen – 
-              begleitet von erfahrenen AI-Experten und Facilitators.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Link to="/sprint/assessment">
-                <Button size="lg" className="bg-gradient-primary hover:opacity-90">
-                  Workshop anfragen
-                  <ArrowRight className="ml-2 w-4 h-4" />
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+            <div className="space-y-6 animate-fade-in">
+              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold">
+                <Rocket className="w-4 h-4" />
+                Nächster Schritt
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
+                Design Sprint Workshop
+                <span className="block mt-2 bg-gradient-primary bg-clip-text text-transparent">
+                  Wenn die Challenge klar ist
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                2–4 Tage intensiver Workshop vor Ort oder remote mit Ihrem Team. 
+                Geleitet von AI-Experten & Facilitatoren mit KI-Tools in allen Phasen: 
+                Research, Ideenfindung, Prototyping, Testing.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <Link to="/sprint/assessment">
+                  <Button size="lg" className="bg-gradient-primary hover:opacity-90">
+                    Workshop buchen
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+                <Button asChild size="lg" variant="outline">
+                  <Link to="/problem-framing-workshop">
+                    Challenge erst klären
+                  </Link>
                 </Button>
-              </Link>
-              <Button size="lg" variant="outline">
-                Termin vereinbaren
-              </Button>
+              </div>
+              <div className="bg-primary/10 rounded-lg p-4 mt-6">
+                <p className="text-sm font-semibold flex items-center gap-2">
+                  <ArrowRight className="w-4 h-4 text-primary" />
+                  Ergebnis: Getesteter Prototyp mit klaren Insights
+                </p>
+              </div>
+            </div>
+            <div className="relative">
+              <img 
+                src={workshopImage} 
+                alt="Design Sprint Workshop" 
+                className="rounded-2xl shadow-2xl w-full h-auto"
+              />
             </div>
           </div>
         </div>
@@ -516,6 +540,12 @@ const DesignSprintWorkshop = () => {
           </div>
         </div>
       </section>
+
+      {/* Workshop Flow */}
+      <WorkshopFlowDiagram />
+
+      {/* Comparison Section */}
+      <WorkshopComparisonSection />
 
       {/* CTA Section - Dual Option */}
       <section className="py-24 bg-gradient-primary relative overflow-hidden">
