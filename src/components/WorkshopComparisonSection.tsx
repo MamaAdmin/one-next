@@ -3,18 +3,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import workshopImage from "@/assets/workshop-collaboration.jpg";
-
 export const WorkshopComparisonSection = () => {
-  return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/20">
+  return <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4">
         {/* Hero Image */}
         <div className="mb-12 rounded-2xl overflow-hidden">
-          <img 
-            src={workshopImage} 
-            alt="Workshop Collaboration" 
-            className="w-full h-[300px] md:h-[400px] object-cover"
-          />
+          
         </div>
 
         {/* Section Header */}
@@ -146,6 +140,5 @@ export const WorkshopComparisonSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
