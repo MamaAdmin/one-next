@@ -7,8 +7,12 @@ export const WorkshopComparisonSection = () => {
   return <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4">
         {/* Hero Image */}
-        <div className="mb-12 rounded-2xl overflow-hidden">
-          
+        <div className="mb-12 rounded-2xl overflow-hidden shadow-lg">
+          <img 
+            src={workshopImage} 
+            alt="Workshop Collaboration" 
+            className="w-full h-auto object-cover"
+          />
         </div>
 
         {/* Section Header */}
