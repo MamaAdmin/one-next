@@ -293,78 +293,81 @@ const ProblemFramingWorkshop = () => {
         </div>
       </section>
 
-      {/* Templates & Tools */}
+      {/* Methodology - Without Templates */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Vorlagen & <span className="text-primary">Tools</span>
+            <h2 className="text-3xl font-bold text-center mb-4">
+              Arbeitsweise: <span className="text-primary">Ohne starre Vorlagen & Tools</span>
             </h2>
+            <p className="text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
+              Im Gegensatz zum Design Sprint, der mit standardisierten Templates und AI-Tools arbeitet, 
+              ist der Problem-Framing-Workshop <strong>flexibel und situativ</strong>. 
+              Wir nutzen bewährte Facilitationstechniken, die sich an Ihr Team und Ihre Challenge anpassen.
+            </p>
             
             <div className="space-y-8">
-              {/* Challenge Statement Template */}
+              {/* Flexible Facilitation */}
               <Card className="border-border">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <Lightbulb className="w-5 h-5 text-primary" />
-                    Challenge Statement (One-Pager)
+                    <Users className="w-5 h-5 text-primary" />
+                    Moderationsbasierter Ansatz
                   </h3>
-                  <div className="bg-muted/50 p-4 rounded-lg text-sm font-mono space-y-2">
-                    <p><strong>Für</strong> [primäre Zielgruppe]</p>
-                    <p><strong>die</strong> [konkreter Bedarf/Use Case],</p>
-                    <p><strong>ist</strong> [Problem/Barriere]</p>
-                    <p><strong>weil</strong> [Ursache/Kontext].</p>
-                    <p className="pt-2"><strong>Erfolg nach 5 Tagen:</strong> [messbares Ergebnis]</p>
-                    <p><strong>Scope – In:</strong> [Themen], <strong>Out:</strong> [ausgeschlossen]</p>
+                  <p className="text-muted-foreground mb-4">
+                    Statt vorgefertigter Formulare setzen wir auf <strong>moderierte Diskussionen</strong>, 
+                    Whiteboards und <strong>kollaborative Denkprozesse</strong>. Der Facilitator passt 
+                    Methoden und Fragen dynamisch an den Flow und die Bedürfnisse des Teams an.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4 mt-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-sm">Moderierte Gespräche</p>
+                        <p className="text-xs text-muted-foreground">Strukturierte Diskussionen statt Ausfüllen von Templates</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-sm">Adaptive Methoden</p>
+                        <p className="text-xs text-muted-foreground">Techniken passen sich Ihrem Team an</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-sm">Situative Fragetechniken</p>
+                        <p className="text-xs text-muted-foreground">Offene Fragen statt vorgegebene Antwortfelder</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-sm">Live-Dokumentation</p>
+                        <p className="text-xs text-muted-foreground">Gemeinsam am Whiteboard entwickeln</p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Smart Sailboat */}
-              <Card className="border-border">
+              {/* Key Distinction */}
+              <Card className="border-primary/20 bg-primary/5">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                     <Target className="w-5 h-5 text-primary" />
-                    Smart Sailboat (Leitfragen)
+                    Der Unterschied zum Design Sprint
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <p className="font-semibold text-sm">🌬️ Wind (Treiber)</p>
-                      <p className="text-sm text-muted-foreground">Was unterstützt uns? (Trends, Stärken)</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="font-semibold text-sm">⚓ Anker (Hindernisse)</p>
-                      <p className="text-sm text-muted-foreground">Was bremst uns? (Prozesse, Systeme)</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="font-semibold text-sm">🏝️ Hafen (Zielzustand)</p>
-                      <p className="text-sm text-muted-foreground">Wo wollen wir in 3–6 Monaten sein?</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="font-semibold text-sm">🧊 Eisberg (Risiken)</p>
-                      <p className="text-sm text-muted-foreground">Was könnte uns überraschend stoppen?</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Tools */}
-              <Card className="border-border">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-4">Empfohlene Tools</h3>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <p className="font-semibold text-sm">Board/Remote</p>
-                      <p className="text-sm text-muted-foreground">Miro, Mural</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="font-semibold text-sm">Dokumentation</p>
-                      <p className="text-sm text-muted-foreground">Confluence, Notion</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="font-semibold text-sm">Prototyping</p>
-                      <p className="text-sm text-muted-foreground">Figma, Lovable</p>
-                    </div>
+                  <div className="space-y-3 text-sm">
+                    <p className="text-muted-foreground">
+                      <strong className="text-foreground">Problem-Framing-Workshop:</strong> Keine standardisierten Templates oder AI-Tools. 
+                      Fokus liegt auf <strong>Moderation, Dialog und individuellem Zuschnitt</strong> auf Ihre spezifische Situation.
+                    </p>
+                    <p className="text-muted-foreground">
+                      <strong className="text-foreground">AI Design Sprint:</strong> Arbeitet mit bewährten Templates, KI-gestützten Tools 
+                      und einem <strong>strukturierten 5-Tage-Prozess</strong> – perfekt, wenn die Challenge bereits klar ist.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
