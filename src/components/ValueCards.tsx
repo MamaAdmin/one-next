@@ -79,7 +79,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               placeholder="Efficiency description"
               minRows={2}
             />
-            <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-background hover:text-background">
+            <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-background">
               {isEditMode ? (
                 <InlineTextField
                   value={content.efficiency_button || 'Neuesten Bericht lesen'}
