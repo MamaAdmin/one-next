@@ -2,10 +2,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
-import briefingImage from "@/assets/process-briefing.jpg";
-import sprintImage from "@/assets/process-sprint.jpg";
-import developmentImage from "@/assets/process-development.jpg";
-import scalingImage from "@/assets/process-scaling.jpg";
 
 interface ProcessProps {
   isEditMode?: boolean;
@@ -21,7 +17,6 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       description:
         "Erklären Sie Ihr Geschäft und teilen Sie Ihre Herausforderungen, um Einblicke in AI-Möglichkeiten und einen von unseren Experten entwickelten Ansatz zu erhalten.",
       color: "bg-primary",
-      image: briefingImage,
     },
     {
       phase: "AI Design",
@@ -30,7 +25,6 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       description:
         "Identifizieren Sie ein hochrelevantes Geschäftsproblem und arbeiten Sie mit unseren Experten zusammen, um eine AI-Lösung vorzuschlagen.",
       color: "bg-secondary",
-      image: sprintImage,
     },
     {
       phase: "Proof of AI",
@@ -39,7 +33,6 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       description:
         "Entwickeln und implementieren Sie Ihre AI-Lösung mit unserem erfahrenen Team. Von der ersten Implementierung bis zur vollständigen Integration.",
       color: "bg-accent",
-      image: developmentImage,
     },
     {
       phase: "Skalierung",
@@ -48,7 +41,6 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       description:
         "Skalieren Sie Ihre AI-Lösung und optimieren Sie kontinuierlich die Performance. Wir unterstützen Sie bei MLOps und Wartung.",
       color: "bg-primary-glow",
-      image: scalingImage,
     },
   ];
 
@@ -72,21 +64,12 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((step, index) => (
               <div key={index} className="relative animate-fade-in-up" style={{ animationDelay: `${index * 0.15}s` }}>
-                <Card className="h-full hover:shadow-hover transition-all duration-300 border-border hover:border-primary/50 overflow-hidden">
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <img 
-                      src={step.image} 
-                      alt={step.title}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <div className={`w-12 h-12 rounded-xl ${step.color} flex items-center justify-center text-white font-bold text-lg shadow-lg`}>
-                        {index + 1}
-                      </div>
-                    </div>
-                  </div>
-                  
+                <Card className="h-full hover:shadow-hover transition-all duration-300 border-border hover:border-primary/50">
                   <CardContent className="p-6 space-y-4">
+                    <div className={`w-12 h-12 rounded-xl ${step.color} flex items-center justify-center text-white font-bold text-lg`}>
+                      {index + 1}
+                    </div>
+                    
                     <div>
                       <div className="text-sm text-muted-foreground font-semibold uppercase tracking-wider">
                         {step.phase}
