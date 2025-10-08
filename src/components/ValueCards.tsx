@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import geometricPaper from "@/assets/geometric-paper.jpg";
+import decorativeEgg from "@/assets/decorative-egg.jpg";
+import pinkPodium from "@/assets/pink-podium.jpg";
 
 interface ValueCardsProps {
   isEditMode?: boolean;
@@ -9,17 +12,20 @@ interface ValueCardsProps {
 
 const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
   const { content, updateContent } = usePageContent('value-cards');
+  
   return (
-    <section className="py-16 bg-[#fff0ed]">
-      <div className="container mx-auto px-6">
-        <div className="space-y-8 mb-8">
-          {/* Expertise Card */}
-          <div className="bg-secondary rounded-[2rem] p-12 space-y-6">
+    <section className="py-8 md:py-16 bg-[#fff0ed]">
+      <div className="container mx-auto px-4 md:px-6">
+        {/* Mobile: Stack vertically, Tablet: 2 cols, Desktop: Asymmetric grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          
+          {/* Expertise Card - spans 1 col on mobile, 2 cols on tablet, 1 col on desktop */}
+          <div className="bg-secondary rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 space-y-4 md:space-y-6 md:col-span-2 lg:col-span-1">
             <InlineTextField
               value={content.expertise_title || 'Expertise'}
               onSave={(value) => updateContent('expertise_title', value)}
               isEditMode={isEditMode}
-              className="text-4xl font-light"
+              className="text-2xl md:text-4xl font-light"
               placeholder="Expertise title"
               as="h2"
             />
@@ -27,9 +33,9 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               value={content.expertise_description || 'Unsere Firma ist spezialisiert auf digitale Transformation, Strategieberatung und Coaching. Wir bieten maßgeschneiderte IT-Lösungen, AI-Implementierungsstrategien, optimieren Geschäftsprozesse und fördern digitale Kompetenz durch gezielte Schulungen und Workshops.'}
               onSave={(value) => updateContent('expertise_description', value)}
               isEditMode={isEditMode}
-              className="text-foreground/80 leading-relaxed"
+              className="text-sm md:text-base text-foreground/80 leading-relaxed"
               placeholder="Expertise description"
-              minRows={4}
+              minRows={3}
             />
             <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
               {isEditMode ? (
@@ -46,13 +52,22 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
             </Button>
           </div>
 
-          {/* Effizienz Card */}
-          <div className="bg-foreground text-background rounded-[2rem] p-12 space-y-6">
+          {/* Decorative Image 1 - hidden on mobile, shown on tablet+ */}
+          <div className="hidden md:block rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1">
+            <img 
+              src={geometricPaper} 
+              alt="Decorative geometric paper objects" 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+
+          {/* Effizienz Card - black background */}
+          <div className="bg-foreground text-background rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 space-y-4 md:space-y-6 lg:col-span-1">
             <InlineTextField
               value={content.efficiency_title || 'Effizienz'}
               onSave={(value) => updateContent('efficiency_title', value)}
               isEditMode={isEditMode}
-              className="text-4xl font-light text-background"
+              className="text-2xl md:text-4xl font-light text-background"
               placeholder="Efficiency title"
               as="h2"
             />
@@ -60,11 +75,11 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               value={content.efficiency_description || 'Wir generieren Effizienz durch die neusten Technologien und Automatisierungen'}
               onSave={(value) => updateContent('efficiency_description', value)}
               isEditMode={isEditMode}
-              className="text-background/80 leading-relaxed"
+              className="text-sm md:text-base text-background/80 leading-relaxed"
               placeholder="Efficiency description"
               minRows={2}
             />
-            <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-foreground">
+            <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-background hover:text-background">
               {isEditMode ? (
                 <InlineTextField
                   value={content.efficiency_button || 'Neuesten Bericht lesen'}
@@ -78,16 +93,23 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               )}
             </Button>
           </div>
-        </div>
 
-        {/* Erfolg Card */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="rounded-[2rem] p-12 space-y-6 bg-[#b0a377]">
+          {/* Decorative Image 2 - hidden on mobile */}
+          <div className="hidden md:block rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1">
+            <img 
+              src={decorativeEgg} 
+              alt="Decorative easter egg" 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+
+          {/* Erfolg Card - gold background */}
+          <div className="rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 space-y-4 md:space-y-6 bg-[#b0a377] lg:col-span-1">
             <InlineTextField
               value={content.success_title || 'Erfolg'}
               onSave={(value) => updateContent('success_title', value)}
               isEditMode={isEditMode}
-              className="text-4xl font-light"
+              className="text-2xl md:text-4xl font-light"
               placeholder="Success title"
               as="h2"
             />
@@ -95,7 +117,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               value={content.success_description || 'Erst wenn unsere Kunden erfolgreich mit unseren Produkten sind, sind wir zufrieden!'}
               onSave={(value) => updateContent('success_description', value)}
               isEditMode={isEditMode}
-              className="text-foreground/80 leading-relaxed"
+              className="text-sm md:text-base text-foreground/80 leading-relaxed"
               placeholder="Success description"
               minRows={2}
             />
@@ -114,31 +136,13 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
             </Button>
           </div>
 
-          <div className="bg-muted rounded-[2rem] p-12 flex items-center justify-center">
-            <div className="w-48 h-48 relative">
-              {/* Starburst icon */}
-              <svg viewBox="0 0 200 200" className="w-full h-full">
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const angle = (i * 360) / 24;
-                  const x1 = 100 + Math.cos((angle * Math.PI) / 180) * 40;
-                  const y1 = 100 + Math.sin((angle * Math.PI) / 180) * 40;
-                  const x2 = 100 + Math.cos((angle * Math.PI) / 180) * 100;
-                  const y2 = 100 + Math.sin((angle * Math.PI) / 180) * 100;
-                  return (
-                    <line
-                      key={i}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      className="text-foreground"
-                    />
-                  );
-                })}
-              </svg>
-            </div>
+          {/* Starburst Icon Card with decorative image - shown on all screens */}
+          <div className="bg-muted rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1">
+            <img 
+              src={pinkPodium} 
+              alt="Pink podium decorative" 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
         </div>
       </div>
