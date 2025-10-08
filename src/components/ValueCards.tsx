@@ -30,7 +30,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               as="h2"
             />
             <InlineTextArea
-              value={content.expertise_description || 'Unsere Firma ist spezialisiert auf digitale Transformation, Strategieberatung und Coaching. Wir bieten maßgeschneiderte IT-Lösungen, AI-Implementierungsstrategien, optimieren Geschäftsprozesse und fördern digitale Kompetenz durch gezielte Schulungen und Workshops.'}
+              value={content.expertise_description || 'Wir verbinden Menschen, Technologie und Prozesse. Mit agilen Methoden und Frameworks wie dem Design Sprint helfen wir, in wenigen Tagen Ideen zu entwickeln, Prototypen zu testen und schneller die richtigen Entscheidungen zu treffen. Unser Fokus: Strategieberatung, Coaching, maßgeschneiderte IT- und AI-Lösungen sowie die Förderung digitaler Kompetenz.'}
               onSave={(value) => updateContent('expertise_description', value)}
               isEditMode={isEditMode}
               className="text-sm md:text-base text-foreground/80 leading-relaxed"
