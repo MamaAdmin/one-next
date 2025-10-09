@@ -29,9 +29,6 @@ const Services = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center space-y-3 md:space-y-4 mb-12 md:mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold">Ergebnisse</h2>
-          <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity mt-6">
-            Termin vereinbaren
-          </Button>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">

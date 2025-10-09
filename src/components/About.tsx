@@ -1,6 +1,7 @@
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { Button } from "@/components/ui/button";
 
 interface AboutProps {
   isEditMode?: boolean;
@@ -30,6 +31,9 @@ const About = ({ isEditMode = false }: AboutProps) => {
             placeholder="Section description"
             minRows={4}
           />
+          <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity mt-6">
+            Termin vereinbaren
+          </Button>
         </div>
       </div>
     </section>
