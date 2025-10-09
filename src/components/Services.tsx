@@ -28,7 +28,7 @@ const Services = () => {
   return <section id="services" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center space-y-3 md:space-y-4 mb-12 md:mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold">Ergebnisse</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">In kleinen Schritten zum Ziel</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
