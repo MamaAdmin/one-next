@@ -6,7 +6,7 @@ import { CheckCircle2, Target, Users, Lightbulb, ArrowRight, Calendar, Rocket, T
 import { Link } from "react-router-dom";
 import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
 import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
-import workshopImage from "@/assets/workshop-collaboration.jpg";
+import workshopImage from "@/assets/design-sprint-workshop.jpg";
 
 const DesignSprintWorkshop = () => {
   return (
@@ -36,7 +36,7 @@ const DesignSprintWorkshop = () => {
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Link to="/sprint/assessment">
                   <Button size="lg" className="bg-gradient-primary hover:opacity-90">
-                    Workshop buchen
+                    Workshop Assessment starten
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </Link>

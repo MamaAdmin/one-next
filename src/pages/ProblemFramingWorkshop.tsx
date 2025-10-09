@@ -36,7 +36,7 @@ const ProblemFramingWorkshop = () => {
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Link to="/sprint/assessment">
                   <Button size="lg" variant="secondary">
-                    Workshop anfragen
+                    Workshop Assessment starten
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </Link>
