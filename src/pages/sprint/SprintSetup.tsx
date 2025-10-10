@@ -297,16 +297,16 @@ export default function SprintSetup() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label>Teilnahme an Tagen</Label>
+                      <Label>Teilnahme an Phasen</Label>
                       <div className="flex gap-2">
-                        {[1, 2, 3, 4, 5].map(day => (
+                        {[1, 2, 3, 4, 5, 6].map(phase => (
                           <Button
-                            key={day}
-                            variant={expert.days.includes(day) ? "default" : "outline"}
+                            key={phase}
+                            variant={expert.days.includes(phase) ? "default" : "outline"}
                             size="sm"
-                            onClick={() => toggleExpertDay(index, day)}
+                            onClick={() => toggleExpertDay(index, phase)}
                           >
-                            Tag {day}
+                            Phase {phase}
                           </Button>
                         ))}
                       </div>
@@ -338,13 +338,13 @@ export default function SprintSetup() {
               Planen Sie Ihre Sprint-Tage. Termine werden als Kalender-Einladung versendet.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[0, 1, 2, 3, 4, 5].map(day => (
-                <div key={day} className="space-y-2">
-                  <Label>Tag {day} - {["Problem Framing", "Map", "Sketch", "Decide", "Prototype", "Test"][day]}</Label>
+              {[1, 2, 3, 4, 5, 6].map(phase => (
+                <div key={phase} className="space-y-2">
+                  <Label>Phase {phase} - {["Problem Framing", "Map", "Sketch", "Decide", "Prototype", "Test"][phase - 1]}</Label>
                   <Input
                     type="datetime-local"
-                    value={kickoffDates[day] || ""}
-                    onChange={(e) => setKickoffDates({ ...kickoffDates, [day]: e.target.value })}
+                    value={kickoffDates[phase] || ""}
+                    onChange={(e) => setKickoffDates({ ...kickoffDates, [phase]: e.target.value })}
                   />
                 </div>
               ))}

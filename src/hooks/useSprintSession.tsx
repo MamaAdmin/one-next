@@ -9,9 +9,9 @@ interface SprintSession {
   id: string;
   session_token: string;
   team_name: string;
-  current_day: number;
+  current_phase: number;
   completion_percentage: number;
-  last_active_day: number;
+  last_active_phase: number;
   streak_days: number;
   achievements: Array<{ id: string; title: string; icon: string }>;
   task_completion: Record<string, boolean>;
@@ -23,9 +23,9 @@ const convertDbToSession = (data: DbSprintSession): SprintSession => {
     id: data.id,
     session_token: data.session_token,
     team_name: data.team_name,
-    current_day: data.current_day,
+    current_phase: data.current_phase,
     completion_percentage: data.completion_percentage,
-    last_active_day: data.last_active_day,
+    last_active_phase: data.last_active_phase,
     streak_days: data.streak_days,
     achievements: (data.achievements as any) || [],
     task_completion: (data.task_completion as any) || {},
@@ -92,9 +92,9 @@ export const useSprintSession = (sessionToken?: string) => {
           session_token: newToken,
           team_name: teamName,
           user_id: user?.id || null,
-          current_day: 0,
+          current_phase: 1,
           completion_percentage: 0,
-          last_active_day: 0,
+          last_active_phase: 1,
           streak_days: 0,
           achievements: [],
           task_completion: {},
@@ -181,16 +181,16 @@ export const useSprintSession = (sessionToken?: string) => {
     });
   };
 
-  const advanceToDay = async (day: number) => {
+  const advanceToPhase = async (phase: number) => {
     if (!session) return;
 
-    // Check if advancing to next day (streak logic)
-    const isNextDay = day === session.current_day + 1;
-    const streakIncrement = isNextDay ? 1 : 0;
+    // Check if advancing to next phase (streak logic)
+    const isNextPhase = phase === session.current_phase + 1;
+    const streakIncrement = isNextPhase ? 1 : 0;
 
     await updateSession({
-      current_day: day,
-      last_active_day: day,
+      current_phase: phase,
+      last_active_phase: phase,
       streak_days: session.streak_days + streakIncrement,
     });
   };
@@ -219,7 +219,7 @@ export const useSprintSession = (sessionToken?: string) => {
     updateSession,
     updateChallengeData,
     toggleTask,
-    advanceToDay,
+    advanceToPhase,
     unlockAchievement,
   };
 };

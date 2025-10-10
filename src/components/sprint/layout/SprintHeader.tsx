@@ -64,7 +64,7 @@ export const SprintHeader = () => {
             {session && (
               <div className="hidden md:block text-sm text-muted-foreground">
                 <span className="font-semibold text-foreground">{session.team_name}</span>
-                {" • "}Tag {session.current_day}
+                {" • "}Phase {session.current_phase}
               </div>
             )}
           </div>
@@ -137,7 +137,7 @@ export const SprintHeader = () => {
               {session && (
                 <div className="text-sm text-muted-foreground pb-4 border-b">
                   <span className="font-semibold text-foreground">{session.team_name}</span>
-                  {" • "}Tag {session.current_day}
+                  {" • "}Phase {session.current_phase}
                 </div>
               )}
 

@@ -73,7 +73,7 @@ export default function SprintIndex() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />
-                  6 Tage strukturierter Prozess (Tag 0-5)
+                  6 Phasen strukturierter Prozess
                 </li>
               </ul>
             </div>
@@ -194,11 +194,11 @@ export default function SprintIndex() {
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Aktueller Stand</h2>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold">Tag {session.current_day}</p>
+                <p className="font-semibold">Phase {session.current_phase}</p>
                 <p className="text-sm text-muted-foreground">
-                  {["Problem Framing", "Map", "Sketch", "Decide", "Prototype", "Test"][session.current_day]}
+                  {["Problem Framing", "Map", "Sketch", "Decide", "Prototype", "Test"][session.current_phase - 1]}
                 </p>
               </div>
               <Badge variant="secondary">In Bearbeitung</Badge>
@@ -206,7 +206,7 @@ export default function SprintIndex() {
             <div className="w-full bg-muted rounded-full h-2">
               <div
                 className="bg-primary h-2 rounded-full transition-all"
-                style={{ width: `${(session.current_day / 5) * 100}%` }}
+                style={{ width: `${(session.current_phase / 6) * 100}%` }}
               ></div>
             </div>
           </div>

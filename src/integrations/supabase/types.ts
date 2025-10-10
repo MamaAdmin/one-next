@@ -146,9 +146,9 @@ export type Database = {
           challenge_data: Json | null
           completion_percentage: number | null
           created_at: string | null
-          current_day: number | null
+          current_phase: number | null
           id: string
-          last_active_day: number | null
+          last_active_phase: number | null
           session_token: string
           streak_days: number | null
           task_completion: Json | null
@@ -161,9 +161,9 @@ export type Database = {
           challenge_data?: Json | null
           completion_percentage?: number | null
           created_at?: string | null
-          current_day?: number | null
+          current_phase?: number | null
           id?: string
-          last_active_day?: number | null
+          last_active_phase?: number | null
           session_token: string
           streak_days?: number | null
           task_completion?: Json | null
@@ -176,9 +176,9 @@ export type Database = {
           challenge_data?: Json | null
           completion_percentage?: number | null
           created_at?: string | null
-          current_day?: number | null
+          current_phase?: number | null
           id?: string
-          last_active_day?: number | null
+          last_active_phase?: number | null
           session_token?: string
           streak_days?: number | null
           task_completion?: Json | null

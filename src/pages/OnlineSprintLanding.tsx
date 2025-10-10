@@ -7,35 +7,43 @@ import { Link } from "react-router-dom";
 import { Target, Map, Pencil, CheckCircle, Wrench, TestTube, Clipboard, Users, Clock, Zap, FileText, BarChart3 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 const OnlineSprintLanding = () => {
-  const days = [{
-    icon: Clipboard,
-    title: "Setup-Phase",
-    description: "Team zusammenstellen (4 Kern-Rollen), Kick-off Meeting planen, Experten einladen (optional für Tag 1 & 5)"
-  }, {
-    icon: Target,
-    title: "Tag 0: Problem Framing",
-    description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
-  }, {
-    icon: Map,
-    title: "Tag 1: Map",
-    description: "Langfristziel definieren, Journey Map erstellen, How-Might-We Fragen generieren, Experten-Input (optional)"
-  }, {
-    icon: Pencil,
-    title: "Tag 2: Sketch",
-    description: "Crazy 8 Ideation, detaillierte Solution Sketches, Team-Voting"
-  }, {
-    icon: CheckCircle,
-    title: "Tag 3: Decide",
-    description: "Heatmap Voting für beste Ideen, Storyboard erstellen, Prototyp-Plan festlegen"
-  }, {
-    icon: Wrench,
-    title: "Tag 4: Prototype",
-    description: "Prototyp entwickeln (digital oder Figma), Test-Szenarien vorbereiten"
-  }, {
-    icon: TestTube,
-    title: "Tag 5: Test",
-    description: "User Testing durchführen, Feedback sammeln, Experten-Review (optional), automatisierter Report-Generator"
-  }];
+  const phases = [
+    {
+      icon: Clipboard,
+      title: "Setup-Phase",
+      description: "Team zusammenstellen (4 Kern-Rollen), Kick-off Meeting planen, Experten einladen (optional)"
+    },
+    {
+      icon: Target,
+      title: "Phase 1: Problem Framing",
+      description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
+    },
+    {
+      icon: Map,
+      title: "Phase 2: Map",
+      description: "Langfristziel definieren, Journey Map erstellen, How-Might-We Fragen generieren, Experten-Input (optional)"
+    },
+    {
+      icon: Pencil,
+      title: "Phase 3: Sketch",
+      description: "Crazy 8 Ideation, detaillierte Solution Sketches, Team-Voting"
+    },
+    {
+      icon: CheckCircle,
+      title: "Phase 4: Decide",
+      description: "Heatmap Voting für beste Ideen, Storyboard erstellen, Prototyp-Plan festlegen"
+    },
+    {
+      icon: Wrench,
+      title: "Phase 5: Prototype",
+      description: "Prototyp entwickeln (digital oder Figma), Test-Szenarien vorbereiten"
+    },
+    {
+      icon: TestTube,
+      title: "Phase 6: Test",
+      description: "User Testing durchführen, Feedback sammeln, Experten-Review (optional), automatisierter Report-Generator"
+    }
+  ];
   const features = [{
     icon: Clock,
     title: "Flexible Durchführung",
@@ -121,14 +129,14 @@ const OnlineSprintLanding = () => {
               <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-primary -translate-x-1/2" />
               
               <div className="space-y-8">
-                {days.map((day, index) => {
-                const Icon = day.icon;
+                {phases.map((phase, index) => {
+                const Icon = phase.icon;
                 return <div key={index} className="relative flex items-center gap-8">
                       <div className={`flex-1 ${index % 2 === 0 ? 'text-right' : 'order-2'}`}>
                         <Card className="inline-block text-left max-w-md">
                           <CardContent className="p-6">
-                            <h3 className="font-bold text-lg mb-2">{day.title}</h3>
-                            <p className="text-muted-foreground">{day.description}</p>
+                            <h3 className="font-bold text-lg mb-2">{phase.title}</h3>
+                            <p className="text-muted-foreground">{phase.description}</p>
                           </CardContent>
                         </Card>
                       </div>
@@ -207,9 +215,9 @@ const OnlineSprintLanding = () => {
             
             <Accordion type="single" collapsible className="space-y-4">
               <AccordionItem value="duration">
-                <AccordionTrigger>Wie lange dauert jeder Tag?</AccordionTrigger>
+                <AccordionTrigger>Wie lange dauert jede Phase?</AccordionTrigger>
                 <AccordionContent>
-                  Jeder Tag dauert ca. 2-4 Stunden, abhängig von Ihrer Team-Größe und dem Umfang der Diskussionen. 
+                  Jede Phase dauert ca. 2-4 Stunden, abhängig von Ihrer Team-Größe und dem Umfang der Diskussionen. 
                   Sie können die Zeit flexibel aufteilen und Pausen einlegen.
                 </AccordionContent>
               </AccordionItem>
@@ -223,9 +231,9 @@ const OnlineSprintLanding = () => {
               </AccordionItem>
               
               <AccordionItem value="pause">
-                <AccordionTrigger>Kann ich Pausen machen zwischen den Tagen?</AccordionTrigger>
+                <AccordionTrigger>Kann ich Pausen machen zwischen den Phasen?</AccordionTrigger>
                 <AccordionContent>
-                  Ja, absolut! Der Online Sprint ist flexibel - Sie können Pausen zwischen den Tagen einlegen 
+                  Ja, absolut! Der Online Sprint ist flexibel - Sie können Pausen zwischen den Phasen einlegen 
                   und im eigenen Tempo arbeiten. Ihr Fortschritt wird automatisch gespeichert.
                 </AccordionContent>
               </AccordionItem>
@@ -234,15 +242,15 @@ const OnlineSprintLanding = () => {
                 <AccordionTrigger>Was ist der Unterschied zum facilitierten Workshop?</AccordionTrigger>
                 <AccordionContent>
                   Der facilitierte Workshop ist ein intensiver 2-Tage-Workshop mit AI-Experten und Facilitatoren vor Ort oder remote. 
-                  Der Online Sprint ist selbstgeführt über 6 Tage mit digitalen Tools und flexibler Zeiteinteilung.
+                  Der Online Sprint ist selbstgeführt über 6 Phasen mit digitalen Tools und flexibler Zeiteinteilung.
                 </AccordionContent>
               </AccordionItem>
               
               <AccordionItem value="experts">
                 <AccordionTrigger>Wie funktioniert die Experten-Einbindung?</AccordionTrigger>
                 <AccordionContent>
-                  Sie können optional externe Experten zu Tag 1 (Map) und Tag 5 (Test) einladen. 
-                  Diese erhalten automatisch E-Mail-Einladungen mit Kalender-Terminen und haben nur Zugriff auf ihre spezifischen Tage.
+                  Sie können optional externe Experten zu Phase 2 (Map) und Phase 6 (Test) einladen. 
+                  Diese erhalten automatisch E-Mail-Einladungen mit Kalender-Terminen und haben nur Zugriff auf ihre spezifischen Phasen.
                 </AccordionContent>
               </AccordionItem>
               

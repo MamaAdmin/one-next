@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 
 interface SprintDashboardProps {
   teamName: string;
-  currentDay: number;
+  currentPhase: number;
   completionPercentage: number;
   streakDays: number;
   achievements: Array<{ id: string; title: string; icon: string }>;
@@ -16,7 +16,7 @@ interface SprintDashboardProps {
 
 export const SprintDashboard = ({
   teamName,
-  currentDay,
+  currentPhase,
   completionPercentage,
   streakDays,
   achievements,
@@ -63,7 +63,7 @@ export const SprintDashboard = ({
             </div>
             <Progress value={completionPercentage} className="h-2" />
             <p className="text-sm text-muted-foreground">
-              Tag {currentDay} von 5
+              Phase {currentPhase} von 6
             </p>
           </div>
         </Card>
@@ -125,7 +125,7 @@ export const SprintDashboard = ({
         <h3 className="font-semibold mb-4">Nächste Schritte</h3>
         <div className="space-y-2">
           <Button variant="outline" className="w-full justify-start" onClick={onResume}>
-            Weiter bei Tag {currentDay}
+            Weiter bei Phase {currentPhase}
           </Button>
           <Button variant="ghost" className="w-full justify-start">
             Sprint-Report ansehen

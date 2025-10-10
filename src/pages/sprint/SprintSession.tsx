@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SprintProgressHeader } from "@/components/sprint/SprintProgressHeader";
-import { DayNavigationTabs } from "@/components/sprint/DayNavigationTabs";
+import { PhaseNavigationTabs } from "@/components/sprint/PhaseNavigationTabs";
 import { TaskChecklistCard } from "@/components/sprint/TaskChecklistCard";
 import { AchievementModal } from "@/components/sprint/AchievementModal";
 import { SmartSailboat } from "@/components/sprint/SmartSailboat";
@@ -15,17 +15,17 @@ import { Target } from "lucide-react";
 
 export default function SprintSession() {
   const navigate = useNavigate();
-  const { session, loading, saving, updateChallengeData, toggleTask, advanceToDay } = useSprintSession();
+  const { session, loading, saving, updateChallengeData, toggleTask, advanceToPhase } = useSprintSession();
   const [showAchievement, setShowAchievement] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState<any>(null);
 
-  const days = [
-    { number: 0, title: "Problem Framing", status: (session?.current_day === 0 ? "in-progress" : session && session.current_day > 0 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 1, title: "Map", status: (session && session.current_day === 1 ? "in-progress" : session && session.current_day > 1 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 2, title: "Sketch", status: (session && session.current_day === 2 ? "in-progress" : session && session.current_day > 2 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 3, title: "Decide", status: (session && session.current_day === 3 ? "in-progress" : session && session.current_day > 3 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 4, title: "Prototype", status: (session && session.current_day === 4 ? "in-progress" : session && session.current_day > 4 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 5, title: "Test", status: (session && session.current_day === 5 ? "in-progress" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+  const phases = [
+    { number: 1, title: "Problem Framing", status: (session?.current_phase === 1 ? "in-progress" : session && session.current_phase > 1 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 2, title: "Map", status: (session && session.current_phase === 2 ? "in-progress" : session && session.current_phase > 2 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 3, title: "Sketch", status: (session && session.current_phase === 3 ? "in-progress" : session && session.current_phase > 3 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 4, title: "Decide", status: (session && session.current_phase === 4 ? "in-progress" : session && session.current_phase > 4 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 5, title: "Prototype", status: (session && session.current_phase === 5 ? "in-progress" : session && session.current_phase > 5 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 6, title: "Test", status: (session && session.current_phase === 6 ? "in-progress" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
   ];
 
   if (loading) {
@@ -55,33 +55,33 @@ export default function SprintSession() {
     );
   }
 
-  const currentDay = session.current_day;
+  const currentPhase = session.current_phase;
 
   return (
     <div className="min-h-screen pt-20">
       {/* Progress Header */}
       <SprintProgressHeader
         teamName={session.team_name}
-        currentDay={currentDay}
+        currentPhase={currentPhase}
         completionPercentage={session.completion_percentage}
         streakDays={session.streak_days}
       />
 
-      {/* Day Navigation */}
-      <DayNavigationTabs
-        days={days}
-        currentDay={currentDay}
-        onDayChange={(day) => advanceToDay(day)}
+      {/* Phase Navigation */}
+      <PhaseNavigationTabs
+        phases={phases}
+        currentPhase={currentPhase}
+        onPhaseChange={(phase) => advanceToPhase(phase)}
       />
 
       {/* Main Content */}
       <main className="py-8">
         <div className="container mx-auto px-4 space-y-8">
-          {/* Day 0: Problem Framing */}
-          {currentDay === 0 && (
+          {/* Phase 1: Problem Framing */}
+          {currentPhase === 1 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Tag 0: Problem Framing</h1>
+                <h1 className="text-4xl font-bold">Phase 1: Problem Framing</h1>
                 <p className="text-xl text-muted-foreground">
                   Definiere die Challenge und den Zielzustand
                 </p>
@@ -99,29 +99,29 @@ export default function SprintSession() {
               />
 
               <TaskChecklistCard
-                title="Tag 0 Aufgaben"
+                title="Phase 1 Aufgaben"
                 tasks={[
-                  { id: "day0-1", title: "Smart Sailboat komplett ausfüllen", completed: session.task_completion?.["day0-1"] || false },
-                  { id: "day0-2", title: "1-2 Challenges priorisieren", completed: session.task_completion?.["day0-2"] || false },
+                  { id: "phase1-1", title: "Smart Sailboat komplett ausfüllen", completed: session.task_completion?.["phase1-1"] || false },
+                  { id: "phase1-2", title: "1-2 Challenges priorisieren", completed: session.task_completion?.["phase1-2"] || false },
                 ]}
                 onTaskToggle={toggleTask}
                 saving={saving}
               />
 
               <div className="flex justify-end">
-                <Button size="lg" onClick={() => advanceToDay(1)}>
-                  Weiter zu Tag 1
+                <Button size="lg" onClick={() => advanceToPhase(2)}>
+                  Weiter zu Phase 2
                   <Target className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Day 1: Map */}
-          {currentDay === 1 && (
+          {/* Phase 2: Map */}
+          {currentPhase === 2 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Tag 1: Map</h1>
+                <h1 className="text-4xl font-bold">Phase 2: Map</h1>
                 <p className="text-xl text-muted-foreground">
                   Erstelle die Customer Journey Map
                 </p>
@@ -133,29 +133,29 @@ export default function SprintSession() {
               />
 
               <TaskChecklistCard
-                title="Tag 1 Aufgaben"
+                title="Phase 2 Aufgaben"
                 tasks={[
-                  { id: "day1-1", title: "Langfristziel definieren", completed: session.task_completion?.["day1-1"] || false },
-                  { id: "day1-2", title: "Journey Map erstellen", completed: session.task_completion?.["day1-2"] || false },
-                  { id: "day1-3", title: "HMW-Fragen sammeln", completed: session.task_completion?.["day1-3"] || false },
+                  { id: "phase2-1", title: "Langfristziel definieren", completed: session.task_completion?.["phase2-1"] || false },
+                  { id: "phase2-2", title: "Journey Map erstellen", completed: session.task_completion?.["phase2-2"] || false },
+                  { id: "phase2-3", title: "HMW-Fragen sammeln", completed: session.task_completion?.["phase2-3"] || false },
                 ]}
                 onTaskToggle={toggleTask}
                 saving={saving}
               />
 
               <div className="flex justify-end">
-                <Button size="lg" onClick={() => advanceToDay(2)}>
-                  Weiter zu Tag 2
+                <Button size="lg" onClick={() => advanceToPhase(3)}>
+                  Weiter zu Phase 3
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Day 2: Sketch */}
-          {currentDay === 2 && (
+          {/* Phase 3: Sketch */}
+          {currentPhase === 3 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Tag 2: Sketch</h1>
+                <h1 className="text-4xl font-bold">Phase 3: Sketch</h1>
                 <p className="text-xl text-muted-foreground">
                   Skizziere 8 Lösungsideen
                 </p>
@@ -171,18 +171,18 @@ export default function SprintSession() {
               />
 
               <div className="flex justify-end">
-                <Button size="lg" onClick={() => advanceToDay(3)}>
-                  Weiter zu Tag 3
+                <Button size="lg" onClick={() => advanceToPhase(4)}>
+                  Weiter zu Phase 4
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Day 3: Decide */}
-          {currentDay === 3 && (
+          {/* Phase 4: Decide */}
+          {currentPhase === 4 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Tag 3: Decide</h1>
+                <h1 className="text-4xl font-bold">Phase 4: Decide</h1>
                 <p className="text-xl text-muted-foreground">
                   Wähle die beste Idee und erstelle ein Storyboard
                 </p>
@@ -194,18 +194,18 @@ export default function SprintSession() {
               />
 
               <div className="flex justify-end">
-                <Button size="lg" onClick={() => advanceToDay(4)}>
-                  Weiter zu Tag 4
+                <Button size="lg" onClick={() => advanceToPhase(5)}>
+                  Weiter zu Phase 5
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Day 4: Prototype */}
-          {currentDay === 4 && (
+          {/* Phase 5: Prototype */}
+          {currentPhase === 5 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Tag 4: Prototype</h1>
+                <h1 className="text-4xl font-bold">Phase 5: Prototype</h1>
                 <p className="text-xl text-muted-foreground">
                   Erstelle einen testbaren Prototyp
                 </p>
@@ -215,18 +215,18 @@ export default function SprintSession() {
                 <p className="text-muted-foreground mb-4">
                   Prototyping-Phase wird in Kürze verfügbar sein
                 </p>
-                <Button onClick={() => advanceToDay(5)}>
-                  Weiter zu Tag 5
+                <Button onClick={() => advanceToPhase(6)}>
+                  Weiter zu Phase 6
                 </Button>
               </Card>
             </div>
           )}
 
-          {/* Day 5: Test */}
-          {currentDay === 5 && (
+          {/* Phase 6: Test */}
+          {currentPhase === 6 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Tag 5: Test</h1>
+                <h1 className="text-4xl font-bold">Phase 6: Test</h1>
                 <p className="text-xl text-muted-foreground">
                   Teste deinen Prototyp mit echten Usern
                 </p>

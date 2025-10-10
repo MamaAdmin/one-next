@@ -4,20 +4,20 @@ import { Progress } from "@/components/ui/progress";
 
 interface SprintProgressHeaderProps {
   teamName: string;
-  currentDay: number;
+  currentPhase: number;
   completionPercentage: number;
   streakDays: number;
-  totalDays?: number;
+  totalPhases?: number;
 }
 
 export const SprintProgressHeader = ({
   teamName,
-  currentDay,
+  currentPhase,
   completionPercentage,
   streakDays,
-  totalDays = 6,
+  totalPhases = 6,
 }: SprintProgressHeaderProps) => {
-  const estimatedTimeRemaining = (totalDays - currentDay) * 8; // 8 hours per day
+  const estimatedTimeRemaining = (totalPhases - currentPhase) * 8; // 8 hours per phase
 
   return (
     <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -30,7 +30,7 @@ export const SprintProgressHeader = ({
               <span className="font-semibold text-sm">{teamName}</span>
             </div>
             <Badge variant="secondary" className="text-xs">
-              Tag {currentDay}/{totalDays - 1}
+              Phase {currentPhase}/{totalPhases}
             </Badge>
           </div>
           <Progress value={completionPercentage} className="h-2" />
@@ -47,15 +47,15 @@ export const SprintProgressHeader = ({
             </div>
           </div>
 
-          {/* Center: Day Dots */}
+          {/* Center: Phase Dots */}
           <div className="flex items-center gap-2">
-            {Array.from({ length: totalDays }, (_, i) => (
+            {Array.from({ length: totalPhases }, (_, i) => (
               <div
                 key={i}
                 className={`h-2 w-2 rounded-full transition-all ${
-                  i < currentDay
+                  i < currentPhase - 1
                     ? "bg-primary scale-110"
-                    : i === currentDay
+                    : i === currentPhase - 1
                     ? "bg-primary animate-pulse scale-125"
                     : "bg-muted"
                 }`}
