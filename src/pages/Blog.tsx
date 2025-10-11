@@ -10,6 +10,7 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { useToast } from "@/hooks/use-toast";
+import DOMPurify from "dompurify";
 
 interface Article {
   id: string;
@@ -156,9 +157,9 @@ const Blog = () => {
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <div 
+                           <div 
                             className="text-muted-foreground line-clamp-3"
-                            dangerouslySetInnerHTML={{ __html: article.excerpt || "" }}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.excerpt || "") }}
                           />
                         </CardContent>
                       </Card>

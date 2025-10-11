@@ -3,6 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DOMPurify from "dompurify";
 
 interface RichTextEditorProps {
   value: string;
@@ -76,7 +77,7 @@ export const RichTextEditor = ({
     return (
       <div
         className={cn("prose prose-lg max-w-none", className)}
-        dangerouslySetInnerHTML={{ __html: value }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }}
       />
     );
   }

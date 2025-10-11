@@ -5,6 +5,7 @@ import { HeatmapVoting } from "@/components/sprint/HeatmapVoting";
 import { SmartSailboat } from "@/components/sprint/SmartSailboat";
 import { Card } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import DOMPurify from "dompurify";
 
 interface ModuleRendererProps {
   moduleType: string;
@@ -121,7 +122,7 @@ export const ModuleRenderer = ({
       return (
         <Card className="p-6">
           <div className="prose max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: moduleConfig?.content || "<p>Benutzerdefinierte Übung</p>" }} />
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(moduleConfig?.content || "<p>Benutzerdefinierte Übung</p>") }} />
           </div>
         </Card>
       );
