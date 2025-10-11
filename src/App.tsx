@@ -15,6 +15,8 @@ import AIConsultingServices from "./pages/AIConsultingServices";
 import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
 import Auth from "./pages/Auth";
+import PasswordReset from "./pages/PasswordReset";
+import UpdatePassword from "./pages/UpdatePassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import LMSCustomerDashboard from "./pages/admin/LMSCustomerDashboard";
 import LMSIndex from "./pages/lms/LMSIndex";
@@ -57,6 +59,8 @@ const App = () => (
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/data-quality-audit" element={<DataQualityAudit />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/lms" element={<LMSCustomerDashboard />} />
           <Route path="/lms" element={<LMSIndex />} />

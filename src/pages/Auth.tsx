@@ -196,6 +196,14 @@ const Auth = () => {
                     <Button type="submit" className="w-full" disabled={loading}>
                       {loading ? "Signing in..." : "Sign In"}
                     </Button>
+                    <div className="text-center mt-4">
+                      <a
+                        href="/password-reset"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        Forgot your password?
+                      </a>
+                    </div>
                   </form>
                 </CardContent>
               </Card>
