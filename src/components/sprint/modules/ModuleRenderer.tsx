@@ -93,15 +93,21 @@ export const ModuleRenderer = ({
     case "heatmap":
       return (
         <HeatmapVoting
-          ideas={data?.ideas || []}
-          onVote={(ideaId) => {
-            const ideas = data?.ideas || [];
-            const updated = ideas.map((idea: any) =>
-              idea.id === ideaId
-                ? { ...idea, votes: (idea.votes || 0) + 1 }
-                : idea
+          sketches={data?.sketches || []}
+          userVotes={data?.userVotes || 0}
+          maxVotes={moduleConfig?.maxVotes || 3}
+          onVote={(sketchId) => {
+            const newUserVotes = (data?.userVotes || 0) + 1;
+            const updatedSketches = (data?.sketches || []).map((sketch: any) =>
+              sketch.id === sketchId
+                ? { ...sketch, votes: (sketch.votes || 0) + 1 }
+                : sketch
             );
-            onDataChange({ ideas: updated });
+            onDataChange({
+              ...data,
+              sketches: updatedSketches,
+              userVotes: newUserVotes,
+            });
           }}
         />
       );

@@ -26,7 +26,7 @@ export const useLMSEnrollment = () => {
           return;
         }
 
-        const { data: participant } = await supabase
+        const { data: participant } = await (supabase as any)
           .from("participants")
           .select("id")
           .eq("user_id", user.id)
@@ -37,7 +37,7 @@ export const useLMSEnrollment = () => {
           return;
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("lms_course_enrollments")
           .select("*")
           .eq("participant_id", participant.id)
@@ -81,7 +81,7 @@ export const useLMSEnrollment = () => {
   }, []);
 
   const updateProgress = async (enrollmentId: string, phaseNumber: number) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("lms_course_enrollments")
       .update({ current_phase: phaseNumber })
       .eq("id", enrollmentId);

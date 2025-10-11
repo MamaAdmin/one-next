@@ -38,7 +38,7 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
         setLoading(true);
 
         // Load modules
-        const { data: modulesData, error: modulesError } = await supabase
+        const { data: modulesData, error: modulesError } = await (supabase as any)
           .from("lms_course_modules")
           .select("*")
           .eq("course_id", courseId)
@@ -50,7 +50,7 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
 
         // Load progress if enrollmentId provided
         if (enrollmentId) {
-          const { data: progressData, error: progressError } = await supabase
+          const { data: progressData, error: progressError } = await (supabase as any)
             .from("lms_module_progress")
             .select("*")
             .eq("enrollment_id", enrollmentId);
@@ -114,14 +114,14 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
       const existingProgress = progress[moduleId];
 
       if (existingProgress) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("lms_module_progress")
           .update(updates)
           .eq("id", existingProgress.id);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from("lms_module_progress")
           .insert({
             enrollment_id: enrollmentId,
@@ -133,7 +133,7 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
       }
 
       // Recalculate enrollment progress
-      await supabase.rpc("calculate_enrollment_progress", {
+      await (supabase as any).rpc("calculate_enrollment_progress", {
         p_enrollment_id: enrollmentId
       });
     } catch (error) {
