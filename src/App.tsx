@@ -19,7 +19,13 @@ import PasswordReset from "./pages/PasswordReset";
 import UpdatePassword from "./pages/UpdatePassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import LMSCustomerDashboard from "./pages/admin/LMSCustomerDashboard";
+import LMSParticipantDashboard from "./pages/admin/LMSParticipantDashboard";
+import LMSCourseDashboard from "./pages/admin/LMSCourseDashboard";
+import LMSPurchaseDashboard from "./pages/admin/LMSPurchaseDashboard";
+import LMSEnrollmentDashboard from "./pages/admin/LMSEnrollmentDashboard";
 import LMSIndex from "./pages/lms/LMSIndex";
+import LMSCourseDetail from "./pages/lms/LMSCourseDetail";
+import LMSDataExport from "./pages/lms/LMSDataExport";
 import SprintSetup from "./pages/sprint/SprintSetup";
 import SprintIndex from "./pages/sprint/SprintIndex";
 import SprintSession from "./pages/sprint/SprintSession";
@@ -63,7 +69,13 @@ const App = () => (
           <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/lms" element={<LMSCustomerDashboard />} />
+          <Route path="/admin/lms/participants" element={<LMSParticipantDashboard />} />
+          <Route path="/admin/lms/courses" element={<LMSCourseDashboard />} />
+          <Route path="/admin/lms/purchases" element={<LMSPurchaseDashboard />} />
+          <Route path="/admin/lms/enrollments" element={<LMSEnrollmentDashboard />} />
           <Route path="/lms" element={<LMSIndex />} />
+          <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
+          <Route path="/lms/data-export" element={<LMSDataExport />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
