@@ -59,7 +59,7 @@ export const SprintHeader = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center" title="Zurück zur Hauptseite">
-              <img src={oneNextLogo} alt="one-next logo" className="h-16 w-auto" />
+              <img src={oneNextLogo} alt="one-next logo" className="h-14 w-auto" />
             </Link>
             {session && (
               <div className="hidden md:block text-sm text-muted-foreground">
