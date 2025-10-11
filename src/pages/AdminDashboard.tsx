@@ -87,11 +87,14 @@ const AdminDashboard = () => {
                 </CardHeader>
                 <div className="p-6">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <Link to="/admin/lms/customers">
+                    <Link to="/admin/lms">
                       <Button variant="outline" className="w-full h-20">Kunden</Button>
                     </Link>
                     <Link to="/admin/lms/courses">
                       <Button variant="outline" className="w-full h-20">Kurse</Button>
+                    </Link>
+                    <Link to="/admin/lms/modules">
+                      <Button variant="outline" className="w-full h-20">Module</Button>
                     </Link>
                     <Link to="/admin/lms/purchases">
                       <Button variant="outline" className="w-full h-20">Käufe</Button>

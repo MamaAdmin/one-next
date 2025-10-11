@@ -1,22 +1,63 @@
 import { useParams, Link } from "react-router-dom";
 import { useLMSModules } from "@/hooks/useLMSModules";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
+import { useGDPRConsent } from "@/hooks/useGDPRConsent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle2, Circle, Lock } from "lucide-react";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ModuleRenderer } from "@/components/sprint/modules/ModuleRenderer";
+import { GDPRConsent } from "@/components/lms/GDPRConsent";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function LMSCourseDetail() {
   const { enrollmentId } = useParams<{ enrollmentId: string }>();
   const { currentEnrollment, loading: enrollmentLoading } = useLMSEnrollment();
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
+  const [courseId, setCourseId] = useState<string | null>(null);
+  const [participantId, setParticipantId] = useState<string | null>(null);
+  const [showGDPRConsent, setShowGDPRConsent] = useState(false);
   
-  // Mock data for now - replace with actual enrollment lookup
-  const courseId = "mock-course-id";
-  const { modules, loading: modulesLoading } = useLMSModules(courseId, enrollmentId);
+  // Load course ID from enrollment
+  useEffect(() => {
+    const loadCourseId = async () => {
+      if (!currentEnrollment) return;
+      
+      const { data: purchase } = await supabase
+        .from("lms_course_purchases")
+        .select("course_id")
+        .eq("id", currentEnrollment.purchase_id)
+        .single();
+      
+      setCourseId(purchase?.course_id || null);
+      setParticipantId(currentEnrollment.participant_id);
+    };
+    loadCourseId();
+  }, [currentEnrollment]);
+
+  // Check GDPR consent
+  useEffect(() => {
+    const checkConsent = async () => {
+      if (!participantId) return;
+      
+      const { data: consent } = await supabase
+        .from("lms_gdpr_consents")
+        .select("*")
+        .eq("participant_id", participantId)
+        .eq("consent_type", "data_processing")
+        .eq("is_granted", true)
+        .maybeSingle();
+      
+      if (!consent) {
+        setShowGDPRConsent(true);
+      }
+    };
+    checkConsent();
+  }, [participantId]);
+  
+  const { modules, progress, loading: modulesLoading } = useLMSModules(courseId || "", enrollmentId);
 
   if (enrollmentLoading || modulesLoading) {
     return (
@@ -31,14 +72,23 @@ export default function LMSCourseDetail() {
     : modules[0];
 
   const getModuleIcon = (moduleId: string) => {
-    // Check completion status
-    const isCompleted = false; // Replace with actual check
-    const isLocked = false; // Replace with actual check
+    const moduleProgress = progress[moduleId];
+    const isCompleted = moduleProgress?.is_completed || false;
     
-    if (isLocked) return <Lock className="h-4 w-4 text-muted-foreground" />;
     if (isCompleted) return <CheckCircle2 className="h-4 w-4 text-primary" />;
     return <Circle className="h-4 w-4 text-muted-foreground" />;
   };
+
+  if (showGDPRConsent && participantId) {
+    return (
+      <div className="container mx-auto py-8">
+        <GDPRConsent
+          participantId={participantId}
+          onComplete={() => setShowGDPRConsent(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8">

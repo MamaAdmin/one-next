@@ -221,6 +221,67 @@ export type Database = {
         }
         Relationships: []
       }
+      lms_achievements: {
+        Row: {
+          achievement_type: string
+          id: string
+          participant_id: string
+          unlocked_at: string | null
+        }
+        Insert: {
+          achievement_type: string
+          id?: string
+          participant_id: string
+          unlocked_at?: string | null
+        }
+        Update: {
+          achievement_type?: string
+          id?: string
+          participant_id?: string
+          unlocked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_achievements_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_activity_log: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          created_at: string | null
+          id: string
+          participant_id: string
+        }
+        Insert: {
+          activity_date: string
+          activity_type: string
+          created_at?: string | null
+          id?: string
+          participant_id: string
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string | null
+          id?: string
+          participant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_activity_log_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lms_artifacts: {
         Row: {
           created_at: string
@@ -916,6 +977,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_enrollment_progress: {
+        Args: { p_enrollment_id: string }
+        Returns: undefined
+      }
+      calculate_streak: {
+        Args: { p_participant_id: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -26,6 +26,10 @@ import LMSEnrollmentDashboard from "./pages/admin/LMSEnrollmentDashboard";
 import LMSIndex from "./pages/lms/LMSIndex";
 import LMSCourseDetail from "./pages/lms/LMSCourseDetail";
 import LMSDataExport from "./pages/lms/LMSDataExport";
+import LMSDashboard from "./pages/lms/LMSDashboard";
+import DeleteAccountPage from "./pages/lms/DeleteAccountPage";
+import LMSAnalytics from "./pages/admin/LMSAnalytics";
+import LMSModuleDashboard from "./pages/admin/LMSModuleDashboard";
 import SprintSetup from "./pages/sprint/SprintSetup";
 import SprintIndex from "./pages/sprint/SprintIndex";
 import SprintSession from "./pages/sprint/SprintSession";
@@ -73,9 +77,13 @@ const App = () => (
           <Route path="/admin/lms/courses" element={<LMSCourseDashboard />} />
           <Route path="/admin/lms/purchases" element={<LMSPurchaseDashboard />} />
           <Route path="/admin/lms/enrollments" element={<LMSEnrollmentDashboard />} />
+          <Route path="/admin/lms/analytics" element={<LMSAnalytics />} />
+          <Route path="/admin/lms/modules" element={<LMSModuleDashboard />} />
           <Route path="/lms" element={<LMSIndex />} />
+          <Route path="/lms/dashboard" element={<LMSDashboard />} />
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
           <Route path="/lms/data-export" element={<LMSDataExport />} />
+          <Route path="/lms/account/delete" element={<DeleteAccountPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

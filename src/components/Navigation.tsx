@@ -127,7 +127,7 @@ const Navigation = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50 bg-background">
                   <DropdownMenuItem asChild>
-                    <Link to="/lms" className="cursor-pointer">
+                    <Link to="/lms/dashboard" className="cursor-pointer">
                       Meine Kurse
                     </Link>
                   </DropdownMenuItem>
@@ -145,6 +145,11 @@ const Navigation = () => {
                       </DropdownMenuItem>
                     </>
                   )}
+                  <DropdownMenuItem asChild>
+                    <Link to="/lms/account/delete" className="cursor-pointer">
+                      Account löschen
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
@@ -229,7 +234,7 @@ const Navigation = () => {
 
               {user ? (
                 <>
-                  <Link to="/lms" className="block py-2 px-4 hover:bg-accent rounded-md">
+                  <Link to="/lms/dashboard" className="block py-2 px-4 hover:bg-accent rounded-md">
                     Meine Kurse
                   </Link>
                   {isAdmin && (
@@ -242,6 +247,9 @@ const Navigation = () => {
                       </Link>
                     </>
                   )}
+                  <Link to="/lms/account/delete" className="block py-2 px-4 hover:bg-accent rounded-md">
+                    Account löschen
+                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="block w-full text-left py-2 px-4 hover:bg-accent rounded-md"

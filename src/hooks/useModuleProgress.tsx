@@ -27,7 +27,7 @@ export const useModuleProgress = (enrollmentId?: string) => {
 
     try {
       const { data, error } = await (supabase as any)
-        .from("module_progress")
+        .from("lms_module_progress")
         .select("*")
         .eq("enrollment_id", enrollmentId);
 
@@ -62,7 +62,7 @@ export const useModuleProgress = (enrollmentId?: string) => {
       if (existingProgress) {
         // Update existing
         const { error } = await (supabase as any)
-          .from("module_progress")
+          .from("lms_module_progress")
           .update({
             status,
             data,
@@ -73,7 +73,7 @@ export const useModuleProgress = (enrollmentId?: string) => {
         if (error) throw error;
       } else {
         // Create new
-        const { error } = await (supabase as any).from("module_progress").insert([
+        const { error } = await (supabase as any).from("lms_module_progress").insert([
           {
             enrollment_id: enrollmentId,
             module_id: moduleId,

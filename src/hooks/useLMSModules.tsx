@@ -20,11 +20,10 @@ interface ModuleProgress {
   id: string;
   enrollment_id: string;
   module_id: string;
-  status: "not_started" | "in_progress" | "completed" | "blocked";
+  is_completed: boolean;
   started_at: string | null;
   completed_at: string | null;
   time_spent_minutes: number;
-  data: any;
 }
 
 export const useLMSModules = (courseId: string, enrollmentId?: string) => {
@@ -144,16 +143,14 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
 
   const startModule = async (moduleId: string) => {
     await updateProgress(moduleId, {
-      status: "in_progress",
       started_at: new Date().toISOString()
     });
   };
 
-  const completeModule = async (moduleId: string, data?: any) => {
+  const completeModule = async (moduleId: string) => {
     await updateProgress(moduleId, {
-      status: "completed",
-      completed_at: new Date().toISOString(),
-      data: data || {}
+      is_completed: true,
+      completed_at: new Date().toISOString()
     });
   };
 

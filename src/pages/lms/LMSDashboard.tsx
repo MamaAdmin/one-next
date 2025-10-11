@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,13 +20,44 @@ interface Achievement {
 
 export default function LMSDashboard() {
   const { currentEnrollment, loading } = useLMSEnrollment();
-  const [streak, setStreak] = useState(5);
+  const [streak, setStreak] = useState(0);
+  const [participantId, setParticipantId] = useState<string | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([
-    { id: "first_phase", icon: "🎯", title: "Erste Phase!", description: "Phase 1 abgeschlossen", unlocked: true },
+    { id: "first_phase", icon: "🎯", title: "Erste Phase!", description: "Phase 1 abgeschlossen", unlocked: false },
     { id: "artifact_10", icon: "📦", title: "10 Artifacts", description: "10 Artifacts hochgeladen", unlocked: false },
     { id: "streak_7", icon: "🔥", title: "7-Tage Streak", description: "7 Tage in Folge aktiv", unlocked: false },
     { id: "all_phases", icon: "🏆", title: "Sprint Master", description: "Alle 5 Phasen abgeschlossen", unlocked: false },
   ]);
+
+  // Load real streak and achievements
+  useEffect(() => {
+    const loadGamificationData = async () => {
+      if (!currentEnrollment) return;
+      
+      setParticipantId(currentEnrollment.participant_id);
+      
+      // Load streak
+      const { data: streakData } = await (supabase as any).rpc("calculate_streak", {
+        p_participant_id: currentEnrollment.participant_id
+      });
+      setStreak(streakData || 0);
+      
+      // Load achievements
+      const { data: achievementsData } = await supabase
+        .from("lms_achievements")
+        .select("achievement_type")
+        .eq("participant_id", currentEnrollment.participant_id);
+      
+      const unlockedTypes = new Set(achievementsData?.map(a => a.achievement_type) || []);
+      
+      setAchievements(prev => prev.map(a => ({
+        ...a,
+        unlocked: unlockedTypes.has(a.id)
+      })));
+    };
+    
+    loadGamificationData();
+  }, [currentEnrollment]);
 
   if (loading) {
     return (
