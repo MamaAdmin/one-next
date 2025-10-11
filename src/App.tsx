@@ -16,6 +16,8 @@ import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
+import LMSCustomerDashboard from "./pages/admin/LMSCustomerDashboard";
+import LMSIndex from "./pages/lms/LMSIndex";
 import SprintSetup from "./pages/sprint/SprintSetup";
 import SprintIndex from "./pages/sprint/SprintIndex";
 import SprintSession from "./pages/sprint/SprintSession";
@@ -56,6 +58,8 @@ const App = () => (
           <Route path="/data-quality-audit" element={<DataQualityAudit />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/lms" element={<LMSCustomerDashboard />} />
+          <Route path="/lms" element={<LMSIndex />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
