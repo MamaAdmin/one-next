@@ -3,6 +3,10 @@ import { Crazy8Grid } from "@/components/sprint/Crazy8Grid";
 import { StoryboardEditor } from "@/components/sprint/StoryboardEditor";
 import { HeatmapVoting } from "@/components/sprint/HeatmapVoting";
 import { SmartSailboat } from "@/components/sprint/SmartSailboat";
+import { CollaborationCanvas } from "@/components/lms/CollaborationCanvas";
+import { VotingBoard } from "@/components/lms/VotingBoard";
+import { UserTestingForm } from "@/components/lms/UserTestingForm";
+import { ArtifactUpload } from "@/components/lms/ArtifactUpload";
 import { Card } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import DOMPurify from "dompurify";
@@ -121,6 +125,43 @@ export const ModuleRenderer = ({
           onChange={(field, value) => {
             onDataChange({ ...data, [field]: value });
           }}
+        />
+      );
+
+    case "artifact_upload":
+      return (
+        <ArtifactUpload
+          enrollmentId={data?.enrollmentId || ""}
+          moduleId={data?.moduleId || ""}
+          onUpload={(artifact) => onDataChange({ ...data, artifact })}
+        />
+      );
+
+    case "collaboration":
+      return (
+        <CollaborationCanvas
+          sessionId={data?.sessionId || ""}
+          moduleId={data?.moduleId || ""}
+          onUpdate={(canvas) => onDataChange({ ...data, canvas })}
+        />
+      );
+
+    case "voting":
+      return (
+        <VotingBoard
+          sessionId={data?.sessionId || ""}
+          participantId={data?.participantId || ""}
+          items={data?.items || []}
+          maxVotes={moduleConfig?.maxVotes || 3}
+        />
+      );
+
+    case "user_testing":
+      return (
+        <UserTestingForm
+          enrollmentId={data?.enrollmentId || ""}
+          moduleId={data?.moduleId || ""}
+          onSubmit={(protocol) => onDataChange({ ...data, protocol })}
         />
       );
 

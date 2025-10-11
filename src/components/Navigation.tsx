@@ -126,12 +126,24 @@ const Navigation = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50 bg-background">
+                  <DropdownMenuItem asChild>
+                    <Link to="/lms" className="cursor-pointer">
+                      Meine Kurse
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="cursor-pointer">
-                        Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="cursor-pointer">
+                          Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/lms" className="cursor-pointer">
+                          LMS Management
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
                   )}
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -217,10 +229,18 @@ const Navigation = () => {
 
               {user ? (
                 <>
+                  <Link to="/lms" className="block py-2 px-4 hover:bg-accent rounded-md">
+                    Meine Kurse
+                  </Link>
                   {isAdmin && (
-                    <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
-                      Admin Dashboard
-                    </Link>
+                    <>
+                      <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
+                        Admin Dashboard
+                      </Link>
+                      <Link to="/admin/lms" className="block py-2 px-4 hover:bg-accent rounded-md">
+                        LMS Management
+                      </Link>
+                    </>
                   )}
                   <button
                     onClick={handleSignOut}

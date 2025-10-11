@@ -1,0 +1,182 @@
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
+import { Link } from "react-router-dom";
+import { Play, Trophy, Flame, Award, CheckCircle } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+
+interface Achievement {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  unlocked: boolean;
+}
+
+export default function LMSDashboard() {
+  const { currentEnrollment, loading } = useLMSEnrollment();
+  const [streak, setStreak] = useState(5);
+  const [achievements, setAchievements] = useState<Achievement[]>([
+    { id: "first_phase", icon: "🎯", title: "Erste Phase!", description: "Phase 1 abgeschlossen", unlocked: true },
+    { id: "artifact_10", icon: "📦", title: "10 Artifacts", description: "10 Artifacts hochgeladen", unlocked: false },
+    { id: "streak_7", icon: "🔥", title: "7-Tage Streak", description: "7 Tage in Folge aktiv", unlocked: false },
+    { id: "all_phases", icon: "🏆", title: "Sprint Master", description: "Alle 5 Phasen abgeschlossen", unlocked: false },
+  ]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
+      <Navigation />
+      <main className="container mx-auto px-6 pt-32 pb-20">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8">Mein Learning Dashboard</h1>
+
+          {!currentEnrollment ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <h2 className="text-xl font-semibold mb-4">Noch kein aktiver Kurs</h2>
+                <p className="text-muted-foreground mb-6">
+                  Du bist noch in keinem Kurs eingeschrieben. Kontaktiere deinen Administrator.
+                </p>
+                <Button asChild>
+                  <Link to="/lms/courses">Kurse entdecken</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              {/* Continue Learning */}
+              <Card className="border-primary">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-2xl">Learning fortsetzen</CardTitle>
+                      <CardDescription>
+                        Phase {currentEnrollment.current_phase} von 5
+                      </CardDescription>
+                    </div>
+                    <Badge variant="default" className="text-lg px-4 py-2">
+                      {currentEnrollment.progress_percentage}% abgeschlossen
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Progress value={currentEnrollment.progress_percentage} className="h-3" />
+                  
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((phase) => (
+                      <div
+                        key={phase}
+                        className={`flex-1 h-2 rounded ${
+                          phase < currentEnrollment.current_phase
+                            ? "bg-primary"
+                            : phase === currentEnrollment.current_phase
+                            ? "bg-primary/50"
+                            : "bg-muted"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  <Button size="lg" className="w-full" asChild>
+                    <Link to={`/lms/course/${currentEnrollment.id}`}>
+                      <Play className="mr-2 h-5 w-5" />
+                      Weiter lernen
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Stats Row */}
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Streak</CardTitle>
+                    <Flame className="h-4 w-4 text-orange-500" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{streak} Tage 🔥</div>
+                    <p className="text-xs text-muted-foreground">In Folge aktiv</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Achievements</CardTitle>
+                    <Trophy className="h-4 w-4 text-yellow-500" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {achievements.filter(a => a.unlocked).length}/{achievements.length}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Freigeschaltet</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Nächster Meilenstein</CardTitle>
+                    <Award className="h-4 w-4 text-blue-500" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">Phase {currentEnrollment.current_phase + 1}</div>
+                    <p className="text-xs text-muted-foreground">Noch 2 Module</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Achievements */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Achievements</CardTitle>
+                  <CardDescription>Sammle Erfolge während deines Lernwegs</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {achievements.map((achievement) => (
+                      <Card
+                        key={achievement.id}
+                        className={`p-4 ${
+                          achievement.unlocked
+                            ? "border-primary bg-primary/5"
+                            : "opacity-50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="text-3xl">{achievement.icon}</div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold">{achievement.title}</h4>
+                              {achievement.unlocked && (
+                                <CheckCircle className="h-4 w-4 text-primary" />
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {achievement.description}
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
