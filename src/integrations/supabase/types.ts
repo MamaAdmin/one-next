@@ -555,67 +555,94 @@ export type Database = {
       }
       lms_courses: {
         Row: {
+          author_id: string | null
+          categories: string[] | null
           completion_deadline_days: number | null
           course_type: string
           created_at: string
-          description: string | null
+          description_html: string | null
+          difficulty: string | null
           duration_days: number | null
+          featured_image: string | null
           id: string
           includes_certificate: boolean | null
+          intro_video: Json | null
           is_active: boolean
           language: string | null
+          options: Json | null
           prerequisites: string | null
           price_chf: number | null
+          pricing: Json | null
           rating: number | null
           rating_count: number | null
-          skill_level: string | null
-          thumbnail_url: string | null
+          slug: string | null
+          tags: string[] | null
+          timed_release_enabled: boolean | null
           title: string
           total_lessons: number | null
           total_quizzes: number | null
           updated_at: string
+          visibility: string | null
         }
         Insert: {
+          author_id?: string | null
+          categories?: string[] | null
           completion_deadline_days?: number | null
           course_type?: string
           created_at?: string
-          description?: string | null
+          description_html?: string | null
+          difficulty?: string | null
           duration_days?: number | null
+          featured_image?: string | null
           id?: string
           includes_certificate?: boolean | null
+          intro_video?: Json | null
           is_active?: boolean
           language?: string | null
+          options?: Json | null
           prerequisites?: string | null
           price_chf?: number | null
+          pricing?: Json | null
           rating?: number | null
           rating_count?: number | null
-          skill_level?: string | null
-          thumbnail_url?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          timed_release_enabled?: boolean | null
           title: string
           total_lessons?: number | null
           total_quizzes?: number | null
           updated_at?: string
+          visibility?: string | null
         }
         Update: {
+          author_id?: string | null
+          categories?: string[] | null
           completion_deadline_days?: number | null
           course_type?: string
           created_at?: string
-          description?: string | null
+          description_html?: string | null
+          difficulty?: string | null
           duration_days?: number | null
+          featured_image?: string | null
           id?: string
           includes_certificate?: boolean | null
+          intro_video?: Json | null
           is_active?: boolean
           language?: string | null
+          options?: Json | null
           prerequisites?: string | null
           price_chf?: number | null
+          pricing?: Json | null
           rating?: number | null
           rating_count?: number | null
-          skill_level?: string | null
-          thumbnail_url?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          timed_release_enabled?: boolean | null
           title?: string
           total_lessons?: number | null
           total_quizzes?: number | null
           updated_at?: string
+          visibility?: string | null
         }
         Relationships: []
       }
@@ -1055,6 +1082,10 @@ export type Database = {
       calculate_streak: {
         Args: { p_participant_id: string }
         Returns: number
+      }
+      generate_unique_slug: {
+        Args: { course_id?: string; course_title: string }
+        Returns: string
       }
       has_role: {
         Args: {

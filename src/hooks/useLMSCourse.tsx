@@ -5,16 +5,31 @@ import { useToast } from "@/hooks/use-toast";
 interface Course {
   id: string;
   title: string;
-  description: string;
+  description_html?: string;
+  description?: string; // Legacy
   course_type: string;
-  price_chf: number;
-  is_active: boolean;
+  price_chf?: number;
+  is_active?: boolean; // Legacy
+  visibility?: string;
+  slug?: string;
+  featured_image?: string;
+  thumbnail_url?: string; // Legacy
   created_at: string;
+  updated_at?: string;
   module_count?: number;
   
+  // New extended fields
+  timed_release_enabled?: boolean;
+  intro_video?: any;
+  pricing?: any;
+  difficulty?: string;
+  skill_level?: string; // Legacy
+  categories?: string[];
+  tags?: string[];
+  author_id?: string;
+  options?: any;
+  
   // Preview fields
-  thumbnail_url?: string;
-  skill_level?: string;
   total_lessons?: number;
   total_quizzes?: number;
   rating?: number;
