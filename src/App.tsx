@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
@@ -85,6 +85,8 @@ const App = () => (
           <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
           <Route path="/lms/courses/:courseId/preview" element={<LMSCoursePreview />} />
           <Route path="/lms/tools/hmw" element={<LMSHMWTool />} />
+          <Route path="/lms/tools/hmw-generator" element={<Navigate to="/lms/tools/hmw" replace />} />
+          <Route path="/lms/tools/hmw-clustering" element={<Navigate to="/lms/tools/hmw" replace />} />
           <Route path="/lms" element={<LMSIndex />} />
           <Route path="/lms/dashboard" element={<LMSDashboard />} />
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
