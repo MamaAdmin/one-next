@@ -7,9 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Edit, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { Loader2, Plus, ArrowUp, ArrowDown, MoreVertical } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import {
@@ -175,9 +183,9 @@ export default function LMSModuleDashboard() {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Module Management</h1>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -312,59 +320,142 @@ export default function LMSModuleDashboard() {
             <CardTitle>Module für {courses.find(c => c.id === selectedCourse)?.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Titel</TableHead>
+                    <TableHead>Phase</TableHead>
+                    <TableHead>Typ</TableHead>
+                    <TableHead>Dauer</TableHead>
+                    <TableHead>Reihenfolge</TableHead>
+                    <TableHead>Aktionen</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {modules.map((module) => (
+                    <TableRow key={module.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <img 
+                            src="/placeholder.svg" 
+                            alt={module.title}
+                            className="w-16 h-12 object-cover rounded"
+                          />
+                          <div>
+                            <div className="font-medium">{module.title}</div>
+                            <div className="text-xs text-muted-foreground">
+                              📚 Thema: 1 | 📖 Lektion: {module.content_text ? 1 : 0} | 📝 Test: 0 | 📋 Aufgabe: 0
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">Phase {module.phase_number}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{module.module_type}</Badge>
+                      </TableCell>
+                      <TableCell>{module.duration_minutes} Min</TableCell>
+                      <TableCell>{module.sort_order}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => moveModule(module, "up")}
+                            disabled={module.sort_order === 1}
+                          >
+                            <ArrowUp className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => moveModule(module, "down")}
+                          >
+                            <ArrowDown className="h-4 w-4" />
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => {
+                                setEditingModule(module);
+                                setDialogOpen(true);
+                              }}>
+                                Bearbeiten
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                className="text-destructive"
+                                onClick={() => handleDelete(module.id)}
+                              >
+                                Löschen
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-4">
               {modules.map((module) => (
-                <div
-                  key={module.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div className="flex-1">
-                    <div className="font-semibold">{module.title}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Phase {module.phase_number} • {module.module_type} • {module.duration_minutes} Min
+                <Card key={module.id}>
+                  <CardContent className="p-4">
+                    <div className="flex gap-3">
+                      <img 
+                        src="/placeholder.svg"
+                        alt={module.title}
+                        className="w-20 h-16 object-cover rounded"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-medium">{module.title}</h3>
+                        <p className="text-xs text-muted-foreground">
+                          Phase {module.phase_number} • {module.module_type}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="secondary">{module.duration_minutes} Min</Badge>
+                          <Badge variant="outline">#{module.sort_order}</Badge>
+                        </div>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => {
+                            setEditingModule(module);
+                            setDialogOpen(true);
+                          }}>
+                            Bearbeiten
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onClick={() => handleDelete(module.id)}
+                          >
+                            Löschen
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => moveModule(module, "up")}
-                      disabled={module.sort_order === 1}
-                    >
-                      <ArrowUp className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => moveModule(module, "down")}
-                    >
-                      <ArrowDown className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setEditingModule(module);
-                        setDialogOpen(true);
-                      }}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(module.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </CardContent>
         </Card>
       </main>
-      <Footer />
+      <Footer isEditMode={false} />
     </div>
   );
 }

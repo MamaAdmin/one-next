@@ -1020,6 +1020,8 @@ export type Database = {
     Views: {
       lms_courses_with_stats: {
         Row: {
+          author_avatar: string | null
+          author_name: string | null
           completion_deadline_days: number | null
           course_type: string | null
           created_at: string | null
@@ -1030,6 +1032,7 @@ export type Database = {
           includes_certificate: boolean | null
           is_active: boolean | null
           language: string | null
+          module_count: number | null
           prerequisites: string | null
           price_chf: number | null
           rating: number | null

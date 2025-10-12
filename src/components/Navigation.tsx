@@ -132,18 +132,11 @@ const Navigation = () => {
                     </Link>
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="cursor-pointer">
-                          Admin Dashboard
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/lms" className="cursor-pointer">
-                          LMS Management
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer">
+                        Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild>
                     <Link to="/lms/account/delete" className="cursor-pointer">
@@ -238,14 +231,9 @@ const Navigation = () => {
                     Meine Kurse
                   </Link>
                   {isAdmin && (
-                    <>
-                      <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
-                        Admin Dashboard
-                      </Link>
-                      <Link to="/admin/lms" className="block py-2 px-4 hover:bg-accent rounded-md">
-                        LMS Management
-                      </Link>
-                    </>
+                    <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
+                      Admin Dashboard
+                    </Link>
                   )}
                   <Link to="/lms/account/delete" className="block py-2 px-4 hover:bg-accent rounded-md">
                     Account löschen

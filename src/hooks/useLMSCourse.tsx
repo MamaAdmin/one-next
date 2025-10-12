@@ -24,6 +24,8 @@ interface Course {
   includes_certificate?: boolean;
   language?: string;
   prerequisites?: string;
+  author_name?: string;
+  author_avatar?: string;
 }
 
 export const useLMSCourse = () => {
