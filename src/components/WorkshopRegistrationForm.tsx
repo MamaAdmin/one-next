@@ -8,6 +8,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -20,7 +33,10 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 const workshopRegistrationSchema = z.object({
   // Unternehmensangaben
@@ -29,7 +45,7 @@ const workshopRegistrationSchema = z.object({
   zipCity: z.string().min(1, "PLZ / Ort ist erforderlich"),
   country: z.string().min(1, "Land ist erforderlich"),
   companySize: z.enum(["1-10", "11-50", "51-200", "201-500", "500+"], {
-    required_error: "Bitte wähle eine Unternehmensgröße",
+    required_error: "Bitte wählen Sie eine Unternehmensgröße",
   }),
   
   // Ansprechpartner
@@ -40,21 +56,21 @@ const workshopRegistrationSchema = z.object({
   
   // Interesse
   workshopType: z.enum(["problem-framing", "design-sprint"], {
-    required_error: "Bitte wähle einen Workshop-Typ",
+    required_error: "Bitte wählen Sie einen Workshop-Typ",
   }),
   additionalServices: z.array(z.string()).optional(),
   
   // Teilnahme
-  preferredDates: z.string().min(1, "Wunschtermin ist erforderlich"),
-  numberOfParticipants: z.string().min(1, "Anzahl der Teilnehmenden ist erforderlich"),
+  preferredDates: z.array(z.date()).min(1, "Bitte wählen Sie mindestens einen Termin"),
+  numberOfParticipants: z.coerce.number().min(1, "Mindestens 1 Teilnehmende erforderlich").max(10, "Maximal 10 Teilnehmende möglich"),
   numberOfCourses: z.string().min(1, "Anzahl der Kurse ist erforderlich"),
   
   // Ziele
-  goals: z.string().min(10, "Bitte beschreibe deine Zielsetzung (mind. 10 Zeichen)"),
+  goals: z.string().min(10, "Bitte beschreiben Sie Ihre Zielsetzung (mind. 10 Zeichen)"),
   
   // Zustimmung
   acceptTerms: z.boolean().refine((val) => val === true, {
-    message: "Du musst die Teilnahmebedingungen akzeptieren",
+    message: "Sie müssen die Teilnahmebedingungen akzeptieren",
   }),
 });
 
@@ -70,12 +86,14 @@ export const WorkshopRegistrationForm = ({
   onSuccess 
 }: WorkshopRegistrationFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
 
   const form = useForm<WorkshopRegistrationFormData>({
     resolver: zodResolver(workshopRegistrationSchema),
     defaultValues: {
       workshopType: defaultWorkshopType,
       additionalServices: [],
+      preferredDates: [],
       acceptTerms: false,
     },
   });
@@ -98,6 +116,11 @@ export const WorkshopRegistrationForm = ({
 
       if (customerError) throw customerError;
 
+      // Format dates for storage and display
+      const formattedDates = data.preferredDates
+        .map(date => format(date, "dd.MM.yyyy", { locale: de }))
+        .join(", ");
+
       // Erstelle Buchung
       const { error: bookingError } = await supabase
         .from("sprint_bookings")
@@ -105,8 +128,8 @@ export const WorkshopRegistrationForm = ({
           name: data.contactName,
           email: data.email,
           company: data.companyName,
-          team_size: parseInt(data.numberOfParticipants) || 1,
-          preferred_start_date: data.preferredDates,
+          team_size: data.numberOfParticipants,
+          preferred_start_date: data.preferredDates.map(d => format(d, 'yyyy-MM-dd')).join(', '),
           notes: `
 Position: ${data.position}
 Telefon: ${data.phone}
@@ -114,6 +137,7 @@ Unternehmensgröße: ${data.companySize}
 Workshop-Typ: ${data.workshopType === "problem-framing" ? "Problem-Framing Workshop" : "Design Sprint Workshop"}
 Zusätzliche Services: ${data.additionalServices?.join(", ") || "Keine"}
 Anzahl Kurse: ${data.numberOfCourses}
+Wunschtermine: ${formattedDates}
 Ziele: ${data.goals}
           `.trim(),
           challenge_description: data.goals,
@@ -128,10 +152,11 @@ Ziele: ${data.goals}
 
       toast.success("Anmeldung erfolgreich übermittelt!");
       form.reset();
+      setSelectedDates([]);
       onSuccess?.();
     } catch (error: any) {
       console.error("Fehler bei der Anmeldung:", error);
-      toast.error(error.message || "Fehler bei der Anmeldung. Bitte versuche es erneut.");
+      toast.error(error.message || "Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");
     } finally {
       setIsSubmitting(false);
     }
@@ -149,9 +174,9 @@ Ziele: ${data.goals}
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl">📝 Anmeldeformular – Workshop & Services</CardTitle>
+        <CardTitle className="text-2xl">Anmeldeformular – Workshop & Services</CardTitle>
         <CardDescription>
-          Bitte fülle dieses Formular vollständig aus, damit wir deine Anmeldung bearbeiten können.
+          Bitte füllen Sie dieses Formular vollständig aus, damit wir Ihre Anmeldung bearbeiten können.
           <br />
           <span className="text-sm italic">(Alle Felder mit * sind Pflichtfelder)</span>
         </CardDescription>
@@ -161,7 +186,7 @@ Ziele: ${data.goals}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* Unternehmensangaben */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">📌 Unternehmensangaben</h3>
+              <h3 className="text-lg font-semibold">Unternehmensangaben</h3>
               
               <FormField
                 control={form.control}
@@ -261,7 +286,7 @@ Ziele: ${data.goals}
 
             {/* Ansprechpartner */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">👤 Ansprechpartner</h3>
+              <h3 className="text-lg font-semibold">Ansprechpartner</h3>
               
               <FormField
                 control={form.control}
@@ -322,7 +347,7 @@ Ziele: ${data.goals}
 
             {/* Interesse */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">🎯 Interesse</h3>
+              <h3 className="text-lg font-semibold">Interesse</h3>
               
               <FormField
                 control={form.control}
@@ -359,7 +384,7 @@ Ziele: ${data.goals}
                     <div className="mb-4">
                       <FormLabel>Zusätzliche Services (Mehrfachauswahl möglich)</FormLabel>
                       <FormDescription>
-                        Wähle alle Services aus, die dich interessieren
+                        Wählen Sie alle Services aus, die Sie interessieren
                       </FormDescription>
                     </div>
                     {additionalServicesOptions.map((service) => (
@@ -403,17 +428,49 @@ Ziele: ${data.goals}
 
             {/* Teilnahme */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">📅 Teilnahme</h3>
+              <h3 className="text-lg font-semibold">Teilnahme</h3>
               
               <FormField
                 control={form.control}
                 name="preferredDates"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Wunschtermin(e) *</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="z.B. 15.-19. März 2025" />
-                    </FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !selectedDates.length && "text-muted-foreground"
+                            )}
+                          >
+                            {selectedDates.length > 0 ? (
+                              selectedDates.map(d => format(d, "dd.MM.yyyy", { locale: de })).join(", ")
+                            ) : (
+                              <span>Termine auswählen</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="multiple"
+                          selected={selectedDates}
+                          onSelect={(dates) => {
+                            setSelectedDates(dates || []);
+                            field.onChange(dates || []);
+                          }}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>
+                      Sie können mehrere Termine auswählen
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -426,8 +483,11 @@ Ziele: ${data.goals}
                   <FormItem>
                     <FormLabel>Anzahl der Teilnehmenden *</FormLabel>
                     <FormControl>
-                      <Input type="number" min="1" {...field} />
+                      <Input type="number" min="1" max="10" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Maximal 10 Teilnehmende möglich
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -450,19 +510,19 @@ Ziele: ${data.goals}
 
             {/* Ziele & Erwartungen */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">📌 Ziele & Erwartungen</h3>
+              <h3 className="text-lg font-semibold">Ziele & Erwartungen</h3>
               
               <FormField
                 control={form.control}
                 name="goals"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bitte beschreibe kurz deine Zielsetzung *</FormLabel>
+                    <FormLabel>Bitte beschreiben Sie kurz Ihre Zielsetzung *</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
                         rows={5}
-                        placeholder="Welche Ziele verfolgst du mit dem Workshop? Was erhoffst du dir davon?"
+                        placeholder="Welche Ziele verfolgen Sie mit dem Workshop? Was möchten Sie erreichen?"
                       />
                     </FormControl>
                     <FormMessage />
@@ -473,7 +533,7 @@ Ziele: ${data.goals}
 
             {/* Zustimmung */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">✅ Zustimmung</h3>
+              <h3 className="text-lg font-semibold">Zustimmung</h3>
               
               <FormField
                 control={form.control}
@@ -487,8 +547,49 @@ Ziele: ${data.goals}
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Hiermit bestätige ich die Anmeldung und akzeptiere die Teilnahmebedingungen.
+                      <FormLabel className="text-sm font-normal">
+                        Mit Absenden der Anfrage bestätige ich, dass meine angegebenen Daten zur Bearbeitung der Workshop-Anfrage verwendet werden dürfen. 
+                        Es handelt sich noch nicht um eine verbindliche Buchung – das Organisationsteam wird zur weiteren Abstimmung Kontakt aufnehmen. 
+                        Die Daten werden ausschließlich für die Anfragebearbeitung genutzt und bei Nichtzustandekommen einer Buchung gemäß Schweizer Datenschutzgesetz (DSG) und DSGVO innerhalb der gesetzlichen Fristen gelöscht.{" "}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button type="button" variant="link" className="h-auto p-0 text-primary underline">
+                              Vollständige Bedingungen lesen
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Teilnahmebedingungen & Datenschutz</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 text-sm">
+                              <div>
+                                <h4 className="font-semibold mb-2">Datenverwendung</h4>
+                                <p>
+                                  Mit Absenden der Anfrage bestätigen Sie, dass Ihre angegebenen Daten zur Bearbeitung der Workshop-Anfrage verwendet werden dürfen.
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold mb-2">Unverbindliche Anfrage</h4>
+                                <p>
+                                  Es handelt sich noch nicht um eine verbindliche Buchung. Das Organisationsteam wird zur weiteren Abstimmung mit Ihnen Kontakt aufnehmen.
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold mb-2">Datenschutz & Löschung</h4>
+                                <p>
+                                  Die Daten werden ausschließlich für die Anfragebearbeitung genutzt und bei Nichtzustandekommen einer Buchung gemäß Schweizer Datenschutzgesetz (DSG) und DSGVO innerhalb der gesetzlichen Fristen gelöscht.
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold mb-2">Ihre Rechte</h4>
+                                <p>
+                                  Sie haben jederzeit das Recht auf Auskunft, Berichtigung, Löschung oder Einschränkung der Verarbeitung Ihrer personenbezogenen Daten sowie das Recht auf Datenübertragbarkeit.
+                                </p>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        *
                       </FormLabel>
                       <FormMessage />
                     </div>
@@ -497,19 +598,14 @@ Ziele: ${data.goals}
               />
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full" 
-              size="lg"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Wird gesendet...
                 </>
               ) : (
-                "📤 Anmeldung absenden"
+                "Anmeldung absenden"
               )}
             </Button>
           </form>
