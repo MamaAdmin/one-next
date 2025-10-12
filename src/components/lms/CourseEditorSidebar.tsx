@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
@@ -9,7 +9,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Upload, X, Link as LinkIcon, Image as ImageIcon, Video } from "lucide-react";
+import { Upload, X, Link as LinkIcon, Image as ImageIcon, Video, Trash2 } from "lucide-react";
+import { PlusIcon } from "@/components/ui/custom-icons";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { CourseFormData } from "./CourseEditor";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -24,6 +26,91 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
   const [uploading, setUploading] = useState(false);
   const [videoUrlInput, setVideoUrlInput] = useState("");
   const [newTag, setNewTag] = useState("");
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name")
+        .order("name");
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: "Kategorien konnten nicht geladen werden",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) return;
+
+    setIsAddingCategory(true);
+    try {
+      const slug = newCategoryName
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
+
+      const { data, error } = await supabase
+        .from("categories")
+        .insert([{
+          name: newCategoryName.trim(),
+          slug,
+          description: "",
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCategories([...categories, { id: data.id, name: data.name }]);
+      setNewCategoryName("");
+      toast({ title: "Erfolg", description: "Kategorie erstellt" });
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingCategory(false);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string, categoryName: string) => {
+    if (!confirm(`Kategorie "${categoryName}" wirklich löschen?`)) return;
+
+    try {
+      const { error } = await supabase.from("categories").delete().eq("id", categoryId);
+
+      if (error) throw error;
+
+      setCategories(categories.filter((c) => c.id !== categoryId));
+
+      if (formData.categories.includes(categoryName)) {
+        onChange("categories", formData.categories.filter((c) => c !== categoryName));
+      }
+
+      toast({ title: "Erfolg", description: "Kategorie gelöscht" });
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -116,8 +203,6 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
   const handleRemoveTag = (tag: string) => {
     onChange("tags", formData.tags.filter((t) => t !== tag));
   };
-
-  const availableCategories = ["Problem Framing", "Design Sprint", "Innovation", "Produktmanagement", "UX Design"];
 
   return (
     <div className="space-y-4">
@@ -288,29 +373,79 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
       {/* Categories */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <span className="text-primary">+</span> Kategorien
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <span className="text-primary">+</span> Kategorien
+            </CardTitle>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <PlusIcon className="h-4 w-4 mr-1" />
+                  Hinzufügen
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Neue Kategorie erstellen</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div>
+                    <Label htmlFor="category-name">Kategorie-Name</Label>
+                    <Input
+                      id="category-name"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      placeholder="z.B. Design Thinking"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={handleAddCategory}
+                    disabled={isAddingCategory || !newCategoryName.trim()}
+                  >
+                    {isAddingCategory ? "Erstelle..." : "Erstellen"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
         <CardContent className="space-y-2">
-          {availableCategories.map((cat) => (
-            <div key={cat} className="flex items-center space-x-2">
-              <Checkbox
-                id={cat}
-                checked={formData.categories.includes(cat)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    onChange("categories", [...formData.categories, cat]);
-                  } else {
-                    onChange("categories", formData.categories.filter((c) => c !== cat));
-                  }
-                }}
-              />
-              <Label htmlFor={cat} className="text-sm font-normal">
-                {cat}
-              </Label>
-            </div>
-          ))}
+          {categories.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-2">
+              Keine Kategorien vorhanden
+            </p>
+          ) : (
+            categories.map((cat) => (
+              <div key={cat.id} className="flex items-center justify-between space-x-2">
+                <div className="flex items-center space-x-2 flex-1">
+                  <Checkbox
+                    id={cat.id}
+                    checked={formData.categories.includes(cat.name)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        onChange("categories", [...formData.categories, cat.name]);
+                      } else {
+                        onChange("categories", formData.categories.filter((c) => c !== cat.name));
+                      }
+                    }}
+                  />
+                  <Label htmlFor={cat.id} className="text-sm font-normal cursor-pointer flex-1">
+                    {cat.name}
+                  </Label>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                  className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
 
@@ -353,9 +488,8 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="general">Allgemein</TabsTrigger>
-              <TabsTrigger value="drip">Content Drip</TabsTrigger>
               <TabsTrigger value="enroll">Einschreiben</TabsTrigger>
             </TabsList>
             <TabsContent value="general" className="space-y-3 mt-3">
@@ -378,9 +512,6 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
                   onCheckedChange={(value) => onChange("options", { ...formData.options, public_course: value })}
                 />
               </div>
-            </TabsContent>
-            <TabsContent value="drip" className="mt-3">
-              <p className="text-sm text-muted-foreground">Content Drip-Regeln werden hier konfiguriert.</p>
             </TabsContent>
             <TabsContent value="enroll" className="space-y-3 mt-3">
               <div className="flex items-center justify-between">

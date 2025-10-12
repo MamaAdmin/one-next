@@ -274,12 +274,15 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
             {/* Description WYSIWYG */}
             <div>
               <label className="text-sm font-medium mb-2 block">Beschreibung</label>
-              <RichTextEditor
-                value={formData.description_html}
-                onSave={async (value) => handleChange("description_html", value)}
-                isEditMode={true}
-                placeholder="Kurs-Beschreibung eingeben..."
-              />
+              <div className="min-h-[500px]">
+                <RichTextEditor
+                  value={formData.description_html}
+                  onSave={async (value) => handleChange("description_html", value)}
+                  isEditMode={true}
+                  placeholder="Kurs-Beschreibung eingeben..."
+                  className="[&_.ql-container]:min-h-[400px]"
+                />
+              </div>
             </div>
           </div>
 
