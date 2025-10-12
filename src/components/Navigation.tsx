@@ -144,10 +144,11 @@ const Navigation = () => {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                      <Link to="/admin" className="cursor-pointer">
-                        Admin-Dashboard
-                      </Link>
-                    </DropdownMenuItem>
+                        <Link to="/admin" className="cursor-pointer">
+                          Admin-Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
                   )}
                   <DropdownMenuItem asChild>
                     <Link to="/lms/account/delete" className="cursor-pointer">
