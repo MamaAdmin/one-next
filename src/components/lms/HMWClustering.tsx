@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +18,6 @@ interface ClusterData {
 }
 
 const HMWClustering = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [unassignedQuestions, setUnassignedQuestions] = useState<string[]>([]);
@@ -273,10 +271,6 @@ const HMWClustering = () => {
       {/* Actions */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
-          <Button onClick={() => navigate('/lms/tools/hmw-generator')} variant="outline">
-            <LayoutGrid className="mr-2 h-4 w-4" />
-            Zurück zum Generator
-          </Button>
           <Button onClick={addCluster} disabled={clusters.length >= 10}>
             <Plus className="mr-2 h-4 w-4" />
             Neuer Cluster
