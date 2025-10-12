@@ -57,6 +57,13 @@ export const useInvitations = (customerId?: string) => {
 
       const token = crypto.randomUUID();
 
+      // Get company name for email
+      const { data: company } = await supabase
+        .from("customers")
+        .select("company_name")
+        .eq("id", customerId)
+        .single();
+
       const { error } = await supabase
         .from("user_invitations")
         .insert({
@@ -70,9 +77,23 @@ export const useInvitations = (customerId?: string) => {
 
       if (error) throw error;
 
-      // TODO: Send invitation email via edge function
+      // Send invitation email via edge function
+      const { error: emailError } = await supabase.functions.invoke("send-enrollment-invitation", {
+        body: {
+          email,
+          fullName,
+          token,
+          companyName: company?.company_name || "Ihr Unternehmen",
+        },
+      });
+
+      if (emailError) {
+        console.error("Error sending invitation email:", emailError);
+        toast.error("Einladung erstellt, aber E-Mail konnte nicht versendet werden");
+      } else {
+        toast.success("Einladung versendet");
+      }
       
-      toast.success("Einladung versendet");
       await loadInvitations();
     } catch (error: any) {
       console.error("Error creating invitation:", error);
@@ -115,17 +136,25 @@ export const useInvitations = (customerId?: string) => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("Fehler beim Erstellen des Accounts");
 
-      // Create participant
+      // Update participant with user_id
       const { error: participantError } = await supabase
         .from("participants")
-        .insert({
+        .update({
           user_id: authData.user.id,
-          customer_id: invitation.customer_id,
-          full_name: invitation.full_name,
-          email: invitation.email,
-        });
+        })
+        .eq("email", invitation.email);
 
       if (participantError) throw participantError;
+
+      // Create user role (user)
+      const { error: roleError } = await supabase
+        .from("user_roles")
+        .insert({
+          user_id: authData.user.id,
+          role: "user",
+        });
+
+      if (roleError) throw roleError;
 
       // Update invitation status
       const { error: updateError } = await supabase
@@ -137,6 +166,14 @@ export const useInvitations = (customerId?: string) => {
         .eq("id", invitation.id);
 
       if (updateError) throw updateError;
+
+      // Auto-login
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: invitation.email,
+        password,
+      });
+
+      if (signInError) throw signInError;
 
       toast.success("Account erfolgreich erstellt!");
       return authData.user;

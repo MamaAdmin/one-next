@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useInvitations } from "@/hooks/useInvitations";
+import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,6 +20,7 @@ const AcceptInvitation = () => {
   const [submitting, setSubmitting] = useState(false);
   const [validating, setValidating] = useState(true);
   const [invitationValid, setInvitationValid] = useState(false);
+  const [invitationData, setInvitationData] = useState<{ email: string; fullName: string } | null>(null);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -28,8 +30,46 @@ const AcceptInvitation = () => {
         return;
       }
 
-      setValidating(false);
-      setInvitationValid(true);
+      try {
+        // Validate invitation token
+        const { data: invitation, error } = await supabase
+          .from("user_invitations")
+          .select("email, full_name, status, expires_at")
+          .eq("token", token)
+          .maybeSingle();
+
+        if (error) throw error;
+        
+        if (!invitation) {
+          setInvitationValid(false);
+          toast.error("Einladung nicht gefunden");
+          return;
+        }
+
+        if (invitation.status !== "pending") {
+          setInvitationValid(false);
+          toast.error("Diese Einladung wurde bereits verwendet");
+          return;
+        }
+
+        if (new Date(invitation.expires_at) < new Date()) {
+          setInvitationValid(false);
+          toast.error("Diese Einladung ist abgelaufen");
+          return;
+        }
+
+        setInvitationData({
+          email: invitation.email,
+          fullName: invitation.full_name,
+        });
+        setInvitationValid(true);
+      } catch (error) {
+        console.error("Error validating invitation:", error);
+        setInvitationValid(false);
+        toast.error("Fehler beim Validieren der Einladung");
+      } finally {
+        setValidating(false);
+      }
     };
 
     validateToken();
@@ -101,6 +141,30 @@ const AcceptInvitation = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {invitationData && (
+              <>
+                <div>
+                  <Label htmlFor="fullName">Name</Label>
+                  <Input
+                    id="fullName"
+                    value={invitationData.fullName}
+                    disabled
+                    className="bg-muted"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="email">E-Mail</Label>
+                  <Input
+                    id="email"
+                    value={invitationData.email}
+                    disabled
+                    className="bg-muted"
+                  />
+                </div>
+              </>
+            )}
+
             <div>
               <Label htmlFor="password">Passwort</Label>
               <Input

@@ -119,12 +119,34 @@ export const useUserProfile = () => {
     }
   };
 
+  const updateParticipantPhone = async (phone: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Nicht angemeldet");
+
+      const { error } = await supabase
+        .from("participants")
+        .update({ phone })
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      
+      toast.success("Telefonnummer aktualisiert");
+      await loadProfile();
+    } catch (error: any) {
+      console.error("Error updating phone:", error);
+      toast.error(error.message || "Fehler beim Aktualisieren");
+      throw error;
+    }
+  };
+
   return {
     profile,
     participant,
     loading,
     updateProfile,
     uploadAvatar,
+    updateParticipantPhone,
     reload: loadProfile,
   };
 };

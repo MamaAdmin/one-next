@@ -18,9 +18,10 @@ import { Loader2 } from "lucide-react";
 
 const UserProfile = () => {
   const navigate = useNavigate();
-  const { profile, participant, loading: profileLoading, updateProfile, uploadAvatar } = useUserProfile();
+  const { profile, participant, loading: profileLoading, updateProfile, uploadAvatar, updateParticipantPhone } = useUserProfile();
   const { enrollments, loading: enrollmentsLoading } = useLMSEnrollment();
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
@@ -37,12 +38,18 @@ const UserProfile = () => {
     if (profile?.full_name) {
       setFullName(profile.full_name);
     }
-  }, [profile]);
+    if (participant?.phone) {
+      setPhone(participant.phone);
+    }
+  }, [profile, participant]);
 
   const handleUpdateProfile = async () => {
     setUpdating(true);
     try {
       await updateProfile({ full_name: fullName });
+      if (phone !== participant?.phone) {
+        await updateParticipantPhone(phone);
+      }
     } finally {
       setUpdating(false);
     }
@@ -137,17 +144,15 @@ const UserProfile = () => {
                   </p>
                 </div>
 
-                {participant?.phone && (
-                  <div>
-                    <Label htmlFor="phone">Telefon</Label>
-                    <Input
-                      id="phone"
-                      value={participant.phone}
-                      disabled
-                      className="bg-muted"
-                    />
-                  </div>
-                )}
+                <div>
+                  <Label htmlFor="phone">Telefon</Label>
+                  <Input
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Telefonnummer"
+                  />
+                </div>
 
                 <Button onClick={handleUpdateProfile} disabled={updating}>
                   {updating ? "Wird gespeichert..." : "Änderungen speichern"}

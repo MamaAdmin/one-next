@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CompanyLogoUpload } from "@/components/company/CompanyLogoUpload";
 import { EmployeeList } from "@/components/company/EmployeeList";
 import { InviteUserDialog } from "@/components/company/InviteUserDialog";
@@ -22,6 +23,10 @@ const CompanyProfile = () => {
   const { createInvitation } = useInvitations(company?.id);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [companyName, setCompanyName] = useState("");
+  const [companySize, setCompanySize] = useState("");
+  const [address, setAddress] = useState("");
+  const [country, setCountry] = useState("");
+  const [phone, setPhone] = useState("");
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
@@ -35,8 +40,12 @@ const CompanyProfile = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (company?.company_name) {
-      setCompanyName(company.company_name);
+    if (company) {
+      setCompanyName(company.company_name || "");
+      setCompanySize(company.company_size || "");
+      setAddress(company.address || "");
+      setCountry(company.country || "");
+      setPhone(company.phone || "");
     }
   }, [company]);
 
@@ -50,7 +59,13 @@ const CompanyProfile = () => {
   const handleUpdateCompany = async () => {
     setUpdating(true);
     try {
-      await updateCompany({ company_name: companyName });
+      await updateCompany({ 
+        company_name: companyName,
+        company_size: companySize || null,
+        address: address || null,
+        country: country || null,
+        phone: phone || null,
+      });
     } finally {
       setUpdating(false);
     }
@@ -136,22 +151,33 @@ const CompanyProfile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="companySize">Unternehmensgröße</Label>
-                    <Input
-                      id="companySize"
-                      value={company.company_size || ""}
-                      disabled
-                      className="bg-muted"
-                    />
+                    <Select value={companySize} onValueChange={setCompanySize}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Wählen Sie eine Größe" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-10">1-10 Mitarbeiter</SelectItem>
+                        <SelectItem value="11-50">11-50 Mitarbeiter</SelectItem>
+                        <SelectItem value="51-200">51-200 Mitarbeiter</SelectItem>
+                        <SelectItem value="201-500">201-500 Mitarbeiter</SelectItem>
+                        <SelectItem value="501+">501+ Mitarbeiter</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
                     <Label htmlFor="country">Land</Label>
-                    <Input
-                      id="country"
-                      value={company.country || ""}
-                      disabled
-                      className="bg-muted"
-                    />
+                    <Select value={country} onValueChange={setCountry}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Wählen Sie ein Land" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Deutschland">Deutschland</SelectItem>
+                        <SelectItem value="Österreich">Österreich</SelectItem>
+                        <SelectItem value="Schweiz">Schweiz</SelectItem>
+                        <SelectItem value="Liechtenstein">Liechtenstein</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -159,9 +185,9 @@ const CompanyProfile = () => {
                   <Label htmlFor="address">Adresse</Label>
                   <Input
                     id="address"
-                    value={company.address || ""}
-                    disabled
-                    className="bg-muted"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Straße, PLZ, Ort"
                   />
                 </div>
 
@@ -180,9 +206,9 @@ const CompanyProfile = () => {
                     <Label htmlFor="phone">Telefon</Label>
                     <Input
                       id="phone"
-                      value={company.phone || ""}
-                      disabled
-                      className="bg-muted"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="Telefonnummer"
                     />
                   </div>
                 </div>
