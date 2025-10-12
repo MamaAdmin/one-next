@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle2, Circle, Lock } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
+import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
 import { supabase } from "@/integrations/supabase/client";
 import { CoursePreview } from "@/components/lms/CoursePreview";
 
@@ -246,9 +247,11 @@ export default function LMSCourseDetail() {
                             />
                           )}
                           {tool.tool_type === 'template' && tool.template_data && (
-                            <pre className="text-xs bg-muted p-4 rounded overflow-auto">
-                              {JSON.stringify(tool.template_data, null, 2)}
-                            </pre>
+                            <TemplateRenderer 
+                              data={tool.template_data}
+                              enrollmentId={enrollmentId}
+                              moduleId={currentModule.id}
+                            />
                           )}
                         </CardContent>
                       </Card>

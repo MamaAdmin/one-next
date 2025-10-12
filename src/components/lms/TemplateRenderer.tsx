@@ -1,11 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HMWGenerator } from "./HMWGenerator";
+import { UserTestingForm } from "./UserTestingForm";
 
 interface TemplateRendererProps {
   data: any;
+  enrollmentId?: string;
+  moduleId?: string;
 }
 
-export function TemplateRenderer({ data }: TemplateRendererProps) {
+export function TemplateRenderer({ data, enrollmentId, moduleId }: TemplateRendererProps) {
   if (!data) {
     return (
       <Card>
@@ -19,6 +22,20 @@ export function TemplateRenderer({ data }: TemplateRendererProps) {
   // Special handling for HMW Generator
   if (data?.type === 'hmw-generator') {
     return <HMWGenerator />;
+  }
+
+  // Special handling for User Testing Form
+  if (data?.type === 'user-testing-form') {
+    if (!enrollmentId || !moduleId) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-sm text-destructive">Fehler: Enrollment- oder Modul-ID fehlt</p>
+          </CardContent>
+        </Card>
+      );
+    }
+    return <UserTestingForm enrollmentId={enrollmentId} moduleId={moduleId} />;
   }
 
   // Simple JSON renderer - can be enhanced based on template structure

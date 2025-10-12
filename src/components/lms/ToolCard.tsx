@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Code, FileText } from "lucide-react";
+import { TemplateRenderer } from "./TemplateRenderer";
 
 interface Tool {
   id: string;
@@ -17,6 +18,8 @@ interface Tool {
 
 interface ToolCardProps {
   tool: Tool;
+  enrollmentId?: string;
+  moduleId?: string;
 }
 
 const categoryColors: Record<string, string> = {
@@ -34,7 +37,7 @@ const toolTypeIcons: Record<string, any> = {
   template: FileText,
 };
 
-export function ToolCard({ tool }: ToolCardProps) {
+export function ToolCard({ tool, enrollmentId, moduleId }: ToolCardProps) {
   const Icon = toolTypeIcons[tool.tool_type] || FileText;
 
   const handleOpenTool = () => {
@@ -89,11 +92,11 @@ export function ToolCard({ tool }: ToolCardProps) {
         )}
         
         {tool.tool_type === 'template' && tool.template_data && (
-          <div className="border rounded-lg p-4 bg-muted">
-            <pre className="text-xs overflow-auto">
-              {JSON.stringify(tool.template_data, null, 2)}
-            </pre>
-          </div>
+          <TemplateRenderer 
+            data={tool.template_data}
+            enrollmentId={enrollmentId}
+            moduleId={moduleId}
+          />
         )}
       </CardContent>
     </Card>
