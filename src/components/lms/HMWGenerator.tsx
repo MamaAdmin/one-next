@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Save, RotateCcw, Copy, Trash2, Info, Lightbulb, GripVertical, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Save, RotateCcw, Copy, Trash2, Info, Lightbulb, GripVertical, ChevronDown, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface QuestionParts {
@@ -97,8 +99,8 @@ export function HMWGenerator() {
   }, [savedQuestions]);
 
   const generateQuestion = () => {
-    if (!question.verb || !question.object || !question.goal) return "";
-    return `Wie können wir ${question.verb} ${question.object}, ${question.goal}?`;
+    if (!question.object || !question.verb || !question.goal) return "";
+    return `Wie können wir ${question.object} ${question.verb}, ${question.goal}?`;
   };
 
   const handleDragStart = (word: string) => {
@@ -143,7 +145,15 @@ export function HMWGenerator() {
   };
 
   const resetQuestion = () => {
-    setQuestion({ verb: "", object: "", goal: "" });
+    setQuestion({ object: "", verb: "", goal: "" });
+  };
+
+  const clearField = (field: keyof QuestionParts) => {
+    setQuestion(prev => ({ ...prev, [field]: "" }));
+  };
+
+  const handleTextInput = (field: keyof QuestionParts, value: string) => {
+    setQuestion(prev => ({ ...prev, [field]: value }));
   };
 
   const copyToClipboard = (text: string) => {
@@ -175,173 +185,206 @@ export function HMWGenerator() {
     </Badge>
   );
 
-  const DropZone = ({ field, value }: { field: keyof QuestionParts; value: string }) => (
-    <div
-      className={`
-        min-w-[150px] px-4 py-2 rounded-md border-2 border-dashed transition-all
-        ${activeDropZone === field ? 'border-primary bg-primary/5 scale-105' : 'border-border'}
-        ${value ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted'}
-      `}
-      onDragOver={(e) => handleDragOver(e, field)}
-      onDragLeave={handleDragLeave}
-      onDrop={(e) => handleDrop(e, field)}
-    >
-      {value || `[${field === 'verb' ? 'Verb' : field === 'object' ? 'Objekt' : 'Ziel'}]`}
+  const DropZone = ({ field, value, label }: { field: keyof QuestionParts; value: string; label: string }) => (
+    <div className="space-y-2 flex-1">
+      <Label htmlFor={`field-${field}`} className="text-sm font-medium">{label}</Label>
+      <div className="relative">
+        <div
+          className={`
+            w-full px-4 py-3 rounded-md border-2 border-dashed transition-all min-h-[48px] flex items-center
+            ${activeDropZone === field ? 'border-primary bg-primary/5 scale-[1.02]' : 'border-border'}
+            ${value ? 'bg-accent border-accent-foreground/20' : 'bg-muted'}
+          `}
+          onDragOver={(e) => handleDragOver(e, field)}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDrop(e, field)}
+        >
+          {value ? (
+            <div className="flex items-center justify-between w-full">
+              <span className="text-sm">{value}</span>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6 hover:bg-destructive/10"
+                onClick={() => clearField(field)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <span className="text-muted-foreground text-sm italic">Ziehe ein Wort hierher oder gib Text ein</span>
+          )}
+        </div>
+        <Input
+          id={`field-${field}`}
+          placeholder="Oder eigenen Text eingeben..."
+          value={value}
+          onChange={(e) => handleTextInput(field, e.target.value)}
+          className="mt-2"
+        />
+      </div>
     </div>
   );
 
   return (
-    <div className="space-y-6">
-      {/* Example Banner */}
-      <Alert className="bg-pink-50 border-pink-200 dark:bg-pink-950 dark:border-pink-800">
-        <Info className="h-4 w-4 text-pink-600 dark:text-pink-400" />
-        <AlertTitle className="text-pink-900 dark:text-pink-100">Beispiel:</AlertTitle>
-        <AlertDescription className="text-pink-700 dark:text-pink-300">
-          Wie können wir <strong>unseren Kunden</strong> <strong>helfen</strong>, <strong>ihre Ziele zu erreichen</strong>?
-        </AlertDescription>
-      </Alert>
+    <div className="grid lg:grid-cols-2 gap-6">
+      {/* Left Column: Fixed Question Builder */}
+      <div className="space-y-6">
+        {/* Example Banner */}
+        <Alert className="bg-pink-50 border-pink-200 dark:bg-pink-950 dark:border-pink-800">
+          <Info className="h-4 w-4 text-pink-600 dark:text-pink-400" />
+          <AlertTitle className="text-pink-900 dark:text-pink-100">Beispiel:</AlertTitle>
+          <AlertDescription className="text-pink-700 dark:text-pink-300">
+            Wie können wir <strong>unseren Kunden</strong> <strong>ermöglichen</strong>, <strong>ihre Ziele zu erreichen</strong>?
+          </AlertDescription>
+        </Alert>
 
-      {/* Question Builder */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Konstruiere deine Frage</CardTitle>
-          <CardDescription>
-            Ziehe Wörter in die Felder oder klicke darauf, um sie einzufügen
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex flex-wrap items-center gap-2 text-lg">
-            <span className="font-medium">Wie können wir</span>
-            <DropZone field="verb" value={question.verb} />
-            <DropZone field="object" value={question.object} />
-            <span className="font-medium">zu</span>
-            <DropZone field="goal" value={question.goal} />
-            <span className="font-medium text-2xl">?</span>
-          </div>
+        {/* Question Builder */}
+        <Card className="sticky top-4">
+          <CardHeader>
+            <CardTitle>Konstruiere deine Frage</CardTitle>
+            <CardDescription>
+              Ziehe Wörter von rechts in die Felder oder gib eigenen Text ein
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <div className="text-lg font-medium">Wie können wir...</div>
+              
+              {/* Reihenfolge: Objekt, Verb, Ziel */}
+              <DropZone field="object" value={question.object} label="1. Objekt / Zielgruppe" />
+              <DropZone field="verb" value={question.verb} label="2. Verb / Aktion" />
+              <DropZone field="goal" value={question.goal} label="3. Ziel / Ergebnis" />
 
-          {/* Live Preview */}
-          {question.verb && question.object && question.goal && (
-            <Alert className="bg-accent">
-              <Lightbulb className="h-4 w-4" />
-              <AlertTitle>Deine Frage:</AlertTitle>
-              <AlertDescription className="text-base font-medium">
-                {generateQuestion()}
-              </AlertDescription>
-            </Alert>
-          )}
+              <div className="text-lg font-medium">?</div>
+            </div>
 
-          {/* Actions */}
-          <div className="flex gap-2">
-            <Button onClick={saveQuestion}>
-              <Save className="mr-2 h-4 w-4" />
-              Frage speichern
-            </Button>
-            <Button variant="outline" onClick={resetQuestion}>
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Zurücksetzen
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+            {/* Live Preview */}
+            {question.object && question.verb && question.goal && (
+              <Alert className="bg-accent">
+                <Lightbulb className="h-4 w-4" />
+                <AlertTitle>Deine Frage:</AlertTitle>
+                <AlertDescription className="text-base font-medium">
+                  {generateQuestion()}
+                </AlertDescription>
+              </Alert>
+            )}
 
-      {/* Word Library */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Wort-Bibliothek</CardTitle>
-          <CardDescription>
-            Wähle aus verschiedenen Kategorien oder nutze die vordefinierten Wörter unten
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Verb Categories */}
-          {Object.entries(wordCategories).map(([key, category]) => (
-            <Collapsible key={key} defaultOpen={key === 'validation'}>
+            {/* Actions */}
+            <div className="flex gap-2">
+              <Button onClick={saveQuestion} className="flex-1">
+                <Save className="mr-2 h-4 w-4" />
+                Speichern
+              </Button>
+              <Button variant="outline" onClick={resetQuestion}>
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Reset
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Saved Questions */}
+        {savedQuestions.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Gespeicherte Fragen ({savedQuestions.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 max-h-[400px] overflow-y-auto">
+                {savedQuestions.map((q, i) => (
+                  <li key={i} className="flex items-start justify-between gap-2 p-3 rounded-md bg-muted/50">
+                    <span className="text-sm flex-1">{q}</span>
+                    <div className="flex gap-1">
+                      <Button size="icon" variant="ghost" onClick={() => copyToClipboard(q)}>
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button size="icon" variant="ghost" onClick={() => deleteQuestion(i)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Right Column: Word Library */}
+      <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Wort-Bibliothek</CardTitle>
+            <CardDescription>
+              Ziehe Wörter nach links oder klicke darauf
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Objects */}
+            <Collapsible defaultOpen>
               <CollapsibleTrigger className="flex items-center gap-2 w-full hover:bg-accent/50 p-2 rounded-md transition-colors">
                 <ChevronDown className="h-4 w-4" />
-                <h4 className="font-medium text-sm">{category.label}</h4>
+                <h4 className="font-medium text-sm">1. Zielgruppen / Objekte</h4>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2 pl-6">
                 <div className="flex flex-wrap gap-2">
-                  {category.words.map(word => (
+                  {objectWords.map(word => (
                     <DraggableWord
                       key={word}
                       word={word}
-                      onClick={() => handleClick('verb', word)}
+                      onClick={() => handleClick('object', word)}
                     />
                   ))}
                 </div>
               </CollapsibleContent>
             </Collapsible>
-          ))}
 
-          {/* Objects */}
-          <Collapsible defaultOpen>
-            <CollapsibleTrigger className="flex items-center gap-2 w-full hover:bg-accent/50 p-2 rounded-md transition-colors">
-              <ChevronDown className="h-4 w-4" />
-              <h4 className="font-medium text-sm">Zielgruppen / Objekte</h4>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2 pl-6">
-              <div className="flex flex-wrap gap-2">
-                {objectWords.map(word => (
-                  <DraggableWord
-                    key={word}
-                    word={word}
-                    onClick={() => handleClick('object', word)}
-                  />
-                ))}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Goals */}
-          <Collapsible defaultOpen>
-            <CollapsibleTrigger className="flex items-center gap-2 w-full hover:bg-accent/50 p-2 rounded-md transition-colors">
-              <ChevronDown className="h-4 w-4" />
-              <h4 className="font-medium text-sm">Ziele / Ergebnisse</h4>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2 pl-6">
-              <div className="flex flex-wrap gap-2">
-                {goalWords.map(word => (
-                  <DraggableWord
-                    key={word}
-                    word={word}
-                    onClick={() => handleClick('goal', word)}
-                  />
-                ))}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </CardContent>
-      </Card>
-
-      {/* Saved Questions */}
-      {savedQuestions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Gespeicherte Fragen ({savedQuestions.length})</CardTitle>
-            <CardDescription>
-              Deine gesammelten How-Might-We Fragen
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {savedQuestions.map((q, i) => (
-                <li key={i} className="flex items-start justify-between gap-2 p-3 rounded-md bg-muted/50">
-                  <span className="text-sm flex-1">{q}</span>
-                  <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => copyToClipboard(q)}>
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => deleteQuestion(i)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+            {/* Verb Categories */}
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mt-4">
+              2. Verben / Aktionen
+            </div>
+            {Object.entries(wordCategories).map(([key, category]) => (
+              <Collapsible key={key} defaultOpen={key === 'validation'}>
+                <CollapsibleTrigger className="flex items-center gap-2 w-full hover:bg-accent/50 p-2 rounded-md transition-colors">
+                  <ChevronDown className="h-4 w-4" />
+                  <h4 className="font-medium text-sm">{category.label}</h4>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2 pl-6">
+                  <div className="flex flex-wrap gap-2">
+                    {category.words.map(word => (
+                      <DraggableWord
+                        key={word}
+                        word={word}
+                        onClick={() => handleClick('verb', word)}
+                      />
+                    ))}
                   </div>
-                </li>
-              ))}
-            </ul>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+
+            {/* Goals */}
+            <Collapsible defaultOpen>
+              <CollapsibleTrigger className="flex items-center gap-2 w-full hover:bg-accent/50 p-2 rounded-md transition-colors">
+                <ChevronDown className="h-4 w-4" />
+                <h4 className="font-medium text-sm">3. Ziele / Ergebnisse</h4>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2 pl-6">
+                <div className="flex flex-wrap gap-2">
+                  {goalWords.map(word => (
+                    <DraggableWord
+                      key={word}
+                      word={word}
+                      onClick={() => handleClick('goal', word)}
+                    />
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </CardContent>
         </Card>
-      )}
+      </div>
     </div>
   );
 }
