@@ -186,20 +186,78 @@ export default function LMSCourseDetail() {
         </Card>
 
         {/* Inhaltsbereich */}
-        <div className="col-span-3">
+        <div className="col-span-3 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>{currentModule?.title}</CardTitle>
             </CardHeader>
             <CardContent>
               {currentModule && (
-                <div className="p-6 text-center text-muted-foreground">
-                  <p>Module content will be displayed here.</p>
-                  <p className="text-sm mt-2">Module Type: {currentModule.module_type}</p>
+                <div className="space-y-4">
+                  {currentModule.description && (
+                    <p className="text-muted-foreground">{currentModule.description}</p>
+                  )}
+                  <div className="text-sm">
+                    <span className="font-medium">Typ:</span> {currentModule.module_type}
+                  </div>
+                  {currentModule.duration_minutes && (
+                    <div className="text-sm">
+                      <span className="font-medium">Dauer:</span> {currentModule.duration_minutes} Minuten
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
           </Card>
+
+          {/* Tools Section */}
+          {currentModule?.module_tools && currentModule.module_tools.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Tools für dieses Modul</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {currentModule.module_tools.map((mt: any) => {
+                    const tool = mt.tool;
+                    if (!tool) return null;
+                    
+                    return (
+                      <Card key={tool.id} className="overflow-hidden">
+                        <CardHeader>
+                          <CardTitle className="text-base">{tool.title}</CardTitle>
+                          {tool.description && (
+                            <p className="text-sm text-muted-foreground">{tool.description}</p>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          {tool.tool_type === 'external' && tool.external_url && (
+                            <Button 
+                              onClick={() => window.open(tool.external_url, '_blank')}
+                              className="w-full"
+                            >
+                              Tool öffnen
+                            </Button>
+                          )}
+                          {tool.tool_type === 'embedded' && tool.embed_code && (
+                            <div 
+                              className="border rounded p-4 bg-muted"
+                              dangerouslySetInnerHTML={{ __html: tool.embed_code }}
+                            />
+                          )}
+                          {tool.tool_type === 'template' && tool.template_data && (
+                            <pre className="text-xs bg-muted p-4 rounded overflow-auto">
+                              {JSON.stringify(tool.template_data, null, 2)}
+                            </pre>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

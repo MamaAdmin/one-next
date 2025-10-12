@@ -830,6 +830,102 @@ export type Database = {
           },
         ]
       }
+      lms_module_tools: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_required: boolean | null
+          module_id: string
+          sort_order: number
+          tool_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          module_id: string
+          sort_order?: number
+          tool_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          module_id?: string
+          sort_order?: number
+          tool_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_module_tools_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "lms_course_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_module_tools_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "lms_tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_tools: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          embed_code: string | null
+          external_url: string | null
+          id: string
+          is_active: boolean | null
+          phase_number: number | null
+          slug: string
+          tags: string[] | null
+          template_data: Json | null
+          thumbnail_url: string | null
+          title: string
+          tool_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          embed_code?: string | null
+          external_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          phase_number?: number | null
+          slug: string
+          tags?: string[] | null
+          template_data?: Json | null
+          thumbnail_url?: string | null
+          title: string
+          tool_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          embed_code?: string | null
+          external_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          phase_number?: number | null
+          slug?: string
+          tags?: string[] | null
+          template_data?: Json | null
+          thumbnail_url?: string | null
+          title?: string
+          tool_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       lms_votes: {
         Row: {
           created_at: string
