@@ -35,6 +35,7 @@ import LMSModuleEditor from "./pages/admin/LMSModuleEditor";
 import LMSToolboxDashboard from "./pages/admin/LMSToolboxDashboard";
 import LMSToolboxEditor from "./pages/admin/LMSToolboxEditor";
 import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
+import LMSHMWGenerator from "./pages/lms/LMSHMWGenerator";
 import NotFound from "./pages/NotFound";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
@@ -83,6 +84,7 @@ const App = () => (
           <Route path="/admin/lms/toolbox/new" element={<LMSToolboxEditor />} />
           <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
           <Route path="/lms/courses/:courseId/preview" element={<LMSCoursePreview />} />
+          <Route path="/lms/tools/hmw-generator" element={<LMSHMWGenerator />} />
           <Route path="/lms" element={<LMSIndex />} />
           <Route path="/lms/dashboard" element={<LMSDashboard />} />
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />

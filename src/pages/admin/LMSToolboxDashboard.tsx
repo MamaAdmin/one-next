@@ -159,15 +159,15 @@ export default function LMSToolboxDashboard() {
                     <tr key={tool.id} className="border-b hover:bg-muted/50">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          {tool.thumbnail_url ? (
+                          {tool.thumbnail_url && tool.tool_type !== 'embedded' ? (
                             <img
                               src={tool.thumbnail_url}
                               alt={tool.title}
                               className="w-12 h-12 rounded object-cover"
                             />
                           ) : (
-                            <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
-                              <Wrench className="h-6 w-6 text-muted-foreground" />
+                            <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
+                              <Wrench className="h-5 w-5 text-muted-foreground" />
                             </div>
                           )}
                           <div>
@@ -206,38 +206,47 @@ export default function LMSToolboxDashboard() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => navigate(`/admin/lms/toolbox/${tool.id}`)}>
-                              <Pencil className="mr-2 h-4 w-4" />
-                              Bearbeiten
-                            </DropdownMenuItem>
-                            {tool.external_url && (
-                              <DropdownMenuItem onClick={() => window.open(tool.external_url!, '_blank')}>
+                            {tool.slug === 'hmw-fragen' ? (
+                              <DropdownMenuItem onClick={() => navigate(`/lms/tools/hmw-generator`)}>
                                 <ExternalLink className="mr-2 h-4 w-4" />
-                                Tool öffnen
+                                Generator öffnen
                               </DropdownMenuItem>
-                            )}
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Löschen
+                            ) : (
+                              <>
+                                <DropdownMenuItem onClick={() => navigate(`/admin/lms/toolbox/${tool.id}`)}>
+                                  <Pencil className="mr-2 h-4 w-4" />
+                                  Bearbeiten
                                 </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Tool löschen?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Möchten Sie "{tool.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleDelete(tool.id)}>
-                                    Löschen
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                                {tool.external_url && (
+                                  <DropdownMenuItem onClick={() => window.open(tool.external_url!, '_blank')}>
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    Tool öffnen
+                                  </DropdownMenuItem>
+                                )}
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      Löschen
+                                    </DropdownMenuItem>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Tool löschen?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Möchten Sie "{tool.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDelete(tool.id)}>
+                                        Löschen
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </>
+                            )}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </td>
@@ -283,32 +292,41 @@ export default function LMSToolboxDashboard() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => navigate(`/admin/lms/toolbox/${tool.id}`)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Bearbeiten
-                        </DropdownMenuItem>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Löschen
+                        {tool.slug === 'hmw-fragen' ? (
+                          <DropdownMenuItem onClick={() => navigate(`/lms/tools/hmw-generator`)}>
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            Generator öffnen
+                          </DropdownMenuItem>
+                        ) : (
+                          <>
+                            <DropdownMenuItem onClick={() => navigate(`/admin/lms/toolbox/${tool.id}`)}>
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Bearbeiten
                             </DropdownMenuItem>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Tool löschen?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Möchten Sie "{tool.title}" wirklich löschen?
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(tool.id)}>
-                                Löschen
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Löschen
+                                </DropdownMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Tool löschen?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Möchten Sie "{tool.title}" wirklich löschen?
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDelete(tool.id)}>
+                                    Löschen
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
