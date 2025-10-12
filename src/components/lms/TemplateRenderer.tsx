@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { HMWGenerator } from "./HMWGenerator";
 
 interface TemplateRendererProps {
   data: any;
@@ -13,6 +14,11 @@ export function TemplateRenderer({ data }: TemplateRendererProps) {
         </CardContent>
       </Card>
     );
+  }
+
+  // Special handling for HMW Generator
+  if (data?.type === 'hmw-generator') {
+    return <HMWGenerator />;
   }
 
   // Simple JSON renderer - can be enhanced based on template structure
