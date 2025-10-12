@@ -108,6 +108,7 @@ export function HMWGenerator() {
   };
 
   const handleDragOver = (e: React.DragEvent, field: string) => {
+    if (!draggedWord) return;
     e.preventDefault();
     setActiveDropZone(field);
   };
@@ -117,6 +118,7 @@ export function HMWGenerator() {
   };
 
   const handleDrop = (e: React.DragEvent, field: keyof QuestionParts) => {
+    if (!draggedWord) return;
     e.preventDefault();
     setQuestion(prev => ({ ...prev, [field]: draggedWord }));
     setDraggedWord("");
@@ -202,6 +204,8 @@ export function HMWGenerator() {
           placeholder="Ziehe ein Wort hierher oder gib Text ein..."
           value={value}
           onChange={(e) => handleTextInput(field, e.target.value)}
+          autoComplete="off"
+          spellCheck={false}
           className={`
             pr-10
             ${activeDropZone === field ? 'border-primary bg-primary/5' : ''}
@@ -236,7 +240,7 @@ export function HMWGenerator() {
         </Alert>
 
         {/* Question Builder */}
-        <Card className="sticky top-4">
+        <Card className="lg:sticky lg:top-4">
           <CardHeader>
             <CardTitle>Konstruiere deine Frage</CardTitle>
             <CardDescription>
@@ -256,15 +260,13 @@ export function HMWGenerator() {
             </div>
 
             {/* Live Preview */}
-            {question.object && question.verb && question.goal && (
-              <Alert className="bg-accent">
-                <Lightbulb className="h-4 w-4" />
-                <AlertTitle>Deine Frage:</AlertTitle>
-                <AlertDescription className="text-base font-medium">
-                  {generateQuestion()}
-                </AlertDescription>
-              </Alert>
-            )}
+            <Alert className="bg-accent min-h-[72px] items-start">
+              <Lightbulb className="h-4 w-4" />
+              <AlertTitle>Deine Frage:</AlertTitle>
+              <AlertDescription className="text-base font-medium">
+                Wie können wir {question.object || "…"} {question.verb || "…"}, {question.goal || "…"}?
+              </AlertDescription>
+            </Alert>
 
             {/* Actions */}
             <div className="flex gap-2">
