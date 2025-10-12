@@ -56,7 +56,7 @@ export const useUserProfile = () => {
       setParticipant(participantData);
     } catch (error) {
       console.error("Error loading profile:", error);
-      toast.error("Fehler beim Laden des Profils");
+      toast.error("Ein Fehler ist aufgetreten. Bitte laden Sie die Seite neu.");
     } finally {
       setLoading(false);
     }
@@ -82,7 +82,7 @@ export const useUserProfile = () => {
       await loadProfile();
     } catch (error: any) {
       console.error("Error updating profile:", error);
-      toast.error(error.message || "Fehler beim Aktualisieren");
+      toast.error("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
       throw error;
     }
   };
@@ -114,7 +114,7 @@ export const useUserProfile = () => {
       return publicUrl;
     } catch (error: any) {
       console.error("Error uploading avatar:", error);
-      toast.error(error.message || "Fehler beim Hochladen");
+      toast.error("Fehler beim Hochladen. Bitte versuchen Sie es erneut.");
       throw error;
     }
   };
@@ -135,7 +135,7 @@ export const useUserProfile = () => {
       await loadProfile();
     } catch (error: any) {
       console.error("Error updating phone:", error);
-      toast.error(error.message || "Fehler beim Aktualisieren");
+      toast.error("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
       throw error;
     }
   };

@@ -57,7 +57,7 @@ export const useCourseRatings = (courseId?: string) => {
       }
     } catch (error) {
       console.error("Error loading ratings:", error);
-      toast.error("Fehler beim Laden der Bewertungen");
+      toast.error("Ein Fehler ist aufgetreten");
     } finally {
       setLoading(false);
     }
@@ -102,7 +102,7 @@ export const useCourseRatings = (courseId?: string) => {
       await loadRatings();
     } catch (error: any) {
       console.error("Error creating rating:", error);
-      toast.error(error.message || "Fehler beim Erstellen der Bewertung");
+      toast.error("Fehler beim Erstellen der Bewertung. Bitte versuchen Sie es erneut.");
       throw error;
     }
   };
@@ -127,7 +127,7 @@ export const useCourseRatings = (courseId?: string) => {
       await loadRatings();
     } catch (error: any) {
       console.error("Error updating rating:", error);
-      toast.error(error.message || "Fehler beim Aktualisieren der Bewertung");
+      toast.error("Fehler beim Aktualisieren der Bewertung. Bitte versuchen Sie es erneut.");
       throw error;
     }
   };
