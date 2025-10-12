@@ -19,6 +19,7 @@ import PasswordReset from "./pages/PasswordReset";
 import UpdatePassword from "./pages/UpdatePassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import LMSCustomerDashboard from "./pages/admin/LMSCustomerDashboard";
+import LMSCustomerDetail from "./pages/admin/LMSCustomerDetail";
 import LMSParticipantDashboard from "./pages/admin/LMSParticipantDashboard";
 import LMSCourseDashboard from "./pages/admin/LMSCourseDashboard";
 import LMSPurchaseDashboard from "./pages/admin/LMSPurchaseDashboard";
@@ -66,6 +67,8 @@ const App = () => (
           <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/lms" element={<LMSCustomerDashboard />} />
+          <Route path="/admin/customers" element={<LMSCustomerDashboard />} />
+          <Route path="/admin/customers/:customerId" element={<LMSCustomerDetail />} />
           <Route path="/admin/lms/participants" element={<LMSParticipantDashboard />} />
           <Route path="/admin/lms/courses" element={<LMSCourseDashboard />} />
           <Route path="/admin/lms/purchases" element={<LMSPurchaseDashboard />} />
@@ -80,6 +83,9 @@ const App = () => (
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
           <Route path="/lms/data-export" element={<LMSDataExport />} />
           <Route path="/lms/account/delete" element={<DeleteAccountPage />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/company/profile" element={<CompanyProfile />} />
+          <Route path="/accept-invitation" element={<AcceptInvitation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

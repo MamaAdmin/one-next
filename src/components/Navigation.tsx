@@ -148,6 +148,11 @@ const Navigation = () => {
                           Admin-Dashboard
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/customers" className="cursor-pointer">
+                          Kunden verwalten
+                        </Link>
+                      </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuItem asChild>
