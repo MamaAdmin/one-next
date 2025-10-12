@@ -127,12 +127,23 @@ const Navigation = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50 bg-background">
                   <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      Mein Profil
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/lms/dashboard" className="cursor-pointer">
                       Meine Kurse
                     </Link>
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem asChild>
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link to="/company/profile" className="cursor-pointer">
+                          Unternehmensprofil
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                       <Link to="/admin" className="cursor-pointer">
                         Admin-Dashboard
                       </Link>

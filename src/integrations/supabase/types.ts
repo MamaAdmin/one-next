@@ -144,31 +144,46 @@ export type Database = {
         Row: {
           address: string | null
           company_name: string | null
+          company_size: string | null
+          country: string | null
           created_at: string
           email: string
           id: string
+          logo_url: string | null
           name: string
           phone: string | null
+          position: string | null
+          primary_admin_id: string | null
           updated_at: string
         }
         Insert: {
           address?: string | null
           company_name?: string | null
+          company_size?: string | null
+          country?: string | null
           created_at?: string
           email: string
           id?: string
+          logo_url?: string | null
           name: string
           phone?: string | null
+          position?: string | null
+          primary_admin_id?: string | null
           updated_at?: string
         }
         Update: {
           address?: string | null
           company_name?: string | null
+          company_size?: string | null
+          country?: string | null
           created_at?: string
           email?: string
           id?: string
+          logo_url?: string | null
           name?: string
           phone?: string | null
+          position?: string | null
+          primary_admin_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -567,6 +582,68 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_course_ratings: {
+        Row: {
+          course_id: string
+          created_at: string
+          enrollment_id: string
+          id: string
+          participant_id: string
+          rating: number
+          review_text: string | null
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          participant_id: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          participant_id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_course_ratings_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_course_ratings_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses_with_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_course_ratings_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "lms_course_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_course_ratings_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "participants"
             referencedColumns: ["id"]
           },
         ]
@@ -1040,6 +1117,53 @@ export type Database = {
         }
         Relationships: []
       }
+      user_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          customer_id: string
+          email: string
+          expires_at: string
+          full_name: string
+          id: string
+          invited_by: string
+          status: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          customer_id: string
+          email: string
+          expires_at?: string
+          full_name: string
+          id?: string
+          invited_by: string
+          status?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          customer_id?: string
+          email?: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          invited_by?: string
+          status?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_invitations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1110,6 +1234,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_company_admin: {
+        Args: { _customer_id: string; _user_id: string }
         Returns: boolean
       }
     }

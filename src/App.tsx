@@ -35,6 +35,9 @@ import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
 import NotFound from "./pages/NotFound";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
+import UserProfile from "./pages/UserProfile";
+import CompanyProfile from "./pages/CompanyProfile";
+import AcceptInvitation from "./pages/AcceptInvitation";
 
 const queryClient = new QueryClient();
 
