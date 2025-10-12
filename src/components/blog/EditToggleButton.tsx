@@ -17,12 +17,12 @@ export const EditToggleButton = ({ isEditMode, onToggle }: EditToggleButtonProps
       {isEditMode ? (
         <>
           <X className="mr-2 h-4 w-4" />
-          Exit Edit Mode
+          Bearbeitungsmodus verlassen
         </>
       ) : (
         <>
           <Pencil className="mr-2 h-4 w-4" />
-          Edit Mode
+          Bearbeitungsmodus
         </>
       )}
     </Button>

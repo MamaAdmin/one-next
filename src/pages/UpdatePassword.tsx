@@ -12,10 +12,10 @@ import Footer from "@/components/Footer";
 
 const passwordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-  .regex(/[0-9]/, "Password must contain at least one number");
+  .min(8, "Das Passwort muss mindestens 8 Zeichen lang sein")
+  .regex(/[A-Z]/, "Das Passwort muss mindestens einen Großbuchstaben enthalten")
+  .regex(/[a-z]/, "Das Passwort muss mindestens einen Kleinbuchstaben enthalten")
+  .regex(/[0-9]/, "Das Passwort muss mindestens eine Zahl enthalten");
 
 export default function UpdatePassword() {
   const [newPassword, setNewPassword] = useState("");
@@ -31,8 +31,8 @@ export default function UpdatePassword() {
       if (session) {
         setHasValidToken(true);
       } else {
-        toast.error("Invalid or expired reset link", {
-          description: "Please request a new password reset",
+        toast.error("Ungültiger oder abgelaufener Reset-Link", {
+          description: "Bitte fordern Sie einen neuen Link zum Zurücksetzen an",
         });
         navigate("/password-reset");
       }
@@ -47,7 +47,7 @@ export default function UpdatePassword() {
 
     try {
       if (newPassword !== confirmPassword) {
-        throw new Error("Passwords don't match");
+        throw new Error("Passwörter stimmen nicht überein");
       }
 
       const validatedPassword = passwordSchema.parse(newPassword);
@@ -58,18 +58,18 @@ export default function UpdatePassword() {
 
       if (error) throw error;
 
-      toast.success("Password updated successfully", {
-        description: "You can now sign in with your new password",
+      toast.success("Passwort erfolgreich aktualisiert", {
+        description: "Sie können sich nun mit Ihrem neuen Passwort anmelden",
       });
 
       navigate("/auth");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
-        toast.error("Invalid password", {
+        toast.error("Ungültiges Passwort", {
           description: error.errors[0].message,
         });
       } else {
-        toast.error("Error updating password", {
+        toast.error("Fehler beim Aktualisieren des Passworts", {
           description: error.message,
         });
       }
@@ -85,8 +85,8 @@ export default function UpdatePassword() {
         <main className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardHeader>
-              <CardTitle>Verifying...</CardTitle>
-              <CardDescription>Please wait while we verify your reset link</CardDescription>
+              <CardTitle>Überprüfung läuft...</CardTitle>
+              <CardDescription>Bitte warten Sie, während wir Ihren Zurücksetzungslink prüfen</CardDescription>
             </CardHeader>
           </Card>
         </main>
@@ -101,40 +101,40 @@ export default function UpdatePassword() {
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>Update Password</CardTitle>
+            <CardTitle>Passwort aktualisieren</CardTitle>
             <CardDescription>
-              Enter your new password below
+              Geben Sie unten Ihr neues Passwort ein
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleUpdatePassword} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
+                <Label htmlFor="newPassword">Neues Passwort</Label>
                 <Input
                   id="newPassword"
                   type="password"
-                  placeholder="Enter new password"
+                  placeholder="Neues Passwort eingeben"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Must be at least 8 characters with uppercase, lowercase, and a number
+                  Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben sowie einer Zahl
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Confirm new password"
+                  placeholder="Neues Passwort bestätigen"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Updating..." : "Update Password"}
+                {loading ? "Aktualisierung läuft..." : "Passwort aktualisieren"}
               </Button>
             </form>
           </CardContent>

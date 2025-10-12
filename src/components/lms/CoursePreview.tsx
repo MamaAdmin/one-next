@@ -77,35 +77,35 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
         </Card>
       </div>
 
-      {/* Rechte Spalte: Course Includes */}
+      {/* Rechte Spalte: Kursinhalte */}
       <div className="space-y-4">
         <Card>
           <CardContent className="p-6 space-y-4">
-            <h3 className="font-semibold text-lg">Course Includes</h3>
+            <h3 className="font-semibold text-lg">Kursinhalte</h3>
             
             {/* Preis */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Preis:</span>
               <Badge variant={course.price_chf === 0 ? "secondary" : "default"}>
-                {course.price_chf === 0 ? "Free" : `CHF ${course.price_chf}`}
+                {course.price_chf === 0 ? "Kostenlos" : `CHF ${course.price_chf}`}
               </Badge>
             </div>
 
             {/* Studenten */}
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Eingeschriebene Studenten:</span>
+              <span className="text-sm text-muted-foreground">Eingeschriebene Teilnehmende:</span>
               <span className="text-sm font-medium flex items-center gap-1">
                 <UsersIcon className="h-4 w-4" />
-                {course.enrolled_students_count || 0} Student{course.enrolled_students_count !== 1 ? 'en' : ''}
+                {course.enrolled_students_count || 0} Teilnehmende
               </span>
             </div>
 
-            {/* Lessons */}
+            {/* Lektionen */}
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Lessons:</span>
+              <span className="text-sm text-muted-foreground">Lektionen:</span>
               <span className="text-sm font-medium flex items-center gap-1">
                 <BookIcon className="h-4 w-4" />
-                {course.total_lessons || 0} Lessons
+                {course.total_lessons || 0} Lektionen
               </span>
             </div>
 
@@ -114,13 +114,13 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
               <span className="text-sm text-muted-foreground">Quiz:</span>
               <span className="text-sm font-medium flex items-center gap-1">
                 <QuizIcon className="h-4 w-4" />
-                {course.total_quizzes || 0} Quizzes
+                {course.total_quizzes || 0} Quizze
               </span>
             </div>
 
             {/* Skill Level */}
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Skill Level:</span>
+              <span className="text-sm text-muted-foreground">Schwierigkeitsgrad:</span>
               <span className="text-sm font-medium">{course.skill_level || "Alle"}</span>
             </div>
 
@@ -130,11 +130,11 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
               <span className="text-sm font-medium">{course.course_type}</span>
             </div>
 
-            {/* Certificate */}
+            {/* Zertifikat */}
             {course.includes_certificate && (
               <div className="flex items-center gap-2 text-sm text-green-600">
                 <StarburstIcon className="h-4 w-4" />
-                <span>Certificate upon completion</span>
+                <span>Zertifikat nach Abschluss</span>
               </div>
             )}
           </CardContent>
@@ -171,10 +171,10 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
           </Card>
         )}
 
-        {/* Share */}
+        {/* Teilen */}
         <Card>
           <CardContent className="p-6">
-            <h3 className="font-semibold mb-2">Share This:</h3>
+            <h3 className="font-semibold mb-2">Teilen:</h3>
             <div className="flex gap-2">
               <Button variant="outline" size="icon">
                 <Share2 className="h-4 w-4" />

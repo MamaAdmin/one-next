@@ -58,14 +58,14 @@ export const usePageContent = (pageName: string) => {
       }));
 
       toast({
-        title: "Success",
-        description: "Content updated successfully",
+        title: "Erfolg",
+        description: "Inhalt erfolgreich aktualisiert",
       });
     } catch (error) {
       console.error("Error updating content:", error);
       toast({
-        title: "Error",
-        description: "Failed to update content",
+        title: "Fehler",
+        description: "Inhalt konnte nicht aktualisiert werden",
         variant: "destructive",
       });
       throw error;

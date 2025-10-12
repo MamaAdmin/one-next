@@ -33,13 +33,13 @@ const AIDesignSprint = () => {
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-7xl font-bold" placeholder="Hero title" as="h1" />
+            <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-7xl font-bold" placeholder="Titel des Hero-Bereichs" as="h1" />
             
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
               Begleitet oder oder Online selbstgeführt
             </p>
             
-            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Hero description" />
+            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Beschreibung des Hero-Bereichs" />
             
             
           </div>
@@ -55,9 +55,9 @@ const AIDesignSprint = () => {
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-6">
               <h2 className="text-4xl font-bold">
-                <InlineTextField value={content.what_is_title || 'Der AI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Section title" as="h2" />
+                <InlineTextField value={content.what_is_title || 'Der AI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
               </h2>
-              <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, AI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Section description" />
+              <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, AI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ const AIDesignSprint = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">
-              <InlineTextField value={content.expect_title || 'Was können Sie erwarten?'} onSave={value => updateContent('expect_title', value)} isEditMode={isEditMode} className="text-3xl font-bold" placeholder="Section title" as="h2" />
+              <InlineTextField value={content.expect_title || 'Was können Sie erwarten?'} onSave={value => updateContent('expect_title', value)} isEditMode={isEditMode} className="text-3xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
             </h2>
           </div>
 
@@ -110,7 +110,7 @@ const AIDesignSprint = () => {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Workshop Agenda</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Workshop-Agenda</h2>
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Tag 1 */}

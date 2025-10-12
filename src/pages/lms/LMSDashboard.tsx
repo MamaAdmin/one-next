@@ -145,7 +145,7 @@ export default function LMSDashboard() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Achievements</CardTitle>
+                    <CardTitle className="text-sm font-medium">Erfolge</CardTitle>
                     <Trophy className="h-4 w-4 text-yellow-500" />
                   </CardHeader>
                   <CardContent>
@@ -171,7 +171,7 @@ export default function LMSDashboard() {
               {/* Achievements */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Achievements</CardTitle>
+                  <CardTitle>Erfolge</CardTitle>
                   <CardDescription>Sammle Erfolge während deines Lernwegs</CardDescription>
                 </CardHeader>
                 <CardContent>

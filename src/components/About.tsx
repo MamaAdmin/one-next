@@ -19,7 +19,7 @@ const About = ({ isEditMode = false }: AboutProps) => {
               onSave={(value) => updateContent('title', value)}
               isEditMode={isEditMode}
               className="text-4xl lg:text-5xl font-bold"
-              placeholder="Section title"
+              placeholder="Titel des Abschnitts"
               as="h2"
             />
           </h2>
@@ -28,7 +28,7 @@ const About = ({ isEditMode = false }: AboutProps) => {
             onSave={(value) => updateContent('description', value)}
             isEditMode={isEditMode}
             className="text-xl text-muted-foreground leading-relaxed"
-            placeholder="Section description"
+            placeholder="Beschreibung des Abschnitts"
             minRows={4}
           />
           <Button size="lg" className="bg-gradient-primary hover:opacity-90 transition-opacity mt-6">

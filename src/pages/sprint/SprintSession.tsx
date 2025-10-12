@@ -20,12 +20,12 @@ export default function SprintSession() {
   const [currentAchievement, setCurrentAchievement] = useState<any>(null);
 
   const phases = [
-    { number: 1, title: "Problem Framing", status: (session?.current_phase === 1 ? "in-progress" : session && session.current_phase > 1 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 2, title: "Map", status: (session && session.current_phase === 2 ? "in-progress" : session && session.current_phase > 2 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 3, title: "Sketch", status: (session && session.current_phase === 3 ? "in-progress" : session && session.current_phase > 3 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 4, title: "Decide", status: (session && session.current_phase === 4 ? "in-progress" : session && session.current_phase > 4 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 5, title: "Prototype", status: (session && session.current_phase === 5 ? "in-progress" : session && session.current_phase > 5 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
-    { number: 6, title: "Test", status: (session && session.current_phase === 6 ? "in-progress" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 1, title: "Problemdefinition", status: (session?.current_phase === 1 ? "in-progress" : session && session.current_phase > 1 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 2, title: "Mapping", status: (session && session.current_phase === 2 ? "in-progress" : session && session.current_phase > 2 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 3, title: "Skizzieren", status: (session && session.current_phase === 3 ? "in-progress" : session && session.current_phase > 3 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 4, title: "Entscheiden", status: (session && session.current_phase === 4 ? "in-progress" : session && session.current_phase > 4 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 5, title: "Prototyp", status: (session && session.current_phase === 5 ? "in-progress" : session && session.current_phase > 5 ? "completed" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
+    { number: 6, title: "Testen", status: (session && session.current_phase === 6 ? "in-progress" : "locked") as "in-progress" | "completed" | "locked" | "perfect" },
   ];
 
   if (loading) {
@@ -81,7 +81,7 @@ export default function SprintSession() {
           {currentPhase === 1 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Phase 1: Problem Framing</h1>
+                <h1 className="text-4xl font-bold">Phase 1: Problemdefinition</h1>
                 <p className="text-xl text-muted-foreground">
                   Definiere die Challenge und den Zielzustand
                 </p>
@@ -121,7 +121,7 @@ export default function SprintSession() {
           {currentPhase === 2 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Phase 2: Map</h1>
+                <h1 className="text-4xl font-bold">Phase 2: Mapping</h1>
                 <p className="text-xl text-muted-foreground">
                   Erstelle die Customer Journey Map
                 </p>
@@ -155,7 +155,7 @@ export default function SprintSession() {
           {currentPhase === 3 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Phase 3: Sketch</h1>
+                <h1 className="text-4xl font-bold">Phase 3: Skizzieren</h1>
                 <p className="text-xl text-muted-foreground">
                   Skizziere 8 Lösungsideen
                 </p>
@@ -182,7 +182,7 @@ export default function SprintSession() {
           {currentPhase === 4 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Phase 4: Decide</h1>
+                <h1 className="text-4xl font-bold">Phase 4: Entscheiden</h1>
                 <p className="text-xl text-muted-foreground">
                   Wähle die beste Idee und erstelle ein Storyboard
                 </p>
@@ -205,7 +205,7 @@ export default function SprintSession() {
           {currentPhase === 5 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Phase 5: Prototype</h1>
+                <h1 className="text-4xl font-bold">Phase 5: Prototyp</h1>
                 <p className="text-xl text-muted-foreground">
                   Erstelle einen testbaren Prototyp
                 </p>
@@ -226,7 +226,7 @@ export default function SprintSession() {
           {currentPhase === 6 && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold">Phase 6: Test</h1>
+                <h1 className="text-4xl font-bold">Phase 6: Testen</h1>
                 <p className="text-xl text-muted-foreground">
                   Teste deinen Prototyp mit echten Usern
                 </p>

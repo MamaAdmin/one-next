@@ -11,7 +11,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { ArrowLeft } from "lucide-react";
 
-const emailSchema = z.string().email("Please enter a valid email address");
+const emailSchema = z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein");
 
 export default function PasswordReset() {
   const [email, setEmail] = useState("");
@@ -31,20 +31,20 @@ export default function PasswordReset() {
 
       if (error) throw error;
 
-      toast.success("Check your email", {
-        description: "We've sent you a password reset link",
+      toast.success("E-Mail prüfen", {
+        description: "Wir haben Ihnen einen Link zum Zurücksetzen gesendet",
       });
       
       setEmail("");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
-        toast.error("Invalid email", {
+        toast.error("Ungültige E-Mail", {
           description: error.errors[0].message,
         });
       } else {
         // Always show success for security (don't reveal if email exists)
-        toast.success("Check your email", {
-          description: "If an account exists, you'll receive a reset link",
+        toast.success("E-Mail prüfen", {
+          description: "Falls ein Konto existiert, erhalten Sie einen Link zum Zurücksetzen",
         });
       }
     } finally {
@@ -65,28 +65,28 @@ export default function PasswordReset() {
               className="w-fit mb-4"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Sign In
+              Zurück zur Anmeldung
             </Button>
-            <CardTitle>Reset Password</CardTitle>
+            <CardTitle>Passwort zurücksetzen</CardTitle>
             <CardDescription>
-              Enter your email address and we'll send you a link to reset your password
+              Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handlePasswordReset} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E-Mail-Adresse</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="name@unternehmen.de"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Sending..." : "Send Reset Link"}
+                {loading ? "Wird gesendet..." : "Link zum Zurücksetzen senden"}
               </Button>
             </form>
           </CardContent>

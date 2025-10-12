@@ -15,30 +15,30 @@ const signUpSchema = z.object({
   fullName: z
     .string()
     .trim()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must be less than 100 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes"),
+    .min(2, "Der Name muss mindestens 2 Zeichen enthalten")
+    .max(100, "Der Name darf höchstens 100 Zeichen enthalten")
+    .regex(/^[a-zA-Z\s'-]+$/, "Der Name darf nur Buchstaben, Leerzeichen, Bindestriche und Apostrophe enthalten"),
   email: z
     .string()
     .trim()
-    .email("Invalid email address")
-    .max(255, "Email must be less than 255 characters"),
+    .email("Bitte eine gültige E-Mail-Adresse eingeben")
+    .max(255, "Die E-Mail-Adresse darf höchstens 255 Zeichen enthalten"),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+    .min(8, "Das Passwort muss mindestens 8 Zeichen lang sein")
+    .regex(/[A-Z]/, "Das Passwort muss mindestens einen Großbuchstaben enthalten")
+    .regex(/[a-z]/, "Das Passwort muss mindestens einen Kleinbuchstaben enthalten")
+    .regex(/[0-9]/, "Das Passwort muss mindestens eine Zahl enthalten")
+    .regex(/[^A-Za-z0-9]/, "Das Passwort muss mindestens ein Sonderzeichen enthalten"),
 });
 
 const signInSchema = z.object({
   email: z
     .string()
     .trim()
-    .email("Invalid email address")
-    .max(255, "Email must be less than 255 characters"),
-  password: z.string().min(1, "Password is required"),
+    .email("Bitte eine gültige E-Mail-Adresse eingeben")
+    .max(255, "Die E-Mail-Adresse darf höchstens 255 Zeichen enthalten"),
+  password: z.string().min(1, "Passwort ist erforderlich"),
 });
 
 const Auth = () => {
@@ -91,20 +91,20 @@ const Auth = () => {
       if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: "Your account has been created. You can now log in.",
+        title: "Erfolg!",
+        description: "Ihr Konto wurde erstellt. Sie können sich jetzt anmelden.",
       });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast({
-          title: "Validation Error",
+          title: "Validierungsfehler",
           description: error.errors[0].message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Error",
-          description: error.message || "An error occurred during sign up",
+          title: "Fehler",
+          description: error.message || "Beim Registrieren ist ein Fehler aufgetreten",
           variant: "destructive",
         });
       }
@@ -132,20 +132,20 @@ const Auth = () => {
       if (error) throw error;
 
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+        title: "Willkommen zurück!",
+        description: "Sie haben sich erfolgreich angemeldet.",
       });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast({
-          title: "Validation Error",
+          title: "Validierungsfehler",
           description: error.errors[0].message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Error",
-          description: error.message || "Invalid credentials",
+          title: "Fehler",
+          description: error.message || "Ungültige Zugangsdaten",
           variant: "destructive",
         });
       }
@@ -161,20 +161,20 @@ const Auth = () => {
         <div className="max-w-md mx-auto">
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin">Anmelden</TabsTrigger>
+              <TabsTrigger value="signup">Registrieren</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin">
               <Card>
                 <CardHeader>
-                  <CardTitle>Sign In</CardTitle>
-                  <CardDescription>Enter your credentials to access your account</CardDescription>
+                  <CardTitle>Anmelden</CardTitle>
+                  <CardDescription>Geben Sie Ihre Zugangsdaten ein, um auf Ihr Konto zuzugreifen</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signin-email">Email</Label>
+                      <Label htmlFor="signin-email">E-Mail-Adresse</Label>
                       <Input
                         id="signin-email"
                         type="email"
@@ -184,7 +184,7 @@ const Auth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signin-password">Password</Label>
+                      <Label htmlFor="signin-password">Passwort</Label>
                       <Input
                         id="signin-password"
                         type="password"
@@ -194,14 +194,14 @@ const Auth = () => {
                       />
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>
-                      {loading ? "Signing in..." : "Sign In"}
+                      {loading ? "Anmeldung läuft..." : "Anmelden"}
                     </Button>
                     <div className="text-center mt-4">
                       <a
                         href="/password-reset"
                         className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       >
-                        Forgot your password?
+                        Passwort vergessen?
                       </a>
                     </div>
                   </form>
@@ -212,13 +212,13 @@ const Auth = () => {
             <TabsContent value="signup">
               <Card>
                 <CardHeader>
-                  <CardTitle>Sign Up</CardTitle>
-                  <CardDescription>Create a new account to get started</CardDescription>
+                  <CardTitle>Registrieren</CardTitle>
+                  <CardDescription>Erstellen Sie ein neues Konto, um loszulegen</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Label htmlFor="signup-name">Vollständiger Name</Label>
                       <Input
                         id="signup-name"
                         type="text"
@@ -228,7 +228,7 @@ const Auth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-email">E-Mail-Adresse</Label>
                       <Input
                         id="signup-email"
                         type="email"
@@ -238,7 +238,7 @@ const Auth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label htmlFor="signup-password">Passwort</Label>
                       <Input
                         id="signup-password"
                         type="password"
@@ -248,11 +248,11 @@ const Auth = () => {
                         minLength={8}
                       />
                       <p className="text-xs text-muted-foreground">
-                        Must be 8+ characters with uppercase, lowercase, number, and special character
+                        Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben, Zahl und Sonderzeichen
                       </p>
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>
-                      {loading ? "Creating account..." : "Sign Up"}
+                      {loading ? "Konto wird erstellt..." : "Registrieren"}
                     </Button>
                   </form>
                 </CardContent>
