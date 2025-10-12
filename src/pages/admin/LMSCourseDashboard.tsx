@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
 import { Button } from "@/components/ui/button";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
@@ -34,6 +35,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export default function LMSCourseDashboard() {
+  const navigate = useNavigate();
   const { courses, loading, deleteCourse, reload } = useLMSCourse();
   
   const [activeView, setActiveView] = useState<"list" | "create" | "edit">("list");
@@ -285,7 +287,9 @@ export default function LMSCourseDashboard() {
                         </Button>
                       </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Anzeigen</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate(`/lms/courses/${course.id}/preview`)}>
+                              Anzeigen
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => {
                               setEditingCourseId(course.id);
                               setActiveView("edit");
@@ -339,6 +343,9 @@ export default function LMSCourseDashboard() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => navigate(`/lms/courses/${course.id}/preview`)}>
+                            Anzeigen
+                          </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
                             setEditingCourseId(course.id);
                             setActiveView("edit");
