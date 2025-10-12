@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ interface ClusterData {
 }
 
 const HMWClustering = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [unassignedQuestions, setUnassignedQuestions] = useState<string[]>([]);
@@ -207,12 +209,34 @@ const HMWClustering = () => {
         onDragLeave={handleDragLeave}
         onDrop={(e) => handleDrop(e, id)}
       >
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center justify-between">
-            <span className="truncate">{name}</span>
-            <Badge variant="secondary">{questions.length}</Badge>
-          </CardTitle>
-        </CardHeader>
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            {!isUnassigned ? (
+              <>
+                <Input
+                  value={cluster!.name}
+                  onChange={(e) => updateClusterName?.(cluster!.id, e.target.value)}
+                  placeholder="Cluster-Name..."
+                  className="h-8 flex-1"
+                  autoComplete="off"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 flex-shrink-0"
+                  onClick={() => deleteCluster?.(cluster!.id)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <span className="truncate text-lg font-semibold">{name}</span>
+            )}
+          </div>
+          <Badge variant="secondary" className="flex-shrink-0">{questions.length}</Badge>
+        </div>
+      </CardHeader>
         <CardContent>
           <ScrollArea className="h-[500px] pr-4">
             <div className="space-y-2">
@@ -249,6 +273,10 @@ const HMWClustering = () => {
       {/* Actions */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
+          <Button onClick={() => navigate('/lms/tools/hmw-generator')} variant="outline">
+            <LayoutGrid className="mr-2 h-4 w-4" />
+            Zurück zum Generator
+          </Button>
           <Button onClick={addCluster} disabled={clusters.length >= 10}>
             <Plus className="mr-2 h-4 w-4" />
             Neuer Cluster
@@ -269,39 +297,6 @@ const HMWClustering = () => {
         )}
       </div>
 
-      {/* Cluster Name Management */}
-      {clusters.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Cluster-Namen</CardTitle>
-            <CardDescription>
-              Gib deinen Clustern aussagekräftige Namen
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {clusters.map((cluster) => (
-                <div key={cluster.id} className="flex gap-2">
-                  <Input
-                    placeholder="Cluster-Name..."
-                    value={cluster.name}
-                    onChange={(e) => updateClusterName(cluster.id, e.target.value)}
-                    autoComplete="off"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteCluster(cluster.id)}
-                    className="flex-shrink-0"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Kanban Board */}
       <div className="relative">
