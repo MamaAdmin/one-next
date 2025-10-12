@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Tool {
+  name: string;
+  url: string;
+}
+
+interface Resource {
+  title: string;
+  url: string;
+}
+
 interface LMSModule {
   id: string;
   course_id: string;
@@ -14,6 +24,12 @@ interface LMSModule {
   is_required: boolean;
   created_at: string;
   updated_at: string;
+  tools?: Tool[];
+  resources?: Resource[];
+  tags?: string[];
+  author?: string;
+  prerequisites?: string[];
+  tool_recommendation?: string;
 }
 
 interface ModuleProgress {

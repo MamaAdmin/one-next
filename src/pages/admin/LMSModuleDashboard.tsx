@@ -37,6 +37,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+interface Tool {
+  name: string;
+  url: string;
+}
+
+interface Resource {
+  title: string;
+  url: string;
+}
 
 interface Module {
   id: string;
@@ -49,6 +60,12 @@ interface Module {
   sort_order: number;
   content_text?: string;
   content_video_url?: string;
+  tools?: Tool[];
+  resources?: Resource[];
+  tags?: string[];
+  author?: string;
+  prerequisites?: string[];
+  tool_recommendation?: string;
 }
 
 export default function LMSModuleDashboard() {
@@ -107,13 +124,61 @@ export default function LMSModuleDashboard() {
       .eq("course_id", selectedCourse)
       .order("phase_number")
       .order("sort_order");
-    setModules(data || []);
+    
+    // Transform data to match Module interface
+    const transformedData = (data || []).map(module => ({
+      ...module,
+      tools: Array.isArray(module.tools) ? (module.tools as unknown as Tool[]) : [],
+      resources: Array.isArray(module.resources) ? (module.resources as unknown as Resource[]) : [],
+      tags: Array.isArray(module.tags) ? module.tags : [],
+      prerequisites: Array.isArray(module.prerequisites) ? module.prerequisites : [],
+    }));
+    
+    setModules(transformedData);
     setLoading(false);
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    // Parse JSON fields
+    let tools = [];
+    let resources = [];
+    try {
+      const toolsJson = formData.get("tools_json") as string;
+      if (toolsJson?.trim()) {
+        tools = JSON.parse(toolsJson);
+      }
+    } catch (e) {
+      toast({ 
+        title: "Fehler", 
+        description: "Tools JSON ist ungültig", 
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    try {
+      const resourcesJson = formData.get("resources_json") as string;
+      if (resourcesJson?.trim()) {
+        resources = JSON.parse(resourcesJson);
+      }
+    } catch (e) {
+      toast({ 
+        title: "Fehler", 
+        description: "Resources JSON ist ungültig", 
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    // Parse comma-separated arrays
+    const tagsString = formData.get("tags") as string;
+    const tags = tagsString ? tagsString.split(',').map(t => t.trim()).filter(Boolean) : [];
+    
+    const prereqsString = formData.get("prerequisites") as string;
+    const prerequisites = prereqsString ? prereqsString.split(',').map(p => p.trim()).filter(Boolean) : [];
     
     const moduleData = {
       course_id: selectedCourse,
@@ -125,6 +190,12 @@ export default function LMSModuleDashboard() {
       sort_order: parseInt(formData.get("sort_order") as string),
       content_text: formData.get("content_text") as string,
       content_video_url: formData.get("content_video_url") as string,
+      tools: tools,
+      resources: resources,
+      tags: tags,
+      author: formData.get("author") as string,
+      prerequisites: prerequisites,
+      tool_recommendation: formData.get("tool_recommendation") as string,
     };
 
     if (editingModule) {
@@ -212,106 +283,238 @@ export default function LMSModuleDashboard() {
                 Neues Modul
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingModule ? "Modul bearbeiten" : "Neues Modul erstellen"}
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSave} className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Titel</Label>
-                  <Input
-                    id="title"
-                    name="title"
-                    defaultValue={editingModule?.title}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="description">Beschreibung</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    defaultValue={editingModule?.description}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="phase_number">Phase</Label>
-                    <Input
-                      id="phase_number"
-                      name="phase_number"
-                      type="number"
-                      min="1"
-                      max="5"
-                      defaultValue={editingModule?.phase_number || 1}
-                      required
-                    />
+              
+              <Tabs defaultValue="general" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="general">Allgemein</TabsTrigger>
+                  <TabsTrigger value="content">Inhalte</TabsTrigger>
+                  <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
+                  <TabsTrigger value="meta">Meta</TabsTrigger>
+                </TabsList>
+                
+                <form onSubmit={handleSave} className="mt-6">
+                  <TabsContent value="general" className="space-y-4">
+                    <div>
+                      <Label htmlFor="title">Titel *</Label>
+                      <Input 
+                        id="title" 
+                        name="title" 
+                        placeholder="Modultitel eingeben..."
+                        defaultValue={editingModule?.title} 
+                        required 
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="description">Beschreibung</Label>
+                      <Textarea 
+                        id="description" 
+                        name="description" 
+                        rows={4}
+                        placeholder="Kurs- oder Modulbeschreibung eingeben..."
+                        defaultValue={editingModule?.description} 
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Unterstützt: **bold**, *italic*, [links](url)
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="phase_number">Phase *</Label>
+                        <Input 
+                          id="phase_number" 
+                          name="phase_number" 
+                          type="number" 
+                          min="1" 
+                          max="5" 
+                          defaultValue={editingModule?.phase_number || 1} 
+                          required 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="sort_order">Reihenfolge *</Label>
+                        <Input 
+                          id="sort_order" 
+                          name="sort_order" 
+                          type="number" 
+                          min="1" 
+                          defaultValue={editingModule?.sort_order || 1} 
+                          required 
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="module_type">Typ *</Label>
+                        <Select name="module_type" defaultValue={editingModule?.module_type || "Theory"}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Theory">Theory</SelectItem>
+                            <SelectItem value="Practice">Practice</SelectItem>
+                            <SelectItem value="Workshop">Workshop</SelectItem>
+                            <SelectItem value="Case Study">Case Study</SelectItem>
+                            <SelectItem value="Reflection">Reflection</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="duration_minutes">Dauer (Minuten) *</Label>
+                        <Input 
+                          id="duration_minutes" 
+                          name="duration_minutes" 
+                          type="number" 
+                          min="1" 
+                          defaultValue={editingModule?.duration_minutes || 30} 
+                          required 
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="content" className="space-y-4">
+                    <div>
+                      <Label htmlFor="content_text">Content (Markdown)</Label>
+                      <Textarea 
+                        id="content_text" 
+                        name="content_text" 
+                        rows={10}
+                        placeholder="Modulinhalte mit Markdown oder strukturiertem Text eingeben..."
+                        defaultValue={editingModule?.content_text}
+                        className="font-mono text-sm"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Markdown-Syntax wird unterstützt
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="content_video_url">Video URL</Label>
+                      <Input 
+                        id="content_video_url" 
+                        name="content_video_url" 
+                        type="url"
+                        placeholder="https://youtube.com/..."
+                        defaultValue={editingModule?.content_video_url}
+                      />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="tools" className="space-y-6">
+                    <div>
+                      <Label>Interaktive Tools</Label>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Verknüpfte Tools wie Miro, Mural, Gamma etc.
+                      </p>
+                      <Input 
+                        id="tools_json" 
+                        name="tools_json"
+                        placeholder='[{"name":"Miro","url":"https://miro.com/..."}]'
+                        defaultValue={editingModule?.tools ? JSON.stringify(editingModule.tools) : ''}
+                        className="font-mono text-sm"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        JSON-Format: Array von Objekten mit "name" und "url"
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <Label>Ressourcen & Dateien</Label>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Externe Links, PDFs oder Confluence-Seiten
+                      </p>
+                      <Input 
+                        id="resources_json" 
+                        name="resources_json"
+                        placeholder='[{"title":"Guide","url":"https://..."}]'
+                        defaultValue={editingModule?.resources ? JSON.stringify(editingModule.resources) : ''}
+                        className="font-mono text-sm"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        JSON-Format: Array von Objekten mit "title" und "url"
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="tool_recommendation">Empfohlenes Tool</Label>
+                      <Input 
+                        id="tool_recommendation" 
+                        name="tool_recommendation"
+                        placeholder="z. B. Miro für Ideation-Phase"
+                        defaultValue={editingModule?.tool_recommendation}
+                      />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="meta" className="space-y-4">
+                    <div>
+                      <Label htmlFor="tags">Tags / Lernziele</Label>
+                      <Input 
+                        id="tags" 
+                        name="tags"
+                        placeholder="#AI, #DesignSprint, #Innovation"
+                        defaultValue={editingModule?.tags?.join(', ')}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Komma-getrennte Stichworte zur Kategorisierung
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="author">Autor / Trainer</Label>
+                      <Input 
+                        id="author" 
+                        name="author"
+                        placeholder="Name des Autors"
+                        defaultValue={editingModule?.author}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="prerequisites">Voraussetzungen</Label>
+                      <Input 
+                        id="prerequisites" 
+                        name="prerequisites"
+                        placeholder="Modulname oder ID (komma-getrennt)"
+                        defaultValue={editingModule?.prerequisites?.join(', ')}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Andere Module, die vorher abgeschlossen sein sollten
+                      </p>
+                    </div>
+                    
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                      <div className="flex gap-2">
+                        <span className="text-xl">⚠️</span>
+                        <div>
+                          <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                            DSGVO-Hinweis
+                          </p>
+                          <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                            Keine personenbezogenen Daten oder internen Unternehmensinformationen in dieses Modul einfügen.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                  
+                  <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
+                    <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                      Abbrechen
+                    </Button>
+                    <Button type="submit">
+                      {editingModule ? "Aktualisieren" : "Erstellen"}
+                    </Button>
                   </div>
-                  <div>
-                    <Label htmlFor="sort_order">Reihenfolge</Label>
-                    <Input
-                      id="sort_order"
-                      name="sort_order"
-                      type="number"
-                      min="1"
-                      defaultValue={editingModule?.sort_order || 1}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="module_type">Typ</Label>
-                    <Select name="module_type" defaultValue={editingModule?.module_type || "theory"}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="theory">Theory</SelectItem>
-                        <SelectItem value="exercise">Exercise</SelectItem>
-                        <SelectItem value="collaboration">Collaboration</SelectItem>
-                        <SelectItem value="artifact_upload">Artifact Upload</SelectItem>
-                        <SelectItem value="voting">Voting</SelectItem>
-                        <SelectItem value="user_testing">User Testing</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="duration_minutes">Dauer (Min)</Label>
-                    <Input
-                      id="duration_minutes"
-                      name="duration_minutes"
-                      type="number"
-                      min="1"
-                      defaultValue={editingModule?.duration_minutes || 30}
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="content_text">Content (Markdown)</Label>
-                  <Textarea
-                    id="content_text"
-                    name="content_text"
-                    rows={6}
-                    defaultValue={editingModule?.content_text}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="content_video_url">Video URL</Label>
-                  <Input
-                    id="content_video_url"
-                    name="content_video_url"
-                    type="url"
-                    defaultValue={editingModule?.content_video_url}
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  {editingModule ? "Aktualisieren" : "Erstellen"}
-                </Button>
-              </form>
+                </form>
+              </Tabs>
             </DialogContent>
           </Dialog>
         </div>

@@ -434,6 +434,7 @@ export type Database = {
       }
       lms_course_modules: {
         Row: {
+          author: string | null
           content_text: string | null
           content_video_url: string | null
           course_id: string
@@ -444,11 +445,17 @@ export type Database = {
           is_required: boolean
           module_type: string
           phase_number: number
+          prerequisites: string[] | null
+          resources: Json | null
           sort_order: number
+          tags: string[] | null
           title: string
+          tool_recommendation: string | null
+          tools: Json | null
           updated_at: string
         }
         Insert: {
+          author?: string | null
           content_text?: string | null
           content_video_url?: string | null
           course_id: string
@@ -459,11 +466,17 @@ export type Database = {
           is_required?: boolean
           module_type?: string
           phase_number: number
+          prerequisites?: string[] | null
+          resources?: Json | null
           sort_order: number
+          tags?: string[] | null
           title: string
+          tool_recommendation?: string | null
+          tools?: Json | null
           updated_at?: string
         }
         Update: {
+          author?: string | null
           content_text?: string | null
           content_video_url?: string | null
           course_id?: string
@@ -474,8 +487,13 @@ export type Database = {
           is_required?: boolean
           module_type?: string
           phase_number?: number
+          prerequisites?: string[] | null
+          resources?: Json | null
           sort_order?: number
+          tags?: string[] | null
           title?: string
+          tool_recommendation?: string | null
+          tools?: Json | null
           updated_at?: string
         }
         Relationships: [
