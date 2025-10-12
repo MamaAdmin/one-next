@@ -18,8 +18,9 @@ interface CoursePreviewProps {
     title: string;
     description: string;
     thumbnail_url?: string;
-    price_chf: number;
+    price_chf: number | null;
     skill_level?: string;
+    difficulty?: string;
     total_lessons?: number;
     total_quizzes?: number;
     rating?: number;
@@ -38,6 +39,22 @@ interface CoursePreviewProps {
 }
 
 export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
+  // Übersetzungs-Mappings
+  const difficultyLabels: Record<string, string> = {
+    'beginner': 'Anfänger',
+    'intermediate': 'Fortgeschritten',
+    'advanced': 'Experte',
+    'all': 'Alle Schwierigkeitsgrade'
+  };
+
+  const courseTypeLabels: Record<string, string> = {
+    'custom': 'Individuell',
+    'sprint': 'Sprint',
+    'workshop': 'Workshop',
+    'online': 'Online-Kurs',
+    'hybrid': 'Hybrid'
+  };
+
   const completionDate = enrollment 
     ? addDays(new Date(enrollment.enrolled_at), course.completion_deadline_days || 30)
     : null;
@@ -51,15 +68,6 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
           <p className="text-lg text-muted-foreground mb-4">
             {course.description}
           </p>
-          
-          {/* Kurs-Bild */}
-          {course.thumbnail_url && (
-            <img 
-              src={course.thumbnail_url} 
-              alt={course.title}
-              className="w-full h-64 object-cover rounded-lg mb-4"
-            />
-          )}
         </div>
 
         {/* Kursinfo */}
@@ -79,6 +87,15 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
 
       {/* Rechte Spalte: Kursinhalte */}
       <div className="space-y-4">
+        {/* Kurs-Thumbnail */}
+        {course.thumbnail_url && (
+          <img 
+            src={course.thumbnail_url} 
+            alt={course.title}
+            className="w-full h-32 object-cover rounded-lg"
+          />
+        )}
+        
         <Card>
           <CardContent className="p-6 space-y-4">
             <h3 className="font-semibold text-lg">Kursinhalte</h3>
@@ -86,8 +103,8 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
             {/* Preis */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Preis:</span>
-              <Badge variant={course.price_chf === 0 ? "secondary" : "default"}>
-                {course.price_chf === 0 ? "Kostenlos" : `CHF ${course.price_chf}`}
+              <Badge variant={(course.price_chf === 0 || course.price_chf === null) ? "secondary" : "default"}>
+                {(course.price_chf === 0 || course.price_chf === null) ? "Kostenlos" : `CHF ${course.price_chf}`}
               </Badge>
             </div>
 
@@ -121,13 +138,17 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
             {/* Skill Level */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Schwierigkeitsgrad:</span>
-              <span className="text-sm font-medium">{course.skill_level || "Alle"}</span>
+              <Badge variant="outline">
+                {difficultyLabels[course.skill_level || course.difficulty || ''] || course.skill_level || course.difficulty || "Nicht angegeben"}
+              </Badge>
             </div>
 
             {/* Kategorie */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Kategorie:</span>
-              <span className="text-sm font-medium">{course.course_type}</span>
+              <Badge variant="outline">
+                {courseTypeLabels[course.course_type] || course.course_type}
+              </Badge>
             </div>
 
             {/* Zertifikat */}
