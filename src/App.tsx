@@ -32,6 +32,8 @@ import DeleteAccountPage from "./pages/lms/DeleteAccountPage";
 import LMSAnalytics from "./pages/admin/LMSAnalytics";
 import LMSModuleDashboard from "./pages/admin/LMSModuleDashboard";
 import LMSModuleEditor from "./pages/admin/LMSModuleEditor";
+import LMSToolboxDashboard from "./pages/admin/LMSToolboxDashboard";
+import LMSToolboxEditor from "./pages/admin/LMSToolboxEditor";
 import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
 import NotFound from "./pages/NotFound";
 
@@ -77,6 +79,9 @@ const App = () => (
           <Route path="/admin/lms/modules" element={<LMSModuleDashboard />} />
           <Route path="/admin/lms/modules/new" element={<LMSModuleEditor />} />
           <Route path="/admin/lms/modules/:moduleId/edit" element={<LMSModuleEditor />} />
+          <Route path="/admin/lms/toolbox" element={<LMSToolboxDashboard />} />
+          <Route path="/admin/lms/toolbox/new" element={<LMSToolboxEditor />} />
+          <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
           <Route path="/lms/courses/:courseId/preview" element={<LMSCoursePreview />} />
           <Route path="/lms" element={<LMSIndex />} />
           <Route path="/lms/dashboard" element={<LMSDashboard />} />
