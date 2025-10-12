@@ -8,9 +8,22 @@ interface Course {
   description: string;
   course_type: string;
   price_chf: number;
-  status: string;
+  is_active: boolean;
   created_at: string;
   module_count?: number;
+  
+  // Preview fields
+  thumbnail_url?: string;
+  skill_level?: string;
+  total_lessons?: number;
+  total_quizzes?: number;
+  rating?: number;
+  rating_count?: number;
+  enrolled_students_count?: number;
+  completion_deadline_days?: number;
+  includes_certificate?: boolean;
+  language?: string;
+  prerequisites?: string;
 }
 
 export const useLMSCourse = () => {
@@ -21,7 +34,7 @@ export const useLMSCourse = () => {
   const loadCourses = async () => {
     try {
       const { data, error } = await (supabase as any)
-        .from("lms_courses")
+        .from("lms_courses_with_stats")
         .select(`
           *,
           lms_course_modules (count)

@@ -486,6 +486,13 @@ export type Database = {
             referencedRelation: "lms_courses"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lms_course_modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses_with_stats"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lms_course_purchases: {
@@ -531,6 +538,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "lms_course_purchases_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses_with_stats"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "lms_course_purchases_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
@@ -541,36 +555,66 @@ export type Database = {
       }
       lms_courses: {
         Row: {
+          completion_deadline_days: number | null
           course_type: string
           created_at: string
           description: string | null
           duration_days: number | null
           id: string
+          includes_certificate: boolean | null
           is_active: boolean
+          language: string | null
+          prerequisites: string | null
           price_chf: number | null
+          rating: number | null
+          rating_count: number | null
+          skill_level: string | null
+          thumbnail_url: string | null
           title: string
+          total_lessons: number | null
+          total_quizzes: number | null
           updated_at: string
         }
         Insert: {
+          completion_deadline_days?: number | null
           course_type?: string
           created_at?: string
           description?: string | null
           duration_days?: number | null
           id?: string
+          includes_certificate?: boolean | null
           is_active?: boolean
+          language?: string | null
+          prerequisites?: string | null
           price_chf?: number | null
+          rating?: number | null
+          rating_count?: number | null
+          skill_level?: string | null
+          thumbnail_url?: string | null
           title: string
+          total_lessons?: number | null
+          total_quizzes?: number | null
           updated_at?: string
         }
         Update: {
+          completion_deadline_days?: number | null
           course_type?: string
           created_at?: string
           description?: string | null
           duration_days?: number | null
           id?: string
+          includes_certificate?: boolean | null
           is_active?: boolean
+          language?: string | null
+          prerequisites?: string | null
           price_chf?: number | null
+          rating?: number | null
+          rating_count?: number | null
+          skill_level?: string | null
+          thumbnail_url?: string | null
           title?: string
+          total_lessons?: number | null
+          total_quizzes?: number | null
           updated_at?: string
         }
         Relationships: []
@@ -974,7 +1018,31 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      lms_courses_with_stats: {
+        Row: {
+          completion_deadline_days: number | null
+          course_type: string | null
+          created_at: string | null
+          description: string | null
+          duration_days: number | null
+          enrolled_students_count: number | null
+          id: string | null
+          includes_certificate: boolean | null
+          is_active: boolean | null
+          language: string | null
+          prerequisites: string | null
+          price_chf: number | null
+          rating: number | null
+          rating_count: number | null
+          skill_level: string | null
+          thumbnail_url: string | null
+          title: string | null
+          total_lessons: number | null
+          total_quizzes: number | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_enrollment_progress: {

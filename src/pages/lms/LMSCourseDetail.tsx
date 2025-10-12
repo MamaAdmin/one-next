@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { ModuleRenderer } from "@/components/sprint/modules/ModuleRenderer";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { supabase } from "@/integrations/supabase/client";
+import { CoursePreview } from "@/components/lms/CoursePreview";
 
 export default function LMSCourseDetail() {
   const { enrollmentId } = useParams<{ enrollmentId: string }>();
@@ -19,10 +20,11 @@ export default function LMSCourseDetail() {
   const [courseId, setCourseId] = useState<string | null>(null);
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [showGDPRConsent, setShowGDPRConsent] = useState(false);
+  const [courseData, setCourseData] = useState<any>(null);
   
-  // Load course ID from enrollment
+  // Load course ID and course data from enrollment
   useEffect(() => {
-    const loadCourseId = async () => {
+    const loadCourseData = async () => {
       if (!currentEnrollment) return;
       
       const { data: purchase } = await supabase
@@ -31,10 +33,21 @@ export default function LMSCourseDetail() {
         .eq("id", currentEnrollment.purchase_id)
         .single();
       
-      setCourseId(purchase?.course_id || null);
+      const loadedCourseId = purchase?.course_id || null;
+      setCourseId(loadedCourseId);
       setParticipantId(currentEnrollment.participant_id);
+      
+      if (loadedCourseId) {
+        const { data: course } = await supabase
+          .from("lms_courses_with_stats")
+          .select("*")
+          .eq("id", loadedCourseId)
+          .single();
+        
+        setCourseData(course);
+      }
     };
-    loadCourseId();
+    loadCourseData();
   }, [currentEnrollment]);
 
   // Check GDPR consent
@@ -101,8 +114,19 @@ export default function LMSCourseDetail() {
         </Link>
       </div>
 
+      {/* Course Preview Section */}
+      {courseData && (
+        <div className="mb-8">
+          <CoursePreview
+            course={courseData}
+            enrollment={currentEnrollment}
+          />
+        </div>
+      )}
+
+      {/* Module Navigation Section */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">5-Day Design Sprint</h1>
+        <h2 className="text-2xl font-bold mb-2">Kursmodule</h2>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">
             Phase {currentEnrollment?.current_phase || 0}/5
