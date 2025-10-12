@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/custom-icons";
 import { format, addDays } from "date-fns";
 import { de } from "date-fns/locale";
+import DOMPurify from 'dompurify';
 
 interface CoursePreviewProps {
   course: {
@@ -55,7 +56,12 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
     'hybrid': 'Hybrid'
   };
 
-  const completionDate = enrollment 
+  // HTML sicher rendern
+  const sanitizeHtml = (html: string) => {
+    return { __html: DOMPurify.sanitize(html) };
+  };
+
+  const completionDate = enrollment
     ? addDays(new Date(enrollment.enrolled_at), course.completion_deadline_days || 30)
     : null;
 
@@ -65,21 +71,23 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
       <div className="lg:col-span-2 space-y-6">
         <div>
           <h1 className="text-3xl font-bold mb-2">{course.title}</h1>
-          <p className="text-lg text-muted-foreground mb-4">
-            {course.description}
-          </p>
+          <div 
+            className="text-lg text-muted-foreground mb-4 prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={sanitizeHtml(course.description)}
+          />
         </div>
 
         {/* Kursinfo */}
         <Card>
           <CardContent className="p-6">
             <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2">Kursziel</h3>
-                <p className="text-sm text-muted-foreground">
-                  {course.description}
-                </p>
-              </div>
+            <div>
+              <h3 className="font-semibold mb-2">Kursziel</h3>
+              <div 
+                className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={sanitizeHtml(course.description)}
+              />
+            </div>
             </div>
           </CardContent>
         </Card>
