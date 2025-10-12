@@ -37,9 +37,13 @@ export const useVoting = (sessionId?: string, participantId?: string) => {
         .from("lms_voting_sessions")
         .select("*")
         .eq("id", sessionId)
-        .single();
+        .maybeSingle();
 
       if (sessionError) throw sessionError;
+      if (!sessionData) {
+        console.warn("Voting session not found");
+        return;
+      }
       setSession(sessionData);
 
       const { data: votesData, error: votesError } = await (supabase as any)

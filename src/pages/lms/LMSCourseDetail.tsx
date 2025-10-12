@@ -33,18 +33,18 @@ export default function LMSCourseDetail() {
         .from("lms_course_purchases")
         .select("course_id")
         .eq("id", currentEnrollment.purchase_id)
-        .single();
+        .maybeSingle();
       
       const loadedCourseId = purchase?.course_id || null;
       setCourseId(loadedCourseId);
       setParticipantId(currentEnrollment.participant_id);
-      
+
       if (loadedCourseId) {
         const { data: course } = await supabase
           .from("lms_courses_with_stats")
           .select("*")
           .eq("id", loadedCourseId)
-          .single();
+          .maybeSingle();
         
         setCourseData(course);
       }

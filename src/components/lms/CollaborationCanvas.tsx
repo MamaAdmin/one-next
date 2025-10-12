@@ -61,7 +61,7 @@ export const CollaborationCanvas = ({
       .from("lms_collaboration_sessions")
       .select("session_data")
       .eq("id", sessionId)
-      .single();
+      .maybeSingle();
 
     if (data?.session_data?.notes) {
       setNotes(data.session_data.notes);

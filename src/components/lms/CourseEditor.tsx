@@ -91,9 +91,18 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
         .from("lms_courses")
         .select("*")
         .eq("id", courseId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      if (!data) {
+        toast({
+          title: "Fehler",
+          description: "Kurs nicht gefunden",
+          variant: "destructive",
+        });
+        navigate("/admin/lms/courses");
+        return;
+      }
 
       setFormData({
         title: data.title || "",

@@ -23,9 +23,12 @@ const LMSCustomerDashboard = () => {
     customers,
     loading,
     createCustomer,
-    deleteCustomer
+    deleteCustomer,
+    updateCustomer
   } = useCustomer();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<any>(null);
   const [formData, setFormData] = useState({
     company_name: "",
     email: "",
@@ -49,6 +52,39 @@ const LMSCustomerDashboard = () => {
       // Error already handled in hook
     }
   };
+
+  const handleEdit = (customer: any) => {
+    setEditingCustomer(customer);
+    setFormData({
+      company_name: customer.company_name || "",
+      email: customer.email,
+      name: customer.name,
+      phone: customer.phone || "",
+      address: customer.address || ""
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCustomer) return;
+    
+    try {
+      await updateCustomer(editingCustomer.id, formData);
+      setIsEditDialogOpen(false);
+      setEditingCustomer(null);
+      setFormData({
+        company_name: "",
+        email: "",
+        name: "",
+        phone: "",
+        address: ""
+      });
+    } catch (error) {
+      // Error already handled in hook
+    }
+  };
+
   const handleDelete = async (id: string, companyName: string) => {
     if (confirm(`Möchten Sie den Kunden "${companyName}" wirklich löschen? Dies löscht auch alle zugehörigen Teilnehmer und Buchungen.`)) {
       await deleteCustomer(id);
@@ -199,7 +235,7 @@ const LMSCustomerDashboard = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
-                          <Button variant="outline" size="sm" onClick={() => toast.info("Details-Ansicht kommt in nächster Phase")}>
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(customer)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button variant="destructive" size="sm" onClick={() => handleDelete(customer.id, customer.company_name || customer.name)}>
@@ -212,6 +248,72 @@ const LMSCustomerDashboard = () => {
               </Table>
             </CardContent>
           </Card>}
+
+        {/* Edit Customer Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Kunden bearbeiten</DialogTitle>
+              <DialogDescription>
+                Aktualisieren Sie die Kundendaten.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div>
+                <Label htmlFor="edit_company_name">Firmenname</Label>
+                <Input id="edit_company_name" value={formData.company_name} onChange={e => setFormData({
+                ...formData,
+                company_name: e.target.value
+              })} placeholder="z.B. Acme GmbH" />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_name">Kontaktperson *</Label>
+                <Input id="edit_name" value={formData.name} onChange={e => setFormData({
+                ...formData,
+                name: e.target.value
+              })} placeholder="Max Mustermann" required />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_email">E-Mail *</Label>
+                <Input id="edit_email" type="email" value={formData.email} onChange={e => setFormData({
+                ...formData,
+                email: e.target.value
+              })} placeholder="kontakt@firma.de" required />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_phone">Telefon</Label>
+                <Input id="edit_phone" type="tel" value={formData.phone} onChange={e => setFormData({
+                ...formData,
+                phone: e.target.value
+              })} placeholder="+41 44 123 45 67" />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_address">Adresse</Label>
+                <Textarea id="edit_address" value={formData.address} onChange={e => setFormData({
+                ...formData,
+                address: e.target.value
+              })} placeholder="Straße, PLZ Ort, Land" rows={3} />
+              </div>
+
+              <div className="flex gap-2 justify-end">
+                <Button type="button" variant="outline" onClick={() => {
+                setIsEditDialogOpen(false);
+                setEditingCustomer(null);
+              }}>
+                  Abbrechen
+                </Button>
+                <Button type="submit">
+                  Änderungen speichern
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </main>
 
       <Footer isEditMode={false} />

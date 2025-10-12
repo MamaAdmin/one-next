@@ -45,7 +45,7 @@ export const DeleteAccount = () => {
           .from("participants")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (participant) {
           await (supabase as any)
@@ -76,7 +76,7 @@ export const DeleteAccount = () => {
           .from("participants")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (participant) {
           // Delete artifacts from storage
