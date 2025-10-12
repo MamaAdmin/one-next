@@ -31,8 +31,8 @@ const MediaManager = () => {
 
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to fetch media files",
+        title: "Fehler",
+        description: "Mediendateien konnten nicht geladen werden.",
         variant: "destructive",
       });
     } else {
@@ -48,7 +48,7 @@ const MediaManager = () => {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Benutzer ist nicht angemeldet.");
 
       const fileExt = file.name.split(".").pop();
       const fileName = `${user.id}/${Math.random()}.${fileExt}`;
@@ -75,11 +75,11 @@ const MediaManager = () => {
 
       if (dbError) throw dbError;
 
-      toast({ title: "Success", description: "File uploaded successfully" });
+      toast({ title: "Erfolg", description: "Datei wurde erfolgreich hochgeladen." });
       fetchMedia();
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Fehler",
         description: error.message,
         variant: "destructive",
       });
@@ -89,7 +89,7 @@ const MediaManager = () => {
   };
 
   const handleDelete = async (id: string, filePath: string) => {
-    if (!confirm("Are you sure you want to delete this file?")) return;
+    if (!confirm("Möchten Sie diese Datei wirklich löschen?")) return;
 
     try {
       // Extract file path from public URL
@@ -105,11 +105,11 @@ const MediaManager = () => {
 
       if (dbError) throw dbError;
 
-      toast({ title: "Success", description: "File deleted successfully" });
+      toast({ title: "Erfolg", description: "Datei wurde erfolgreich gelöscht." });
       fetchMedia();
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Fehler",
         description: error.message,
         variant: "destructive",
       });
@@ -118,14 +118,14 @@ const MediaManager = () => {
 
   const copyToClipboard = (url: string) => {
     navigator.clipboard.writeText(url);
-    toast({ title: "Copied", description: "URL copied to clipboard" });
+    toast({ title: "Kopiert", description: "URL wurde in die Zwischenablage kopiert." });
   };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Upload Media</CardTitle>
+          <CardTitle>Medien hochladen</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -133,10 +133,10 @@ const MediaManager = () => {
               <div className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-accent/50 transition-colors">
                 <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <p className="text-sm text-muted-foreground">
-                  Click to upload or drag and drop
+                  Klicken Sie zum Hochladen oder ziehen Sie Dateien hierher
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  PNG, JPG, GIF up to 10MB
+                  PNG, JPG, GIF bis 10 MB
                 </p>
               </div>
               <Input
@@ -148,14 +148,14 @@ const MediaManager = () => {
                 accept="image/*"
               />
             </Label>
-            {uploading && <p className="text-sm text-muted-foreground">Uploading...</p>}
+            {uploading && <p className="text-sm text-muted-foreground">Wird hochgeladen...</p>}
           </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Media Library</CardTitle>
+          <CardTitle>Mediathek</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -175,12 +175,13 @@ const MediaManager = () => {
                       onClick={() => copyToClipboard(file.file_path)}
                       className="flex-1"
                     >
-                      Copy URL
+                      URL kopieren
                     </Button>
                     <Button
                       size="sm"
                       variant="destructive"
                       onClick={() => handleDelete(file.id, file.file_path)}
+                      aria-label="Datei löschen"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

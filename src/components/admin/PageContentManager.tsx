@@ -16,6 +16,13 @@ interface PageContent {
   content: string;
 }
 
+const contentTypeLabels: Record<string, string> = {
+  text: "Text",
+  html: "HTML",
+  image: "Bild-URL",
+  json: "JSON",
+};
+
 const PageContentManager = () => {
   const [contents, setContents] = useState<PageContent[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -38,8 +45,8 @@ const PageContentManager = () => {
 
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to fetch page content",
+        title: "Fehler",
+        description: "Seiteninhalte konnten nicht geladen werden.",
         variant: "destructive",
       });
     } else {
@@ -58,12 +65,12 @@ const PageContentManager = () => {
 
       if (error) {
         toast({
-          title: "Error",
-          description: "Failed to update content",
+          title: "Fehler",
+          description: "Inhalt konnte nicht aktualisiert werden.",
           variant: "destructive",
         });
       } else {
-        toast({ title: "Success", description: "Content updated successfully" });
+        toast({ title: "Erfolg", description: "Inhalt wurde erfolgreich aktualisiert." });
         resetForm();
         fetchContents();
       }
@@ -72,12 +79,12 @@ const PageContentManager = () => {
 
       if (error) {
         toast({
-          title: "Error",
-          description: "Failed to create content",
+          title: "Fehler",
+          description: "Inhalt konnte nicht erstellt werden.",
           variant: "destructive",
         });
       } else {
-        toast({ title: "Success", description: "Content created successfully" });
+        toast({ title: "Erfolg", description: "Inhalt wurde erfolgreich erstellt." });
         resetForm();
         fetchContents();
       }
@@ -95,18 +102,18 @@ const PageContentManager = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this content?")) return;
+    if (!confirm("Möchten Sie diesen Inhalt wirklich löschen?")) return;
 
     const { error } = await supabase.from("page_content").delete().eq("id", id);
 
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to delete content",
+        title: "Fehler",
+        description: "Inhalt konnte nicht gelöscht werden.",
         variant: "destructive",
       });
     } else {
-      toast({ title: "Success", description: "Content deleted successfully" });
+      toast({ title: "Erfolg", description: "Inhalt wurde erfolgreich gelöscht." });
       fetchContents();
     }
   };
@@ -125,35 +132,37 @@ const PageContentManager = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>{editingId ? "Edit Page Content" : "Create Page Content"}</CardTitle>
+          <CardTitle>
+            {editingId ? "Seiteninhalt bearbeiten" : "Seiteninhalt erstellen"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="page_name">Page Name</Label>
+                <Label htmlFor="page_name">Seitenname</Label>
                 <Input
                   id="page_name"
                   value={formData.page_name}
                   onChange={(e) => setFormData({ ...formData, page_name: e.target.value })}
-                  placeholder="e.g., homepage, about"
+                  placeholder="z. B. homepage, about"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="section_name">Section Name</Label>
+                <Label htmlFor="section_name">Bereichsname</Label>
                 <Input
                   id="section_name"
                   value={formData.section_name}
                   onChange={(e) => setFormData({ ...formData, section_name: e.target.value })}
-                  placeholder="e.g., hero_title, about_text"
+                  placeholder="z. B. hero_title, about_text"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="content_type">Content Type</Label>
+              <Label htmlFor="content_type">Inhaltstyp</Label>
               <select
                 id="content_type"
                 value={formData.content_type}
@@ -162,13 +171,13 @@ const PageContentManager = () => {
               >
                 <option value="text">Text</option>
                 <option value="html">HTML</option>
-                <option value="image">Image URL</option>
+                <option value="image">Bild-URL</option>
                 <option value="json">JSON</option>
               </select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="content">Content</Label>
+              <Label htmlFor="content">Inhalt</Label>
               <Textarea
                 id="content"
                 value={formData.content}
@@ -178,13 +187,13 @@ const PageContentManager = () => {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button type="submit">
-                {editingId ? "Update Content" : "Create Content"}
+                {editingId ? "Inhalt aktualisieren" : "Inhalt erstellen"}
               </Button>
               {editingId && (
                 <Button type="button" variant="outline" onClick={resetForm}>
-                  Cancel
+                  Abbrechen
                 </Button>
               )}
             </div>
@@ -194,7 +203,7 @@ const PageContentManager = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Existing Page Content</CardTitle>
+          <CardTitle>Vorhandene Seiteninhalte</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -210,7 +219,7 @@ const PageContentManager = () => {
                     <span className="text-sm text-muted-foreground">{content.section_name}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-2">
-                    Type: {content.content_type}
+                    Typ: {contentTypeLabels[content.content_type] ?? content.content_type}
                   </p>
                   <p className="text-sm line-clamp-2">{content.content}</p>
                 </div>
@@ -219,6 +228,7 @@ const PageContentManager = () => {
                     size="sm"
                     variant="outline"
                     onClick={() => handleEdit(content)}
+                    aria-label="Seiteninhalt bearbeiten"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -226,6 +236,7 @@ const PageContentManager = () => {
                     size="sm"
                     variant="destructive"
                     onClick={() => handleDelete(content.id)}
+                    aria-label="Seiteninhalt löschen"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

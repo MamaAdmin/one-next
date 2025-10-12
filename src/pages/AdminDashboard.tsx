@@ -39,7 +39,7 @@ const AdminDashboard = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
+          <p className="mt-4 text-muted-foreground">Wird geladen...</p>
         </div>
       </div>
     );
@@ -56,8 +56,10 @@ const AdminDashboard = () => {
         <div className="max-w-6xl mx-auto">
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="text-3xl">Admin Dashboard</CardTitle>
-              <CardDescription>Verwalten Sie Ihre Website-Inhalte, Blog-Artikel und Medien</CardDescription>
+              <CardTitle className="text-3xl">Admin-Dashboard</CardTitle>
+              <CardDescription>
+                Verwalten Sie Ihre Website-Inhalte, Blog-Artikel und Medien.
+              </CardDescription>
             </CardHeader>
           </Card>
 

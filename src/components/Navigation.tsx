@@ -23,7 +23,7 @@ const Navigation = () => {
   const servicesItems = [
     { label: "Analyse", href: "/ai-design-sprint" },
     { label: "Datenaudit", href: "/data-quality-audit" },
-    { label: "Custom AI Development", href: "#services" },
+    { label: "Individuelle KI-Entwicklung", href: "#services" },
     { label: "AI Beratung", href: "/ai-consulting-services" },
   ];
 
@@ -72,7 +72,7 @@ const Navigation = () => {
           <nav className="hidden md:flex items-center gap-8">
             <DropdownMenu open={servicesOpen} onOpenChange={setServicesOpen}>
               <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
-                Services <ChevronDown className="w-4 h-4" />
+                Leistungen <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="z-50 bg-background">
                 {servicesItems.map((item) => (
@@ -121,7 +121,7 @@ const Navigation = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
                     <User className="h-4 w-4 mr-2" />
-                    Account
+                    Konto
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -134,7 +134,7 @@ const Navigation = () => {
                   {isAdmin && (
                     <DropdownMenuItem asChild>
                       <Link to="/admin" className="cursor-pointer">
-                        Admin Dashboard
+                        Admin-Dashboard
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -145,14 +145,14 @@ const Navigation = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    Abmelden
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Link to="/auth">
                 <Button variant="default" size="sm">
-                  Sign In
+                  Anmelden
                 </Button>
               </Link>
             )}
@@ -172,7 +172,7 @@ const Navigation = () => {
           <div className="md:hidden mt-6 pb-4">
             <div className="flex flex-col gap-4">
               <div className="border-b pb-4">
-                <p className="text-sm font-semibold mb-2">Services</p>
+                <p className="text-sm font-semibold mb-2">Leistungen</p>
                 {servicesItems.map((item) => (
                   item.href.startsWith('/') ? (
                     <Link
@@ -232,7 +232,7 @@ const Navigation = () => {
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
-                      Admin Dashboard
+                      Admin-Dashboard
                     </Link>
                   )}
                   <Link to="/lms/account/delete" className="block py-2 px-4 hover:bg-accent rounded-md">
@@ -242,13 +242,13 @@ const Navigation = () => {
                     onClick={handleSignOut}
                     className="block w-full text-left py-2 px-4 hover:bg-accent rounded-md"
                   >
-                    Sign Out
+                    Abmelden
                   </button>
                 </>
               ) : (
                 <Link to="/auth" className="block py-2 px-4 hover:bg-accent rounded-md">
                   <Button variant="default" size="sm" className="w-full">
-                    Sign In
+                    Anmelden
                   </Button>
                 </Link>
               )}
