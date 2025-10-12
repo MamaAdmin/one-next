@@ -17,7 +17,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2, Plus, Search, Filter, Download, MoreVertical, ArrowUpDown } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { 
+  BookIcon, 
+  LessonIcon, 
+  QuizIcon, 
+  TaskIcon,
+  PlusIcon,
+  SearchIcon,
+  FilterIcon,
+  DownloadIcon,
+  DotsIcon,
+  SortIcon
+} from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
@@ -178,11 +190,11 @@ export default function LMSCourseDashboard() {
                     </SelectContent>
                   </Select>
                   <Button variant="outline" size="icon">
-                    <Download className="h-4 w-4" />
+                    <DownloadIcon className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Suchen ..."
                     value={searchQuery}
@@ -209,7 +221,7 @@ export default function LMSCourseDashboard() {
                         prerequisites: "",
                       });
                     }}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <PlusIcon className="mr-2 h-4 w-4" />
                       Neuer Kurs
                     </Button>
                   </DialogTrigger>
@@ -366,7 +378,7 @@ export default function LMSCourseDashboard() {
                     <TableHead className="cursor-pointer" onClick={() => toggleSort("title")}>
                       <div className="flex items-center gap-2">
                         Titel
-                        <ArrowUpDown className="h-4 w-4" />
+                        <SortIcon className="h-4 w-4" />
                       </div>
                     </TableHead>
                     <TableHead>Kategorien</TableHead>
@@ -375,7 +387,7 @@ export default function LMSCourseDashboard() {
                     <TableHead className="cursor-pointer" onClick={() => toggleSort("date")}>
                       <div className="flex items-center gap-2">
                         Datum
-                        <ArrowUpDown className="h-4 w-4" />
+                        <SortIcon className="h-4 w-4" />
                       </div>
                     </TableHead>
                     <TableHead>Status</TableHead>
@@ -452,12 +464,12 @@ export default function LMSCourseDashboard() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <DotsIcon className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>Anzeigen</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleEdit(course)}>
@@ -506,7 +518,7 @@ export default function LMSCourseDashboard() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm">
-                            <MoreVertical className="h-4 w-4" />
+                            <DotsIcon className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">

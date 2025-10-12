@@ -17,7 +17,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, ArrowUp, ArrowDown, MoreVertical } from "lucide-react";
+import { Loader2, Edit, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { 
+  BookIcon, 
+  LessonIcon, 
+  QuizIcon, 
+  TaskIcon,
+  PlusIcon,
+  DotsIcon
+} from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import {
@@ -191,7 +199,7 @@ export default function LMSModuleDashboard() {
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button onClick={() => setEditingModule(null)}>
-                <Plus className="mr-2 h-4 w-4" />
+                <PlusIcon className="mr-2 h-4 w-4" />
                 Neues Modul
               </Button>
             </DialogTrigger>
@@ -345,8 +353,23 @@ export default function LMSModuleDashboard() {
                           />
                           <div>
                             <div className="font-medium">{module.title}</div>
-                            <div className="text-xs text-muted-foreground">
-                              📚 Thema: 1 | 📖 Lektion: {module.content_text ? 1 : 0} | 📝 Test: 0 | 📋 Aufgabe: 0
+                            <div className="text-xs text-muted-foreground flex items-center gap-3">
+                              <span className="flex items-center gap-1">
+                                <BookIcon className="h-3 w-3" />
+                                Thema: 1
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <LessonIcon className="h-3 w-3" />
+                                Lektion: {module.content_text ? 1 : 0}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <QuizIcon className="h-3 w-3" />
+                                Test: 0
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <TaskIcon className="h-3 w-3" />
+                                Aufgabe: 0
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -379,7 +402,7 @@ export default function LMSModuleDashboard() {
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="sm">
-                                <MoreVertical className="h-4 w-4" />
+                                <DotsIcon className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -429,7 +452,7 @@ export default function LMSModuleDashboard() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm">
-                            <MoreVertical className="h-4 w-4" />
+                            <DotsIcon className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">

@@ -2,10 +2,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Calendar, Share2 } from "lucide-react";
 import { 
-  Clock, Users, Award, BookOpen, FileQuestion, 
-  Star, Calendar, Share2 
-} from "lucide-react";
+  UsersIcon,
+  StarburstIcon,
+  BookIcon,
+  QuizIcon
+} from "@/components/ui/custom-icons";
 import { format, addDays } from "date-fns";
 import { de } from "date-fns/locale";
 
@@ -92,7 +95,7 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Eingeschriebene Studenten:</span>
               <span className="text-sm font-medium flex items-center gap-1">
-                <Users className="h-4 w-4" />
+                <UsersIcon className="h-4 w-4" />
                 {course.enrolled_students_count || 0} Student{course.enrolled_students_count !== 1 ? 'en' : ''}
               </span>
             </div>
@@ -101,7 +104,7 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Lessons:</span>
               <span className="text-sm font-medium flex items-center gap-1">
-                <BookOpen className="h-4 w-4" />
+                <BookIcon className="h-4 w-4" />
                 {course.total_lessons || 0} Lessons
               </span>
             </div>
@@ -110,7 +113,7 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Quiz:</span>
               <span className="text-sm font-medium flex items-center gap-1">
-                <FileQuestion className="h-4 w-4" />
+                <QuizIcon className="h-4 w-4" />
                 {course.total_quizzes || 0} Quizzes
               </span>
             </div>
@@ -130,7 +133,7 @@ export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
             {/* Certificate */}
             {course.includes_certificate && (
               <div className="flex items-center gap-2 text-sm text-green-600">
-                <Award className="h-4 w-4" />
+                <StarburstIcon className="h-4 w-4" />
                 <span>Certificate upon completion</span>
               </div>
             )}

@@ -398,7 +398,7 @@ export const ScaleIcon = ({ className, ...props }: IconProps) => (
     <line x1="35" y1="75" x2="65" y2="75" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
     {/* Left pan */}
     <path
-      d="M 20 40 L 15 50 L 35 50 Z"
+      d="M 25 40 L 22 50 L 35 50 L 32 40"
       stroke="currentColor"
       strokeWidth="2.5"
       strokeLinecap="round"
@@ -407,47 +407,70 @@ export const ScaleIcon = ({ className, ...props }: IconProps) => (
     />
     {/* Right pan */}
     <path
-      d="M 80 40 L 85 50 L 65 50 Z"
+      d="M 75 40 L 72 50 L 85 50 L 82 40"
       stroke="currentColor"
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
-    {/* Chains */}
-    <line x1="25" y1="40" x2="20" y2="40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="75" y1="40" x2="80" y2="40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
-export const TrendingUpIcon = ({ className, ...props }: IconProps) => (
+export const PenIcon = ({ className, ...props }: IconProps) => (
   <svg viewBox="0 0 100 100" className={className} {...props}>
-    {/* Trend line */}
+    {/* Pen body */}
     <path
-      d="M 20 70 L 35 60 L 50 50 L 65 35 L 80 25"
+      d="M 70 25 L 75 30 L 40 65 L 30 70 L 35 60 Z"
       stroke="currentColor"
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
-    {/* Arrow */}
-    <line x1="80" y1="25" x2="72" y2="28" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="80" y1="25" x2="77" y2="33" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-    {/* Data points */}
-    <circle cx="20" cy="70" r="3" fill="currentColor" />
-    <circle cx="35" cy="60" r="3" fill="currentColor" />
-    <circle cx="50" cy="50" r="3" fill="currentColor" />
-    <circle cx="65" cy="35" r="3" fill="currentColor" />
-    <circle cx="80" cy="25" r="3" fill="currentColor" />
+    {/* Pen tip */}
+    <line x1="35" y1="60" x2="40" y2="65" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    {/* Ink mark */}
+    <circle cx="30" cy="70" r="2" fill="currentColor" />
+    <circle cx="26" cy="74" r="2" fill="currentColor" />
+    <circle cx="34" cy="74" r="2" fill="currentColor" />
   </svg>
 );
 
-export const MapPinIcon = ({ className, ...props }: IconProps) => (
+export const DocumentIcon = ({ className, ...props }: IconProps) => (
   <svg viewBox="0 0 100 100" className={className} {...props}>
-    {/* Pin shape */}
+    {/* Document outline */}
     <path
-      d="M 50 20 Q 35 20 35 38 Q 35 55 50 75 Q 65 55 65 38 Q 65 20 50 20 Z"
+      d="M 30 20 L 60 20 L 75 35 L 75 80 L 30 80 Z"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Folded corner */}
+    <path
+      d="M 60 20 L 60 35 L 75 35"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Lines */}
+    <line x1="40" y1="50" x2="65" y2="50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="40" y1="60" x2="65" y2="60" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="40" y1="70" x2="55" y2="70" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+
+export const CompassIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    {/* Compass circle */}
+    <circle cx="50" cy="50" r="35" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    {/* Compass needle */}
+    <path
+      d="M 50 25 L 60 50 L 50 75 L 40 50 Z"
       stroke="currentColor"
       strokeWidth="2.5"
       strokeLinecap="round"
@@ -455,22 +478,129 @@ export const MapPinIcon = ({ className, ...props }: IconProps) => (
       fill="none"
     />
     {/* Center dot */}
-    <circle cx="50" cy="38" r="6" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <circle cx="50" cy="50" r="3" fill="currentColor" />
+    {/* North marker */}
+    <line x1="50" y1="15" x2="50" y2="20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
   </svg>
 );
 
-export const CheckCircleIcon = ({ className, ...props }: IconProps) => (
+export const LayersIcon = ({ className, ...props }: IconProps) => (
   <svg viewBox="0 0 100 100" className={className} {...props}>
-    {/* Circle */}
-    <circle cx="50" cy="50" r="35" stroke="currentColor" strokeWidth="2.5" fill="none" />
-    {/* Check mark */}
-    <path
-      d="M 35 50 L 45 60 L 65 38"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
+    {/* Top layer */}
+    <path d="M 25 35 L 50 25 L 75 35 L 50 45 Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    {/* Middle layer */}
+    <path d="M 25 50 L 50 40 L 75 50 L 50 60 Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    {/* Bottom layer */}
+    <path d="M 25 65 L 50 55 L 75 65 L 50 75 Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+  </svg>
+);
+
+export const SettingsIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    {/* Gear circle */}
+    <circle cx="50" cy="50" r="15" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    {/* Gear teeth */}
+    <rect x="47" y="20" width="6" height="10" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="70" y="33" width="10" height="6" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="70" y="61" width="10" height="6" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="47" y="70" width="6" height="10" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="20" y="61" width="10" height="6" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="20" y="33" width="10" height="6" stroke="currentColor" strokeWidth="2" fill="none" />
+    {/* Center hole */}
+    <circle cx="50" cy="50" r="5" stroke="currentColor" strokeWidth="2.5" fill="none" />
+  </svg>
+);
+
+// LMS-specific Icons
+export const BookIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <rect x="25" y="20" width="50" height="60" rx="2" 
+      stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <line x1="35" y1="35" x2="65" y2="35" stroke="currentColor" strokeWidth="2" />
+    <line x1="35" y1="45" x2="65" y2="45" stroke="currentColor" strokeWidth="2" />
+    <line x1="35" y1="55" x2="55" y2="55" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+export const LessonIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <rect x="20" y="30" width="60" height="40" rx="2" 
+      stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <line x1="30" y1="45" x2="70" y2="45" stroke="currentColor" strokeWidth="2" />
+    <line x1="30" y1="55" x2="70" y2="55" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+export const QuizIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <line x1="50" y1="35" x2="50" y2="50" stroke="currentColor" strokeWidth="2.5" />
+    <circle cx="50" cy="60" r="2.5" fill="currentColor" />
+  </svg>
+);
+
+export const TaskIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <rect x="25" y="20" width="50" height="60" rx="2" 
+      stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <polyline points="35,40 42,47 55,34" stroke="currentColor" 
+      strokeWidth="2.5" fill="none" />
+    <line x1="35" y1="55" x2="65" y2="55" stroke="currentColor" strokeWidth="2" />
+    <line x1="35" y1="65" x2="65" y2="65" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+export const PlusIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <line x1="50" y1="25" x2="50" y2="75" stroke="currentColor" strokeWidth="2.5" />
+    <line x1="25" y1="50" x2="75" y2="50" stroke="currentColor" strokeWidth="2.5" />
+  </svg>
+);
+
+export const SearchIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <circle cx="40" cy="40" r="20" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <line x1="55" y1="55" x2="75" y2="75" stroke="currentColor" strokeWidth="2.5" />
+  </svg>
+);
+
+export const FilterIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <line x1="20" y1="30" x2="80" y2="30" stroke="currentColor" strokeWidth="2.5" />
+    <line x1="30" y1="50" x2="70" y2="50" stroke="currentColor" strokeWidth="2.5" />
+    <line x1="40" y1="70" x2="60" y2="70" stroke="currentColor" strokeWidth="2.5" />
+    <circle cx="35" cy="30" r="4" fill="currentColor" />
+    <circle cx="55" cy="50" r="4" fill="currentColor" />
+    <circle cx="50" cy="70" r="4" fill="currentColor" />
+  </svg>
+);
+
+export const DownloadIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <line x1="50" y1="20" x2="50" y2="60" stroke="currentColor" strokeWidth="2.5" />
+    <polyline points="35,45 50,60 65,45" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <line x1="25" y1="75" x2="75" y2="75" stroke="currentColor" strokeWidth="2.5" />
+  </svg>
+);
+
+export const DotsIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <circle cx="50" cy="30" r="4" fill="currentColor" />
+    <circle cx="50" cy="50" r="4" fill="currentColor" />
+    <circle cx="50" cy="70" r="4" fill="currentColor" />
+  </svg>
+);
+
+export const SortIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <polyline points="35,30 50,15 65,30" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <polyline points="35,70 50,85 65,70" stroke="currentColor" strokeWidth="2.5" fill="none" />
+  </svg>
+);
+
+export const TrendingUpIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <polyline points="20,70 40,50 60,55 80,30" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <polyline points="65,30 80,30 80,45" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
