@@ -1,1 +1,34 @@
 project_id = "ookvxyctxmtcxowcwnij"
+
+[functions.check-phase-gate]
+verify_jwt = true
+
+[functions.cleanup-expired-sessions]
+verify_jwt = false
+
+[functions.create-checkout-session]
+verify_jwt = true
+
+[functions.create-company-from-registration]
+verify_jwt = false
+
+[functions.create-participant]
+verify_jwt = true
+
+[functions.export-to-miro]
+verify_jwt = true
+
+[functions.generate-completion-certificate]
+verify_jwt = true
+
+[functions.generate-data-export]
+verify_jwt = true
+
+[functions.send-booking-email]
+verify_jwt = false
+
+[functions.send-booking-to-n8n]
+verify_jwt = false
+
+[functions.send-sprint-invitation]
+verify_jwt = true
