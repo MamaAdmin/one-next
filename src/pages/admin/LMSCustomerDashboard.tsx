@@ -69,7 +69,7 @@ const LMSCustomerDashboard = () => {
   }
   const breadcrumbItems = [
     { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS" },
+    { label: "LMS", href: "/admin?tab=lms" },
     { label: "Kunden", active: true }
   ];
 

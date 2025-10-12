@@ -63,7 +63,7 @@ export default function LMSParticipantDashboard() {
 
   const breadcrumbItems = [
     { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS" },
+    { label: "LMS", href: "/admin?tab=lms" },
     { label: "Teilnehmer", active: true }
   ];
 

@@ -104,7 +104,7 @@ export default function LMSCourseDashboard() {
   const breadcrumbItems = useMemo(() => {
     const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
       { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-      { label: "LMS", icon: <BookIcon className="h-4 w-4" /> },
+      { label: "LMS", href: "/admin?tab=lms", icon: <BookIcon className="h-4 w-4" /> },
       { label: "Kurse", active: true }
     ];
     

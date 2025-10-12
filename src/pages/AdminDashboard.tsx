@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
@@ -14,6 +14,8 @@ import PageContentManager from "@/components/admin/PageContentManager";
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin, loading } = useAdmin();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'articles';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -55,15 +57,15 @@ const AdminDashboard = () => {
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="text-3xl">Admin Dashboard</CardTitle>
-              <CardDescription>Manage your website content, blog articles, and media</CardDescription>
+              <CardDescription>Verwalten Sie Ihre Website-Inhalte, Blog-Artikel und Medien</CardDescription>
             </CardHeader>
           </Card>
 
-          <Tabs defaultValue="articles" className="w-full">
+          <Tabs defaultValue={defaultTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="articles">Articles</TabsTrigger>
-              <TabsTrigger value="media">Media</TabsTrigger>
-              <TabsTrigger value="pages">Page Content</TabsTrigger>
+              <TabsTrigger value="articles">Artikel</TabsTrigger>
+              <TabsTrigger value="media">Medien</TabsTrigger>
+              <TabsTrigger value="pages">Seiteninhalte</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
             </TabsList>
 
@@ -82,8 +84,8 @@ const AdminDashboard = () => {
             <TabsContent value="lms">
               <Card>
                 <CardHeader>
-                  <CardTitle>LMS Management</CardTitle>
-                  <CardDescription>Verwalte Kunden, Kurse, Käufe und Teilnehmer</CardDescription>
+                  <CardTitle>LMS Verwaltung</CardTitle>
+                  <CardDescription>Verwalten Sie Kunden, Kurse, Käufe und Teilnehmer</CardDescription>
                 </CardHeader>
                 <div className="p-6">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -100,13 +102,13 @@ const AdminDashboard = () => {
                       <Button variant="outline" className="w-full h-20">Käufe</Button>
                     </Link>
                     <Link to="/admin/lms/enrollments">
-                      <Button variant="outline" className="w-full h-20">Enrollments</Button>
+                      <Button variant="outline" className="w-full h-20">Teilnahmen</Button>
                     </Link>
                     <Link to="/admin/lms/participants">
                       <Button variant="outline" className="w-full h-20">Teilnehmer</Button>
                     </Link>
                     <Link to="/admin/lms/analytics">
-                      <Button variant="outline" className="w-full h-20">Analytics</Button>
+                      <Button variant="outline" className="w-full h-20">Analytik</Button>
                     </Link>
                   </div>
                 </div>

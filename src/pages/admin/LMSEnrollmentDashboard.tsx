@@ -80,8 +80,8 @@ export default function LMSEnrollmentDashboard() {
 
   const breadcrumbItems = [
     { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS" },
-    { label: "Enrollments", active: true }
+    { label: "LMS", href: "/admin?tab=lms" },
+    { label: "Teilnahmen", active: true }
   ];
 
   return (
