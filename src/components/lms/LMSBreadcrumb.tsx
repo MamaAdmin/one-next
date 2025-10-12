@@ -23,7 +23,7 @@ interface LMSBreadcrumbProps {
 
 export const LMSBreadcrumb = ({ items }: LMSBreadcrumbProps) => {
   return (
-    <nav className="bg-accent/30 border-b border-border" aria-label="breadcrumb">
+    <nav className="bg-accent/30 border-b border-border fixed top-16 left-0 right-0 z-40" aria-label="breadcrumb">
       <div className="container mx-auto px-6 py-3">
         <Breadcrumb>
           <BreadcrumbList className="text-sm">

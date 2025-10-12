@@ -88,7 +88,7 @@ export default function LMSEnrollmentDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-4 py-8 pt-24">
+      <main className="container mx-auto px-4 py-8 mt-32">
         <Card>
         <CardHeader>
           <div className="flex items-center justify-between">

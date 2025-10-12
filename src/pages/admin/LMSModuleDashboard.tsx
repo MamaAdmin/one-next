@@ -202,7 +202,7 @@ export default function LMSModuleDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Module Management</h1>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

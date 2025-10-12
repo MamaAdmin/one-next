@@ -77,7 +77,7 @@ const LMSCustomerDashboard = () => {
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold mb-2">LMS Kunden-Verwaltung</h1>

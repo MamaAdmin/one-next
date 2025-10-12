@@ -137,7 +137,7 @@ export default function LMSCourseDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
         <Card>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -89,7 +89,7 @@ export default function LMSAnalytics() {
     <div className="min-h-screen">
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <main className="container mx-auto px-6 pb-20 mt-32">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">LMS Analytics</h1>
 
