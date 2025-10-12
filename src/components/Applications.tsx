@@ -53,7 +53,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
               onSave={(value) => updateContent('title', value)}
               isEditMode={isEditMode}
               className="text-4xl lg:text-5xl font-bold"
-              placeholder="Section title"
+              placeholder="Titel des Abschnitts"
               as="h2"
             />
           </h2>
@@ -62,7 +62,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
             onSave={(value) => updateContent('description', value)}
             isEditMode={isEditMode}
             className="text-xl text-muted-foreground max-w-4xl mx-auto"
-            placeholder="Section description"
+            placeholder="Beschreibung des Abschnitts"
             minRows={3}
           />
         </div>

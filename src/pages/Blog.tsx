@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
+import { de } from "date-fns/locale";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
@@ -63,14 +64,14 @@ const Blog = () => {
       );
 
       toast({
-        title: "Success",
-        description: "Article updated successfully",
+        title: "Erfolg",
+        description: "Artikel erfolgreich aktualisiert",
       });
     } catch (error) {
       console.error("Error updating article:", error);
       toast({
-        title: "Error",
-        description: "Failed to update article",
+        title: "Fehler",
+        description: "Artikel konnte nicht aktualisiert werden",
         variant: "destructive",
       });
       throw error;
@@ -84,7 +85,7 @@ const Blog = () => {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
           <p className="text-xl text-muted-foreground mb-12">
-            Insights, updates, and perspectives on AI and technology
+            Einblicke, Updates und Perspektiven rund um KI und Technologie
           </p>
 
           {loading ? (
@@ -121,11 +122,11 @@ const Blog = () => {
                           onSave={(value) => handleUpdateArticle(article.id, "title", value)}
                           isEditMode={isEditMode}
                           className="text-2xl font-semibold"
-                          placeholder="Article title"
+                          placeholder="Artikeltitel"
                           as="h2"
                         />
                         <CardDescription>
-                          {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
+                          {article.author} • {format(new Date(article.published_at), "d. MMMM yyyy", { locale: de })}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -133,7 +134,7 @@ const Blog = () => {
                           value={article.excerpt || ""}
                           onSave={(value) => handleUpdateArticle(article.id, "excerpt", value)}
                           isEditMode={isEditMode}
-                          placeholder="Article excerpt"
+                          placeholder="Artikelzusammenfassung"
                           minRows={2}
                         />
                       </CardContent>
@@ -153,7 +154,7 @@ const Blog = () => {
                             {article.title}
                           </CardTitle>
                           <CardDescription>
-                            {article.author} • {format(new Date(article.published_at), "MMMM d, yyyy")}
+                            {article.author} • {format(new Date(article.published_at), "d. MMMM yyyy", { locale: de })}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>

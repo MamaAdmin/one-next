@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
+import { de } from "date-fns/locale";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
@@ -65,14 +66,14 @@ const Article = () => {
       setArticle((prev) => (prev ? { ...prev, [field]: value } : null));
 
       toast({
-        title: "Success",
-        description: "Article updated successfully",
+        title: "Erfolg",
+        description: "Artikel erfolgreich aktualisiert",
       });
     } catch (error) {
       console.error("Error updating article:", error);
       toast({
-        title: "Error",
-        description: "Failed to update article",
+        title: "Fehler",
+        description: "Artikel konnte nicht aktualisiert werden",
         variant: "destructive",
       });
       throw error;
@@ -105,14 +106,14 @@ const Article = () => {
         <Navigation />
         <main className="container mx-auto px-6 pt-32 pb-20">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
+            <h1 className="text-4xl font-bold mb-4">Artikel nicht gefunden</h1>
             <p className="text-muted-foreground mb-8">
-              The article you're looking for doesn't exist.
+              Der gesuchte Artikel ist nicht vorhanden.
             </p>
             <Link to="/blog">
               <Button>
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Blog
+                Zurück zum Blog
               </Button>
             </Link>
           </div>
@@ -130,7 +131,7 @@ const Article = () => {
           <Link to="/blog">
             <Button variant="ghost" className="mb-8">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blog
+              Zurück zum Blog
             </Button>
           </Link>
 
@@ -140,7 +141,7 @@ const Article = () => {
               onSave={(value) => handleUpdateArticle("title", value)}
               isEditMode={isEditMode}
               className="text-4xl md:text-5xl font-bold mb-4"
-              placeholder="Article title"
+              placeholder="Artikeltitel"
               as="h1"
             />
           ) : (
@@ -153,13 +154,13 @@ const Article = () => {
                 value={article.author || ""}
                 onSave={(value) => handleUpdateArticle("author", value)}
                 isEditMode={isEditMode}
-                placeholder="Author name"
+                placeholder="Name der Autorin oder des Autors"
               />
             ) : (
               <span>{article.author}</span>
             )}
             {" • "}
-            {format(new Date(article.published_at), "MMMM d, yyyy")}
+            {format(new Date(article.published_at), "d. MMMM yyyy", { locale: de })}
           </div>
 
           {article.featured_image && (
@@ -174,7 +175,7 @@ const Article = () => {
             value={article.content}
             onSave={(value) => handleUpdateArticle("content", value)}
             isEditMode={isEditMode}
-            placeholder="Write your article content here..."
+            placeholder="Schreibe hier den Artikelinhalt..."
           />
         </article>
       </main>

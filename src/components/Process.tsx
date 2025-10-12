@@ -54,7 +54,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
               onSave={(value) => updateContent('title', value)}
               isEditMode={isEditMode}
               className="text-4xl lg:text-5xl font-bold"
-              placeholder="Section title"
+              placeholder="Titel des Abschnitts"
               as="h2"
             />
           </h2>

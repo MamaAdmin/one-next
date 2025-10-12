@@ -80,7 +80,7 @@ export default function SprintIndex() {
 
             <div className="space-y-4">
               <div className="text-left">
-                <Label htmlFor="teamName">Team Name</Label>
+                <Label htmlFor="teamName">Teamname</Label>
                 <Input
                   id="teamName"
                   value={teamNameInput}
@@ -153,7 +153,7 @@ export default function SprintIndex() {
                 <Trophy className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Achievements</p>
+                <p className="text-sm text-muted-foreground">Erfolge</p>
                 <p className="text-2xl font-bold">{session.achievements?.length || 0}</p>
               </div>
             </div>
@@ -183,7 +183,7 @@ export default function SprintIndex() {
             >
               <span className="flex items-center gap-2">
                 <Target className="h-5 w-5" />
-                Team Setup
+                Team-Setup
               </span>
               <ArrowRight className="h-5 w-5" />
             </Button>

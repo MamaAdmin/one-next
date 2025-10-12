@@ -171,7 +171,7 @@ export default function SprintSetup() {
         <div className="text-center space-y-4">
           <Badge className="bg-primary/10 text-primary">
             <Sparkles className="w-3 h-3 mr-1" />
-            Sprint Setup
+            Sprint-Setup
           </Badge>
           <h1 className="text-4xl font-bold">Sprint-Team einrichten</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -189,7 +189,7 @@ export default function SprintSetup() {
             <Input
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              placeholder="z.B. Product Innovation Team"
+              placeholder="z.B. Produkt-Innovationsteam"
               className="text-lg"
             />
           </div>
@@ -292,7 +292,7 @@ export default function SprintSetup() {
                         <Input
                           value={expert.expertise}
                           onChange={(e) => updateExpert(index, "expertise", e.target.value)}
-                          placeholder="UX Research"
+                          placeholder="UX-Research"
                         />
                       </div>
                     </div>
@@ -340,7 +340,7 @@ export default function SprintSetup() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[1, 2, 3, 4, 5, 6].map(phase => (
                 <div key={phase} className="space-y-2">
-                  <Label>Phase {phase} - {["Problem Framing", "Map", "Sketch", "Decide", "Prototype", "Test"][phase - 1]}</Label>
+                  <Label>Phase {phase} - {["Problemdefinition", "Mapping", "Skizzieren", "Entscheiden", "Prototyp", "Testen"][phase - 1]}</Label>
                   <Input
                     type="datetime-local"
                     value={kickoffDates[phase] || ""}

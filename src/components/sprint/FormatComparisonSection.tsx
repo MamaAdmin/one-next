@@ -55,7 +55,7 @@ const FormatComparisonSection = () => {
               <div className="pt-4 border-t border-border">
                 <p className="text-sm text-muted-foreground mb-4">Preis auf Anfrage</p>
                 <Button variant="outline" className="w-full" asChild>
-                  <Link to="/problem-framing-workshop">Workshop Details</Link>
+                  <Link to="/problem-framing-workshop">Workshop-Details</Link>
                 </Button>
               </div>
             </CardContent>
@@ -97,7 +97,7 @@ const FormatComparisonSection = () => {
               <div className="pt-4 border-t border-border">
                 <p className="text-sm text-muted-foreground mb-4">Preis auf Anfrage</p>
                 <Button variant="outline" className="w-full" asChild>
-                  <Link to="/design-sprint-workshop">Workshop Details</Link>
+                  <Link to="/design-sprint-workshop">Workshop-Details</Link>
                 </Button>
               </div>
             </CardContent>

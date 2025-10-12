@@ -26,7 +26,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               onSave={(value) => updateContent('expertise_title', value)}
               isEditMode={isEditMode}
               className="text-2xl md:text-4xl font-light"
-              placeholder="Expertise title"
+              placeholder="Titel des Expertise-Abschnitts"
               as="h2"
             />
             <InlineTextArea
@@ -34,7 +34,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               onSave={(value) => updateContent('expertise_description', value)}
               isEditMode={isEditMode}
               className="text-sm md:text-base text-foreground/80 leading-relaxed"
-              placeholder="Expertise description"
+              placeholder="Beschreibung des Expertise-Abschnitts"
               minRows={3}
             />
             <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
@@ -43,7 +43,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                   value={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
                   onSave={(value) => updateContent('expertise_button', value)}
                   isEditMode={isEditMode}
-                  placeholder="Button text"
+                  placeholder="Button-Text"
                   as="span"
                 />
               ) : (
@@ -56,7 +56,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
           <div className="hidden md:block rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1">
             <img 
               src={geometricPaper} 
-              alt="Decorative geometric paper objects" 
+              alt="Dekorative geometrische Papierobjekte"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
@@ -68,7 +68,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               onSave={(value) => updateContent('efficiency_title', value)}
               isEditMode={isEditMode}
               className="text-2xl md:text-4xl font-light text-background"
-              placeholder="Efficiency title"
+              placeholder="Titel des Effizienz-Abschnitts"
               as="h2"
             />
             <InlineTextArea
@@ -76,7 +76,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               onSave={(value) => updateContent('efficiency_description', value)}
               isEditMode={isEditMode}
               className="text-sm md:text-base text-background/80 leading-relaxed"
-              placeholder="Efficiency description"
+              placeholder="Beschreibung des Effizienz-Abschnitts"
               minRows={2}
             />
             <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-background">
@@ -85,7 +85,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                   value={content.efficiency_button || 'Neuesten Bericht lesen'}
                   onSave={(value) => updateContent('efficiency_button', value)}
                   isEditMode={isEditMode}
-                  placeholder="Button text"
+                  placeholder="Button-Text"
                   as="span"
                 />
               ) : (
@@ -98,7 +98,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
           <div className="hidden md:block rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1">
             <img 
               src={decorativeEgg} 
-              alt="Decorative easter egg" 
+              alt="Dekoratives Oster-Ei"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
@@ -110,7 +110,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               onSave={(value) => updateContent('success_title', value)}
               isEditMode={isEditMode}
               className="text-2xl md:text-4xl font-light"
-              placeholder="Success title"
+              placeholder="Titel des Erfolgs-Abschnitts"
               as="h2"
             />
             <InlineTextArea
@@ -118,7 +118,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               onSave={(value) => updateContent('success_description', value)}
               isEditMode={isEditMode}
               className="text-sm md:text-base text-foreground/80 leading-relaxed"
-              placeholder="Success description"
+              placeholder="Beschreibung des Erfolgs-Abschnitts"
               minRows={2}
             />
             <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
@@ -127,7 +127,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                   value={content.success_button || 'Unsere Lösungen'}
                   onSave={(value) => updateContent('success_button', value)}
                   isEditMode={isEditMode}
-                  placeholder="Button text"
+                  placeholder="Button-Text"
                   as="span"
                 />
               ) : (
@@ -140,7 +140,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
           <div className="bg-muted rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1">
             <img 
               src={pinkPodium} 
-              alt="Pink podium decorative" 
+              alt="Dekoratives pinkes Podest"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>

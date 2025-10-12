@@ -10,8 +10,8 @@ interface FooterProps {
 const Footer = ({ isEditMode = false }: FooterProps) => {
   const { content, updateContent } = usePageContent('footer');
   const footerLinks = {
-    Services: ["AI Design Sprint", "Proof of AI Development", "Data Quality Audit", "Custom AI Development", "Strategy Consulting"],
-    Unternehmen: ["Über uns", "Karriere", "Blog", "Case Studies", "Kontakt"]
+    Leistungen: ["AI Design Sprint", "Nachweis der KI-Entwicklung", "Datenqualitäts-Audit", "Individuelle KI-Entwicklung", "Strategieberatung"],
+    Unternehmen: ["Über uns", "Karriere", "Blog", "Fallstudien", "Kontakt"]
   };
   return <footer className="bg-foreground text-background py-16">
       <div className="container mx-auto px-6">
@@ -23,7 +23,7 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
                 onSave={(value) => updateContent('company_name', value)}
                 isEditMode={isEditMode}
                 className="text-2xl font-bold"
-                placeholder="Company name"
+                placeholder="Unternehmensname"
                 as="span"
               />
             </div>
@@ -32,7 +32,7 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
               onSave={(value) => updateContent('company_description', value)}
               isEditMode={isEditMode}
               className="text-background/80 mb-6 leading-relaxed"
-              placeholder="Company description"
+              placeholder="Unternehmensbeschreibung"
               minRows={2}
             />
             <div className="flex gap-4">

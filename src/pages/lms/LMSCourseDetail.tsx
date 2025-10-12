@@ -138,7 +138,7 @@ export default function LMSCourseDetail() {
         </Link>
       </div>
 
-      {/* Course Preview Section */}
+      {/* Kursvorschau */}
       {courseData && (
         <div className="mb-8">
           <CoursePreview
@@ -148,7 +148,7 @@ export default function LMSCourseDetail() {
         </div>
       )}
 
-      {/* Module Navigation Section */}
+      {/* Modulnavigation */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-2">Kursmodule</h2>
         <div className="flex items-center gap-4">
@@ -163,7 +163,7 @@ export default function LMSCourseDetail() {
       </div>
 
       <div className="grid grid-cols-4 gap-6">
-        {/* Sidebar */}
+        {/* Seitenleiste */}
         <Card className="col-span-1">
           <CardHeader>
             <CardTitle className="text-lg">Module</CardTitle>
@@ -186,7 +186,7 @@ export default function LMSCourseDetail() {
           </CardContent>
         </Card>
 
-        {/* Content Area */}
+        {/* Inhaltsbereich */}
         <div className="col-span-3">
           <Card>
             <CardHeader>
