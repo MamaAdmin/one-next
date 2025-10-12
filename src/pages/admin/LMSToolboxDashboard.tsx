@@ -36,8 +36,8 @@ export default function LMSToolboxDashboard() {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { tools, loading, loadTools, deleteTool } = useToolbox();
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [phaseFilter, setPhaseFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const breadcrumbItems = [
@@ -47,8 +47,8 @@ export default function LMSToolboxDashboard() {
   ];
 
   const filteredTools = tools.filter((tool) => {
-    if (categoryFilter && tool.category !== categoryFilter) return false;
-    if (phaseFilter && tool.phase_number?.toString() !== phaseFilter) return false;
+    if (categoryFilter !== "all" && tool.category !== categoryFilter) return false;
+    if (phaseFilter !== "all" && tool.phase_number?.toString() !== phaseFilter) return false;
     if (searchQuery && !tool.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
@@ -115,7 +115,7 @@ export default function LMSToolboxDashboard() {
                     <SelectValue placeholder="Kategorie" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Alle Kategorien</SelectItem>
+                    <SelectItem value="all">Alle Kategorien</SelectItem>
                     {Object.entries(categoryLabels).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
@@ -128,7 +128,7 @@ export default function LMSToolboxDashboard() {
                     <SelectValue placeholder="Phase" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Alle Phasen</SelectItem>
+                    <SelectItem value="all">Alle Phasen</SelectItem>
                     <SelectItem value="1">Phase 1</SelectItem>
                     <SelectItem value="2">Phase 2</SelectItem>
                     <SelectItem value="3">Phase 3</SelectItem>
