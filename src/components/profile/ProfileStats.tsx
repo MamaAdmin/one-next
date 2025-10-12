@@ -28,7 +28,7 @@ export const ProfileStats = ({
       color: "text-green-600",
     },
     {
-      title: "Tage Streak",
+      title: "Erfolgsserie",
       value: streak,
       icon: Flame,
       color: "text-orange-600",
