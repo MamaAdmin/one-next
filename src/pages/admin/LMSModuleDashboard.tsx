@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Edit, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { 
   BookIcon, 
   LessonIcon, 
@@ -30,14 +30,6 @@ import {
 } from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Tool {
   name: string;
@@ -72,12 +64,11 @@ export default function LMSModuleDashboard() {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [modules, setModules] = useState<Module[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
-  const [editingModule, setEditingModule] = useState<Module | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -97,11 +88,16 @@ export default function LMSModuleDashboard() {
 
   useEffect(() => {
     loadCourses();
+    const courseParam = searchParams.get('course');
+    if (courseParam) {
+      setSelectedCourse(courseParam);
+    }
   }, []);
 
   useEffect(() => {
     if (selectedCourse) {
       loadModules();
+      setSearchParams({ course: selectedCourse });
     }
   }, [selectedCourse]);
 
@@ -138,93 +134,6 @@ export default function LMSModuleDashboard() {
     setLoading(false);
   };
 
-  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    // Parse JSON fields
-    let tools = [];
-    let resources = [];
-    try {
-      const toolsJson = formData.get("tools_json") as string;
-      if (toolsJson?.trim()) {
-        tools = JSON.parse(toolsJson);
-      }
-    } catch (e) {
-      toast({ 
-        title: "Fehler", 
-        description: "Tools JSON ist ungültig", 
-        variant: "destructive" 
-      });
-      return;
-    }
-    
-    try {
-      const resourcesJson = formData.get("resources_json") as string;
-      if (resourcesJson?.trim()) {
-        resources = JSON.parse(resourcesJson);
-      }
-    } catch (e) {
-      toast({ 
-        title: "Fehler", 
-        description: "Resources JSON ist ungültig", 
-        variant: "destructive" 
-      });
-      return;
-    }
-    
-    // Parse comma-separated arrays
-    const tagsString = formData.get("tags") as string;
-    const tags = tagsString ? tagsString.split(',').map(t => t.trim()).filter(Boolean) : [];
-    
-    const prereqsString = formData.get("prerequisites") as string;
-    const prerequisites = prereqsString ? prereqsString.split(',').map(p => p.trim()).filter(Boolean) : [];
-    
-    const moduleData = {
-      course_id: selectedCourse,
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
-      phase_number: parseInt(formData.get("phase_number") as string),
-      module_type: formData.get("module_type") as string,
-      duration_minutes: parseInt(formData.get("duration_minutes") as string),
-      sort_order: parseInt(formData.get("sort_order") as string),
-      content_text: formData.get("content_text") as string,
-      content_video_url: formData.get("content_video_url") as string,
-      tools: tools,
-      resources: resources,
-      tags: tags,
-      author: formData.get("author") as string,
-      prerequisites: prerequisites,
-      tool_recommendation: formData.get("tool_recommendation") as string,
-    };
-
-    if (editingModule) {
-      const { error } = await supabase
-        .from("lms_course_modules")
-        .update(moduleData)
-        .eq("id", editingModule.id);
-      
-      if (error) {
-        toast({ title: "Fehler", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Erfolg", description: "Modul aktualisiert" });
-      }
-    } else {
-      const { error } = await supabase
-        .from("lms_course_modules")
-        .insert([moduleData]);
-      
-      if (error) {
-        toast({ title: "Fehler", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Erfolg", description: "Modul erstellt" });
-      }
-    }
-
-    setDialogOpen(false);
-    setEditingModule(null);
-    loadModules();
-  };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Modul wirklich löschen?")) return;
@@ -276,247 +185,10 @@ export default function LMSModuleDashboard() {
       <main className="flex-1 container mx-auto px-4 py-8 mt-32">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Module Management</h1>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditingModule(null)}>
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Neues Modul
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingModule ? "Modul bearbeiten" : "Neues Modul erstellen"}
-                </DialogTitle>
-              </DialogHeader>
-              
-              <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="general">Allgemein</TabsTrigger>
-                  <TabsTrigger value="content">Inhalte</TabsTrigger>
-                  <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
-                  <TabsTrigger value="meta">Meta</TabsTrigger>
-                </TabsList>
-                
-                <form onSubmit={handleSave} className="mt-6">
-                  <TabsContent value="general" className="space-y-4">
-                    <div>
-                      <Label htmlFor="title">Titel *</Label>
-                      <Input 
-                        id="title" 
-                        name="title" 
-                        placeholder="Modultitel eingeben..."
-                        defaultValue={editingModule?.title} 
-                        required 
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="description">Beschreibung</Label>
-                      <Textarea 
-                        id="description" 
-                        name="description" 
-                        rows={4}
-                        placeholder="Kurs- oder Modulbeschreibung eingeben..."
-                        defaultValue={editingModule?.description} 
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Unterstützt: **bold**, *italic*, [links](url)
-                      </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="phase_number">Phase *</Label>
-                        <Input 
-                          id="phase_number" 
-                          name="phase_number" 
-                          type="number" 
-                          min="1" 
-                          max="5" 
-                          defaultValue={editingModule?.phase_number || 1} 
-                          required 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="sort_order">Reihenfolge *</Label>
-                        <Input 
-                          id="sort_order" 
-                          name="sort_order" 
-                          type="number" 
-                          min="1" 
-                          defaultValue={editingModule?.sort_order || 1} 
-                          required 
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="module_type">Typ *</Label>
-                        <Select name="module_type" defaultValue={editingModule?.module_type || "Theory"}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Theory">Theory</SelectItem>
-                            <SelectItem value="Practice">Practice</SelectItem>
-                            <SelectItem value="Workshop">Workshop</SelectItem>
-                            <SelectItem value="Case Study">Case Study</SelectItem>
-                            <SelectItem value="Reflection">Reflection</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="duration_minutes">Dauer (Minuten) *</Label>
-                        <Input 
-                          id="duration_minutes" 
-                          name="duration_minutes" 
-                          type="number" 
-                          min="1" 
-                          defaultValue={editingModule?.duration_minutes || 30} 
-                          required 
-                        />
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="content" className="space-y-4">
-                    <div>
-                      <Label htmlFor="content_text">Content (Markdown)</Label>
-                      <Textarea 
-                        id="content_text" 
-                        name="content_text" 
-                        rows={10}
-                        placeholder="Modulinhalte mit Markdown oder strukturiertem Text eingeben..."
-                        defaultValue={editingModule?.content_text}
-                        className="font-mono text-sm"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Markdown-Syntax wird unterstützt
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="content_video_url">Video URL</Label>
-                      <Input 
-                        id="content_video_url" 
-                        name="content_video_url" 
-                        type="url"
-                        placeholder="https://youtube.com/..."
-                        defaultValue={editingModule?.content_video_url}
-                      />
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="tools" className="space-y-6">
-                    <div>
-                      <Label>Interaktive Tools</Label>
-                      <p className="text-xs text-muted-foreground mb-3">
-                        Verknüpfte Tools wie Miro, Mural, Gamma etc.
-                      </p>
-                      <Input 
-                        id="tools_json" 
-                        name="tools_json"
-                        placeholder='[{"name":"Miro","url":"https://miro.com/..."}]'
-                        defaultValue={editingModule?.tools ? JSON.stringify(editingModule.tools) : ''}
-                        className="font-mono text-sm"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        JSON-Format: Array von Objekten mit "name" und "url"
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <Label>Ressourcen & Dateien</Label>
-                      <p className="text-xs text-muted-foreground mb-3">
-                        Externe Links, PDFs oder Confluence-Seiten
-                      </p>
-                      <Input 
-                        id="resources_json" 
-                        name="resources_json"
-                        placeholder='[{"title":"Guide","url":"https://..."}]'
-                        defaultValue={editingModule?.resources ? JSON.stringify(editingModule.resources) : ''}
-                        className="font-mono text-sm"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        JSON-Format: Array von Objekten mit "title" und "url"
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="tool_recommendation">Empfohlenes Tool</Label>
-                      <Input 
-                        id="tool_recommendation" 
-                        name="tool_recommendation"
-                        placeholder="z. B. Miro für Ideation-Phase"
-                        defaultValue={editingModule?.tool_recommendation}
-                      />
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="meta" className="space-y-4">
-                    <div>
-                      <Label htmlFor="tags">Tags / Lernziele</Label>
-                      <Input 
-                        id="tags" 
-                        name="tags"
-                        placeholder="#AI, #DesignSprint, #Innovation"
-                        defaultValue={editingModule?.tags?.join(', ')}
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Komma-getrennte Stichworte zur Kategorisierung
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="author">Autor / Trainer</Label>
-                      <Input 
-                        id="author" 
-                        name="author"
-                        placeholder="Name des Autors"
-                        defaultValue={editingModule?.author}
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="prerequisites">Voraussetzungen</Label>
-                      <Input 
-                        id="prerequisites" 
-                        name="prerequisites"
-                        placeholder="Modulname oder ID (komma-getrennt)"
-                        defaultValue={editingModule?.prerequisites?.join(', ')}
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Andere Module, die vorher abgeschlossen sein sollten
-                      </p>
-                    </div>
-                    
-                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                      <div className="flex gap-2">
-                        <span className="text-xl">⚠️</span>
-                        <div>
-                          <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                            DSGVO-Hinweis
-                          </p>
-                          <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
-                            Keine personenbezogenen Daten oder internen Unternehmensinformationen in dieses Modul einfügen.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
-                    <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                      Abbrechen
-                    </Button>
-                    <Button type="submit">
-                      {editingModule ? "Aktualisieren" : "Erstellen"}
-                    </Button>
-                  </div>
-                </form>
-              </Tabs>
-            </DialogContent>
-          </Dialog>
+            <Button onClick={() => navigate(`/admin/lms/modules/new?courseId=${selectedCourse}`)}>
+              <PlusIcon className="mr-2 h-4 w-4" />
+              Neues Modul
+            </Button>
         </div>
 
         <div className="mb-6">
@@ -618,10 +290,9 @@ export default function LMSModuleDashboard() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => {
-                                setEditingModule(module);
-                                setDialogOpen(true);
-                              }}>
+                              <DropdownMenuItem
+                                onClick={() => navigate(`/admin/lms/modules/${module.id}/edit?courseId=${selectedCourse}`)}
+                              >
                                 Bearbeiten
                               </DropdownMenuItem>
                               <DropdownMenuItem 
@@ -668,10 +339,9 @@ export default function LMSModuleDashboard() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => {
-                            setEditingModule(module);
-                            setDialogOpen(true);
-                          }}>
+                          <DropdownMenuItem
+                            onClick={() => navigate(`/admin/lms/modules/${module.id}/edit?courseId=${selectedCourse}`)}
+                          >
                             Bearbeiten
                           </DropdownMenuItem>
                           <DropdownMenuItem 

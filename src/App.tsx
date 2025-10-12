@@ -30,6 +30,7 @@ import LMSDashboard from "./pages/lms/LMSDashboard";
 import DeleteAccountPage from "./pages/lms/DeleteAccountPage";
 import LMSAnalytics from "./pages/admin/LMSAnalytics";
 import LMSModuleDashboard from "./pages/admin/LMSModuleDashboard";
+import LMSModuleEditor from "./pages/admin/LMSModuleEditor";
 import SprintSetup from "./pages/sprint/SprintSetup";
 import SprintIndex from "./pages/sprint/SprintIndex";
 import SprintSession from "./pages/sprint/SprintSession";
@@ -82,6 +83,8 @@ const App = () => (
           <Route path="/admin/lms/enrollments" element={<LMSEnrollmentDashboard />} />
           <Route path="/admin/lms/analytics" element={<LMSAnalytics />} />
           <Route path="/admin/lms/modules" element={<LMSModuleDashboard />} />
+          <Route path="/admin/lms/modules/new" element={<LMSModuleEditor />} />
+          <Route path="/admin/lms/modules/:moduleId/edit" element={<LMSModuleEditor />} />
           <Route path="/lms" element={<LMSIndex />} />
           <Route path="/lms/dashboard" element={<LMSDashboard />} />
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
