@@ -100,6 +100,17 @@ export default function LMSCourseDashboard() {
     }
   };
 
+  // Breadcrumb items - must be before any early returns
+  const breadcrumbItems = useMemo(() => {
+    const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
+      { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
+      { label: "LMS", href: "/admin", icon: <BookIcon className="h-4 w-4" /> },
+      { label: "Kurse", active: true }
+    ];
+    
+    return items;
+  }, []);
+
   // Show editor if in create or edit mode
   if (activeView === "create" || activeView === "edit") {
     return (
@@ -121,16 +132,6 @@ export default function LMSCourseDashboard() {
       </div>
     );
   }
-
-  const breadcrumbItems = useMemo(() => {
-    const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
-      { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-      { label: "LMS", href: "/admin", icon: <BookIcon className="h-4 w-4" /> },
-      { label: "Kurse", active: true }
-    ];
-    
-    return items;
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
