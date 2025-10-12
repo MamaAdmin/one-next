@@ -1,67 +1,59 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProfileHeader } from "@/components/profile/ProfileHeader";
-import { ProfileStats } from "@/components/profile/ProfileStats";
-import { PersonalInfoCard } from "@/components/profile/PersonalInfoCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
-import { AchievementsCard } from "@/components/profile/AchievementsCard";
-import { CoursesCard } from "@/components/profile/CoursesCard";
-import { LoadingScreen } from "@/components/profile/LoadingScreen";
+import { CourseList } from "@/components/profile/CourseList";
+import { ProfileStats } from "@/components/profile/ProfileStats";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useEnrollmentsWithCourses } from "@/hooks/useEnrollmentsWithCourses";
-import { useUserAchievements } from "@/hooks/useUserAchievements";
+import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { useCourseRatings } from "@/hooks/useCourseRatings";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const UserProfile = () => {
   const navigate = useNavigate();
   const { profile, participant, loading: profileLoading, updateProfile, uploadAvatar, updateParticipantPhone } = useUserProfile();
-  const { enrollments, loading: enrollmentsLoading } = useEnrollmentsWithCourses();
-  const { achievements, streak, loading: achievementsLoading } = useUserAchievements(participant?.id);
+  const { enrollments, loading: enrollmentsLoading } = useLMSEnrollment();
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [updating, setUpdating] = useState(false);
 
-  // Auth-Check
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) navigate("/auth");
+      if (!user) {
+        navigate("/auth");
+      }
     };
     checkAuth();
   }, [navigate]);
 
-  // Loading State
-  if (profileLoading || enrollmentsLoading || achievementsLoading) {
-    return <LoadingScreen />;
-  }
+  useEffect(() => {
+    if (profile?.full_name) {
+      setFullName(profile.full_name);
+    }
+    if (participant?.phone) {
+      setPhone(participant.phone);
+    }
+  }, [profile, participant]);
 
-  // Error State
-  if (!participant) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navigation />
-        <main className="flex-1 pt-24 pb-16 px-4">
-          <div className="container max-w-4xl mx-auto">
-            <Card className="border-destructive">
-              <CardHeader>
-                <CardTitle>Kein Teilnehmer-Profil gefunden</CardTitle>
-                <CardDescription>
-                  Bitte kontaktieren Sie den Support.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  const totalCourses = enrollments.length;
-  const completedCourses = enrollments.filter((e) => e.completed_at).length;
-  const unlockedAchievements = achievements.filter((a) => a.unlocked).length;
+  const handleUpdateProfile = async () => {
+    setUpdating(true);
+    try {
+      await updateProfile({ full_name: fullName });
+      if (phone !== participant?.phone) {
+        await updateParticipantPhone(phone);
+      }
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const handleRatingSubmit = async (
     courseId: string,
@@ -73,62 +65,119 @@ const UserProfile = () => {
     await createRating(enrollmentId, rating, review);
   };
 
-  const handleProfileUpdate = async (data: { full_name: string; phone: string }) => {
-    await updateProfile({ full_name: data.full_name });
-    if (data.phone !== participant?.phone) {
-      await updateParticipantPhone(data.phone);
-    }
-  };
+  if (profileLoading || enrollmentsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
+  const courses = enrollments.map((enrollment: any) => ({
+    id: enrollment.purchase?.course_id || "",
+    title: enrollment.purchase?.course?.title || "Unbekannter Kurs",
+    progress: enrollment.progress_percentage || 0,
+    isCompleted: !!enrollment.completed_at,
+    enrollmentId: enrollment.id,
+    rating: undefined, // TODO: Load ratings
+  }));
+
+  const totalCourses = courses.length;
+  const completedCourses = courses.filter((c: any) => c.isCompleted).length;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <main className="flex-1 pt-24 pb-16 px-4">
         <div className="container max-w-4xl mx-auto space-y-8">
-          <ProfileHeader
-            name={profile?.full_name}
-            email={profile?.email}
-            avatar={profile?.avatar_url}
-          />
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Mein Profil</h1>
+            <p className="text-muted-foreground">
+              Verwalten Sie Ihre persönlichen Informationen und Kurse
+            </p>
+          </div>
 
           <ProfileStats
             totalCourses={totalCourses}
             completedCourses={completedCourses}
-            streak={streak}
-            achievements={unlockedAchievements}
+            streak={0}
+            achievements={0}
           />
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <PersonalInfoCard
-              fullName={profile?.full_name}
-              email={profile?.email}
-              phone={participant?.phone}
-              onUpdate={handleProfileUpdate}
-            />
+          <Card>
+            <CardHeader>
+              <CardTitle>Persönliche Informationen</CardTitle>
+              <CardDescription>
+                Aktualisieren Sie Ihr Profilfoto und Ihre Daten
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <AvatarUpload
+                currentAvatar={profile?.avatar_url}
+                userName={profile?.full_name || undefined}
+                onUpload={uploadAvatar}
+              />
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Profilbild</CardTitle>
-                <CardDescription>
-                  Laden Sie ein Bild hoch oder ändern Sie Ihr aktuelles Foto
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <AvatarUpload
-                  currentAvatar={profile?.avatar_url}
-                  userName={profile?.full_name || undefined}
-                  onUpload={uploadAvatar}
-                />
-              </CardContent>
-            </Card>
-          </div>
+              <Separator />
 
-          <AchievementsCard achievements={achievements} />
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="fullName">Vollständiger Name</Label>
+                  <Input
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Ihr Name"
+                  />
+                </div>
 
-          <CoursesCard
-            enrollments={enrollments}
-            onRatingSubmit={handleRatingSubmit}
-          />
+                <div>
+                  <Label htmlFor="email">E-Mail-Adresse</Label>
+                  <Input
+                    id="email"
+                    value={profile?.email || ""}
+                    disabled
+                    className="bg-muted"
+                  />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Die E-Mail-Adresse kann nicht geändert werden
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="phone">Telefon</Label>
+                  <Input
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Telefonnummer"
+                  />
+                </div>
+
+                <Button onClick={handleUpdateProfile} disabled={updating}>
+                  {updating ? "Wird gespeichert..." : "Änderungen speichern"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Meine Kurse</CardTitle>
+              <CardDescription>
+                Ihre eingeschriebenen und abgeschlossenen Kurse
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {courses.length > 0 ? (
+                <CourseList courses={courses} onRatingSubmit={handleRatingSubmit} />
+              ) : (
+                <p className="text-muted-foreground text-center py-8">
+                  Sie sind noch in keinen Kursen eingeschrieben
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </main>
       <Footer />

@@ -1,17 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Star, Download } from "lucide-react";
+import { Star } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { CourseRatingDialog } from "./CourseRatingDialog";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 interface Course {
   id: string;
   title: string;
-  slug: string;
   progress: number;
   isCompleted: boolean;
   enrollmentId: string;
@@ -20,83 +16,56 @@ interface Course {
 
 interface CourseListProps {
   courses: Course[];
-  variant: "active" | "completed";
   onRatingSubmit: (courseId: string, enrollmentId: string, rating: number, review?: string) => Promise<void>;
 }
 
-export const CourseList = ({ courses, variant, onRatingSubmit }: CourseListProps) => {
+export const CourseList = ({ courses, onRatingSubmit }: CourseListProps) => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [downloadingCert, setDownloadingCert] = useState<string | null>(null);
-  const navigate = useNavigate();
 
-  const handleDownloadCertificate = async (enrollmentId: string) => {
-    try {
-      setDownloadingCert(enrollmentId);
-      const { data, error } = await supabase.functions.invoke(
-        "generate-completion-certificate",
-        { body: { enrollmentId } }
-      );
-
-      if (error) throw error;
-
-      // Create download link
-      const blob = new Blob([data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Zertifikat-${enrollmentId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast.success("Zertifikat heruntergeladen");
-    } catch (error) {
-      console.error("Error downloading certificate:", error);
-      toast.error("Fehler beim Herunterladen des Zertifikats");
-    } finally {
-      setDownloadingCert(null);
-    }
-  };
+  const activeCourses = courses.filter(c => !c.isCompleted);
+  const completedCourses = courses.filter(c => c.isCompleted);
 
   return (
-    <div className="space-y-4">
-      {courses.map((course) => (
-        <Card key={course.id}>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>{course.title}</span>
-              {variant === "completed" && (
-                <span className="text-green-600 text-sm font-normal">
-                  ✓ Abgeschlossen
-                </span>
-              )}
-            </CardTitle>
-            {variant === "active" && (
-              <CardDescription>
-                Fortschritt: {course.progress}%
-              </CardDescription>
-            )}
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {variant === "active" && (
-              <>
-                <Progress value={course.progress} />
-                <div className="flex gap-2">
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => navigate(`/lms/courses/${course.slug}`)}
-                  >
+    <div className="space-y-6">
+      {activeCourses.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Aktive Kurse</h3>
+          <div className="space-y-4">
+            {activeCourses.map((course) => (
+              <Card key={course.id}>
+                <CardHeader>
+                  <CardTitle>{course.title}</CardTitle>
+                  <CardDescription>
+                    Fortschritt: {course.progress}%
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Progress value={course.progress} className="mb-4" />
+                  <Button variant="outline" size="sm">
                     Fortsetzen
                   </Button>
-                </div>
-              </>
-            )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
-            {variant === "completed" && (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
+      {completedCourses.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Abgeschlossene Kurse</h3>
+          <div className="space-y-4">
+            {completedCourses.map((course) => (
+              <Card key={course.id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>{course.title}</span>
+                    <span className="text-green-600 text-sm font-normal">
+                      Abgeschlossen
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   {course.rating ? (
                     <div className="flex items-center gap-2">
                       <div className="flex">
@@ -129,24 +98,12 @@ export const CourseList = ({ courses, variant, onRatingSubmit }: CourseListProps
                       Kurs bewerten
                     </Button>
                   )}
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDownloadCertificate(course.enrollmentId)}
-                  disabled={downloadingCert === course.enrollmentId}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  {downloadingCert === course.enrollmentId
-                    ? "Lädt..."
-                    : "Zertifikat"}
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {selectedCourse && (
         <CourseRatingDialog
