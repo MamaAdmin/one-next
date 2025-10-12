@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, RotateCcw, Copy, Trash2, Info, Lightbulb, GripVertical, ChevronDown, X } from "lucide-react";
+import { Save, RotateCcw, Copy, Trash2, Info, Lightbulb, GripVertical, ChevronDown, X, LayoutGrid } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface QuestionParts {
@@ -70,6 +71,7 @@ const goalWords = [
 
 export function HMWGenerator() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [question, setQuestion] = useState<QuestionParts>({
     verb: "",
     object: "",
@@ -286,7 +288,18 @@ export function HMWGenerator() {
         {savedQuestions.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Gespeicherte Fragen ({savedQuestions.length})</CardTitle>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <CardTitle>Gespeicherte Fragen ({savedQuestions.length})</CardTitle>
+                  <CardDescription>
+                    Deine gesammelten "Wie könnten wir..."-Fragen
+                  </CardDescription>
+                </div>
+                <Button onClick={() => navigate('/lms/tools/hmw-clustering')} size="sm">
+                  <LayoutGrid className="mr-2 h-4 w-4" />
+                  Fragen clustern
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 max-h-[400px] overflow-y-auto">
