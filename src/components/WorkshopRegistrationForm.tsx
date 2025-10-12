@@ -55,9 +55,7 @@ const workshopRegistrationSchema = z.object({
   phone: z.string().min(1, "Telefonnummer ist erforderlich"),
   
   // Interesse
-  workshopType: z.enum(["problem-framing", "design-sprint"], {
-    required_error: "Bitte wählen Sie einen Workshop-Typ",
-  }),
+  workshopTypes: z.array(z.string()).min(1, "Bitte wählen Sie mindestens einen Workshop-Typ"),
   additionalServices: z.array(z.string()).optional(),
   
   // Teilnahme
@@ -88,10 +86,15 @@ export const WorkshopRegistrationForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
 
+  const workshopTypeOptions = [
+    { id: "problem-framing", label: "Problem-Framing Workshop" },
+    { id: "design-sprint", label: "Design Sprint Workshop" },
+  ];
+
   const form = useForm<WorkshopRegistrationFormData>({
     resolver: zodResolver(workshopRegistrationSchema),
     defaultValues: {
-      workshopType: defaultWorkshopType,
+      workshopTypes: defaultWorkshopType ? [defaultWorkshopType] : [],
       additionalServices: [],
       preferredDates: [],
       acceptTerms: false,
@@ -165,7 +168,9 @@ export const WorkshopRegistrationForm = ({
 Position: ${data.position}
 Telefon: ${data.phone}
 Unternehmensgröße: ${data.companySize}
-Workshop-Typ: ${data.workshopType === "problem-framing" ? "Problem-Framing Workshop" : "Design Sprint Workshop"}
+Workshop-Typen: ${data.workshopTypes?.map(type => 
+  type === "problem-framing" ? "Problem-Framing Workshop" : "Design Sprint Workshop"
+).join(", ") || "Keine"}
 Zusätzliche Services: ${data.additionalServices?.join(", ") || "Keine"}
 Anzahl Kurse: ${data.numberOfCourses}
 Wunschtermine: ${formattedDates}
@@ -175,8 +180,8 @@ Ziele: ${data.goals}
           target_audience: ["Nicht angegeben"],
           consequences: "Nicht angegeben",
           success_criteria: data.goals,
-          relevance_reason: data.workshopType === "problem-framing" ? "Problem-Framing" : "Design Sprint",
-          recommended_sprint_type: data.workshopType === "problem-framing" ? "problem_framing" : "design_sprint",
+          relevance_reason: data.workshopTypes?.join(", ") || "Nicht angegeben",
+          recommended_sprint_type: data.workshopTypes?.join(",") || "not_specified",
         });
 
       if (bookingError) throw bookingError;
@@ -382,26 +387,46 @@ Ziele: ${data.goals}
               
               <FormField
                 control={form.control}
-                name="workshopType"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Art des Workshops *</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="problem-framing" id="workshop-problem" />
-                          <Label htmlFor="workshop-problem">Problem-Framing Workshop</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="design-sprint" id="workshop-design" />
-                          <Label htmlFor="workshop-design">Design Sprint Workshop</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
+                name="workshopTypes"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel>Art des Workshops *</FormLabel>
+                      <FormDescription>
+                        Wählen Sie alle Workshop-Typen aus, die Sie interessieren
+                      </FormDescription>
+                    </div>
+                    {workshopTypeOptions.map((workshop) => (
+                      <FormField
+                        key={workshop.id}
+                        control={form.control}
+                        name="workshopTypes"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={workshop.id}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(workshop.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...(field.value || []), workshop.id])
+                                      : field.onChange(
+                                          field.value?.filter((value) => value !== workshop.id)
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {workshop.label}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
                     <FormMessage />
                   </FormItem>
                 )}
