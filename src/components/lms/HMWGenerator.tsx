@@ -188,40 +188,36 @@ export function HMWGenerator() {
   const DropZone = ({ field, value, label }: { field: keyof QuestionParts; value: string; label: string }) => (
     <div className="space-y-2 flex-1">
       <Label htmlFor={`field-${field}`} className="text-sm font-medium">{label}</Label>
-      <div className="relative">
-        <div
-          className={`
-            w-full px-4 py-3 rounded-md border-2 border-dashed transition-all min-h-[48px] flex items-center
-            ${activeDropZone === field ? 'border-primary bg-primary/5 scale-[1.02]' : 'border-border'}
-            ${value ? 'bg-accent border-accent-foreground/20' : 'bg-muted'}
-          `}
-          onDragOver={(e) => handleDragOver(e, field)}
-          onDragLeave={handleDragLeave}
-          onDrop={(e) => handleDrop(e, field)}
-        >
-          {value ? (
-            <div className="flex items-center justify-between w-full">
-              <span className="text-sm">{value}</span>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-6 w-6 hover:bg-destructive/10"
-                onClick={() => clearField(field)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <span className="text-muted-foreground text-sm italic">Ziehe ein Wort hierher oder gib Text ein</span>
-          )}
-        </div>
+      <div 
+        className={`
+          relative
+          ${activeDropZone === field ? 'ring-2 ring-primary ring-offset-2' : ''}
+        `}
+        onDragOver={(e) => handleDragOver(e, field)}
+        onDragLeave={handleDragLeave}
+        onDrop={(e) => handleDrop(e, field)}
+      >
         <Input
           id={`field-${field}`}
-          placeholder="Oder eigenen Text eingeben..."
+          placeholder="Ziehe ein Wort hierher oder gib Text ein..."
           value={value}
           onChange={(e) => handleTextInput(field, e.target.value)}
-          className="mt-2"
+          className={`
+            pr-10
+            ${activeDropZone === field ? 'border-primary bg-primary/5' : ''}
+          `}
         />
+        {value && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 hover:bg-destructive/10"
+            onClick={() => clearField(field)}
+            tabIndex={-1}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );
