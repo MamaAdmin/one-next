@@ -1,13 +1,15 @@
 import { useParams, Link } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
 import { useLMSModules } from "@/hooks/useLMSModules";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
+import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
+import { BookIcon } from "@/components/ui/custom-icons";
 import { useGDPRConsent } from "@/hooks/useGDPRConsent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle2, Circle, Lock } from "lucide-react";
 import { Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
 import { ModuleRenderer } from "@/components/sprint/modules/ModuleRenderer";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,8 +105,30 @@ export default function LMSCourseDetail() {
     );
   }
 
+  const breadcrumbItems = useMemo(() => {
+    const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
+      { label: "Meine Kurse", href: "/lms", icon: <BookIcon className="h-4 w-4" /> },
+    ];
+    
+    if (courseData) {
+      items.push({ 
+        label: courseData.title, 
+        href: `/lms/enrollment/${enrollmentId}` 
+      });
+    }
+    
+    if (currentModule) {
+      items.push({ label: currentModule.title, active: true });
+    } else if (courseData) {
+      items[items.length - 1].active = true;
+    }
+    
+    return items;
+  }, [courseData, currentModule, enrollmentId]);
+
   return (
     <div className="container mx-auto py-8">
+      <LMSBreadcrumb items={breadcrumbItems} />
       <div className="mb-4">
         <Link to="/lms">
           <Button variant="ghost" size="sm">

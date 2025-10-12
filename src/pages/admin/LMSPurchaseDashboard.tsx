@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 import { useCustomer } from "@/hooks/useCustomer";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
+import { HomeIcon } from "@/components/ui/custom-icons";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,9 +71,18 @@ export default function LMSPurchaseDashboard() {
     );
   }
 
+  const breadcrumbItems = [
+    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
+    { label: "LMS", href: "/admin" },
+    { label: "Käufe", active: true }
+  ];
+
   return (
-    <div className="container mx-auto py-8">
-      <Card>
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      <LMSBreadcrumb items={breadcrumbItems} />
+      <main className="container mx-auto px-4 py-8 pt-24">
+        <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -184,6 +197,8 @@ export default function LMSPurchaseDashboard() {
           </Table>
         </CardContent>
       </Card>
+      </main>
+      <Footer isEditMode={false} />
     </div>
   );
 }

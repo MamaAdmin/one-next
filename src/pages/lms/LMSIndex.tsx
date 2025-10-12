@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
+import { BookIcon } from "@/components/ui/custom-icons";
 import Footer from "@/components/Footer";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,9 +34,14 @@ const LMSIndex = () => {
     );
   }
 
+  const breadcrumbItems = [
+    { label: "Meine Kurse", active: true, icon: <BookIcon className="h-4 w-4" /> }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <LMSBreadcrumb items={breadcrumbItems} />
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-8">

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
+import { HomeIcon } from "@/components/ui/custom-icons";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, Users, BookOpen, Award } from "lucide-react";
 import Navigation from "@/components/Navigation";
@@ -77,9 +79,16 @@ export default function LMSAnalytics() {
     ]);
   };
 
+  const breadcrumbItems = [
+    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
+    { label: "LMS", href: "/admin" },
+    { label: "Analytics", active: true }
+  ];
+
   return (
     <div className="min-h-screen">
       <Navigation />
+      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">LMS Analytics</h1>

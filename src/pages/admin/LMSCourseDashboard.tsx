@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
 import { Button } from "@/components/ui/button";
+import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
+import { HomeIcon } from "@/components/ui/custom-icons";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -120,9 +122,20 @@ export default function LMSCourseDashboard() {
     );
   }
 
+  const breadcrumbItems = useMemo(() => {
+    const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
+      { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
+      { label: "LMS", href: "/admin", icon: <BookIcon className="h-4 w-4" /> },
+      { label: "Kurse", active: true }
+    ];
+    
+    return items;
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="flex-1 container mx-auto px-4 py-8 pt-24">
         <Card>
           <CardHeader>

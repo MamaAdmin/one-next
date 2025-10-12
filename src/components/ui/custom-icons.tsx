@@ -511,6 +511,15 @@ export const SettingsIcon = ({ className, ...props }: IconProps) => (
   </svg>
 );
 
+export const HomeIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    <path d="M20 50 L50 20 L80 50 L80 80 L20 80 Z" 
+      stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <rect x="40" y="55" width="20" height="25" 
+      stroke="currentColor" strokeWidth="2.5" fill="none" />
+  </svg>
+);
+
 // LMS-specific Icons
 export const BookIcon = ({ className, ...props }: IconProps) => (
   <svg viewBox="0 0 100 100" className={className} {...props}>
