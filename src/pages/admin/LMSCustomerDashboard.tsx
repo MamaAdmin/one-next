@@ -28,9 +28,10 @@ const LMSCustomerDashboard = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     company_name: "",
-    contact_email: "",
-    contact_name: "",
-    notes: ""
+    email: "",
+    name: "",
+    phone: "",
+    address: ""
   });
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,9 +40,10 @@ const LMSCustomerDashboard = () => {
       setIsDialogOpen(false);
       setFormData({
         company_name: "",
-        contact_email: "",
-        contact_name: "",
-        notes: ""
+        email: "",
+        name: "",
+        phone: "",
+        address: ""
       });
     } catch (error) {
       // Error already handled in hook
@@ -101,35 +103,43 @@ const LMSCustomerDashboard = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="company_name">Firmenname *</Label>
+                  <Label htmlFor="company_name">Firmenname</Label>
                   <Input id="company_name" value={formData.company_name} onChange={e => setFormData({
                   ...formData,
                   company_name: e.target.value
-                })} placeholder="z.B. Acme GmbH" required />
+                })} placeholder="z.B. Acme GmbH" />
                 </div>
 
                 <div>
-                  <Label htmlFor="contact_email">Kontakt-Email *</Label>
-                  <Input id="contact_email" type="email" value={formData.contact_email} onChange={e => setFormData({
+                  <Label htmlFor="name">Kontaktperson *</Label>
+                  <Input id="name" value={formData.name} onChange={e => setFormData({
                   ...formData,
-                  contact_email: e.target.value
+                  name: e.target.value
+                })} placeholder="Max Mustermann" required />
+                </div>
+
+                <div>
+                  <Label htmlFor="email">E-Mail *</Label>
+                  <Input id="email" type="email" value={formData.email} onChange={e => setFormData({
+                  ...formData,
+                  email: e.target.value
                 })} placeholder="kontakt@firma.de" required />
                 </div>
 
                 <div>
-                  <Label htmlFor="contact_name">Ansprechpartner</Label>
-                  <Input id="contact_name" value={formData.contact_name} onChange={e => setFormData({
+                  <Label htmlFor="phone">Telefon</Label>
+                  <Input id="phone" type="tel" value={formData.phone} onChange={e => setFormData({
                   ...formData,
-                  contact_name: e.target.value
-                })} placeholder="Max Mustermann" />
+                  phone: e.target.value
+                })} placeholder="+41 44 123 45 67" />
                 </div>
 
                 <div>
-                  <Label htmlFor="notes">Notizen</Label>
-                  <Textarea id="notes" value={formData.notes} onChange={e => setFormData({
+                  <Label htmlFor="address">Adresse</Label>
+                  <Textarea id="address" value={formData.address} onChange={e => setFormData({
                   ...formData,
-                  notes: e.target.value
-                })} placeholder="Weitere Informationen zum Kunden..." rows={3} />
+                  address: e.target.value
+                })} placeholder="Straße, PLZ Ort, Land" rows={3} />
                 </div>
 
                 <div className="flex gap-2 justify-end">
@@ -168,12 +178,12 @@ const LMSCustomerDashboard = () => {
                       Firma
                     </TableHead>
                     <TableHead>
-                      <Mail className="inline mr-2 h-4 w-4" />
-                      Email
+                      <User className="inline mr-2 h-4 w-4" />
+                      Kontaktperson
                     </TableHead>
                     <TableHead>
-                      <User className="inline mr-2 h-4 w-4" />
-                      Ansprechpartner
+                      <Mail className="inline mr-2 h-4 w-4" />
+                      Email
                     </TableHead>
                     <TableHead>Erstellt am</TableHead>
                     <TableHead className="text-right">Aktionen</TableHead>
@@ -181,9 +191,9 @@ const LMSCustomerDashboard = () => {
                 </TableHeader>
                 <TableBody>
                   {customers.map(customer => <TableRow key={customer.id}>
-                      <TableCell className="font-medium">{customer.company_name}</TableCell>
-                      <TableCell>{customer.contact_email}</TableCell>
-                      <TableCell>{customer.contact_name || "-"}</TableCell>
+                      <TableCell className="font-medium">{customer.company_name || "-"}</TableCell>
+                      <TableCell>{customer.name}</TableCell>
+                      <TableCell>{customer.email}</TableCell>
                       <TableCell>
                         {new Date(customer.created_at).toLocaleDateString("de-DE")}
                       </TableCell>
@@ -192,7 +202,7 @@ const LMSCustomerDashboard = () => {
                           <Button variant="outline" size="sm" onClick={() => toast.info("Details-Ansicht kommt in nächster Phase")}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDelete(customer.id, customer.company_name)}>
+                          <Button variant="destructive" size="sm" onClick={() => handleDelete(customer.id, customer.company_name || customer.name)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>

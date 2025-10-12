@@ -71,11 +71,18 @@ export const WorkshopComparisonSection = () => {
                 </p>
               </div>
               
-              <Button asChild variant="secondary" className="w-full">
-                <Link to="/problem-framing-workshop">
-                  Workshop Details ansehen
-                </Link>
-              </Button>
+              <div className="space-y-3">
+                <Button asChild variant="secondary" className="w-full">
+                  <Link to="/problem-framing-workshop">
+                    Workshop Details ansehen
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/workshop-registration?type=problem-framing">
+                    Workshop anfragen
+                  </Link>
+                </Button>
+              </div>
             </div>
           </Card>
 
@@ -123,11 +130,18 @@ export const WorkshopComparisonSection = () => {
                 </p>
               </div>
               
-              <Button asChild className="w-full">
-                <Link to="/design-sprint-workshop">
-                  Workshop Details ansehen
-                </Link>
-              </Button>
+              <div className="space-y-3">
+                <Button asChild className="w-full">
+                  <Link to="/design-sprint-workshop">
+                    Workshop Details ansehen
+                  </Link>
+                </Button>
+                <Button asChild variant="secondary" className="w-full">
+                  <Link to="/workshop-registration?type=design-sprint">
+                    Workshop buchen
+                  </Link>
+                </Button>
+              </div>
             </div>
           </Card>
         </div>

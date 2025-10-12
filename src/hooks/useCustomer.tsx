@@ -4,11 +4,11 @@ import { toast } from "sonner";
 
 interface Customer {
   id: string;
-  company_name: string;
-  contact_email: string;
-  contact_name: string | null;
-  billing_address: any;
-  notes: string | null;
+  company_name: string | null;
+  name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -40,11 +40,11 @@ export const useCustomer = () => {
   }, []);
 
   const createCustomer = async (customerData: {
-    company_name: string;
-    contact_email: string;
-    contact_name?: string;
-    billing_address?: any;
-    notes?: string;
+    name: string;
+    email: string;
+    company_name?: string;
+    phone?: string;
+    address?: string;
   }) => {
     try {
       const { data, error } = await (supabase as any)

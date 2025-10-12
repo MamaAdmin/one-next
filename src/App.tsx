@@ -37,6 +37,8 @@ import SprintBooking from "./pages/sprint/SprintBooking";
 import { SprintLayout } from "./layouts/SprintLayout";
 import NotFound from "./pages/NotFound";
 
+import WorkshopRegistration from "./pages/WorkshopRegistration";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -54,6 +56,7 @@ const App = () => (
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
           <Route path="/problem-framing-workshop" element={<ProblemFramingWorkshop />} />
           <Route path="/design-sprint-workshop" element={<DesignSprintWorkshop />} />
+          <Route path="/workshop-registration" element={<WorkshopRegistration />} />
           
           {/* Standalone Sprint Container */}
           <Route path="/sprint" element={<SprintLayout />}>
