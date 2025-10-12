@@ -9,7 +9,6 @@ import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { useState } from "react";
-import FormatComparisonSection from "@/components/sprint/FormatComparisonSection";
 import { Link } from "react-router-dom";
 const AIDesignSprint = () => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -45,9 +44,6 @@ const AIDesignSprint = () => {
           </div>
         </div>
       </section>
-
-      {/* Format Comparison Section */}
-      <FormatComparisonSection />
 
       {/* Was ist ein AI Design Sprint Workshop? */}
       <section id="workshop-details" className="py-24 bg-background">

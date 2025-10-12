@@ -32,11 +32,6 @@ import LMSAnalytics from "./pages/admin/LMSAnalytics";
 import LMSModuleDashboard from "./pages/admin/LMSModuleDashboard";
 import LMSModuleEditor from "./pages/admin/LMSModuleEditor";
 import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
-import SprintSetup from "./pages/sprint/SprintSetup";
-import SprintIndex from "./pages/sprint/SprintIndex";
-import SprintSession from "./pages/sprint/SprintSession";
-import SprintBooking from "./pages/sprint/SprintBooking";
-import { SprintLayout } from "./layouts/SprintLayout";
 import NotFound from "./pages/NotFound";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
@@ -59,16 +54,6 @@ const App = () => (
           <Route path="/problem-framing-workshop" element={<ProblemFramingWorkshop />} />
           <Route path="/design-sprint-workshop" element={<DesignSprintWorkshop />} />
           <Route path="/workshop-registration" element={<WorkshopRegistration />} />
-          
-          {/* Standalone Sprint Container */}
-          <Route path="/sprint" element={<SprintLayout />}>
-            <Route index element={<SprintIndex />} />
-            <Route path="setup" element={<SprintSetup />} />
-            <Route path="session" element={<SprintSession />} />
-          </Route>
-          
-          {/* Standalone Assessment with main navigation */}
-          <Route path="/sprint/assessment" element={<SprintBooking />} />
           
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />

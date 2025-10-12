@@ -34,7 +34,7 @@ const DesignSprintWorkshop = () => {
                 Research, Ideenfindung, Prototyping, Testing.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Link to="/sprint/assessment">
+                <Link to="/workshop-registration">
                   <Button size="lg" className="bg-gradient-primary hover:opacity-90">
                     Workshop Assessment starten
                     <ArrowRight className="ml-2 w-4 h-4" />
@@ -575,7 +575,7 @@ const DesignSprintWorkshop = () => {
                     <p className="text-muted-foreground text-sm">
                       Facilitierter 2-Tage Workshop mit AI-Experten vor Ort oder remote
                     </p>
-                    <Link to="/sprint/assessment">
+                    <Link to="/workshop-registration">
                       <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
                         Jetzt anfragen
                       </Button>

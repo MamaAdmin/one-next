@@ -98,7 +98,7 @@ const OnlineSprintLanding = () => {
             
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center pt-6">
               <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-                <Link to="/sprint/assessment">Jetzt starten</Link>
+                <Link to="/workshop-registration">Jetzt starten</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
                 <Link to="/ai-design-sprint">Workshop-Variante ansehen</Link>
@@ -289,7 +289,7 @@ const OnlineSprintLanding = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-                  <Link to="/sprint/assessment">Sprint starten</Link>
+                  <Link to="/workshop-registration">Sprint starten</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   Angebot anfordern

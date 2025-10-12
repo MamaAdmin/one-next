@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle2, Circle, Lock } from "lucide-react";
 import { Loader2 } from "lucide-react";
-import { ModuleRenderer } from "@/components/sprint/modules/ModuleRenderer";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { supabase } from "@/integrations/supabase/client";
 import { CoursePreview } from "@/components/lms/CoursePreview";
@@ -194,12 +193,10 @@ export default function LMSCourseDetail() {
             </CardHeader>
             <CardContent>
               {currentModule && (
-                <ModuleRenderer
-                  moduleType={currentModule.module_type}
-                  moduleConfig={currentModule.config}
-                  data={{}}
-                  onDataChange={() => {}}
-                />
+                <div className="p-6 text-center text-muted-foreground">
+                  <p>Module content will be displayed here.</p>
+                  <p className="text-sm mt-2">Module Type: {currentModule.module_type}</p>
+                </div>
               )}
             </CardContent>
           </Card>
