@@ -106,7 +106,7 @@ serve(async (req) => {
 
     // Get n8n webhook URL from secrets
     const n8nWebhookUrl = Deno.env.get('N8N_WEBHOOK_URL') || 
-                          'https://jule-haitz.n8n-wsk.com/webhook/voice-rag';
+                          'https://jule-haitz.n8n-wsk.com/voice-rag';
 
     // Forward to n8n webhook
     const n8nFormData = new FormData();
