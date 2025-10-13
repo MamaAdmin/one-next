@@ -36,6 +36,7 @@ import LMSToolboxDashboard from "./pages/admin/LMSToolboxDashboard";
 import LMSToolboxEditor from "./pages/admin/LMSToolboxEditor";
 import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
 import LMSHMWTool from "./pages/lms/LMSHMWTool";
+import VoiceBot from "./pages/VoiceBot";
 import NotFound from "./pages/NotFound";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
@@ -95,6 +96,7 @@ const App = () => (
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/company/profile" element={<CompanyProfile />} />
           <Route path="/accept-invitation" element={<AcceptInvitation />} />
+          <Route path="/voice-bot" element={<VoiceBot />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
