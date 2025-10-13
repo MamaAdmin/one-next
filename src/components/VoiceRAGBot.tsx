@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 
-const WEBHOOK_URL = 'https://jule-haitz.n8n-wsk.com/webhook/voice-rag';
+const WEBHOOK_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/voice-rag`;
 const MAX_RECORDING_TIME = 90000; // 90 seconds
 
 type Status = 'idle' | 'recording' | 'processing' | 'playing' | 'success' | 'error';

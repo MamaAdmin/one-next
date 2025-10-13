@@ -1,5 +1,8 @@
 project_id = "ookvxyctxmtcxowcwnij"
 
+[functions.voice-rag]
+verify_jwt = false
+
 [functions.check-phase-gate]
 verify_jwt = true
 
