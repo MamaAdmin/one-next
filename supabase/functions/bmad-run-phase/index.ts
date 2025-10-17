@@ -65,10 +65,10 @@ Format the output in Markdown with code blocks. Use TypeScript/React for fronten
 };
 
 const PHASE_ARTIFACT_TYPES = {
-  business_analyst: 'requirements',
-  manager: 'requirements',
-  architect: 'architecture',
-  developer: 'code'
+  business_analyst: 'business_requirements',
+  manager: 'sprint_plan',
+  architect: 'technical_architecture',
+  developer: 'story_file'
 };
 
 serve(async (req) => {
