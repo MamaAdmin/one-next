@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Brain, Users, Layers, Code, Play, Check, X, ChevronRight } from "lucide-react";
+import { ArrowLeft, Brain, Users, Layers, Code, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Workflow, Loader2 } from "lucide-react";
 import { useBMADSession } from "@/hooks/useBMADSessions";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
 import { useBMADConversations } from "@/hooks/useBMADConversations";
@@ -49,6 +49,8 @@ export default function BMADSessionDetail() {
   const [runningPhase, setRunningPhase] = useState(false);
   const [progressingPhase, setProgressingPhase] = useState(false);
   const [selectedArtifact, setSelectedArtifact] = useState<any>(null);
+  const [runningAllPhases, setRunningAllPhases] = useState(false);
+  const [phaseProgress, setPhaseProgress] = useState<Record<string, string>>({});
 
   // Realtime subscription for session updates
   useEffect(() => {
@@ -61,7 +63,12 @@ export default function BMADSessionDetail() {
         schema: 'public',
         table: 'bmad_sessions',
         filter: `id=eq.${sessionId}`
-      }, () => {
+      }, (payload) => {
+        // Update phase progress from metadata
+        const metadata = (payload.new as any)?.metadata;
+        if (metadata?.phase_progress) {
+          setPhaseProgress(metadata.phase_progress);
+        }
         // Refetch session data
         window.location.reload();
       })
@@ -80,6 +87,13 @@ export default function BMADSessionDetail() {
       supabase.removeChannel(channel);
     };
   }, [sessionId]);
+
+  // Initialize phase progress from session metadata
+  useEffect(() => {
+    if (session?.settings?.phase_progress) {
+      setPhaseProgress(session.settings.phase_progress);
+    }
+  }, [session]);
 
   const handleRunPhase = async () => {
     if (!session) return;
@@ -143,6 +157,33 @@ export default function BMADSessionDetail() {
     } catch (error) {
       console.error("Error approving artifact:", error);
       toast.error("Fehler beim Genehmigen des Artifacts");
+    }
+  };
+
+  const handleRunAllPhases = async () => {
+    if (!sessionId) return;
+    
+    setRunningAllPhases(true);
+    setPhaseProgress({
+      business_analyst: 'pending',
+      manager: 'pending',
+      architect: 'pending',
+      developer: 'pending'
+    });
+
+    try {
+      const { error } = await supabase.functions.invoke("bmad-run-all-phases", {
+        body: { session_id: sessionId },
+      });
+
+      if (error) throw error;
+
+      toast.success("Alle Phasen erfolgreich abgeschlossen!");
+    } catch (error) {
+      console.error("Error running all phases:", error);
+      toast.error("Fehler beim Durchlaufen aller Phasen");
+    } finally {
+      setRunningAllPhases(false);
     }
   };
 
@@ -233,26 +274,78 @@ export default function BMADSessionDetail() {
           {session.status !== 'completed' && (
             <Card>
               <CardHeader>
-                <CardTitle>Phase Control</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Workflow className="h-5 w-5" />
+                  Phase Control
+                </CardTitle>
               </CardHeader>
-              <CardContent className="flex gap-4">
-                <Button 
-                  onClick={handleRunPhase} 
-                  disabled={runningPhase || hasCurrentPhaseArtifact}
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div>
+                    <p className="text-sm font-medium">Current Phase</p>
+                    <p className="text-2xl font-bold">{PHASE_NAMES[session.current_phase as keyof typeof PHASE_NAMES]}</p>
+                  </div>
+                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    {getAgentIcon(session.current_phase)}
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleRunAllPhases}
+                  disabled={runningAllPhases || (session.status as string) === 'completed'}
+                  size="lg"
+                  className="w-full"
                 >
-                  <Play className="h-4 w-4 mr-2" />
-                  {runningPhase ? 'Läuft...' : `${PHASE_NAMES[session.current_phase as keyof typeof PHASE_NAMES]} Phase ausführen`}
+                  <Zap className="h-5 w-5 mr-2" />
+                  {runningAllPhases ? 'Läuft alle Phasen durch...' : 'Alle Phasen End-to-End durchlaufen'}
                 </Button>
 
-                {canProgress && (
+                <div className="flex gap-2">
                   <Button 
-                    onClick={handleProgressPhase} 
-                    disabled={progressingPhase}
-                    variant="outline"
+                    onClick={handleRunPhase} 
+                    disabled={runningPhase || hasCurrentPhaseArtifact || runningAllPhases}
+                    className="flex-1"
                   >
-                    <ChevronRight className="h-4 w-4 mr-2" />
-                    {progressingPhase ? 'Fortschritt...' : 'Nächste Phase'}
+                    <Play className="h-4 w-4 mr-2" />
+                    {runningPhase ? 'Läuft...' : 'Phase ausführen'}
                   </Button>
+
+                  {canProgress && (
+                    <Button 
+                      onClick={handleProgressPhase} 
+                      disabled={progressingPhase || runningAllPhases}
+                      variant="outline"
+                    >
+                      <ChevronRight className="h-4 w-4 mr-2" />
+                      {progressingPhase ? 'Fortschritt...' : 'Nächste Phase'}
+                    </Button>
+                  )}
+                </div>
+
+                {session.settings?.require_approval && (
+                  <div className="text-sm text-muted-foreground p-3 bg-blue-50 dark:bg-blue-950/20 rounded-md">
+                    Approval erforderlich vor Fortschritt zur nächsten Phase
+                  </div>
+                )}
+
+                {Object.keys(phaseProgress).length > 0 && (
+                  <div className="space-y-2 pt-4 border-t">
+                    <p className="text-sm font-medium mb-3">Phase Progress</p>
+                    {Object.entries(phaseProgress).map(([phase, status]) => (
+                      <div key={phase} className="flex items-center gap-3">
+                        {status === 'completed' ? (
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        ) : status === 'running' ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                        ) : status === 'error' ? (
+                          <XCircle className="h-4 w-4 text-red-500" />
+                        ) : (
+                          <Circle className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span className="text-sm">{PHASE_NAMES[phase as keyof typeof PHASE_NAMES]}</span>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </CardContent>
             </Card>
