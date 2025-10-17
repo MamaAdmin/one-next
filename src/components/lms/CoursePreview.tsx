@@ -3,10 +3,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Calendar, Share2 } from "lucide-react";
-import { UsersIcon, StarburstIcon, BookIcon, QuizIcon } from "@/components/ui/custom-icons";
+import { 
+  UsersIcon,
+  StarburstIcon,
+  BookIcon,
+  QuizIcon
+} from "@/components/ui/custom-icons";
 import { format, addDays } from "date-fns";
 import { de } from "date-fns/locale";
 import DOMPurify from 'dompurify';
+
 interface CoursePreviewProps {
   course: {
     id: string;
@@ -32,10 +38,8 @@ interface CoursePreviewProps {
     current_phase: number;
   };
 }
-export function CoursePreview({
-  course,
-  enrollment
-}: CoursePreviewProps) {
+
+export function CoursePreview({ course, enrollment }: CoursePreviewProps) {
   // Übersetzungs-Mappings
   const difficultyLabels: Record<string, string> = {
     'beginner': 'Anfänger',
@@ -43,6 +47,7 @@ export function CoursePreview({
     'advanced': 'Experte',
     'all': 'Alle Schwierigkeitsgrade'
   };
+
   const courseTypeLabels: Record<string, string> = {
     'custom': 'Individuell',
     'sprint': 'Sprint',
@@ -53,27 +58,51 @@ export function CoursePreview({
 
   // HTML sicher rendern
   const sanitizeHtml = (html: string) => {
-    return {
-      __html: DOMPurify.sanitize(html)
-    };
+    return { __html: DOMPurify.sanitize(html) };
   };
-  const completionDate = enrollment ? addDays(new Date(enrollment.enrolled_at), course.completion_deadline_days || 30) : null;
-  return <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  const completionDate = enrollment
+    ? addDays(new Date(enrollment.enrolled_at), course.completion_deadline_days || 30)
+    : null;
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Linke Spalte: Kursinfo */}
       <div className="lg:col-span-2 space-y-6">
         <div>
           <h1 className="text-3xl font-bold mb-2">{course.title}</h1>
-          <div className="text-lg text-muted-foreground mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={sanitizeHtml(course.description)} />
+          <div 
+            className="text-lg text-muted-foreground mb-4 prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={sanitizeHtml(course.description)}
+          />
         </div>
 
         {/* Kursinfo */}
-        
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+            <div>
+              <h3 className="font-semibold mb-2">Kursziel</h3>
+              <div 
+                className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={sanitizeHtml(course.description)}
+              />
+            </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Rechte Spalte: Kursinhalte */}
       <div className="space-y-4">
         {/* Kurs-Thumbnail */}
-        {course.thumbnail_url && <img src={course.thumbnail_url} alt={course.title} className="w-full h-32 object-cover rounded-lg" />}
+        {course.thumbnail_url && (
+          <img 
+            src={course.thumbnail_url} 
+            alt={course.title}
+            className="w-full h-32 object-cover rounded-lg"
+          />
+        )}
         
         <Card>
           <CardContent className="p-6 space-y-4">
@@ -82,8 +111,8 @@ export function CoursePreview({
             {/* Preis */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Preis:</span>
-              <Badge variant={course.price_chf === 0 || course.price_chf === null ? "secondary" : "default"}>
-                {course.price_chf === 0 || course.price_chf === null ? "Kostenlos" : `CHF ${course.price_chf}`}
+              <Badge variant={(course.price_chf === 0 || course.price_chf === null) ? "secondary" : "default"}>
+                {(course.price_chf === 0 || course.price_chf === null) ? "Kostenlos" : `CHF ${course.price_chf}`}
               </Badge>
             </div>
 
@@ -131,15 +160,18 @@ export function CoursePreview({
             </div>
 
             {/* Zertifikat */}
-            {course.includes_certificate && <div className="flex items-center gap-2 text-sm text-green-600">
+            {course.includes_certificate && (
+              <div className="flex items-center gap-2 text-sm text-green-600">
                 <StarburstIcon className="h-4 w-4" />
                 <span>Zertifikat nach Abschluss</span>
-              </div>}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Fortschritt (nur wenn enrolled) */}
-        {enrollment && <Card>
+        {enrollment && (
+          <Card>
             <CardContent className="p-6 space-y-4">
               <h3 className="font-semibold">Kursfortschritt</h3>
               <div className="space-y-2">
@@ -152,20 +184,21 @@ export function CoursePreview({
                 Mit dem Lernen beginnen
               </Button>
             </CardContent>
-          </Card>}
+          </Card>
+        )}
 
         {/* Completion Deadline */}
-        {enrollment && completionDate && <Card>
+        {enrollment && completionDate && (
+          <Card>
             <CardContent className="p-6">
               <h3 className="font-semibold mb-2">Kursabschlussdatum</h3>
               <p className="text-sm flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                {format(completionDate, "dd. MMMM yyyy", {
-              locale: de
-            })}
+                {format(completionDate, "dd. MMMM yyyy", { locale: de })}
               </p>
             </CardContent>
-          </Card>}
+          </Card>
+        )}
 
         {/* Teilen */}
         <Card>
@@ -179,5 +212,6 @@ export function CoursePreview({
           </CardContent>
         </Card>
       </div>
-    </div>;
+    </div>
+  );
 }
