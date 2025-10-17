@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BMADArtifact, downloadArtifact } from "@/hooks/useBMADArtifacts";
-import { Brain, Users, Layers, Code, Download, Copy, Edit, X } from "lucide-react";
+import { Brain, Users, Layers, Code, Download, Copy, Edit, X, Check, XCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,6 +54,7 @@ export const BMADArtifactPreviewDialog = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(artifact?.content || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
 
   if (!artifact) return null;
 
@@ -120,6 +121,44 @@ export const BMADArtifactPreviewDialog = ({
     }
   };
 
+  const handleApprove = async (isApproved: boolean) => {
+    setIsApproving(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.access_token) {
+        throw new Error("Not authenticated");
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/bmad-approve-artifact`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${session.session.access_token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            artifact_id: artifact.id,
+            is_approved: isApproved,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to approve artifact");
+      }
+
+      toast.success(isApproved ? "Artifact genehmigt" : "Artifact abgelehnt");
+      onOpenChange(false);
+      onSaved?.();
+    } catch (error) {
+      console.error("Error approving artifact:", error);
+      toast.error("Fehler beim Genehmigen");
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
@@ -132,6 +171,36 @@ export const BMADArtifactPreviewDialog = ({
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Vorschau
+            </Button>
+            <Button
+              size="sm"
+              variant="default"
+              onClick={() => handleApprove(true)}
+              disabled={isApproving || artifact.is_approved === true}
+            >
+              <Check className="w-4 h-4 mr-2" />
+              Genehmigen
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => handleApprove(false)}
+              disabled={isApproving || artifact.is_approved === false}
+            >
+              <XCircle className="w-4 h-4 mr-2" />
+              Ablehnen
+            </Button>
+          </div>
+
           {/* Metadata */}
           <div className="flex flex-wrap gap-2">
             <Badge className={getArtifactTypeColor(artifact.artifact_type)}>
