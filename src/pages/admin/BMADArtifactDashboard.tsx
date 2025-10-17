@@ -28,15 +28,26 @@ import {
 import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
 
 const getAgentIcon = (agentType: string) => {
+  const iconProps = { className: "w-4 h-4" };
   switch (agentType) {
     case "business_analyst":
-      return <Brain className="w-4 h-4 text-purple-500" />;
-    case "manager":
-      return <Users className="w-4 h-4 text-blue-500" />;
+      return <AnalystIcon {...iconProps} />;
+    case "product_manager":
+      return <ManagerIcon {...iconProps} />;
+    case "ux_expert":
+      return <UXIcon {...iconProps} />;
+    case "product_owner":
+      return <OwnerIcon {...iconProps} />;
     case "architect":
-      return <Layers className="w-4 h-4 text-orange-500" />;
+      return <ArchitectIcon {...iconProps} />;
+    case "scrum_master":
+      return <ScrumIcon {...iconProps} />;
     case "developer":
-      return <Code className="w-4 h-4 text-green-500" />;
+      return <DeveloperIcon {...iconProps} />;
+    case "qa_tester":
+      return <QAIcon {...iconProps} />;
+    case "orchestrator":
+      return <OrchestratorIcon {...iconProps} />;
     default:
       return null;
   }

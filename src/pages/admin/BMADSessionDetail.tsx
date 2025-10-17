@@ -323,7 +323,7 @@ export default function BMADSessionDetail() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Workflow className="h-5 w-5" />
+                  <OrchestratorIcon className="h-5 w-5" />
                   Phase Control
                 </CardTitle>
               </CardHeader>
