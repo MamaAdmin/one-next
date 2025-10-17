@@ -88,6 +88,44 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const getStatusLabel = (status: string) => {
+  switch (status) {
+    case "planning":
+      return "Planung";
+    case "development":
+      return "Entwicklung";
+    case "completed":
+      return "Abgeschlossen";
+    default:
+      return status;
+  }
+};
+
+const getPhaseLabel = (phase: string) => {
+  switch (phase) {
+    case "business_analyst":
+      return "Business Analyst";
+    case "product_manager":
+      return "Product Manager";
+    case "ux_expert":
+      return "UX Expert";
+    case "product_owner":
+      return "Product Owner";
+    case "architect":
+      return "Architect";
+    case "scrum_master":
+      return "Scrum Master";
+    case "developer":
+      return "Developer";
+    case "qa_tester":
+      return "QA Tester";
+    case "orchestrator":
+      return "Orchestrator";
+    default:
+      return phase;
+  }
+};
+
 const BMADSessionDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -199,9 +237,9 @@ const BMADSessionDashboard = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Alle Status</SelectItem>
-                    <SelectItem value="planning">Planning</SelectItem>
-                    <SelectItem value="development">Development</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="planning">Planung</SelectItem>
+                    <SelectItem value="development">Entwicklung</SelectItem>
+                    <SelectItem value="completed">Abgeschlossen</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={phaseFilter} onValueChange={setPhaseFilter}>
@@ -211,9 +249,14 @@ const BMADSessionDashboard = () => {
                   <SelectContent>
                     <SelectItem value="all">Alle Phasen</SelectItem>
                     <SelectItem value="business_analyst">Business Analyst</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="product_manager">Product Manager</SelectItem>
+                    <SelectItem value="ux_expert">UX Expert</SelectItem>
+                    <SelectItem value="product_owner">Product Owner</SelectItem>
                     <SelectItem value="architect">Architect</SelectItem>
+                    <SelectItem value="scrum_master">Scrum Master</SelectItem>
                     <SelectItem value="developer">Developer</SelectItem>
+                    <SelectItem value="qa_tester">QA Tester</SelectItem>
+                    <SelectItem value="orchestrator">Orchestrator</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -253,13 +296,13 @@ const BMADSessionDashboard = () => {
                           </TableCell>
                           <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer">
                             <Badge className={getStatusColor(session.status)}>
-                              {session.status}
+                              {getStatusLabel(session.status)}
                             </Badge>
                           </TableCell>
                           <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer">
                             <div className="flex items-center gap-2">
                               {getAgentIcon(session.current_phase)}
-                              <span className="text-sm">{session.current_phase}</span>
+                              <span className="text-sm">{getPhaseLabel(session.current_phase)}</span>
                             </div>
                           </TableCell>
                           <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer text-muted-foreground">
