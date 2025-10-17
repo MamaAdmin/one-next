@@ -16,7 +16,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6 animate-fade-in">
             <InlineTextField
-              value={content.hero_title || 'we define your way forward'}
+              value={content.hero_title || 'wir weisen dir den weg nach vorn'}
               onSave={(value) => updateContent('hero_title', value)}
               isEditMode={isEditMode}
               className="text-6xl lg:text-8xl font-light leading-tight lowercase"

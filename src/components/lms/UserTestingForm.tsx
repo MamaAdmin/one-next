@@ -8,7 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useArtifacts } from "@/hooks/useArtifacts";
 import { Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { VoiceBotDialog } from "@/components/VoiceBotDialog";
 
 interface UserTestingFormProps {
   enrollmentId: string;
@@ -110,24 +109,6 @@ export const UserTestingForm = ({
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Interview-Protokoll</h3>
-
-      <div className="mb-6 p-4 bg-accent/50 rounded-lg border border-border">
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          <div className="flex-1">
-            <h4 className="font-medium mb-2">🎤 Interview-Assistent</h4>
-            <p className="text-sm text-muted-foreground mb-3 sm:mb-0">
-              Nutze den Voice Bot für Sprachnotizen während des Interviews. 
-              Du kannst dem Assistenten Fragen stellen oder Beobachtungen diktieren.
-            </p>
-          </div>
-          <VoiceBotDialog 
-            buttonText="Voice Assistant starten"
-            buttonSize="default"
-            buttonClassName="bg-gradient-primary hover:opacity-90 shrink-0 w-full sm:w-auto"
-            voiceBotUrl="https://one-next.lovable.app/voice-bot"
-          />
-        </div>
-      </div>
 
       <div className="space-y-6">
         <div>

@@ -87,7 +87,11 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.from("lms_courses").select("*").eq("id", courseId).maybeSingle();
+      const { data, error } = await supabase
+        .from("lms_courses")
+        .select("*")
+        .eq("id", courseId)
+        .maybeSingle();
 
       if (error) throw error;
       if (!data) {
@@ -159,19 +163,11 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
 
     if (formData.visibility === "public") {
       if (!formData.description_html.trim()) {
-        toast({
-          title: "Fehler",
-          description: "Beschreibung erforderlich für öffentliche Kurse",
-          variant: "destructive",
-        });
+        toast({ title: "Fehler", description: "Beschreibung erforderlich für öffentliche Kurse", variant: "destructive" });
         return false;
       }
       if (!formData.featured_image) {
-        toast({
-          title: "Fehler",
-          description: "Beitragsbild erforderlich für öffentliche Kurse",
-          variant: "destructive",
-        });
+        toast({ title: "Fehler", description: "Beitragsbild erforderlich für öffentliche Kurse", variant: "destructive" });
         return false;
       }
     }
@@ -196,11 +192,18 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
       };
 
       if (courseId) {
-        const { error } = await supabase.from("lms_courses").update(saveData).eq("id", courseId);
+        const { error } = await supabase
+          .from("lms_courses")
+          .update(saveData)
+          .eq("id", courseId);
 
         if (error) throw error;
       } else {
-        const { data, error } = await supabase.from("lms_courses").insert([saveData]).select().single();
+        const { data, error } = await supabase
+          .from("lms_courses")
+          .insert([saveData])
+          .select()
+          .single();
 
         if (error) throw error;
         navigate(`/admin/lms/courses/${data.id}/edit`);
@@ -235,7 +238,7 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
   return (
     <div className="min-h-screen bg-background">
       {/* Warning Banner */}
-      <div className="sticky top-0 z-50 border-b bg-background/100 backdrop-blur">
+      <div className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
         <Alert className="rounded-none border-x-0 border-t-0">
           <AlertDescription className="text-sm text-muted-foreground">
             ⚠️ Bitte keine personenbezogenen Daten oder Firmen-Interna eingeben.
@@ -263,7 +266,11 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
             <div>
               <label className="text-sm font-medium mb-2 block">Kurs-URL</label>
               <div className="flex gap-2">
-                <Input value={`https://learning.one-next.com/courses/${formData.slug}`} readOnly className="bg-muted" />
+                <Input
+                  value={`https://learning.one-next.com/courses/${formData.slug}`}
+                  readOnly
+                  className="bg-muted"
+                />
                 <Button variant="outline" size="icon" onClick={copyUrl}>
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -289,7 +296,10 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
           </div>
 
           {/* Right Sidebar */}
-          <CourseEditorSidebar formData={formData} onChange={handleChange} />
+          <CourseEditorSidebar
+            formData={formData}
+            onChange={handleChange}
+          />
         </div>
       </div>
 

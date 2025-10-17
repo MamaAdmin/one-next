@@ -113,158 +113,6 @@ export type Database = {
           },
         ]
       }
-      bmad_artifacts: {
-        Row: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          artifact_type: Database["public"]["Enums"]["bmad_artifact_type"]
-          content: string
-          created_at: string
-          id: string
-          is_approved: boolean | null
-          metadata: Json | null
-          parent_artifact_id: string | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          session_id: string
-          title: string
-          updated_at: string
-          version: number
-        }
-        Insert: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          artifact_type: Database["public"]["Enums"]["bmad_artifact_type"]
-          content: string
-          created_at?: string
-          id?: string
-          is_approved?: boolean | null
-          metadata?: Json | null
-          parent_artifact_id?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          session_id: string
-          title: string
-          updated_at?: string
-          version?: number
-        }
-        Update: {
-          agent_type?: Database["public"]["Enums"]["bmad_agent_type"]
-          artifact_type?: Database["public"]["Enums"]["bmad_artifact_type"]
-          content?: string
-          created_at?: string
-          id?: string
-          is_approved?: boolean | null
-          metadata?: Json | null
-          parent_artifact_id?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          session_id?: string
-          title?: string
-          updated_at?: string
-          version?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bmad_artifacts_parent_artifact_id_fkey"
-            columns: ["parent_artifact_id"]
-            isOneToOne: false
-            referencedRelation: "bmad_artifacts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bmad_artifacts_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "bmad_sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      bmad_conversations: {
-        Row: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          completion_tokens: number | null
-          content: string
-          created_at: string
-          id: string
-          prompt_tokens: number | null
-          role: string
-          session_id: string
-        }
-        Insert: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          completion_tokens?: number | null
-          content: string
-          created_at?: string
-          id?: string
-          prompt_tokens?: number | null
-          role: string
-          session_id: string
-        }
-        Update: {
-          agent_type?: Database["public"]["Enums"]["bmad_agent_type"]
-          completion_tokens?: number | null
-          content?: string
-          created_at?: string
-          id?: string
-          prompt_tokens?: number | null
-          role?: string
-          session_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bmad_conversations_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "bmad_sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      bmad_sessions: {
-        Row: {
-          created_at: string
-          created_by: string
-          current_phase: string
-          description: string | null
-          development_started_at: string | null
-          id: string
-          planning_completed_at: string | null
-          project_context: string | null
-          settings: Json | null
-          status: Database["public"]["Enums"]["bmad_session_status"]
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          created_by: string
-          current_phase?: string
-          description?: string | null
-          development_started_at?: string | null
-          id?: string
-          planning_completed_at?: string | null
-          project_context?: string | null
-          settings?: Json | null
-          status?: Database["public"]["Enums"]["bmad_session_status"]
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string
-          current_phase?: string
-          description?: string | null
-          development_started_at?: string | null
-          id?: string
-          planning_completed_at?: string | null
-          project_context?: string | null
-          settings?: Json | null
-          status?: Database["public"]["Enums"]["bmad_session_status"]
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       categories: {
         Row: {
           created_at: string
@@ -296,46 +144,31 @@ export type Database = {
         Row: {
           address: string | null
           company_name: string | null
-          company_size: string | null
-          country: string | null
           created_at: string
           email: string
           id: string
-          logo_url: string | null
           name: string
           phone: string | null
-          position: string | null
-          primary_admin_id: string | null
           updated_at: string
         }
         Insert: {
           address?: string | null
           company_name?: string | null
-          company_size?: string | null
-          country?: string | null
           created_at?: string
           email: string
           id?: string
-          logo_url?: string | null
           name: string
           phone?: string | null
-          position?: string | null
-          primary_admin_id?: string | null
           updated_at?: string
         }
         Update: {
           address?: string | null
           company_name?: string | null
-          company_size?: string | null
-          country?: string | null
           created_at?: string
           email?: string
           id?: string
-          logo_url?: string | null
           name?: string
           phone?: string | null
-          position?: string | null
-          primary_admin_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -738,68 +571,6 @@ export type Database = {
           },
         ]
       }
-      lms_course_ratings: {
-        Row: {
-          course_id: string
-          created_at: string
-          enrollment_id: string
-          id: string
-          participant_id: string
-          rating: number
-          review_text: string | null
-          updated_at: string
-        }
-        Insert: {
-          course_id: string
-          created_at?: string
-          enrollment_id: string
-          id?: string
-          participant_id: string
-          rating: number
-          review_text?: string | null
-          updated_at?: string
-        }
-        Update: {
-          course_id?: string
-          created_at?: string
-          enrollment_id?: string
-          id?: string
-          participant_id?: string
-          rating?: number
-          review_text?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lms_course_ratings_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "lms_courses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lms_course_ratings_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "lms_courses_with_stats"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lms_course_ratings_enrollment_id_fkey"
-            columns: ["enrollment_id"]
-            isOneToOne: false
-            referencedRelation: "lms_course_enrollments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lms_course_ratings_participant_id_fkey"
-            columns: ["participant_id"]
-            isOneToOne: false
-            referencedRelation: "participants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       lms_courses: {
         Row: {
           author_id: string | null
@@ -981,102 +752,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      lms_module_tools: {
-        Row: {
-          created_at: string | null
-          id: string
-          is_required: boolean | null
-          module_id: string
-          sort_order: number
-          tool_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          is_required?: boolean | null
-          module_id: string
-          sort_order?: number
-          tool_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          is_required?: boolean | null
-          module_id?: string
-          sort_order?: number
-          tool_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lms_module_tools_module_id_fkey"
-            columns: ["module_id"]
-            isOneToOne: false
-            referencedRelation: "lms_course_modules"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lms_module_tools_tool_id_fkey"
-            columns: ["tool_id"]
-            isOneToOne: false
-            referencedRelation: "lms_tools"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      lms_tools: {
-        Row: {
-          category: string
-          created_at: string | null
-          description: string | null
-          embed_code: string | null
-          external_url: string | null
-          id: string
-          is_active: boolean | null
-          phase_number: number | null
-          slug: string
-          tags: string[] | null
-          template_data: Json | null
-          thumbnail_url: string | null
-          title: string
-          tool_type: string
-          updated_at: string | null
-        }
-        Insert: {
-          category: string
-          created_at?: string | null
-          description?: string | null
-          embed_code?: string | null
-          external_url?: string | null
-          id?: string
-          is_active?: boolean | null
-          phase_number?: number | null
-          slug: string
-          tags?: string[] | null
-          template_data?: Json | null
-          thumbnail_url?: string | null
-          title: string
-          tool_type?: string
-          updated_at?: string | null
-        }
-        Update: {
-          category?: string
-          created_at?: string | null
-          description?: string | null
-          embed_code?: string | null
-          external_url?: string | null
-          id?: string
-          is_active?: boolean | null
-          phase_number?: number | null
-          slug?: string
-          tags?: string[] | null
-          template_data?: Json | null
-          thumbnail_url?: string | null
-          title?: string
-          tool_type?: string
-          updated_at?: string | null
-        }
-        Relationships: []
       }
       lms_votes: {
         Row: {
@@ -1365,53 +1040,6 @@ export type Database = {
         }
         Relationships: []
       }
-      user_invitations: {
-        Row: {
-          accepted_at: string | null
-          created_at: string
-          customer_id: string
-          email: string
-          expires_at: string
-          full_name: string
-          id: string
-          invited_by: string
-          status: string
-          token: string
-        }
-        Insert: {
-          accepted_at?: string | null
-          created_at?: string
-          customer_id: string
-          email: string
-          expires_at?: string
-          full_name: string
-          id?: string
-          invited_by: string
-          status?: string
-          token: string
-        }
-        Update: {
-          accepted_at?: string | null
-          created_at?: string
-          customer_id?: string
-          email?: string
-          expires_at?: string
-          full_name?: string
-          id?: string
-          invited_by?: string
-          status?: string
-          token?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_invitations_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_roles: {
         Row: {
           created_at: string
@@ -1484,30 +1112,9 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_company_admin: {
-        Args: { _customer_id: string; _user_id: string }
-        Returns: boolean
-      }
     }
     Enums: {
       app_role: "admin" | "user" | "content_manager"
-      bmad_agent_type:
-        | "business_analyst"
-        | "product_manager"
-        | "ux_expert"
-        | "product_owner"
-        | "architect"
-        | "scrum_master"
-      bmad_artifact_type:
-        | "business_requirements"
-        | "product_vision"
-        | "ux_wireframes"
-        | "user_stories"
-        | "technical_architecture"
-        | "sprint_plan"
-        | "story_file"
-        | "flattened_repo"
-      bmad_session_status: "planning" | "development" | "completed" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1636,25 +1243,6 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "content_manager"],
-      bmad_agent_type: [
-        "business_analyst",
-        "product_manager",
-        "ux_expert",
-        "product_owner",
-        "architect",
-        "scrum_master",
-      ],
-      bmad_artifact_type: [
-        "business_requirements",
-        "product_vision",
-        "ux_wireframes",
-        "user_stories",
-        "technical_architecture",
-        "sprint_plan",
-        "story_file",
-        "flattened_repo",
-      ],
-      bmad_session_status: ["planning", "development", "completed", "archived"],
     },
   },
 } as const

@@ -21,7 +21,6 @@ const Navigation = () => {
   const { isAdmin } = useAdmin();
 
   const servicesItems = [
-    { label: "Workshops", href: "/workshops" },
     { label: "Analyse", href: "/ai-design-sprint" },
     { label: "Datenaudit", href: "/data-quality-audit" },
     { label: "Individuelle KI-Entwicklung", href: "#services" },
@@ -128,33 +127,16 @@ const Navigation = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50 bg-background">
                   <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      Mein Profil
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
                     <Link to="/lms/dashboard" className="cursor-pointer">
                       Meine Kurse
                     </Link>
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/company/profile" className="cursor-pointer">
-                          Unternehmensprofil
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="cursor-pointer">
-                          Admin-Dashboard
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/customers" className="cursor-pointer">
-                          Kunden verwalten
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer">
+                        Admin-Dashboard
+                      </Link>
+                    </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild>
                     <Link to="/lms/account/delete" className="cursor-pointer">

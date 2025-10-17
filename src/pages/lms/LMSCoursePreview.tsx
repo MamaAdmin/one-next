@@ -15,8 +15,6 @@ export default function LMSCoursePreview() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [course, setCourse] = useState<any>(null);
-  const [modules, setModules] = useState<any[]>([]);
-  const [relatedCourses, setRelatedCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +23,6 @@ export default function LMSCoursePreview() {
 
   const loadCourse = async () => {
     try {
-      // Load course
       const { data, error } = await supabase
         .from("lms_courses_with_stats")
         .select("*")
@@ -44,31 +41,6 @@ export default function LMSCoursePreview() {
       }
 
       setCourse(data);
-
-      // Load modules
-      const { data: modulesData } = await supabase
-        .from("lms_course_modules")
-        .select("id, title, duration_minutes, phase_number, sort_order")
-        .eq("course_id", courseId)
-        .order("phase_number", { ascending: true })
-        .order("sort_order", { ascending: true });
-
-      if (modulesData) {
-        setModules(modulesData);
-      }
-
-      // Load related courses (same course_type)
-      const { data: relatedData } = await supabase
-        .from("lms_courses_with_stats")
-        .select("id, title, thumbnail_url, price_chf, total_lessons, difficulty")
-        .eq("course_type", data.course_type)
-        .eq("is_active", true)
-        .neq("id", courseId)
-        .limit(4);
-
-      if (relatedData) {
-        setRelatedCourses(relatedData);
-      }
     } catch (error) {
       console.error("Error loading course:", error);
       toast({
@@ -122,11 +94,7 @@ export default function LMSCoursePreview() {
           </Button>
         </div>
 
-        <CoursePreview 
-          course={course} 
-          modules={modules}
-          relatedCourses={relatedCourses}
-        />
+        <CoursePreview course={course} />
       </main>
 
       <Footer isEditMode={false} />

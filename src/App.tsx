@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
@@ -19,7 +19,6 @@ import PasswordReset from "./pages/PasswordReset";
 import UpdatePassword from "./pages/UpdatePassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import LMSCustomerDashboard from "./pages/admin/LMSCustomerDashboard";
-import LMSCustomerDetail from "./pages/admin/LMSCustomerDetail";
 import LMSParticipantDashboard from "./pages/admin/LMSParticipantDashboard";
 import LMSCourseDashboard from "./pages/admin/LMSCourseDashboard";
 import LMSPurchaseDashboard from "./pages/admin/LMSPurchaseDashboard";
@@ -32,18 +31,15 @@ import DeleteAccountPage from "./pages/lms/DeleteAccountPage";
 import LMSAnalytics from "./pages/admin/LMSAnalytics";
 import LMSModuleDashboard from "./pages/admin/LMSModuleDashboard";
 import LMSModuleEditor from "./pages/admin/LMSModuleEditor";
-import LMSToolboxDashboard from "./pages/admin/LMSToolboxDashboard";
-import LMSToolboxEditor from "./pages/admin/LMSToolboxEditor";
 import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
-import LMSHMWTool from "./pages/lms/LMSHMWTool";
-import VoiceBot from "./pages/VoiceBot";
+import SprintSetup from "./pages/sprint/SprintSetup";
+import SprintIndex from "./pages/sprint/SprintIndex";
+import SprintSession from "./pages/sprint/SprintSession";
+import SprintBooking from "./pages/sprint/SprintBooking";
+import { SprintLayout } from "./layouts/SprintLayout";
 import NotFound from "./pages/NotFound";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
-import Workshops from "./pages/Workshops";
-import UserProfile from "./pages/UserProfile";
-import CompanyProfile from "./pages/CompanyProfile";
-import AcceptInvitation from "./pages/AcceptInvitation";
 
 const queryClient = new QueryClient();
 
@@ -58,12 +54,21 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Article />} />
-          <Route path="/workshops" element={<Workshops />} />
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
           <Route path="/problem-framing-workshop" element={<ProblemFramingWorkshop />} />
           <Route path="/design-sprint-workshop" element={<DesignSprintWorkshop />} />
           <Route path="/workshop-registration" element={<WorkshopRegistration />} />
+          
+          {/* Standalone Sprint Container */}
+          <Route path="/sprint" element={<SprintLayout />}>
+            <Route index element={<SprintIndex />} />
+            <Route path="setup" element={<SprintSetup />} />
+            <Route path="session" element={<SprintSession />} />
+          </Route>
+          
+          {/* Standalone Assessment with main navigation */}
+          <Route path="/sprint/assessment" element={<SprintBooking />} />
           
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
           <Route path="/about-us" element={<AboutUs />} />
@@ -73,8 +78,6 @@ const App = () => (
           <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/lms" element={<LMSCustomerDashboard />} />
-          <Route path="/admin/customers" element={<LMSCustomerDashboard />} />
-          <Route path="/admin/customers/:customerId" element={<LMSCustomerDetail />} />
           <Route path="/admin/lms/participants" element={<LMSParticipantDashboard />} />
           <Route path="/admin/lms/courses" element={<LMSCourseDashboard />} />
           <Route path="/admin/lms/purchases" element={<LMSPurchaseDashboard />} />
@@ -83,22 +86,12 @@ const App = () => (
           <Route path="/admin/lms/modules" element={<LMSModuleDashboard />} />
           <Route path="/admin/lms/modules/new" element={<LMSModuleEditor />} />
           <Route path="/admin/lms/modules/:moduleId/edit" element={<LMSModuleEditor />} />
-          <Route path="/admin/lms/toolbox" element={<LMSToolboxDashboard />} />
-          <Route path="/admin/lms/toolbox/new" element={<LMSToolboxEditor />} />
-          <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
           <Route path="/lms/courses/:courseId/preview" element={<LMSCoursePreview />} />
-          <Route path="/lms/tools/hmw" element={<LMSHMWTool />} />
-          <Route path="/lms/tools/hmw-generator" element={<Navigate to="/lms/tools/hmw" replace />} />
-          <Route path="/lms/tools/hmw-clustering" element={<Navigate to="/lms/tools/hmw" replace />} />
           <Route path="/lms" element={<LMSIndex />} />
           <Route path="/lms/dashboard" element={<LMSDashboard />} />
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
           <Route path="/lms/data-export" element={<LMSDataExport />} />
           <Route path="/lms/account/delete" element={<DeleteAccountPage />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/company/profile" element={<CompanyProfile />} />
-          <Route path="/accept-invitation" element={<AcceptInvitation />} />
-          <Route path="/voice-bot" element={<VoiceBot />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
