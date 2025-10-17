@@ -10,9 +10,22 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
-import { Brain, Users, Layers, Code } from "lucide-react";
+import { Home } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { 
+  AnalystIcon,
+  ManagerIcon,
+  UXIcon,
+  OwnerIcon,
+  ArchitectIcon,
+  ScrumIcon,
+  DeveloperIcon,
+  QAIcon,
+  OrchestratorIcon,
+  BMADArtifactIcon
+} from "@/components/ui/custom-icons";
+import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
 
 const getAgentIcon = (agentType: string) => {
   switch (agentType) {
@@ -96,7 +109,13 @@ const BMADArtifactDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <BMADBreadcrumb
+        items={[
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
+          { label: "BMAD Artifacts", icon: <BMADArtifactIcon className="w-4 h-4" />, active: true }
+        ]}
+      />
+      <main className="container mx-auto px-6 pt-48 pb-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">BMAD Artifacts</h1>

@@ -12,9 +12,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BMADSessionDetailsDialog } from "@/components/admin/BMADSessionDetailsDialog";
 import { BMADInfo } from "@/components/admin/BMADInfo";
 import { BMADSessionCreator } from "@/components/admin/BMADSessionCreator";
-import { Brain, Users, Layers, Code } from "lucide-react";
+import { Home } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { 
+  AnalystIcon,
+  ManagerIcon,
+  UXIcon,
+  OwnerIcon,
+  ArchitectIcon,
+  ScrumIcon,
+  DeveloperIcon,
+  QAIcon,
+  OrchestratorIcon,
+  BMADSessionIcon
+} from "@/components/ui/custom-icons";
+import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
 
 const getAgentIcon = (phase: string) => {
   switch (phase) {
@@ -89,7 +102,13 @@ const BMADSessionDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <BMADBreadcrumb
+        items={[
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
+          { label: "BMAD Sessions", icon: <BMADSessionIcon className="w-4 h-4" />, active: true }
+        ]}
+      />
+      <main className="container mx-auto px-6 pt-48 pb-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex justify-between items-center">
             <div>

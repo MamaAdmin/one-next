@@ -8,25 +8,41 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Brain, Target, Palette, ListChecks, Network, CalendarClock, Code, Bug, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Workflow, Loader2 } from "lucide-react";
+import { ArrowLeft, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home } from "lucide-react";
 import { useBMADSession } from "@/hooks/useBMADSessions";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
 import { useBMADConversations } from "@/hooks/useBMADConversations";
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
+import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
+import { 
+  AnalystIcon,
+  ManagerIcon,
+  UXIcon,
+  OwnerIcon,
+  ArchitectIcon,
+  ScrumIcon,
+  DeveloperIcon,
+  QAIcon,
+  OrchestratorIcon,
+  BMADSessionIcon
+} from "@/components/ui/custom-icons";
+
+const PHASE_CONFIG = {
+  business_analyst: { icon: AnalystIcon, label: 'Business Analyst', color: 'text-blue-500' },
+  product_manager: { icon: ManagerIcon, label: 'Product Manager', color: 'text-purple-500' },
+  ux_expert: { icon: UXIcon, label: 'UX Expert', color: 'text-pink-500' },
+  product_owner: { icon: OwnerIcon, label: 'Product Owner', color: 'text-indigo-500' },
+  architect: { icon: ArchitectIcon, label: 'Architect', color: 'text-orange-500' },
+  scrum_master: { icon: ScrumIcon, label: 'Scrum Master', color: 'text-teal-500' },
+  developer: { icon: DeveloperIcon, label: 'Developer', color: 'text-green-500' },
+  qa_tester: { icon: QAIcon, label: 'QA Tester', color: 'text-red-500' },
+  orchestrator: { icon: OrchestratorIcon, label: 'Orchestrator', color: 'text-yellow-500' }
+};
 
 const getAgentIcon = (phase: string) => {
-  switch (phase) {
-    case 'business_analyst': return <Brain className="h-4 w-4" />;
-    case 'product_manager': return <Target className="h-4 w-4" />;
-    case 'ux_expert': return <Palette className="h-4 w-4" />;
-    case 'product_owner': return <ListChecks className="h-4 w-4" />;
-    case 'architect': return <Network className="h-4 w-4" />;
-    case 'scrum_master': return <CalendarClock className="h-4 w-4" />;
-    case 'developer': return <Code className="h-4 w-4" />;
-    case 'qa_tester': return <Bug className="h-4 w-4" />;
-    case 'orchestrator': return <Workflow className="h-4 w-4" />;
-    default: return <Brain className="h-4 w-4" />;
-  }
+  const config = PHASE_CONFIG[phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
+  const IconComponent = config.icon;
+  return <IconComponent className="h-4 w-4" />;
 };
 
 const getStatusColor = (status: string) => {
@@ -228,8 +244,15 @@ export default function BMADSessionDetail() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <BMADBreadcrumb
+        items={[
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
+          { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-4 h-4" /> },
+          { label: session.title, active: true }
+        ]}
+      />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 pt-32 py-8">
         <Button 
           variant="ghost" 
           className="mb-4"

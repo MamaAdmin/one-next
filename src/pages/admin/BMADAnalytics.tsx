@@ -6,7 +6,9 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Activity, FileText, CheckCircle, Clock } from "lucide-react";
+import { Activity, FileText, CheckCircle, Clock, Home } from "lucide-react";
+import { BMADAnalyticsIcon } from "@/components/ui/custom-icons";
+import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
 
 const COLORS = {
   requirements: "#A855F7",
@@ -96,7 +98,13 @@ const BMADAnalytics = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <BMADBreadcrumb
+        items={[
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
+          { label: "BMAD Analytics", icon: <BMADAnalyticsIcon className="w-4 h-4" />, active: true }
+        ]}
+      />
+      <main className="container mx-auto px-6 pt-48 pb-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">BMAD Analytics</h1>

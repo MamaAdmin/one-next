@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import ArticleManager from "@/components/admin/ArticleManager";
 import MediaManager from "@/components/admin/MediaManager";
 import PageContentManager from "@/components/admin/PageContentManager";
+import { BMADSessionIcon, BMADArtifactIcon, BMADAnalyticsIcon } from "@/components/ui/custom-icons";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -133,19 +134,19 @@ const AdminDashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Link to="/admin/bmad/sessions">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
-                        <span className="text-xl">🧠</span>
+                        <BMADSessionIcon className="w-8 h-8 text-primary" />
                         <span>BMAD Sessions</span>
                       </Button>
                     </Link>
                     <Link to="/admin/bmad/artifacts">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
-                        <span className="text-xl">📄</span>
+                        <BMADArtifactIcon className="w-8 h-8 text-primary" />
                         <span>BMAD Artifacts</span>
                       </Button>
                     </Link>
                     <Link to="/admin/bmad/analytics">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
-                        <span className="text-xl">📊</span>
+                        <BMADAnalyticsIcon className="w-8 h-8 text-primary" />
                         <span>BMAD Analytics</span>
                       </Button>
                     </Link>
