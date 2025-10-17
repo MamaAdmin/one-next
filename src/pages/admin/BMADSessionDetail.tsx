@@ -342,6 +342,7 @@ export default function BMADSessionDetail() {
           artifact={selectedArtifact}
           open={!!selectedArtifact}
           onOpenChange={(open) => !open && setSelectedArtifact(null)}
+          onSaved={() => window.location.reload()}
         />
       )}
     </div>
