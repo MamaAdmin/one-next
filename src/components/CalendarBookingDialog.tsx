@@ -21,9 +21,9 @@ export function CalendarBookingDialog({
           {buttonText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl h-[80vh] p-0 gap-0">
-        <DialogHeader className="px-6 py-3 border-b">
-          <DialogTitle className="text-lg">Termin vereinbaren</DialogTitle>
+      <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0">
+        <DialogHeader className="px-4 py-2 border-b">
+          <DialogTitle className="text-base">Termin vereinbaren</DialogTitle>
         </DialogHeader>
         <div className="flex-1 min-h-0">
           <iframe
