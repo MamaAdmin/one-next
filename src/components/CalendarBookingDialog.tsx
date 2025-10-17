@@ -21,15 +21,17 @@ export function CalendarBookingDialog({
           {buttonText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl h-[80vh]">
-        <DialogHeader>
-          <DialogTitle>Termin vereinbaren</DialogTitle>
+      <DialogContent className="max-w-4xl h-[80vh] p-0 gap-0">
+        <DialogHeader className="px-6 py-3 border-b">
+          <DialogTitle className="text-lg">Termin vereinbaren</DialogTitle>
         </DialogHeader>
-        <iframe
-          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2TkzdodLI7ecpqrSD2I7q1kHjVQGGaQ4_cvZ7JlUSqPyv5qifYKlZPlNZ_1yJEEHE6tjN6tIv6?gv=true"
-          style={{ width: '100%', height: '100%', border: 'none' }}
-          title="Termin buchen"
-        />
+        <div className="flex-1 min-h-0">
+          <iframe
+            src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2TkzdodLI7ecpqrSD2I7q1kHjVQGGaQ4_cvZ7JlUSqPyv5qifYKlZPlNZ_1yJEEHE6tjN6tIv6?gv=true"
+            style={{ width: '100%', height: '100%', border: 'none' }}
+            title="Termin buchen"
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );
