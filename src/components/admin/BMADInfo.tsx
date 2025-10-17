@@ -82,7 +82,7 @@ export const BMADInfo = () => {
             const Icon = phase.icon;
             return (
               <div key={index} className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
-                <Icon className={`w-8 h-8 ${phase.color} flex-shrink-0`} />
+                <Icon className={`w-12 h-12 ${phase.color} flex-shrink-0`} />
                 <div>
                   <h4 className="font-semibold mb-1">{index + 1}. {phase.name}</h4>
                   <p className="text-sm text-muted-foreground">

@@ -30,7 +30,7 @@ import {
 import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
 
 const getAgentIcon = (phase: string) => {
-  const iconProps = { className: "w-4 h-4" };
+  const iconProps = { className: "w-5 h-5" };
   switch (phase) {
     case "business_analyst":
       return <AnalystIcon {...iconProps} />;
@@ -115,8 +115,8 @@ const BMADSessionDashboard = () => {
       <Navigation />
       <BMADBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
-          { label: "BMAD Sessions", icon: <BMADSessionIcon className="w-4 h-4" />, active: true }
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
+          { label: "BMAD Sessions", icon: <BMADSessionIcon className="w-5 h-5" />, active: true }
         ]}
       />
       <main className="container mx-auto px-6 pt-48 pb-20">

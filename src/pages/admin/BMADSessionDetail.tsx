@@ -42,7 +42,7 @@ const PHASE_CONFIG = {
 const getAgentIcon = (phase: string) => {
   const config = PHASE_CONFIG[phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
   const IconComponent = config.icon;
-  return <IconComponent className="h-4 w-4" />;
+  return <IconComponent className="h-5 w-5" />;
 };
 
 const getStatusColor = (status: string) => {
@@ -246,8 +246,8 @@ export default function BMADSessionDetail() {
       <Navigation />
       <BMADBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
-          { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-4 h-4" /> },
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
+          { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-5 h-5" /> },
           { label: session.title, active: true }
         ]}
       />
@@ -323,7 +323,7 @@ export default function BMADSessionDetail() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <OrchestratorIcon className="h-5 w-5" />
+                  <OrchestratorIcon className="h-6 w-6" />
                   Phase Control
                 </CardTitle>
               </CardHeader>
@@ -334,7 +334,11 @@ export default function BMADSessionDetail() {
                     <p className="text-2xl font-bold">{PHASE_NAMES[session.current_phase as keyof typeof PHASE_NAMES]}</p>
                   </div>
                   <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    {getAgentIcon(session.current_phase)}
+                    {(() => {
+                      const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG];
+                      const PhaseIcon = config.icon;
+                      return <PhaseIcon className="h-8 w-8" />;
+                    })()}
                   </div>
                 </div>
 
@@ -382,13 +386,13 @@ export default function BMADSessionDetail() {
                     {Object.entries(phaseProgress).map(([phase, status]) => (
                       <div key={phase} className="flex items-center gap-3">
                         {status === 'completed' ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          <CheckCircle2 className="h-5 w-5 text-green-500" />
                         ) : status === 'running' ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                          <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
                         ) : status === 'error' ? (
-                          <XCircle className="h-4 w-4 text-red-500" />
+                          <XCircle className="h-5 w-5 text-red-500" />
                         ) : (
-                          <Circle className="h-4 w-4 text-muted-foreground" />
+                          <Circle className="h-5 w-5 text-muted-foreground" />
                         )}
                         <span className="text-sm">{PHASE_NAMES[phase as keyof typeof PHASE_NAMES]}</span>
                       </div>

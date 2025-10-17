@@ -28,7 +28,7 @@ import {
 import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
 
 const getAgentIcon = (agentType: string) => {
-  const iconProps = { className: "w-4 h-4" };
+  const iconProps = { className: "w-5 h-5" };
   switch (agentType) {
     case "business_analyst":
       return <AnalystIcon {...iconProps} />;
@@ -122,8 +122,8 @@ const BMADArtifactDashboard = () => {
       <Navigation />
       <BMADBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-4 h-4" /> },
-          { label: "BMAD Artifacts", icon: <BMADArtifactIcon className="w-4 h-4" />, active: true }
+          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
+          { label: "BMAD Artifacts", icon: <BMADArtifactIcon className="w-5 h-5" />, active: true }
         ]}
       />
       <main className="container mx-auto px-6 pt-48 pb-20">
