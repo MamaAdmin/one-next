@@ -38,6 +38,9 @@ import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
 import LMSHMWTool from "./pages/lms/LMSHMWTool";
 import VoiceBot from "./pages/VoiceBot";
 import NotFound from "./pages/NotFound";
+import BMADSessionDashboard from "./pages/admin/BMADSessionDashboard";
+import BMADArtifactDashboard from "./pages/admin/BMADArtifactDashboard";
+import BMADAnalytics from "./pages/admin/BMADAnalytics";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
 import UserProfile from "./pages/UserProfile";
@@ -84,6 +87,9 @@ const App = () => (
           <Route path="/admin/lms/toolbox" element={<LMSToolboxDashboard />} />
           <Route path="/admin/lms/toolbox/new" element={<LMSToolboxEditor />} />
           <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
+          <Route path="/admin/bmad/sessions" element={<BMADSessionDashboard />} />
+          <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
+          <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
           <Route path="/lms/courses/:courseId/preview" element={<LMSCoursePreview />} />
           <Route path="/lms/tools/hmw" element={<LMSHMWTool />} />
           <Route path="/lms/tools/hmw-generator" element={<Navigate to="/lms/tools/hmw" replace />} />

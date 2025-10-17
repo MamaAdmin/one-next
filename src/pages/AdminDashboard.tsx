@@ -64,11 +64,12 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="articles">Artikel</TabsTrigger>
               <TabsTrigger value="media">Medien</TabsTrigger>
               <TabsTrigger value="pages">Seiteninhalte</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
+              <TabsTrigger value="bmad">BMAD</TabsTrigger>
             </TabsList>
 
             <TabsContent value="articles">
@@ -114,6 +115,39 @@ const AdminDashboard = () => {
                     </Link>
                     <Link to="/admin/lms/analytics">
                       <Button variant="outline" className="w-full h-20">Analytik</Button>
+                    </Link>
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="bmad">
+              <Card>
+                <CardHeader>
+                  <CardTitle>BMAD Verwaltung</CardTitle>
+                  <CardDescription>
+                    Breakthrough Method for Agile AI-Driven Development - Verwalten Sie AI-gestützte Entwicklungssessions
+                  </CardDescription>
+                </CardHeader>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Link to="/admin/bmad/sessions">
+                      <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
+                        <span className="text-xl">🧠</span>
+                        <span>BMAD Sessions</span>
+                      </Button>
+                    </Link>
+                    <Link to="/admin/bmad/artifacts">
+                      <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
+                        <span className="text-xl">📄</span>
+                        <span>BMAD Artifacts</span>
+                      </Button>
+                    </Link>
+                    <Link to="/admin/bmad/analytics">
+                      <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
+                        <span className="text-xl">📊</span>
+                        <span>BMAD Analytics</span>
+                      </Button>
                     </Link>
                   </div>
                 </div>
