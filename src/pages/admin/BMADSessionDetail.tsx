@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { ArrowLeft, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useBMADSession } from "@/hooks/useBMADSessions";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
@@ -138,6 +140,18 @@ export default function BMADSessionDetail() {
   const [editedTitle, setEditedTitle] = useState("");
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
+  const [isEditingContext, setIsEditingContext] = useState(false);
+  const [editedContext, setEditedContext] = useState("");
+  const [isEditingSettings, setIsEditingSettings] = useState(false);
+  const [editedSettings, setEditedSettings] = useState<{
+    ai_model: string;
+    auto_progress: boolean;
+    require_approval: boolean;
+  }>({
+    ai_model: 'google/gemini-2.5-flash',
+    auto_progress: false,
+    require_approval: false
+  });
   const [phaseProgress, setPhaseProgress] = useState<Record<string, string>>({
     business_analyst: 'pending',
     product_manager: 'pending',
@@ -305,7 +319,12 @@ export default function BMADSessionDetail() {
   };
 
   const { mutate: updateSessionDetails } = useMutation({
-    mutationFn: async (updates: { title?: string; description?: string }) => {
+    mutationFn: async (updates: { 
+      title?: string; 
+      description?: string;
+      project_context?: string;
+      settings?: any;
+    }) => {
       const { error } = await supabase
         .from("bmad_sessions")
         .update(updates)
@@ -318,6 +337,8 @@ export default function BMADSessionDetail() {
       toast.success("Session aktualisiert");
       setIsEditingTitle(false);
       setIsEditingDescription(false);
+      setIsEditingContext(false);
+      setIsEditingSettings(false);
     },
     onError: (error) => {
       toast.error("Fehler beim Aktualisieren");
@@ -455,35 +476,166 @@ export default function BMADSessionDetail() {
             <CardContent className="space-y-4">
               <div>
                 <h4 className="font-semibold mb-2">Projekt-Kontext</h4>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {session.project_context}
-                </p>
+                {!isEditingContext ? (
+                  <div className="flex items-start gap-2">
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap flex-1">
+                      {session.project_context}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setEditedContext(session.project_context || "");
+                        setIsEditingContext(true);
+                      }}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <Textarea
+                      value={editedContext}
+                      onChange={(e) => setEditedContext(e.target.value)}
+                      className="min-h-[120px]"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => updateSessionDetails({ project_context: editedContext })}
+                      >
+                        Speichern
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsEditingContext(false)}
+                      >
+                        Abbrechen
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <Separator />
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">AI Model:</span>
-                  <p className="font-medium">{session.settings?.ai_model || 'google/gemini-2.5-flash'}</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">Einstellungen</h4>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setEditedSettings({
+                        ai_model: session.settings?.ai_model || 'google/gemini-2.5-flash',
+                        auto_progress: session.settings?.auto_progress || false,
+                        require_approval: session.settings?.require_approval || false
+                      });
+                      setIsEditingSettings(true);
+                    }}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
                 </div>
-                <div>
-                  <span className="text-muted-foreground">Token Usage:</span>
-                  <p className="font-medium">
-                    {totalTokens.prompt + totalTokens.completion} total
-                    <span className="text-xs text-muted-foreground ml-2">
-                      ({totalTokens.prompt} prompt + {totalTokens.completion} completion)
-                    </span>
-                  </p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Auto Progress:</span>
-                  <p className="font-medium">{session.settings?.auto_progress ? 'Ja' : 'Nein'}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Approval erforderlich:</span>
-                  <p className="font-medium">{session.settings?.require_approval ? 'Ja' : 'Nein'}</p>
-                </div>
+
+                {!isEditingSettings ? (
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">AI Model:</span>
+                      <p className="font-medium">{session.settings?.ai_model || 'google/gemini-2.5-flash'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Token Usage:</span>
+                      <p className="font-medium">
+                        {totalTokens.prompt + totalTokens.completion} total
+                        <span className="text-xs text-muted-foreground ml-2">
+                          ({totalTokens.prompt} prompt + {totalTokens.completion} completion)
+                        </span>
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Auto Progress:</span>
+                      <p className="font-medium">{session.settings?.auto_progress ? 'Ja' : 'Nein'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Approval erforderlich:</span>
+                      <p className="font-medium">{session.settings?.require_approval ? 'Ja' : 'Nein'}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* AI Model Select */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">AI Model</label>
+                      <Select
+                        value={editedSettings.ai_model}
+                        onValueChange={(value) => setEditedSettings({ ...editedSettings, ai_model: value })}
+                      >
+                        <SelectTrigger className="bg-background">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background">
+                          <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                          <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+                          <SelectItem value="google/gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</SelectItem>
+                          <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+                          <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+                          <SelectItem value="openai/gpt-5-nano">GPT-5 Nano</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Auto Progress Switch */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium">Auto Progress</label>
+                        <p className="text-xs text-muted-foreground">Automatisch zur nächsten Phase</p>
+                      </div>
+                      <Switch
+                        checked={editedSettings.auto_progress}
+                        onCheckedChange={(checked) => setEditedSettings({ ...editedSettings, auto_progress: checked })}
+                      />
+                    </div>
+
+                    {/* Require Approval Switch */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium">Approval erforderlich</label>
+                        <p className="text-xs text-muted-foreground">Artifacts müssen genehmigt werden</p>
+                      </div>
+                      <Switch
+                        checked={editedSettings.require_approval}
+                        onCheckedChange={(checked) => setEditedSettings({ ...editedSettings, require_approval: checked })}
+                      />
+                    </div>
+
+                    {/* Save/Cancel Buttons */}
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          updateSessionDetails({
+                            settings: {
+                              ...session.settings,
+                              ...editedSettings
+                            }
+                          });
+                        }}
+                      >
+                        Speichern
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsEditingSettings(false)}
+                      >
+                        Abbrechen
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
