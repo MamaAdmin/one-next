@@ -9,42 +9,39 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface EnrollmentInvitation {
-  participant_email: string;
-  participant_name: string;
-  course_title: string;
-  enrollment_id: string;
+interface InvitationEmailRequest {
+  email: string;
+  fullName: string;
+  token: string;
+  companyName: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { participant_email, participant_name, course_title, enrollment_id }: EnrollmentInvitation = await req.json();
+    const { email, fullName, token, companyName }: InvitationEmailRequest = await req.json();
 
-    console.log("Sending enrollment invitation:", {
-      participant_email,
-      course_title,
-      enrollment_id,
-    });
+    console.log("Sending invitation email to:", email);
 
-    const loginUrl = `${Deno.env.get("SUPABASE_URL")}/lms/enrollment/${enrollment_id}`;
+    const inviteUrl = `${Deno.env.get("SUPABASE_URL")?.replace(".supabase.co", ".lovableproject.com")}/accept-invitation?token=${token}`;
 
     const emailResponse = await resend.emails.send({
-      from: "One Next <onboarding@resend.dev>",
-      to: [participant_email],
-      subject: `Ihr Kurs wurde freigeschaltet: ${course_title}`,
+      from: "OneNext <onboarding@resend.dev>",
+      to: [email],
+      subject: `Einladung zu ${companyName}`,
       html: `
-        <h1>Willkommen, ${participant_name}!</h1>
-        <p>Ihr Kurs <strong>${course_title}</strong> wurde freigeschaltet.</p>
-        <p>Sie können jetzt mit dem Lernen beginnen:</p>
-        <a href="${loginUrl}" style="display: inline-block; padding: 12px 24px; background-color: #000; color: #fff; text-decoration: none; border-radius: 6px; margin: 20px 0;">
-          Zum Kurs
-        </a>
-        <p>Viel Erfolg bei Ihrem Learning Journey!</p>
-        <p>Ihr One Next Team</p>
+        <h1>Willkommen bei ${companyName}, ${fullName}!</h1>
+        <p>Sie wurden eingeladen, dem Learning Management System von ${companyName} beizutreten.</p>
+        <p>Klicken Sie auf den folgenden Link, um Ihren Account zu aktivieren:</p>
+        <p><a href="${inviteUrl}" style="display: inline-block; padding: 12px 24px; background-color: #0070f3; color: white; text-decoration: none; border-radius: 5px;">Einladung annehmen</a></p>
+        <p>Oder kopieren Sie diesen Link in Ihren Browser:</p>
+        <p>${inviteUrl}</p>
+        <p>Diese Einladung ist 7 Tage gültig.</p>
+        <p>Beste Grüße,<br>Das OneNext Team</p>
       `,
     });
 
@@ -58,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-enrollment-invitation:", error);
+    console.error("Error in send-enrollment-invitation function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

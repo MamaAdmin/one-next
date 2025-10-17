@@ -104,53 +104,26 @@ export const WorkshopRegistrationForm = ({
   const onSubmit = async (data: WorkshopRegistrationFormData) => {
     setIsSubmitting(true);
     try {
-      // Prüfe ob Kunde bereits existiert
-      let customer;
-      const { data: existingCustomer, error: findError } = await supabase
-        .from("customers")
-        .select("*")
-        .eq("email", data.email)
-        .maybeSingle();
-
-      if (findError) throw findError;
-
-      if (existingCustomer) {
-        // Kunde existiert bereits - aktualisiere die Daten
-        const { data: updatedCustomer, error: updateError } = await supabase
-          .from("customers")
-          .update({
-            name: data.contactName,
-            phone: data.phone,
-            company_name: data.companyName,
-            address: `${data.address}, ${data.zipCity}, ${data.country}`,
-          })
-          .eq("id", existingCustomer.id)
-          .select()
-          .single();
-        
-        if (updateError) throw updateError;
-        customer = updatedCustomer;
-        
-        toast.info("Kundendaten wurden aktualisiert");
-      } else {
-        // Neuer Kunde - erstelle Eintrag
-        const { data: newCustomer, error: customerError } = await supabase
-          .from("customers")
-          .insert({
-            name: data.contactName,
+      // Call edge function to create company and user
+      const { data: setupResult, error: setupError } = await supabase.functions.invoke(
+        'create-company-from-registration',
+        {
+          body: {
+            companyName: data.companyName,
+            companySize: data.companySize,
+            address: data.address,
+            zipCity: data.zipCity,
+            country: data.country,
+            contactName: data.contactName,
+            position: data.position,
             email: data.email,
             phone: data.phone,
-            company_name: data.companyName,
-            address: `${data.address}, ${data.zipCity}, ${data.country}`,
-          })
-          .select()
-          .single();
+          }
+        }
+      );
 
-        if (customerError) throw customerError;
-        customer = newCustomer;
-      }
-
-      // Format dates for storage and display
+      if (setupError) throw setupError;
+      if (!setupResult?.success) throw new Error("Fehler beim Erstellen des Unternehmensprofils");
       const formattedDates = data.preferredDates
         .map(date => format(date, "dd.MM.yyyy", { locale: de }))
         .join(", ");
@@ -186,7 +159,10 @@ Ziele: ${data.goals}
 
       if (bookingError) throw bookingError;
 
-      toast.success("Anmeldung erfolgreich übermittelt!");
+      toast.success(
+        "Registrierung erfolgreich! Sie erhalten in Kürze eine E-Mail mit Ihren Login-Daten.",
+        { duration: 5000 }
+      );
       form.reset();
       setSelectedDates([]);
       onSuccess?.();

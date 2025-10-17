@@ -13,8 +13,15 @@ const ProblemFramingWorkshop = () => {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       
+      {/* Breadcrumb / Back Link */}
+      <div className="container mx-auto px-6 pt-24 pb-4">
+        <Link to="/workshops" className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
+          ← Zurück zur Workshop-Übersicht
+        </Link>
+      </div>
+      
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
+      <section className="relative py-12 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             <div className="space-y-6 animate-fade-in">
@@ -34,15 +41,15 @@ const ProblemFramingWorkshop = () => {
                 perfekt vorbereitet für den Design Sprint.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Link to="/sprint/assessment">
+                <Link to="/workshop-registration">
                   <Button size="lg" variant="secondary">
                     Workshop Assessment starten
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </Link>
                 <Button asChild size="lg" variant="outline">
-                  <Link to="/design-sprint-workshop">
-                    Direkt zum Design Sprint
+                  <Link to="/workshops">
+                    Andere Workshops ansehen
                   </Link>
                 </Button>
               </div>
@@ -497,7 +504,7 @@ const ProblemFramingWorkshop = () => {
               für einen erfolgreichen Design Sprint.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Link to="/sprint/assessment">
+              <Link to="/workshop-registration">
                 <Button size="lg" className="bg-gradient-primary hover:opacity-90">
                   Jetzt Workshop anfragen
                   <ArrowRight className="ml-2 w-4 h-4" />

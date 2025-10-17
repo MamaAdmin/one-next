@@ -30,6 +30,17 @@ interface LMSModule {
   author?: string;
   prerequisites?: string[];
   tool_recommendation?: string;
+  module_tools?: Array<{
+    tool: {
+      id: string;
+      title: string;
+      description: string | null;
+      tool_type: string;
+      external_url: string | null;
+      embed_code: string | null;
+      template_data: any;
+    };
+  }>;
 }
 
 interface ModuleProgress {
@@ -52,10 +63,15 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
       try {
         setLoading(true);
 
-        // Load modules
+        // Load modules with tools
         const { data: modulesData, error: modulesError } = await (supabase as any)
           .from("lms_course_modules")
-          .select("*")
+          .select(`
+            *,
+            module_tools:lms_module_tools(
+              tool:lms_tools(*)
+            )
+          `)
           .eq("course_id", courseId)
           .order("phase_number", { ascending: true })
           .order("sort_order", { ascending: true });

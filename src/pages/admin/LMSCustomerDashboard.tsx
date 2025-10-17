@@ -226,14 +226,18 @@ const LMSCustomerDashboard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {customers.map(customer => <TableRow key={customer.id}>
+                  {customers.map(customer => <TableRow 
+                      key={customer.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => window.location.href = `/admin/customers/${customer.id}`}
+                    >
                       <TableCell className="font-medium">{customer.company_name || "-"}</TableCell>
                       <TableCell>{customer.name}</TableCell>
                       <TableCell>{customer.email}</TableCell>
                       <TableCell>
                         {new Date(customer.created_at).toLocaleDateString("de-DE")}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex gap-2 justify-end">
                           <Button variant="outline" size="sm" onClick={() => handleEdit(customer)}>
                             <Edit className="h-4 w-4" />

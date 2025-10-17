@@ -55,36 +55,22 @@ export const useParticipants = () => {
     full_name: string;
   }) => {
     try {
-      // First create auth user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: participantData.email,
-        password: Math.random().toString(36).slice(-8), // Temporary password
-        options: {
-          data: {
-            full_name: participantData.full_name,
-          },
-        },
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error("Nicht angemeldet");
+      }
+
+      // Call Edge Function with Service Role Key for secure participant creation
+      const { data, error } = await supabase.functions.invoke("create-participant", {
+        body: participantData,
       });
 
-      if (authError) throw authError;
-
-      // Then create participant record
-      const { error: participantError } = await (supabase as any)
-        .from("participants")
-        .insert([
-          {
-            user_id: authData.user?.id,
-            customer_id: participantData.customer_id,
-            email: participantData.email,
-            full_name: participantData.full_name,
-          },
-        ]);
-
-      if (participantError) throw participantError;
+      if (error) throw error;
 
       toast({
         title: "Erfolg",
-        description: "Teilnehmer wurde erstellt",
+        description: data.message || "Teilnehmer wurde erstellt",
       });
       
       loadParticipants();
@@ -92,7 +78,7 @@ export const useParticipants = () => {
       console.error("Error creating participant:", error);
       toast({
         title: "Fehler",
-        description: error.message || "Teilnehmer konnte nicht erstellt werden",
+        description: "Teilnehmer konnte nicht erstellt werden",
         variant: "destructive",
       });
     }

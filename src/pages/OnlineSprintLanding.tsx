@@ -74,8 +74,15 @@ const OnlineSprintLanding = () => {
   return <div className="min-h-screen">
       <Navigation />
       
+      {/* Breadcrumb / Back Link */}
+      <div className="container mx-auto px-6 pt-24 pb-4">
+        <Link to="/workshops" className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
+          ← Zurück zur Workshop-Übersicht
+        </Link>
+      </div>
+      
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center bg-gradient-hero pt-20">
+      <section className="relative min-h-[60vh] flex items-center bg-gradient-hero pt-12">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
@@ -98,13 +105,10 @@ const OnlineSprintLanding = () => {
             
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center pt-6">
               <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-                <Link to="/sprint/assessment">Jetzt starten</Link>
+                <Link to="/workshop-registration">Jetzt starten</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-                <Link to="/ai-design-sprint">Workshop-Variante ansehen</Link>
-              </Button>
-              <Button size="lg" variant="ghost" className="text-lg px-8 py-6" asChild>
-                
+                <Link to="/workshops">Andere Workshops ansehen</Link>
               </Button>
             </div>
           </div>
@@ -289,7 +293,7 @@ const OnlineSprintLanding = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-                  <Link to="/sprint/assessment">Sprint starten</Link>
+                  <Link to="/workshop-registration">Sprint starten</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   Angebot anfordern
