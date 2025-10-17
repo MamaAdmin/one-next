@@ -6,7 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const PHASE_ORDER = ['business_analyst', 'manager', 'architect', 'developer'];
+const PHASE_ORDER = [
+  'business_analyst',
+  'product_manager', 
+  'ux_expert',
+  'product_owner',
+  'architect',
+  'scrum_master',
+  'developer',
+  'qa_tester',
+  'orchestrator'
+];
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -55,7 +65,7 @@ serve(async (req) => {
         .from('bmad_sessions')
         .update({
           status: 'completed',
-          current_phase: 'developer',
+          current_phase: 'orchestrator',
           updated_at: new Date().toISOString()
         })
         .eq('id', session_id)
@@ -80,10 +90,12 @@ serve(async (req) => {
       updated_at: new Date().toISOString()
     };
 
-    // Update status based on phase
-    if (nextPhase === 'manager' && session.status === 'planning') {
+    // Update status based on phase index
+    if (currentPhaseIndex === 0) {
+      // Von Business Analyst → Product Manager
       updates.planning_completed_at = new Date().toISOString();
-    } else if (nextPhase === 'architect' && session.status === 'planning') {
+    } else if (currentPhaseIndex === 4) {
+      // Von Architect → Scrum Master (Start Development)
       updates.status = 'development';
       updates.development_started_at = new Date().toISOString();
     }

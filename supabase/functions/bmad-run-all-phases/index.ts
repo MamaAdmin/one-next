@@ -19,6 +19,14 @@ const PHASE_ORDER = [
   'orchestrator'
 ];
 
+const createPhaseProgress = (status: 'pending' | 'running' | 'completed' | 'error' = 'pending') => {
+  const progress: Record<string, string> = {};
+  PHASE_ORDER.forEach(phase => {
+    progress[phase] = status;
+  });
+  return progress;
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -27,16 +35,14 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) {
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
+
+    if (userError || !user) {
       throw new Error('Unauthorized');
     }
 
@@ -59,12 +65,7 @@ serve(async (req) => {
       .update({
         metadata: {
           ...session.settings,
-          phase_progress: {
-            business_analyst: 'pending',
-            manager: 'pending',
-            architect: 'pending',
-            developer: 'pending'
-          },
+          phase_progress: createPhaseProgress('pending'),
           started_all_phases_at: new Date().toISOString(),
           current_phase_number: 0
         }
@@ -77,17 +78,18 @@ serve(async (req) => {
       console.log(`Starting phase ${i + 1}/4: ${phase}`);
 
       // Update progress to running
+      const currentProgress = createPhaseProgress('pending');
+      PHASE_ORDER.forEach((p, index) => {
+        if (index < i) currentProgress[p] = 'completed';
+        else if (index === i) currentProgress[p] = 'running';
+      });
+
       await supabaseClient
         .from('bmad_sessions')
         .update({
           metadata: {
             ...session.settings,
-            phase_progress: {
-              business_analyst: i >= 0 ? (i > 0 ? 'completed' : 'running') : 'pending',
-              manager: i >= 1 ? (i > 1 ? 'completed' : 'running') : 'pending',
-              architect: i >= 2 ? (i > 2 ? 'completed' : 'running') : 'pending',
-              developer: i >= 3 ? 'running' : 'pending'
-            },
+            phase_progress: currentProgress,
             current_phase_number: i + 1
           }
         })
@@ -153,19 +155,17 @@ serve(async (req) => {
         }
 
         // Mark phase as completed
-        const progressUpdate: any = {
-          business_analyst: i >= 0 ? 'completed' : 'pending',
-          manager: i >= 1 ? 'completed' : 'pending',
-          architect: i >= 2 ? 'completed' : 'pending',
-          developer: i >= 3 ? 'completed' : 'pending'
-        };
+        const successProgress = createPhaseProgress('pending');
+        PHASE_ORDER.forEach((p, index) => {
+          if (index <= i) successProgress[p] = 'completed';
+        });
 
         await supabaseClient
           .from('bmad_sessions')
           .update({
             metadata: {
               ...session.settings,
-              phase_progress: progressUpdate,
+              phase_progress: successProgress,
               current_phase_number: i + 1
             }
           })
@@ -175,12 +175,11 @@ serve(async (req) => {
         console.error(`Error in phase ${phase}:`, phaseError);
         
         // Mark phase as error
-        const errorUpdate: any = {
-          business_analyst: i >= 0 ? (i > 0 ? 'completed' : 'error') : 'pending',
-          manager: i >= 1 ? (i > 1 ? 'completed' : 'error') : 'pending',
-          architect: i >= 2 ? (i > 2 ? 'completed' : 'error') : 'pending',
-          developer: i >= 3 ? 'error' : 'pending'
-        };
+        const errorProgress = createPhaseProgress('pending');
+        PHASE_ORDER.forEach((p, index) => {
+          if (index < i) errorProgress[p] = 'completed';
+          else if (index === i) errorProgress[p] = 'error';
+        });
 
         const errorMessage = phaseError instanceof Error ? phaseError.message : 'Unknown error';
 
@@ -189,7 +188,7 @@ serve(async (req) => {
           .update({
             metadata: {
               ...session.settings,
-              phase_progress: errorUpdate,
+              phase_progress: errorProgress,
               current_phase_number: i + 1,
               error_message: errorMessage
             }
@@ -207,12 +206,7 @@ serve(async (req) => {
         status: 'completed',
         metadata: {
           ...session.settings,
-          phase_progress: {
-            business_analyst: 'completed',
-            manager: 'completed',
-            architect: 'completed',
-            developer: 'completed'
-          },
+          phase_progress: createPhaseProgress('completed'),
           completed_all_phases_at: new Date().toISOString()
         }
       })
