@@ -35,3 +35,16 @@ verify_jwt = false
 
 [functions.send-sprint-invitation]
 verify_jwt = true
+
+[functions.bmad-create-session]
+verify_jwt = true
+
+[functions.bmad-run-phase]
+verify_jwt = true
+
+[functions.bmad-approve-artifact]
+verify_jwt = true
+
+[functions.bmad-progress-phase]
+verify_jwt = true
+

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BMADSessionDetailsDialog } from "@/components/admin/BMADSessionDetailsDialog";
 import { BMADInfo } from "@/components/admin/BMADInfo";
+import { BMADSessionCreator } from "@/components/admin/BMADSessionCreator";
 import { Brain, Users, Layers, Code } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
@@ -90,11 +91,14 @@ const BMADSessionDashboard = () => {
       <Navigation />
       <main className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-7xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">BMAD Sessions</h1>
-            <p className="text-muted-foreground">
-              Übersicht aller AI-gestützten Entwicklungssessions
-            </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">BMAD Sessions</h1>
+              <p className="text-muted-foreground">
+                Übersicht aller AI-gestützten Entwicklungssessions
+              </p>
+            </div>
+            <BMADSessionCreator />
           </div>
 
           <BMADInfo />
@@ -165,7 +169,7 @@ const BMADSessionDashboard = () => {
                         <TableRow
                           key={session.id}
                           className="cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleRowClick(session)}
+                          onClick={() => navigate(`/admin/bmad/session/${session.id}`)}
                         >
                           <TableCell className="font-medium">{session.title}</TableCell>
                           <TableCell>
