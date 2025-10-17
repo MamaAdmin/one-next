@@ -113,158 +113,6 @@ export type Database = {
           },
         ]
       }
-      bmad_artifacts: {
-        Row: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          artifact_type: Database["public"]["Enums"]["bmad_artifact_type"]
-          content: string
-          created_at: string
-          id: string
-          is_approved: boolean | null
-          metadata: Json | null
-          parent_artifact_id: string | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          session_id: string
-          title: string
-          updated_at: string
-          version: number
-        }
-        Insert: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          artifact_type: Database["public"]["Enums"]["bmad_artifact_type"]
-          content: string
-          created_at?: string
-          id?: string
-          is_approved?: boolean | null
-          metadata?: Json | null
-          parent_artifact_id?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          session_id: string
-          title: string
-          updated_at?: string
-          version?: number
-        }
-        Update: {
-          agent_type?: Database["public"]["Enums"]["bmad_agent_type"]
-          artifact_type?: Database["public"]["Enums"]["bmad_artifact_type"]
-          content?: string
-          created_at?: string
-          id?: string
-          is_approved?: boolean | null
-          metadata?: Json | null
-          parent_artifact_id?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          session_id?: string
-          title?: string
-          updated_at?: string
-          version?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bmad_artifacts_parent_artifact_id_fkey"
-            columns: ["parent_artifact_id"]
-            isOneToOne: false
-            referencedRelation: "bmad_artifacts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bmad_artifacts_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "bmad_sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      bmad_conversations: {
-        Row: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          completion_tokens: number | null
-          content: string
-          created_at: string
-          id: string
-          prompt_tokens: number | null
-          role: string
-          session_id: string
-        }
-        Insert: {
-          agent_type: Database["public"]["Enums"]["bmad_agent_type"]
-          completion_tokens?: number | null
-          content: string
-          created_at?: string
-          id?: string
-          prompt_tokens?: number | null
-          role: string
-          session_id: string
-        }
-        Update: {
-          agent_type?: Database["public"]["Enums"]["bmad_agent_type"]
-          completion_tokens?: number | null
-          content?: string
-          created_at?: string
-          id?: string
-          prompt_tokens?: number | null
-          role?: string
-          session_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bmad_conversations_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "bmad_sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      bmad_sessions: {
-        Row: {
-          created_at: string
-          created_by: string
-          current_phase: string
-          description: string | null
-          development_started_at: string | null
-          id: string
-          planning_completed_at: string | null
-          project_context: string | null
-          settings: Json | null
-          status: Database["public"]["Enums"]["bmad_session_status"]
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          created_by: string
-          current_phase?: string
-          description?: string | null
-          development_started_at?: string | null
-          id?: string
-          planning_completed_at?: string | null
-          project_context?: string | null
-          settings?: Json | null
-          status?: Database["public"]["Enums"]["bmad_session_status"]
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string
-          current_phase?: string
-          description?: string | null
-          development_started_at?: string | null
-          id?: string
-          planning_completed_at?: string | null
-          project_context?: string | null
-          settings?: Json | null
-          status?: Database["public"]["Enums"]["bmad_session_status"]
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       categories: {
         Row: {
           created_at: string
@@ -1491,23 +1339,6 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user" | "content_manager"
-      bmad_agent_type:
-        | "business_analyst"
-        | "product_manager"
-        | "ux_expert"
-        | "product_owner"
-        | "architect"
-        | "scrum_master"
-      bmad_artifact_type:
-        | "business_requirements"
-        | "product_vision"
-        | "ux_wireframes"
-        | "user_stories"
-        | "technical_architecture"
-        | "sprint_plan"
-        | "story_file"
-        | "flattened_repo"
-      bmad_session_status: "planning" | "development" | "completed" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1636,25 +1467,6 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "content_manager"],
-      bmad_agent_type: [
-        "business_analyst",
-        "product_manager",
-        "ux_expert",
-        "product_owner",
-        "architect",
-        "scrum_master",
-      ],
-      bmad_artifact_type: [
-        "business_requirements",
-        "product_vision",
-        "ux_wireframes",
-        "user_stories",
-        "technical_architecture",
-        "sprint_plan",
-        "story_file",
-        "flattened_repo",
-      ],
-      bmad_session_status: ["planning", "development", "completed", "archived"],
     },
   },
 } as const

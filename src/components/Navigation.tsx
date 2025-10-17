@@ -21,7 +21,6 @@ const Navigation = () => {
   const { isAdmin } = useAdmin();
 
   const servicesItems = [
-    { label: "Workshops", href: "/workshops" },
     { label: "Analyse", href: "/ai-design-sprint" },
     { label: "Datenaudit", href: "/data-quality-audit" },
     { label: "Individuelle KI-Entwicklung", href: "#services" },
