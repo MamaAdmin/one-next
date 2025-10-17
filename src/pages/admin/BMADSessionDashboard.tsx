@@ -12,7 +12,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BMADSessionDetailsDialog } from "@/components/admin/BMADSessionDetailsDialog";
 import { BMADInfo } from "@/components/admin/BMADInfo";
 import { BMADSessionCreator } from "@/components/admin/BMADSessionCreator";
-import { Home } from "lucide-react";
+import { Home, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { 
@@ -70,6 +90,7 @@ const getStatusColor = (status: string) => {
 
 const BMADSessionDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { sessions, isLoading } = useBMADSessions();
   const [selectedSession, setSelectedSession] = useState<any>(null);
@@ -77,6 +98,29 @@ const BMADSessionDashboard = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [sessionToDelete, setSessionToDelete] = useState<any>(null);
+
+  const { mutate: deleteSession } = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("bmad_sessions")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bmad-sessions"] });
+      toast.success("Session erfolgreich gelöscht");
+      setDeleteDialogOpen(false);
+      setSessionToDelete(null);
+    },
+    onError: (error) => {
+      toast.error("Fehler beim Löschen der Session");
+      console.error(error);
+    },
+  });
 
   if (adminLoading) {
     return (
@@ -192,29 +236,63 @@ const BMADSessionDashboard = () => {
                         <TableHead>Status</TableHead>
                         <TableHead>Phase</TableHead>
                         <TableHead>Erstellt</TableHead>
+                        <TableHead className="w-[70px]">Aktionen</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredSessions.map((session) => (
                         <TableRow
                           key={session.id}
-                          className="cursor-pointer hover:bg-muted/50"
-                          onClick={() => navigate(`/admin/bmad/session/${session.id}`)}
+                          className="hover:bg-muted/50"
                         >
-                          <TableCell className="font-medium">{session.title}</TableCell>
-                          <TableCell>
+                          <TableCell 
+                            className="font-medium cursor-pointer hover:underline"
+                            onClick={() => navigate(`/admin/bmad/session/${session.id}`)}
+                          >
+                            {session.title}
+                          </TableCell>
+                          <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer">
                             <Badge className={getStatusColor(session.status)}>
                               {session.status}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer">
                             <div className="flex items-center gap-2">
                               {getAgentIcon(session.current_phase)}
                               <span className="text-sm">{session.current_phase}</span>
                             </div>
                           </TableCell>
-                          <TableCell className="text-muted-foreground">
+                          <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer text-muted-foreground">
                             {format(new Date(session.created_at), "PPp", { locale: de })}
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/admin/bmad/session/${session.id}`);
+                                }}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Details anzeigen
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  className="text-destructive"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSessionToDelete(session);
+                                    setDeleteDialogOpen(true);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Löschen
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -232,6 +310,28 @@ const BMADSessionDashboard = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Session löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchten Sie die Session "{sessionToDelete?.title}" wirklich löschen? 
+              Diese Aktion kann nicht rückgängig gemacht werden.
+              Alle zugehörigen Artifacts werden ebenfalls gelöscht.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => sessionToDelete && deleteSession(sessionToDelete.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Footer />
     </div>

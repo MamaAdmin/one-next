@@ -8,7 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home } from "lucide-react";
+import { ArrowLeft, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home, Edit } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useBMADSession } from "@/hooks/useBMADSessions";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
 import { useBMADConversations } from "@/hooks/useBMADConversations";
@@ -28,15 +31,69 @@ import {
 } from "@/components/ui/custom-icons";
 
 const PHASE_CONFIG = {
-  business_analyst: { icon: AnalystIcon, label: 'Business Analyst', color: 'text-blue-500' },
-  product_manager: { icon: ManagerIcon, label: 'Product Manager', color: 'text-purple-500' },
-  ux_expert: { icon: UXIcon, label: 'UX Expert', color: 'text-pink-500' },
-  product_owner: { icon: OwnerIcon, label: 'Product Owner', color: 'text-indigo-500' },
-  architect: { icon: ArchitectIcon, label: 'Architect', color: 'text-orange-500' },
-  scrum_master: { icon: ScrumIcon, label: 'Scrum Master', color: 'text-teal-500' },
-  developer: { icon: DeveloperIcon, label: 'Developer', color: 'text-green-500' },
-  qa_tester: { icon: QAIcon, label: 'QA Tester', color: 'text-red-500' },
-  orchestrator: { icon: OrchestratorIcon, label: 'Orchestrator', color: 'text-yellow-500' }
+  business_analyst: { 
+    icon: AnalystIcon, 
+    label: 'Business Analyst', 
+    color: 'text-blue-500',
+    description: "Requirements-Analyse, Stakeholder-Interviews",
+    output: "Requirements-Dokument"
+  },
+  product_manager: { 
+    icon: ManagerIcon, 
+    label: 'Product Manager', 
+    color: 'text-purple-500',
+    description: "Product Vision, Roadmap & KPIs",
+    output: "Product Vision Document"
+  },
+  ux_expert: { 
+    icon: UXIcon, 
+    label: 'UX Expert', 
+    color: 'text-pink-500',
+    description: "User Journey, Wireframes, Design System",
+    output: "UX Artifacts"
+  },
+  product_owner: { 
+    icon: OwnerIcon, 
+    label: 'Product Owner', 
+    color: 'text-indigo-500',
+    description: "User Stories, Backlog, Acceptance Criteria",
+    output: "User Stories & Epics"
+  },
+  architect: { 
+    icon: ArchitectIcon, 
+    label: 'Architect', 
+    color: 'text-orange-500',
+    description: "System-Design, Tech-Stack, Security",
+    output: "Architektur-Dokument"
+  },
+  scrum_master: { 
+    icon: ScrumIcon, 
+    label: 'Scrum Master', 
+    color: 'text-teal-500',
+    description: "Sprint Planning, Story Refinement",
+    output: "Sprint Plan"
+  },
+  developer: { 
+    icon: DeveloperIcon, 
+    label: 'Developer', 
+    color: 'text-green-500',
+    description: "Implementierung, Code-Struktur",
+    output: "Lauffähiger Code"
+  },
+  qa_tester: { 
+    icon: QAIcon, 
+    label: 'QA Tester', 
+    color: 'text-red-500',
+    description: "Test Strategy, E2E Tests, Quality Assurance",
+    output: "Test Plans & Cases"
+  },
+  orchestrator: { 
+    icon: OrchestratorIcon, 
+    label: 'Orchestrator', 
+    color: 'text-yellow-500',
+    description: "Cross-Phase Coordination, Risk Management",
+    output: "Orchestration Report"
+  }
 };
 
 const getAgentIcon = (phase: string) => {
@@ -69,6 +126,7 @@ const PHASE_NAMES = {
 export default function BMADSessionDetail() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { session, isLoading: sessionLoading } = useBMADSession(sessionId!);
   const { artifacts, isLoading: artifactsLoading } = useBMADArtifacts(sessionId);
   const { conversations, totalTokens } = useBMADConversations(sessionId!);
@@ -76,6 +134,10 @@ export default function BMADSessionDetail() {
   const [progressingPhase, setProgressingPhase] = useState(false);
   const [selectedArtifact, setSelectedArtifact] = useState<any>(null);
   const [runningAllPhases, setRunningAllPhases] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [editedDescription, setEditedDescription] = useState("");
   const [phaseProgress, setPhaseProgress] = useState<Record<string, string>>({
     business_analyst: 'pending',
     product_manager: 'pending',
@@ -228,6 +290,27 @@ export default function BMADSessionDetail() {
     }
   };
 
+  const { mutate: updateSessionDetails } = useMutation({
+    mutationFn: async (updates: { title?: string; description?: string }) => {
+      const { error } = await supabase
+        .from("bmad_sessions")
+        .update(updates)
+        .eq("id", sessionId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bmad-session", sessionId] });
+      toast.success("Session aktualisiert");
+      setIsEditingTitle(false);
+      setIsEditingDescription(false);
+    },
+    onError: (error) => {
+      toast.error("Fehler beim Aktualisieren");
+      console.error(error);
+    },
+  });
+
   if (sessionLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
@@ -267,9 +350,82 @@ export default function BMADSessionDetail() {
           <Card>
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <CardTitle className="text-2xl">{session.title}</CardTitle>
-                  <CardDescription>{session.description}</CardDescription>
+                <div className="space-y-1 flex-1">
+                  {!isEditingTitle ? (
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-2xl">{session.title}</CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditedTitle(session.title);
+                          setIsEditingTitle(true);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        value={editedTitle}
+                        onChange={(e) => setEditedTitle(e.target.value)}
+                        className="flex-1"
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => updateSessionDetails({ title: editedTitle })}
+                      >
+                        Speichern
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsEditingTitle(false)}
+                      >
+                        Abbrechen
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {!isEditingDescription ? (
+                    <div className="flex items-center gap-2">
+                      <CardDescription>{session.description}</CardDescription>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditedDescription(session.description || "");
+                          setIsEditingDescription(true);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      <Textarea
+                        value={editedDescription}
+                        onChange={(e) => setEditedDescription(e.target.value)}
+                        className="flex-1"
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => updateSessionDetails({ description: editedDescription })}
+                      >
+                        Speichern
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsEditingDescription(false)}
+                      >
+                        Abbrechen
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Badge className={getStatusColor(session.status)}>
@@ -328,17 +484,43 @@ export default function BMADSessionDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium">Current Phase</p>
-                    <p className="text-2xl font-bold">{PHASE_NAMES[session.current_phase as keyof typeof PHASE_NAMES]}</p>
-                  </div>
-                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    {(() => {
-                      const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
-                      const PhaseIcon = config.icon;
-                      return <PhaseIcon className="h-8 w-8" />;
-                    })()}
+                <div className="flex items-start justify-between p-4 bg-muted rounded-lg">
+                  <div className="flex gap-4 items-start flex-1">
+                    {/* Icon */}
+                    <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      {(() => {
+                        const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
+                        const PhaseIcon = config.icon;
+                        return <PhaseIcon className="h-8 w-8" />;
+                      })()}
+                    </div>
+                    
+                    {/* Phase Details */}
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-muted-foreground mb-1">Current Phase</p>
+                      <p className="text-2xl font-bold mb-2">
+                        {(() => {
+                          const phaseNum = Object.keys(PHASE_CONFIG).indexOf(session.current_phase) + 1;
+                          return `${phaseNum}. ${PHASE_NAMES[session.current_phase as keyof typeof PHASE_NAMES]}`;
+                        })()}
+                      </p>
+                      
+                      {/* Description */}
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {(() => {
+                          const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
+                          return config.description;
+                        })()}
+                      </p>
+                      
+                      {/* Output */}
+                      <p className="text-xs text-muted-foreground">
+                        <strong>Output:</strong> {(() => {
+                          const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
+                          return config.output;
+                        })()}
+                      </p>
+                    </div>
                   </div>
                 </div>
 

@@ -1,67 +1,77 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Target, Palette, ListChecks, Network, CalendarClock, Code, Bug, Workflow } from "lucide-react";
+import { 
+  AnalystIcon, 
+  ManagerIcon, 
+  UXIcon, 
+  OwnerIcon, 
+  ArchitectIcon, 
+  ScrumIcon, 
+  DeveloperIcon, 
+  QAIcon, 
+  OrchestratorIcon 
+} from "@/components/ui/custom-icons";
 
 export const BMADInfo = () => {
   const phases = [
     { 
       name: "Business Analyst", 
-      icon: Brain, 
+      icon: AnalystIcon, 
       description: "Requirements-Analyse, Stakeholder-Interviews", 
       output: "Requirements-Dokument",
       color: "text-blue-500" 
     },
     { 
       name: "Product Manager", 
-      icon: Target, 
+      icon: ManagerIcon, 
       description: "Product Vision, Roadmap & KPIs", 
       output: "Product Vision Document",
       color: "text-purple-500" 
     },
     { 
       name: "UX Expert", 
-      icon: Palette, 
+      icon: UXIcon, 
       description: "User Journey, Wireframes, Design System", 
       output: "UX Artifacts",
       color: "text-pink-500" 
     },
     { 
       name: "Product Owner", 
-      icon: ListChecks, 
+      icon: OwnerIcon, 
       description: "User Stories, Backlog, Acceptance Criteria", 
       output: "User Stories & Epics",
       color: "text-indigo-500" 
     },
     { 
       name: "Architect", 
-      icon: Network, 
+      icon: ArchitectIcon, 
       description: "System-Design, Tech-Stack, Security", 
       output: "Architektur-Dokument",
       color: "text-orange-500" 
     },
     { 
       name: "Scrum Master", 
-      icon: CalendarClock, 
+      icon: ScrumIcon, 
       description: "Sprint Planning, Story Refinement", 
       output: "Sprint Plan",
       color: "text-teal-500" 
     },
     { 
       name: "Developer", 
-      icon: Code, 
+      icon: DeveloperIcon, 
       description: "Implementierung, Code-Struktur", 
       output: "Lauffähiger Code",
       color: "text-green-500" 
     },
     { 
       name: "QA Tester", 
-      icon: Bug, 
+      icon: QAIcon, 
       description: "Test Strategy, E2E Tests, Quality Assurance", 
       output: "Test Plans & Cases",
       color: "text-red-500" 
     },
     { 
       name: "Orchestrator", 
-      icon: Workflow, 
+      icon: OrchestratorIcon, 
       description: "Cross-Phase Coordination, Risk Management", 
       output: "Orchestration Report",
       color: "text-yellow-500" 

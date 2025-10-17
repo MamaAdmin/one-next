@@ -10,7 +10,27 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
-import { Home } from "lucide-react";
+import { Home, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { 
@@ -70,6 +90,7 @@ const getArtifactTypeColor = (type: string) => {
 
 const BMADArtifactDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { artifacts, isLoading } = useBMADArtifacts();
   const [selectedArtifact, setSelectedArtifact] = useState<any>(null);
@@ -78,6 +99,29 @@ const BMADArtifactDashboard = () => {
   const [agentTypeFilter, setAgentTypeFilter] = useState<string>("all");
   const [approvalFilter, setApprovalFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [artifactToDelete, setArtifactToDelete] = useState<any>(null);
+
+  const { mutate: deleteArtifact } = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("bmad_artifacts")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bmad-artifacts"] });
+      toast.success("Artifact erfolgreich gelöscht");
+      setDeleteDialogOpen(false);
+      setArtifactToDelete(null);
+    },
+    onError: (error) => {
+      toast.error("Fehler beim Löschen des Artifacts");
+      console.error(error);
+    },
+  });
 
   if (adminLoading) {
     return (
@@ -207,37 +251,71 @@ const BMADArtifactDashboard = () => {
                         <TableHead>Version</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Erstellt</TableHead>
+                        <TableHead className="w-[70px]">Aktionen</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredArtifacts.map((artifact) => (
                         <TableRow
                           key={artifact.id}
-                          className="cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleRowClick(artifact)}
+                          className="hover:bg-muted/50"
                         >
-                          <TableCell className="font-medium">{artifact.title}</TableCell>
-                          <TableCell>
+                          <TableCell 
+                            className="font-medium cursor-pointer hover:underline"
+                            onClick={() => handleRowClick(artifact)}
+                          >
+                            {artifact.title}
+                          </TableCell>
+                          <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">
                             <Badge className={getArtifactTypeColor(artifact.artifact_type)}>
                               {artifact.artifact_type}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">
                             <div className="flex items-center gap-2">
                               {getAgentIcon(artifact.agent_type)}
                               <span className="text-sm">{artifact.agent_type}</span>
                             </div>
                           </TableCell>
-                          <TableCell>v{artifact.version}</TableCell>
-                          <TableCell>
+                          <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">v{artifact.version}</TableCell>
+                          <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">
                             {artifact.is_approved !== null && (
                               <Badge variant={artifact.is_approved ? "default" : "secondary"}>
                                 {artifact.is_approved ? "✓ Approved" : "⏳ Pending"}
                               </Badge>
                             )}
                           </TableCell>
-                          <TableCell className="text-muted-foreground">
+                          <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer text-muted-foreground">
                             {format(new Date(artifact.created_at), "PPp", { locale: de })}
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRowClick(artifact);
+                                }}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Details anzeigen
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  className="text-destructive"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setArtifactToDelete(artifact);
+                                    setDeleteDialogOpen(true);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Löschen
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -255,6 +333,27 @@ const BMADArtifactDashboard = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Artifact löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchten Sie das Artifact "{artifactToDelete?.title}" wirklich löschen? 
+              Diese Aktion kann nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => artifactToDelete && deleteArtifact(artifactToDelete.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Footer />
     </div>
