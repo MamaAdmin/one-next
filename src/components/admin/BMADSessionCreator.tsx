@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -133,26 +133,36 @@ export const BMADSessionCreator = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="google/gemini-2.5-flash">
-                  Gemini 2.5 Flash (Empfohlen)
-                </SelectItem>
-                <SelectItem value="google/gemini-2.5-pro">
-                  Gemini 2.5 Pro (Höchste Qualität)
-                </SelectItem>
-                <SelectItem value="google/gemini-2.5-flash-lite">
-                  Gemini 2.5 Flash Lite (Schnellstes)
-                </SelectItem>
-                <SelectItem value="openai/gpt-5">
-                  GPT-5 (Premium)
-                </SelectItem>
-                <SelectItem value="openai/gpt-5-mini">
-                  GPT-5 Mini (Balanced)
-                </SelectItem>
-                <SelectItem value="openai/gpt-5-nano">
-                  GPT-5 Nano (Effizient)
-                </SelectItem>
+                <SelectGroup>
+                  <SelectLabel>OpenAI Direct (Keine Lovable Credits)</SelectLabel>
+                  <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                  <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                  <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                  <SelectItem value="o1">O1</SelectItem>
+                </SelectGroup>
+                
+                <SelectGroup>
+                  <SelectLabel>Anthropic Direct (Keine Lovable Credits)</SelectLabel>
+                  <SelectItem value="claude-sonnet-4-5">Claude Sonnet 4.5 (Empfohlen)</SelectItem>
+                  <SelectItem value="claude-opus-4-1-20250805">Claude Opus 4.1</SelectItem>
+                  <SelectItem value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</SelectItem>
+                  <SelectItem value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</SelectItem>
+                </SelectGroup>
+                
+                <SelectGroup>
+                  <SelectLabel>Lovable AI Gateway (Lovable Credits)</SelectLabel>
+                  <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+                  <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                  <SelectItem value="google/gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</SelectItem>
+                  <SelectItem value="openai/gpt-5">GPT-5 (via Gateway)</SelectItem>
+                  <SelectItem value="openai/gpt-5-mini">GPT-5 Mini (via Gateway)</SelectItem>
+                  <SelectItem value="openai/gpt-5-nano">GPT-5 Nano (via Gateway)</SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
+            <p className="text-sm text-muted-foreground">
+              OpenAI/Anthropic Direct nutzt Ihre API Keys, Lovable Gateway nutzt Lovable Credits
+            </p>
           </div>
 
           <div className="flex items-center justify-between">

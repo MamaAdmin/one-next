@@ -71,6 +71,141 @@ const PHASE_ARTIFACT_TYPES = {
   developer: 'story_file'
 };
 
+// Provider detection based on model name
+function detectProvider(model: string): 'openai' | 'anthropic' | 'lovable' {
+  if (model.startsWith('gpt-') || model.startsWith('o1-') || model.startsWith('o3-') || model.startsWith('o4-')) {
+    return 'openai';
+  }
+  if (model.startsWith('claude-')) {
+    return 'anthropic';
+  }
+  return 'lovable'; // Fallback for google/gemini or openai/gpt-5 via gateway
+}
+
+// OpenAI direct API call
+async function callOpenAI(model: string, messages: Array<{role: string, content: string}>) {
+  const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+  if (!OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY not configured');
+  }
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      max_completion_tokens: 4000
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('OpenAI API error:', response.status, errorText);
+    throw new Error(`OpenAI API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return {
+    content: data.choices[0].message.content,
+    usage: data.usage
+  };
+}
+
+// Anthropic direct API call
+async function callAnthropic(model: string, messages: Array<{role: string, content: string}>) {
+  const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY');
+  if (!ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY not configured');
+  }
+
+  // Anthropic has a different message format
+  const systemMessage = messages.find(m => m.role === 'system')?.content || '';
+  const userMessages = messages.filter(m => m.role !== 'system');
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      system: systemMessage,
+      messages: userMessages,
+      max_tokens: 4000
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Anthropic API error:', response.status, errorText);
+    throw new Error(`Anthropic API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return {
+    content: data.content[0].text,
+    usage: {
+      prompt_tokens: data.usage.input_tokens,
+      completion_tokens: data.usage.output_tokens,
+      total_tokens: data.usage.input_tokens + data.usage.output_tokens
+    }
+  };
+}
+
+// Lovable AI Gateway call
+async function callLovableAI(model: string, messages: Array<{role: string, content: string}>) {
+  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+  if (!LOVABLE_API_KEY) {
+    throw new Error('LOVABLE_API_KEY not configured');
+  }
+
+  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Lovable AI Gateway error:', response.status, errorText);
+    throw new Error(`Lovable AI Gateway error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return {
+    content: data.choices[0].message.content,
+    usage: data.usage
+  };
+}
+
+// Unified AI provider call
+async function callAIProvider(model: string, messages: Array<{role: string, content: string}>) {
+  const provider = detectProvider(model);
+  console.log('Using AI provider:', provider, 'with model:', model);
+
+  switch (provider) {
+    case 'openai':
+      return await callOpenAI(model, messages);
+    case 'anthropic':
+      return await callAnthropic(model, messages);
+    case 'lovable':
+    default:
+      return await callLovableAI(model, messages);
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -135,13 +270,8 @@ ${contextStr}
 Generate a comprehensive ${agent_type.replace('_', ' ')} deliverable for this project.
 `;
 
-    console.log('Calling Lovable AI with model:', session.settings?.ai_model || 'google/gemini-2.5-flash');
-
-    // Call Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
-    }
+    const selectedModel = session.settings?.ai_model || 'google/gemini-2.5-flash';
+    console.log('Calling AI with model:', selectedModel);
 
     // Save user message to conversations
     const { error: userMsgError } = await supabase
@@ -158,30 +288,11 @@ Generate a comprehensive ${agent_type.replace('_', ' ')} deliverable for this pr
       console.error('Error saving user message:', userMsgError);
     }
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: session.settings?.ai_model || 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-      }),
-    });
-
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error('AI Gateway error:', aiResponse.status, errorText);
-      throw new Error(`AI Gateway error: ${aiResponse.status}`);
-    }
-
-    const aiData = await aiResponse.json();
-    const generatedContent = aiData.choices[0].message.content;
-    const usage = aiData.usage;
+    // Call appropriate AI provider
+    const { content: generatedContent, usage } = await callAIProvider(selectedModel, [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt }
+    ]);
 
     console.log('AI response received, tokens:', usage);
 
