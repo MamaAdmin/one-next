@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
+import { useBMADSessions } from "@/hooks/useBMADSessions";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,14 +94,17 @@ const BMADArtifactDashboard = () => {
   const queryClient = useQueryClient();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { artifacts, isLoading } = useBMADArtifacts();
+  const { sessions } = useBMADSessions();
   const [selectedArtifact, setSelectedArtifact] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [artifactTypeFilter, setArtifactTypeFilter] = useState<string>("all");
   const [agentTypeFilter, setAgentTypeFilter] = useState<string>("all");
   const [approvalFilter, setApprovalFilter] = useState<string>("all");
+  const [sessionFilter, setSessionFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [artifactToDelete, setArtifactToDelete] = useState<any>(null);
+  const [groupBySession, setGroupBySession] = useState(true);
 
   const { mutate: deleteArtifact } = useMutation({
     mutationFn: async (id: string) => {
@@ -148,13 +152,30 @@ const BMADArtifactDashboard = () => {
       approvalFilter === "all" ||
       (approvalFilter === "approved" && artifact.is_approved === true) ||
       (approvalFilter === "pending" && artifact.is_approved !== true);
+    const matchesSession =
+      sessionFilter === "all" || artifact.session_id === sessionFilter;
     const matchesSearch =
       searchQuery === "" ||
       artifact.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       artifact.session_id.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesArtifactType && matchesAgentType && matchesApproval && matchesSearch;
+    return matchesArtifactType && matchesAgentType && matchesApproval && matchesSession && matchesSearch;
   });
+
+  // Group artifacts by session
+  const groupedArtifacts = filteredArtifacts.reduce((groups, artifact) => {
+    const sessionId = artifact.session_id;
+    if (!groups[sessionId]) {
+      groups[sessionId] = [];
+    }
+    groups[sessionId].push(artifact);
+    return groups;
+  }, {} as Record<string, typeof artifacts>);
+
+  const getSessionTitle = (sessionId: string) => {
+    const session = sessions.find(s => s.id === sessionId);
+    return session?.title || sessionId.substring(0, 8);
+  };
 
   const handleRowClick = (artifact: any) => {
     setSelectedArtifact(artifact);
@@ -195,11 +216,24 @@ const BMADArtifactDashboard = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="max-w-xs"
                 />
+                <Select value={sessionFilter} onValueChange={setSessionFilter}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="BMAD Session" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background">
+                    <SelectItem value="all">Alle Sessions</SelectItem>
+                    {sessions.map((session) => (
+                      <SelectItem key={session.id} value={session.id}>
+                        {session.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Select value={artifactTypeFilter} onValueChange={setArtifactTypeFilter}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Artifact Type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background">
                     <SelectItem value="all">Alle Typen</SelectItem>
                     <SelectItem value="requirements">Requirements</SelectItem>
                     <SelectItem value="architecture">Architecture</SelectItem>
@@ -211,7 +245,7 @@ const BMADArtifactDashboard = () => {
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Agent Type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background">
                     <SelectItem value="all">Alle Agenten</SelectItem>
                     <SelectItem value="business_analyst">Business Analyst</SelectItem>
                     <SelectItem value="manager">Manager</SelectItem>
@@ -223,12 +257,19 @@ const BMADArtifactDashboard = () => {
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Approval Status" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background">
                     <SelectItem value="all">Alle</SelectItem>
                     <SelectItem value="approved">Approved</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button
+                  variant={groupBySession ? "default" : "outline"}
+                  onClick={() => setGroupBySession(!groupBySession)}
+                  size="default"
+                >
+                  {groupBySession ? "Gruppiert" : "Liste"}
+                </Button>
               </div>
 
               {/* Table */}
@@ -239,6 +280,105 @@ const BMADArtifactDashboard = () => {
               ) : filteredArtifacts.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   Keine Artifacts gefunden
+                </div>
+              ) : groupBySession ? (
+                <div className="space-y-6">
+                  {Object.entries(groupedArtifacts).map(([sessionId, sessionArtifacts]) => (
+                    <div key={sessionId} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold text-lg">{getSessionTitle(sessionId)}</h3>
+                          <p className="text-sm text-muted-foreground">{sessionArtifacts.length} Artifacts</p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate(`/admin/bmad/session/${sessionId}`)}
+                        >
+                          Session öffnen
+                        </Button>
+                      </div>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Titel</TableHead>
+                            <TableHead>Artifact Type</TableHead>
+                            <TableHead>Agent</TableHead>
+                            <TableHead>Version</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Erstellt</TableHead>
+                            <TableHead className="w-[70px]">Aktionen</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {sessionArtifacts.map((artifact) => (
+                            <TableRow
+                              key={artifact.id}
+                              className="hover:bg-muted/50"
+                            >
+                              <TableCell 
+                                className="font-medium cursor-pointer hover:underline"
+                                onClick={() => handleRowClick(artifact)}
+                              >
+                                {artifact.title}
+                              </TableCell>
+                              <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">
+                                <Badge className={getArtifactTypeColor(artifact.artifact_type)}>
+                                  {artifact.artifact_type}
+                                </Badge>
+                              </TableCell>
+                              <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">
+                                <div className="flex items-center gap-2">
+                                  {getAgentIcon(artifact.agent_type)}
+                                  <span className="text-sm">{artifact.agent_type}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">v{artifact.version}</TableCell>
+                              <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer">
+                                {artifact.is_approved !== null && (
+                                  <Badge variant={artifact.is_approved ? "default" : "secondary"}>
+                                    {artifact.is_approved ? "✓ Approved" : "⏳ Pending"}
+                                  </Badge>
+                                )}
+                              </TableCell>
+                              <TableCell onClick={() => handleRowClick(artifact)} className="cursor-pointer text-muted-foreground">
+                                {format(new Date(artifact.created_at), "PPp", { locale: de })}
+                              </TableCell>
+                              <TableCell>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
+                                      <MoreVertical className="h-4 w-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="bg-background">
+                                    <DropdownMenuItem onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleRowClick(artifact);
+                                    }}>
+                                      <Edit className="h-4 w-4 mr-2" />
+                                      Details anzeigen
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem 
+                                      className="text-destructive"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setArtifactToDelete(artifact);
+                                        setDeleteDialogOpen(true);
+                                      }}
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Löschen
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="border rounded-lg">
@@ -295,7 +435,7 @@ const BMADArtifactDashboard = () => {
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
+                              <DropdownMenuContent align="end" className="bg-background">
                                 <DropdownMenuItem onClick={(e) => {
                                   e.stopPropagation();
                                   handleRowClick(artifact);
