@@ -14,6 +14,7 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
+import { ToolSelector } from "@/components/lms/ToolSelector";
 
 interface Tool {
   name: string;
@@ -59,6 +60,8 @@ const LMSModuleEditor = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [module, setModule] = useState<Module | null>(null);
   const [courseName, setCourseName] = useState<string>("");
+  const [selectedToolIds, setSelectedToolIds] = useState<string[]>([]);
+  const [selectedTools, setSelectedTools] = useState<{id: string, title: string}[]>([]);
   const [formData, setFormData] = useState({
     phase_number: 1,
     module_type: "Theory",
@@ -132,6 +135,23 @@ const LMSModuleEditor = () => {
         duration_minutes: data.duration_minutes,
         tags: Array.isArray(data.tags) ? data.tags : [],
       });
+
+      // Load linked tools from lms_module_tools
+      const { data: linkedTools, error: toolsError } = await supabase
+        .from("lms_module_tools")
+        .select("tool_id, lms_tools(id, title)")
+        .eq("module_id", id)
+        .order("sort_order");
+      
+      if (!toolsError && linkedTools) {
+        const toolIds = linkedTools.map(t => t.tool_id);
+        const tools = linkedTools
+          .map(t => t.lms_tools)
+          .filter(Boolean) as {id: string, title: string}[];
+        
+        setSelectedToolIds(toolIds);
+        setSelectedTools(tools);
+      }
     }
     setLoading(false);
   };
@@ -147,6 +167,24 @@ const LMSModuleEditor = () => {
     navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
   };
 
+  const handleToolChange = async (toolIds: string[]) => {
+    setSelectedToolIds(toolIds);
+    setHasUnsavedChanges(true);
+    
+    if (toolIds.length > 0) {
+      const { data } = await supabase
+        .from("lms_tools")
+        .select("id, title")
+        .in("id", toolIds);
+      
+      if (data) {
+        setSelectedTools(data);
+      }
+    } else {
+      setSelectedTools([]);
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current || !courseId) return;
@@ -155,23 +193,7 @@ const LMSModuleEditor = () => {
     const formData = new FormData(formRef.current);
 
     // Parse JSON fields
-    let tools: Tool[] = [];
     let resources: Resource[] = [];
-
-    try {
-      const toolsJson = formData.get("tools_json") as string;
-      if (toolsJson?.trim()) {
-        tools = JSON.parse(toolsJson);
-      }
-    } catch (e) {
-      toast({
-        title: "Fehler",
-        description: "Tools JSON ist ungültig",
-        variant: "destructive",
-      });
-      setSaving(false);
-      return;
-    }
 
     try {
       const resourcesJson = formData.get("resources_json") as string;
@@ -205,7 +227,6 @@ const LMSModuleEditor = () => {
       sort_order: parseInt(formData.get("sort_order") as string),
       content_text: formData.get("content_text") as string,
       content_video_url: formData.get("content_video_url") as string,
-      tools: tools as any,
       resources: resources as any,
       tags: tags,
       author: formData.get("author") as string,
@@ -221,23 +242,66 @@ const LMSModuleEditor = () => {
 
       if (error) {
         toast({ title: "Fehler", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Erfolg", description: "Modul aktualisiert" });
-        setHasUnsavedChanges(false);
-        navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
+        setSaving(false);
+        return;
       }
+
+      // Update tools in lms_module_tools
+      await supabase
+        .from("lms_module_tools")
+        .delete()
+        .eq("module_id", moduleId);
+
+      if (selectedToolIds.length > 0) {
+        const toolLinks = selectedToolIds.map((toolId, index) => ({
+          module_id: moduleId,
+          tool_id: toolId,
+          sort_order: index + 1,
+          is_required: false
+        }));
+
+        const { error: toolsError } = await supabase
+          .from("lms_module_tools")
+          .insert(toolLinks);
+
+        if (toolsError) {
+          console.error("Tools konnten nicht gespeichert werden:", toolsError);
+        }
+      }
+
+      toast({ title: "Erfolg", description: "Modul aktualisiert" });
+      setHasUnsavedChanges(false);
+      navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
     } else {
-      const { error } = await supabase
+      const { data: newModule, error } = await supabase
         .from("lms_course_modules")
-        .insert([moduleData]);
+        .insert([moduleData])
+        .select()
+        .single();
 
       if (error) {
         toast({ title: "Fehler", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Erfolg", description: "Modul erstellt" });
-        setHasUnsavedChanges(false);
-        navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
+        setSaving(false);
+        return;
       }
+
+      // Link tools for new module
+      if (newModule && selectedToolIds.length > 0) {
+        const toolLinks = selectedToolIds.map((toolId, index) => ({
+          module_id: newModule.id,
+          tool_id: toolId,
+          sort_order: index + 1,
+          is_required: false
+        }));
+
+        await supabase
+          .from("lms_module_tools")
+          .insert(toolLinks);
+      }
+
+      toast({ title: "Erfolg", description: "Modul erstellt" });
+      setHasUnsavedChanges(false);
+      navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
     }
 
     setSaving(false);
@@ -350,6 +414,7 @@ const LMSModuleEditor = () => {
                             min="1"
                             max="5"
                             defaultValue={module?.phase_number || 1}
+                            onChange={(e) => setFormData(prev => ({ ...prev, phase_number: parseInt(e.target.value) || 1 }))}
                             required
                           />
                         </div>
@@ -428,19 +493,14 @@ const LMSModuleEditor = () => {
                     {/* Tab 3: Tools & Ressourcen */}
                     <TabsContent value="tools" className="space-y-6">
                       <div>
-                        <Label>Interaktive Tools</Label>
-                        <p className="text-xs text-muted-foreground mb-3">
-                          Verknüpfte Tools wie Miro, Mural, Gamma etc.
-                        </p>
-                        <Input
-                          id="tools_json"
-                          name="tools_json"
-                          placeholder='[{"name":"Miro","url":"https://miro.com/..."}]'
-                          defaultValue={module?.tools ? JSON.stringify(module.tools) : ''}
-                          className="font-mono text-sm"
+                        <ToolSelector
+                          selectedTools={selectedToolIds}
+                          onChange={handleToolChange}
+                          filterByPhase={formData.phase_number}
                         />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          JSON-Format: Array von Objekten mit "name" und "url"
+                        <p className="text-xs text-muted-foreground mt-2">
+                          💡 Tipp: Tools werden automatisch nach Phase gefiltert. 
+                          Ändern Sie die Phase im Allgemein-Tab, um andere Tools zu sehen.
                         </p>
                       </div>
 
@@ -554,6 +614,18 @@ const LMSModuleEditor = () => {
                         {formData.tags.map((tag, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
                             {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {selectedTools.length > 0 && (
+                    <div>
+                      <span className="font-medium">Tools:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {selectedTools.map((tool) => (
+                          <Badge key={tool.id} variant="outline" className="text-xs">
+                            {tool.title}
                           </Badge>
                         ))}
                       </div>
