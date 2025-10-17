@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
 import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
 import workshopImage from "@/assets/workshop-collaboration.jpg";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 
 const ProblemFramingWorkshop = () => {
   return (
@@ -503,9 +504,11 @@ const ProblemFramingWorkshop = () => {
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline">
-                Kostenlose Beratung
-              </Button>
+              <CalendarBookingDialog
+                buttonText="Kostenlose Beratung"
+                buttonSize="lg"
+                buttonClassName="border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground"
+              />
             </div>
           </div>
         </div>

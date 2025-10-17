@@ -7,6 +7,7 @@ import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 
 export default function DataQualityAuditPage() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -422,9 +423,11 @@ export default function DataQualityAuditPage() {
             Auf Wunsch erhalten Sie im Anschluss einen 2‑seitigen Audit-Summary (PDF).
           </p>
           <div className="mt-6">
-            <Button asChild size="lg" className="rounded-2xl">
-              <a href="mailto:contact@one-next.com">Termin buchen</a>
-            </Button>
+            <CalendarBookingDialog
+              buttonText="Termin buchen"
+              buttonSize="lg"
+              buttonClassName="rounded-2xl"
+            />
           </div>
         </div>
       </section>
