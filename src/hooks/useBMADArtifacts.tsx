@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 export type BMADArtifact = {
   id: string;
   session_id: string;
-  agent_type: "business_analyst" | "manager" | "architect" | "developer";
-  artifact_type: "requirements" | "architecture" | "code" | "deployment";
+  agent_type: "business_analyst" | "product_manager" | "ux_expert" | "product_owner" | "architect" | "scrum_master" | "developer" | "qa_tester" | "orchestrator";
+  artifact_type: "requirements" | "product_vision" | "ux_wireframes" | "user_stories" | "architecture" | "sprint_plan" | "story_file" | "test_plan" | "orchestration_log" | "deployment";
   title: string;
   content: string;
   metadata: any;

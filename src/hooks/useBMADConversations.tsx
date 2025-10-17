@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 export type BMADConversation = {
   id: string;
   session_id: string;
-  agent_type: "business_analyst" | "manager" | "architect" | "developer";
+  agent_type: "business_analyst" | "product_manager" | "ux_expert" | "product_owner" | "architect" | "scrum_master" | "developer" | "qa_tester" | "orchestrator";
   role: string;
   content: string;
   prompt_tokens: number | null;

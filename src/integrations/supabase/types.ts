@@ -1498,6 +1498,9 @@ export type Database = {
         | "product_owner"
         | "architect"
         | "scrum_master"
+        | "developer"
+        | "qa_tester"
+        | "orchestrator"
       bmad_artifact_type:
         | "business_requirements"
         | "product_vision"
@@ -1507,6 +1510,8 @@ export type Database = {
         | "sprint_plan"
         | "story_file"
         | "flattened_repo"
+        | "test_plan"
+        | "orchestration_log"
       bmad_session_status: "planning" | "development" | "completed" | "archived"
     }
     CompositeTypes: {
@@ -1643,6 +1648,9 @@ export const Constants = {
         "product_owner",
         "architect",
         "scrum_master",
+        "developer",
+        "qa_tester",
+        "orchestrator",
       ],
       bmad_artifact_type: [
         "business_requirements",
@@ -1653,6 +1661,8 @@ export const Constants = {
         "sprint_plan",
         "story_file",
         "flattened_repo",
+        "test_plan",
+        "orchestration_log",
       ],
       bmad_session_status: ["planning", "development", "completed", "archived"],
     },

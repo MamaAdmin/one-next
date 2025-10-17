@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Brain, Users, Layers, Code, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Workflow, Loader2 } from "lucide-react";
+import { ArrowLeft, Brain, Target, Palette, ListChecks, Network, CalendarClock, Code, Bug, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Workflow, Loader2 } from "lucide-react";
 import { useBMADSession } from "@/hooks/useBMADSessions";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
 import { useBMADConversations } from "@/hooks/useBMADConversations";
@@ -17,9 +17,14 @@ import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPrevie
 const getAgentIcon = (phase: string) => {
   switch (phase) {
     case 'business_analyst': return <Brain className="h-4 w-4" />;
-    case 'manager': return <Users className="h-4 w-4" />;
-    case 'architect': return <Layers className="h-4 w-4" />;
+    case 'product_manager': return <Target className="h-4 w-4" />;
+    case 'ux_expert': return <Palette className="h-4 w-4" />;
+    case 'product_owner': return <ListChecks className="h-4 w-4" />;
+    case 'architect': return <Network className="h-4 w-4" />;
+    case 'scrum_master': return <CalendarClock className="h-4 w-4" />;
     case 'developer': return <Code className="h-4 w-4" />;
+    case 'qa_tester': return <Bug className="h-4 w-4" />;
+    case 'orchestrator': return <Workflow className="h-4 w-4" />;
     default: return <Brain className="h-4 w-4" />;
   }
 };
@@ -35,9 +40,14 @@ const getStatusColor = (status: string) => {
 
 const PHASE_NAMES = {
   business_analyst: 'Business Analyst',
-  manager: 'Manager',
+  product_manager: 'Product Manager',
+  ux_expert: 'UX Expert',
+  product_owner: 'Product Owner',
   architect: 'Architect',
-  developer: 'Developer'
+  scrum_master: 'Scrum Master',
+  developer: 'Developer',
+  qa_tester: 'QA Tester',
+  orchestrator: 'Orchestrator'
 };
 
 export default function BMADSessionDetail() {
@@ -50,7 +60,17 @@ export default function BMADSessionDetail() {
   const [progressingPhase, setProgressingPhase] = useState(false);
   const [selectedArtifact, setSelectedArtifact] = useState<any>(null);
   const [runningAllPhases, setRunningAllPhases] = useState(false);
-  const [phaseProgress, setPhaseProgress] = useState<Record<string, string>>({});
+  const [phaseProgress, setPhaseProgress] = useState<Record<string, string>>({
+    business_analyst: 'pending',
+    product_manager: 'pending',
+    ux_expert: 'pending',
+    product_owner: 'pending',
+    architect: 'pending',
+    scrum_master: 'pending',
+    developer: 'pending',
+    qa_tester: 'pending',
+    orchestrator: 'pending'
+  });
 
   // Realtime subscription for session updates
   useEffect(() => {
@@ -166,9 +186,14 @@ export default function BMADSessionDetail() {
     setRunningAllPhases(true);
     setPhaseProgress({
       business_analyst: 'pending',
-      manager: 'pending',
+      product_manager: 'pending',
+      ux_expert: 'pending',
+      product_owner: 'pending',
       architect: 'pending',
-      developer: 'pending'
+      scrum_master: 'pending',
+      developer: 'pending',
+      qa_tester: 'pending',
+      orchestrator: 'pending'
     });
 
     try {

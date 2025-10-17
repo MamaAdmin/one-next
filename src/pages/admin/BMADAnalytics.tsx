@@ -10,8 +10,14 @@ import { Activity, FileText, CheckCircle, Clock } from "lucide-react";
 
 const COLORS = {
   requirements: "#A855F7",
+  product_vision: "#9333EA",
+  ux_wireframes: "#EC4899",
+  user_stories: "#6366F1",
   architecture: "#3B82F6",
-  code: "#10B981",
+  sprint_plan: "#14B8A6",
+  story_file: "#10B981",
+  test_plan: "#EF4444",
+  orchestration_log: "#F59E0B",
   deployment: "#F97316",
 };
 
@@ -50,39 +56,29 @@ const BMADAnalytics = () => {
 
   // Artifact type distribution
   const artifactTypeData = [
-    {
-      name: "Requirements",
-      value: artifacts.filter((a) => a.artifact_type === "requirements").length,
-    },
-    {
-      name: "Architecture",
-      value: artifacts.filter((a) => a.artifact_type === "architecture").length,
-    },
-    { name: "Code", value: artifacts.filter((a) => a.artifact_type === "code").length },
-    {
-      name: "Deployment",
-      value: artifacts.filter((a) => a.artifact_type === "deployment").length,
-    },
+    { name: "Requirements", value: artifacts.filter((a) => a.artifact_type === "requirements").length },
+    { name: "Product Vision", value: artifacts.filter((a) => a.artifact_type === "product_vision").length },
+    { name: "UX Wireframes", value: artifacts.filter((a) => a.artifact_type === "ux_wireframes").length },
+    { name: "User Stories", value: artifacts.filter((a) => a.artifact_type === "user_stories").length },
+    { name: "Architecture", value: artifacts.filter((a) => a.artifact_type === "architecture").length },
+    { name: "Sprint Plan", value: artifacts.filter((a) => a.artifact_type === "sprint_plan").length },
+    { name: "Code", value: artifacts.filter((a) => a.artifact_type === "story_file").length },
+    { name: "Test Plan", value: artifacts.filter((a) => a.artifact_type === "test_plan").length },
+    { name: "Orchestration", value: artifacts.filter((a) => a.artifact_type === "orchestration_log").length },
+    { name: "Deployment", value: artifacts.filter((a) => a.artifact_type === "deployment").length },
   ].filter((item) => item.value > 0);
 
   // Artifacts per agent
   const agentData = [
-    {
-      agent: "Business Analyst",
-      artifacts: artifacts.filter((a) => a.agent_type === "business_analyst").length,
-    },
-    {
-      agent: "Manager",
-      artifacts: artifacts.filter((a) => a.agent_type === "manager").length,
-    },
-    {
-      agent: "Architect",
-      artifacts: artifacts.filter((a) => a.agent_type === "architect").length,
-    },
-    {
-      agent: "Developer",
-      artifacts: artifacts.filter((a) => a.agent_type === "developer").length,
-    },
+    { agent: "Business Analyst", artifacts: artifacts.filter((a) => a.agent_type === "business_analyst").length },
+    { agent: "Product Manager", artifacts: artifacts.filter((a) => a.agent_type === "product_manager").length },
+    { agent: "UX Expert", artifacts: artifacts.filter((a) => a.agent_type === "ux_expert").length },
+    { agent: "Product Owner", artifacts: artifacts.filter((a) => a.agent_type === "product_owner").length },
+    { agent: "Architect", artifacts: artifacts.filter((a) => a.agent_type === "architect").length },
+    { agent: "Scrum Master", artifacts: artifacts.filter((a) => a.agent_type === "scrum_master").length },
+    { agent: "Developer", artifacts: artifacts.filter((a) => a.agent_type === "developer").length },
+    { agent: "QA Tester", artifacts: artifacts.filter((a) => a.agent_type === "qa_tester").length },
+    { agent: "Orchestrator", artifacts: artifacts.filter((a) => a.agent_type === "orchestrator").length },
   ].filter((item) => item.artifacts > 0);
 
   // Sessions over time (last 30 days)
@@ -132,7 +128,7 @@ const BMADAnalytics = () => {
               <CardContent>
                 <div className="text-2xl font-bold">{totalArtifacts}</div>
                 <p className="text-xs text-muted-foreground">
-                  Generiert von 4 AI-Agenten
+                  Generiert von 9 AI-Agenten
                 </p>
               </CardContent>
             </Card>

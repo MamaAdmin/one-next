@@ -7,7 +7,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const PHASE_ORDER = ['business_analyst', 'manager', 'architect', 'developer'];
+const PHASE_ORDER = [
+  'business_analyst',
+  'product_manager', 
+  'ux_expert',
+  'product_owner',
+  'architect',
+  'scrum_master',
+  'developer',
+  'qa_tester',
+  'orchestrator'
+];
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
