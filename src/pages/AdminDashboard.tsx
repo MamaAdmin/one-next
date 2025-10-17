@@ -64,11 +64,12 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="articles">Artikel</TabsTrigger>
               <TabsTrigger value="media">Medien</TabsTrigger>
               <TabsTrigger value="pages">Seiteninhalte</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
+              <TabsTrigger value="bmad">BMAD</TabsTrigger>
             </TabsList>
 
             <TabsContent value="articles">
