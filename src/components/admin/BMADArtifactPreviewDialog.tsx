@@ -124,31 +124,16 @@ export const BMADArtifactPreviewDialog = ({
   const handleApprove = async (isApproved: boolean) => {
     setIsApproving(true);
     try {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session?.session?.access_token) {
-        throw new Error("Not authenticated");
-      }
-
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/bmad-approve-artifact`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${session.session.access_token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            artifact_id: artifact.id,
-            is_approved: isApproved,
-          }),
+      const { error } = await supabase.functions.invoke('bmad-approve-artifact', {
+        body: {
+          artifact_id: artifact.id,
+          is_approved: isApproved,
         }
-      );
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to approve artifact");
-      }
+      if (error) throw error;
 
-      toast.success(isApproved ? "Artifact genehmigt" : "Artifact abgelehnt");
+      toast.success(isApproved ? "Artifact genehmigt ✓" : "Artifact abgelehnt ✗");
       onOpenChange(false);
       onSaved?.();
     } catch (error) {
@@ -185,19 +170,19 @@ export const BMADArtifactPreviewDialog = ({
               size="sm"
               variant="default"
               onClick={() => handleApprove(true)}
-              disabled={isApproving || artifact.is_approved === true}
+              disabled={isApproving}
             >
               <Check className="w-4 h-4 mr-2" />
-              Genehmigen
+              {artifact.is_approved === true ? "✓ Genehmigt" : "Genehmigen"}
             </Button>
             <Button
               size="sm"
               variant="destructive"
               onClick={() => handleApprove(false)}
-              disabled={isApproving || artifact.is_approved === false}
+              disabled={isApproving}
             >
               <XCircle className="w-4 h-4 mr-2" />
-              Ablehnen
+              {artifact.is_approved === false ? "✗ Abgelehnt" : "Ablehnen"}
             </Button>
           </div>
 

@@ -162,13 +162,11 @@ export default function BMADSessionDetail() {
         table: 'bmad_sessions',
         filter: `id=eq.${sessionId}`
       }, (payload) => {
-        // Update phase progress from metadata
+        queryClient.invalidateQueries({ queryKey: ["bmad-session", sessionId] });
         const metadata = (payload.new as any)?.metadata;
         if (metadata?.phase_progress) {
           setPhaseProgress(metadata.phase_progress);
         }
-        // Refetch session data
-        window.location.reload();
       })
       .on('postgres_changes', {
         event: '*',
@@ -176,15 +174,14 @@ export default function BMADSessionDetail() {
         table: 'bmad_artifacts',
         filter: `session_id=eq.${sessionId}`
       }, () => {
-        // Refetch artifacts
-        window.location.reload();
+        queryClient.invalidateQueries({ queryKey: ["bmad-artifacts", sessionId] });
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [sessionId]);
+  }, [sessionId, queryClient]);
 
   // Initialize phase progress from session metadata
   useEffect(() => {
@@ -240,6 +237,23 @@ export default function BMADSessionDetail() {
       toast.error("Fehler beim Fortschreiten zur nächsten Phase");
     } finally {
       setProgressingPhase(false);
+    }
+  };
+
+  const handleSelectPhase = async (selectedPhase: string) => {
+    try {
+      const { error } = await supabase
+        .from('bmad_sessions')
+        .update({ current_phase: selectedPhase })
+        .eq('id', sessionId);
+
+      if (error) throw error;
+
+      toast.success(`Phase gewechselt zu: ${PHASE_NAMES[selectedPhase as keyof typeof PHASE_NAMES]}`);
+      queryClient.invalidateQueries({ queryKey: ["bmad-session", sessionId] });
+    } catch (error) {
+      console.error("Error selecting phase:", error);
+      toast.error("Fehler beim Wechseln der Phase");
     }
   };
 
@@ -537,48 +551,62 @@ export default function BMADSessionDetail() {
                 <div className="flex gap-2">
                   <Button 
                     onClick={handleRunPhase} 
-                    disabled={runningPhase || hasCurrentPhaseArtifact || runningAllPhases}
+                    disabled={runningPhase || runningAllPhases}
                     className="flex-1"
                   >
                     <Play className="h-4 w-4 mr-2" />
-                    {runningPhase ? 'Läuft...' : 'Phase ausführen'}
+                    {runningPhase ? 'Läuft...' : hasCurrentPhaseArtifact ? 'Phase erneut ausführen' : 'Phase ausführen'}
                   </Button>
 
-                  {canProgress && (
-                    <Button 
-                      onClick={handleProgressPhase} 
-                      disabled={progressingPhase || runningAllPhases}
-                      variant="outline"
-                    >
-                      <ChevronRight className="h-4 w-4 mr-2" />
-                      {progressingPhase ? 'Fortschritt...' : 'Nächste Phase'}
-                    </Button>
-                  )}
+                  <Button 
+                    onClick={handleProgressPhase} 
+                    disabled={progressingPhase || runningAllPhases || session.current_phase === 'orchestrator'}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    <ChevronRight className="h-4 w-4 mr-2" />
+                    {progressingPhase ? 'Fortschritt...' : 'Nächste Phase'}
+                  </Button>
                 </div>
 
-                {session.settings?.require_approval && (
-                  <div className="text-sm text-muted-foreground p-3 bg-blue-50 dark:bg-blue-950/20 rounded-md">
-                    Approval erforderlich vor Fortschritt zur nächsten Phase
+                {session.settings?.require_approval && !canProgress && hasCurrentPhaseArtifact && (
+                  <div className="text-sm text-yellow-600 dark:text-yellow-400 p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-md border border-yellow-200">
+                    ⚠️ Artifact muss zuerst genehmigt werden, bevor zur nächsten Phase fortgeschritten werden kann.
                   </div>
                 )}
 
                 {Object.keys(phaseProgress).length > 0 && (
                   <div className="space-y-2 pt-4 border-t">
-                    <p className="text-sm font-medium mb-3">Phase Progress</p>
-                    {Object.entries(phaseProgress).map(([phase, status]) => (
-                      <div key={phase} className="flex items-center gap-3">
-                        {status === 'completed' ? (
-                          <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        ) : status === 'running' ? (
-                          <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
-                        ) : status === 'error' ? (
-                          <XCircle className="h-5 w-5 text-red-500" />
-                        ) : (
-                          <Circle className="h-5 w-5 text-muted-foreground" />
-                        )}
-                        <span className="text-sm">{PHASE_NAMES[phase as keyof typeof PHASE_NAMES]}</span>
-                      </div>
-                    ))}
+                    <p className="text-sm font-medium mb-3">Phase Progress (anklickbar)</p>
+                    {Object.entries(phaseProgress).map(([phase, status]) => {
+                      const isCurrentPhase = session.current_phase === phase;
+                      return (
+                        <button
+                          key={phase}
+                          onClick={() => handleSelectPhase(phase)}
+                          disabled={runningPhase || runningAllPhases}
+                          className={`flex items-center gap-3 w-full p-2 rounded hover:bg-accent/50 transition-colors ${
+                            isCurrentPhase ? 'bg-primary/10 border-2 border-primary' : ''
+                          }`}
+                        >
+                          {status === 'completed' ? (
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                          ) : status === 'running' ? (
+                            <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                          ) : status === 'error' ? (
+                            <XCircle className="h-5 w-5 text-red-500" />
+                          ) : (
+                            <Circle className="h-5 w-5 text-muted-foreground" />
+                          )}
+                          <span className={`text-sm ${isCurrentPhase ? 'font-bold' : ''}`}>
+                            {PHASE_NAMES[phase as keyof typeof PHASE_NAMES]}
+                          </span>
+                          {isCurrentPhase && (
+                            <Badge variant="default" className="ml-auto">Aktiv</Badge>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
@@ -596,65 +624,65 @@ export default function BMADSessionDetail() {
               ) : artifacts.length === 0 ? (
                 <p className="text-muted-foreground">Noch keine Artifacts generiert</p>
               ) : (
-                <div className="space-y-4">
-                  {artifacts.map((artifact) => (
-                    <Card key={artifact.id} className="cursor-pointer hover:bg-accent/50 transition-colors">
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-2">
-                            {getAgentIcon(artifact.agent_type)}
-                            <div>
-                              <CardTitle className="text-base">{artifact.title}</CardTitle>
-                              <CardDescription>
-                                Version {artifact.version} • {artifact.artifact_type}
-                              </CardDescription>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            {artifact.is_approved ? (
-                              <Badge className="bg-green-500">
-                                <Check className="h-3 w-3 mr-1" />
-                                Approved
-                              </Badge>
-                            ) : session.settings?.require_approval ? (
-                              <Badge variant="outline" className="bg-yellow-500/10">
-                                Pending Approval
-                              </Badge>
-                            ) : null}
-                          </div>
+                <div className="space-y-6">
+                  {Object.keys(PHASE_CONFIG).map(phase => {
+                    const phaseArtifacts = artifacts.filter(a => a.agent_type === phase);
+                    if (phaseArtifacts.length === 0) return null;
+
+                    return (
+                      <div key={phase} className="space-y-2">
+                        <div className="flex items-center gap-2 mb-3">
+                          {getAgentIcon(phase)}
+                          <h3 className="font-semibold text-lg">
+                            {PHASE_NAMES[phase as keyof typeof PHASE_NAMES]} ({phaseArtifacts.length})
+                          </h3>
                         </div>
-                      </CardHeader>
-                      <CardContent className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => setSelectedArtifact(artifact)}
-                        >
-                          Vorschau
-                        </Button>
-                        
-                        {!artifact.is_approved && session.settings?.require_approval && (
-                          <>
-                            <Button 
-                              size="sm" 
-                              onClick={() => handleApprove(artifact.id, true)}
-                            >
-                              <Check className="h-4 w-4 mr-1" />
-                              Genehmigen
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="destructive"
-                              onClick={() => handleApprove(artifact.id, false)}
-                            >
-                              <X className="h-4 w-4 mr-1" />
-                              Ablehnen
-                            </Button>
-                          </>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
+
+                        <div className="space-y-2 pl-7">
+                          {phaseArtifacts.map((artifact) => (
+                            <Card key={artifact.id} className="cursor-pointer hover:bg-accent/50 transition-colors">
+                              <CardHeader className="py-3">
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <CardTitle className="text-base">{artifact.title}</CardTitle>
+                                    <CardDescription>
+                                      Version {artifact.version} • {artifact.artifact_type}
+                                    </CardDescription>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    {artifact.is_approved === true ? (
+                                      <Badge className="bg-green-500">
+                                        <Check className="h-3 w-3 mr-1" />
+                                        Genehmigt
+                                      </Badge>
+                                    ) : artifact.is_approved === false ? (
+                                      <Badge className="bg-red-500">
+                                        <XCircle className="h-3 w-3 mr-1" />
+                                        Abgelehnt
+                                      </Badge>
+                                    ) : session.settings?.require_approval ? (
+                                      <Badge variant="outline" className="bg-yellow-500/10">
+                                        Ausstehend
+                                      </Badge>
+                                    ) : null}
+                                  </div>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="flex gap-2 py-2">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setSelectedArtifact(artifact)}
+                                >
+                                  Vorschau & Genehmigen
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
@@ -669,7 +697,10 @@ export default function BMADSessionDetail() {
           artifact={selectedArtifact}
           open={!!selectedArtifact}
           onOpenChange={(open) => !open && setSelectedArtifact(null)}
-          onSaved={() => window.location.reload()}
+          onSaved={() => {
+            queryClient.invalidateQueries({ queryKey: ["bmad-artifacts", sessionId] });
+            queryClient.invalidateQueries({ queryKey: ["bmad-session", sessionId] });
+          }}
         />
       )}
     </div>
