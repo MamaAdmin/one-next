@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
 
@@ -22,16 +22,11 @@ export function CalendarBookingDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0">
-        <DialogHeader className="px-1 py-2 border-b">
-          <DialogTitle className="text-base">Termin vereinbaren</DialogTitle>
-        </DialogHeader>
-        <div className="flex-1 min-h-0">
-          <iframe
-            src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2TkzdodLI7ecpqrSD2I7q1kHjVQGGaQ4_cvZ7JlUSqPyv5qifYKlZPlNZ_1yJEEHE6tjN6tIv6?gv=true"
-            style={{ width: "100%", height: "100%", border: "none" }}
-            title="Termin buchen"
-          />
-        </div>
+        <iframe
+          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2TkzdodLI7ecpqrSD2I7q1kHjVQGGaQ4_cvZ7JlUSqPyv5qifYKlZPlNZ_1yJEEHE6tjN6tIv6?gv=true"
+          style={{ width: "100%", height: "100%", border: "none" }}
+          title="Termin buchen"
+        />
       </DialogContent>
     </Dialog>
   );
