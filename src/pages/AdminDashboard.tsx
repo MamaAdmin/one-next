@@ -134,19 +134,19 @@ const AdminDashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Link to="/admin/bmad/sessions">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
-                        <BMADSessionIcon className="w-10 h-10 text-primary" />
+                        <BMADSessionIcon className="w-14 h-14 text-primary" />
                         <span>BMAD Sessions</span>
                       </Button>
                     </Link>
                     <Link to="/admin/bmad/artifacts">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
-                        <BMADArtifactIcon className="w-10 h-10 text-primary" />
+                        <BMADArtifactIcon className="w-14 h-14 text-primary" />
                         <span>BMAD Artifacts</span>
                       </Button>
                     </Link>
                     <Link to="/admin/bmad/analytics">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
-                        <BMADAnalyticsIcon className="w-10 h-10 text-primary" />
+                        <BMADAnalyticsIcon className="w-14 h-14 text-primary" />
                         <span>BMAD Analytics</span>
                       </Button>
                     </Link>
