@@ -7,6 +7,7 @@ import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 
 export default function DataQualityAuditPage() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -192,9 +193,11 @@ export default function DataQualityAuditPage() {
               minRows={3}
             />
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#termin" className="rounded-2xl px-5 py-3 bg-primary text-primary-foreground font-medium shadow hover:bg-primary-glow transition-colors">
-                Erstgespräch buchen
-              </a>
+              <CalendarBookingDialog
+                buttonText="Erstgespräch buchen"
+                buttonSize="default"
+                buttonClassName="rounded-2xl px-5 py-3"
+              />
               <a href="#pakete" className="rounded-2xl px-5 py-3 bg-card border border-border font-medium hover:bg-secondary transition-colors">
                 Pakete & Preise
               </a>
@@ -356,9 +359,13 @@ export default function DataQualityAuditPage() {
                 <li>Kompakter Bericht (5-10 Seiten)</li>
               </ul>
               <div className="mt-6 font-semibold text-primary">ab CHF 5'000 – 15'000</div>
-              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-primary text-primary-foreground text-sm hover:bg-primary-glow transition-colors">
-                Anfragen
-              </a>
+              <div className="mt-4">
+                <CalendarBookingDialog
+                  buttonText="Anfragen"
+                  buttonSize="sm"
+                  buttonClassName="rounded-2xl px-4 py-2 text-sm"
+                />
+              </div>
             </div>
             <div className="rounded-3xl border-2 border-primary p-6 shadow-hover">
               <div className="inline-block rounded-full bg-accent text-accent-foreground text-xs font-medium px-2 py-1 mb-2">
@@ -374,9 +381,13 @@ export default function DataQualityAuditPage() {
                 <li>Data Quality Dashboard</li>
               </ul>
               <div className="mt-6 font-semibold text-primary">Preis auf Anfrage</div>
-              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-primary text-primary-foreground text-sm hover:bg-primary-glow transition-colors">
-                Anfragen
-              </a>
+              <div className="mt-4">
+                <CalendarBookingDialog
+                  buttonText="Anfragen"
+                  buttonSize="sm"
+                  buttonClassName="rounded-2xl px-4 py-2 text-sm"
+                />
+              </div>
             </div>
             <div className="rounded-3xl border border-border p-6 shadow-card">
               <h3 className="font-semibold">Umfassendes Assessment</h3>
@@ -390,9 +401,13 @@ export default function DataQualityAuditPage() {
                 <li>Langfristige Roadmap (12+ Monate)</li>
               </ul>
               <div className="mt-6 font-semibold text-primary">Preis auf Anfrage</div>
-              <a href="#termin" className="mt-4 inline-block rounded-2xl px-4 py-2 bg-primary text-primary-foreground text-sm hover:bg-primary-glow transition-colors">
-                Anfragen
-              </a>
+              <div className="mt-4">
+                <CalendarBookingDialog
+                  buttonText="Anfragen"
+                  buttonSize="sm"
+                  buttonClassName="rounded-2xl px-4 py-2 text-sm"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -422,9 +437,11 @@ export default function DataQualityAuditPage() {
             Auf Wunsch erhalten Sie im Anschluss einen 2‑seitigen Audit-Summary (PDF).
           </p>
           <div className="mt-6">
-            <Button asChild size="lg" className="rounded-2xl">
-              <a href="mailto:contact@one-next.com">Termin buchen</a>
-            </Button>
+            <CalendarBookingDialog
+              buttonText="Termin buchen"
+              buttonSize="lg"
+              buttonClassName="rounded-2xl"
+            />
           </div>
         </div>
       </section>

@@ -9,6 +9,7 @@ import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 
 const AIConsultingServices = () => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -50,12 +51,11 @@ const AIConsultingServices = () => {
               minRows={3}
             />
             
-            <Button 
-              size="lg" 
-              className="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6 mt-6"
-            >
-              Beratungsgespräch vereinbaren
-            </Button>
+            <CalendarBookingDialog
+              buttonText="Beratungsgespräch vereinbaren"
+              buttonSize="lg"
+              buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6 mt-6"
+            />
           </div>
         </div>
       </section>

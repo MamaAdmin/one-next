@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import geometricPaper from "@/assets/geometric-paper.jpg";
 import decorativeEgg from "@/assets/decorative-egg.jpg";
 import pinkPodium from "@/assets/pink-podium.jpg";
@@ -37,8 +38,8 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               placeholder="Beschreibung des Expertise-Abschnitts"
               minRows={3}
             />
-            <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
-              {isEditMode ? (
+            {isEditMode ? (
+              <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
                 <InlineTextField
                   value={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
                   onSave={(value) => updateContent('expertise_button', value)}
@@ -46,10 +47,15 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                   placeholder="Button-Text"
                   as="span"
                 />
-              ) : (
-                content.expertise_button || 'Kostenlose Beratung vereinbaren'
-              )}
-            </Button>
+              </Button>
+            ) : (
+              <CalendarBookingDialog
+                buttonText={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
+                buttonSize="lg"
+                buttonVariant="outline"
+                buttonClassName="rounded-full border-foreground/20 hover:bg-foreground/5 bg-transparent"
+              />
+            )}
           </div>
 
           {/* Decorative Image 1 - hidden on mobile, shown on tablet+ */}
