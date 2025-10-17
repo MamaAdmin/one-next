@@ -13,8 +13,15 @@ const DesignSprintWorkshop = () => {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       
+      {/* Breadcrumb / Back Link */}
+      <div className="container mx-auto px-6 pt-24 pb-4">
+        <Link to="/workshops" className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
+          ← Zurück zur Workshop-Übersicht
+        </Link>
+      </div>
+      
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
+      <section className="relative py-12 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             <div className="space-y-6 animate-fade-in">
@@ -41,8 +48,8 @@ const DesignSprintWorkshop = () => {
                   </Button>
                 </Link>
                 <Button asChild size="lg" variant="outline">
-                  <Link to="/problem-framing-workshop">
-                    Challenge erst klären
+                  <Link to="/workshops">
+                    Andere Workshops ansehen
                   </Link>
                 </Button>
               </div>

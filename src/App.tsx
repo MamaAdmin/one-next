@@ -40,6 +40,7 @@ import VoiceBot from "./pages/VoiceBot";
 import NotFound from "./pages/NotFound";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
+import Workshops from "./pages/Workshops";
 import UserProfile from "./pages/UserProfile";
 import CompanyProfile from "./pages/CompanyProfile";
 import AcceptInvitation from "./pages/AcceptInvitation";
@@ -57,6 +58,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Article />} />
+          <Route path="/workshops" element={<Workshops />} />
           <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
           <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
           <Route path="/problem-framing-workshop" element={<ProblemFramingWorkshop />} />
