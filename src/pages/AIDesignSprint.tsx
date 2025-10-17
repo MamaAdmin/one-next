@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Users, Target } from "lucide-react";
+import { Calendar, Users, Target, Laptop, Check } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
@@ -207,6 +207,138 @@ const AIDesignSprint = () => {
                 <p className="text-muted-foreground text-sm">
                   In 2 Tagen von der Idee zum konkreten Implementierungsplan
                 </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Wählen Sie Ihren Design Sprint Ansatz */}
+      <section className="py-24 bg-muted/30">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Wählen Sie Ihren Design Sprint Ansatz</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Beide Formate führen zu AI-Innovation - wählen Sie den Ansatz, der am besten zu Ihrem Team passt
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Problem-Framing-Workshop */}
+            <Card className="hover:shadow-hover transition-all">
+              <CardContent className="p-8 space-y-6">
+                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop</h3>
+                  <p className="text-sm text-muted-foreground">Ihre Challenge schärfen</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>1-2 Tage intensive Klärung</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Challenge präzise definieren</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Zielgruppe priorisieren</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Sprint-Ready machen</span>
+                  </li>
+                </ul>
+                <div className="pt-4 border-t space-y-4">
+                  <p className="text-sm font-semibold">Preis auf Anfrage</p>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link to="/problem-framing-workshop">Workshop-Details</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Design Sprint Workshop (Mit AI) */}
+            <Card className="hover:shadow-hover transition-all">
+              <CardContent className="p-8 space-y-6">
+                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (Mit AI)</h3>
+                  <p className="text-sm text-muted-foreground">Intensiv, expert-geführt, maßgeschneidert</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>2 bis 4 Tage intensive Workshops</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Vor Ort oder Remote mit Team</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Geleitet von AI-Experten & Facilitatoren</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Maßgeschneidert für Ihre Bedürfnisse</span>
+                  </li>
+                </ul>
+                <div className="pt-4 border-t space-y-4">
+                  <p className="text-sm font-semibold">Preis auf Anfrage</p>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link to="/design-sprint-workshop">Workshop-Details</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Online Design Sprint */}
+            <Card className="hover:shadow-hover transition-all relative">
+              <div className="absolute top-4 right-4 bg-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                Neu verfügbar
+              </div>
+              <CardContent className="p-8 space-y-6">
+                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                  <Laptop className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Online Design Sprint</h3>
+                  <p className="text-sm text-muted-foreground">Flexibel, strukturiert, selbstgeführt</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Strukturierter Prozess</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Selbstgeführt mit digitalen Tools</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Flexibel für verteilte Teams</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Schritt-für-Schritt Anleitung</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Experten-Input optional</span>
+                  </li>
+                </ul>
+                <div className="pt-4 border-t space-y-4">
+                  <p className="text-sm font-semibold">Preis auf Anfrage</p>
+                  <Button className="w-full bg-black hover:bg-black/90 text-white" asChild>
+                    <Link to="/ai-design-sprint/online">Online Sprint entdecken</Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
