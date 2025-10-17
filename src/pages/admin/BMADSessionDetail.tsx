@@ -335,7 +335,7 @@ export default function BMADSessionDetail() {
                   </div>
                   <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
                     {(() => {
-                      const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG];
+                      const config = PHASE_CONFIG[session.current_phase as keyof typeof PHASE_CONFIG] || PHASE_CONFIG.business_analyst;
                       const PhaseIcon = config.icon;
                       return <PhaseIcon className="h-8 w-8" />;
                     })()}
