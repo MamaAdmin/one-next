@@ -25,18 +25,15 @@ export function CalendarBookingDialog({
       </DialogTrigger>
       <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-hidden">
         {/* Header mit Branding */}
-        <div className="bg-gradient-primary px-6 py-4 border-b">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-background/20 backdrop-blur-sm flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-primary-foreground" />
+        <div className="bg-gradient-primary px-3 py-2 border-b">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-background/20 backdrop-blur-sm flex items-center justify-center">
+              <Calendar className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-primary-foreground">
+              <h2 className="text-sm font-semibold text-primary-foreground">
                 Termin vereinbaren
               </h2>
-              <p className="text-sm text-primary-foreground/80">
-                Buchen Sie Ihr kostenloses Beratungsgespräch
-              </p>
             </div>
           </div>
         </div>
