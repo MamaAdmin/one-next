@@ -52,7 +52,6 @@ interface Module {
   sort_order: number;
   content_text?: string;
   content_video_url?: string;
-  tools?: Tool[];
   resources?: Resource[];
   tags?: string[];
   author?: string;
@@ -131,7 +130,6 @@ export default function LMSModuleDashboard() {
     // Transform data to match Module interface
     const transformedData = (data || []).map(module => ({
       ...module,
-      tools: Array.isArray(module.tools) ? (module.tools as unknown as Tool[]) : [],
       resources: Array.isArray(module.resources) ? (module.resources as unknown as Resource[]) : [],
       tags: Array.isArray(module.tags) ? module.tags : [],
       prerequisites: Array.isArray(module.prerequisites) ? module.prerequisites : [],

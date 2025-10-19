@@ -19,6 +19,7 @@ interface ToolSelectorProps {
   selectedTools: string[];
   onChange: (toolIds: string[]) => void;
   filterByPhase?: number;
+  filterByCourseId?: string;
 }
 
 const categoryColors: Record<string, string> = {
@@ -30,7 +31,7 @@ const categoryColors: Record<string, string> = {
   retrospect: "bg-gray-100 text-gray-800",
 };
 
-export function ToolSelector({ selectedTools, onChange, filterByPhase }: ToolSelectorProps) {
+export function ToolSelector({ selectedTools, onChange, filterByPhase, filterByCourseId }: ToolSelectorProps) {
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,13 +47,31 @@ export function ToolSelector({ selectedTools, onChange, filterByPhase }: ToolSel
         query = query.eq("phase_number", filterByPhase);
       }
 
+      // Filter by course: only show tools assigned to this course
+      if (filterByCourseId) {
+        const { data: courseTools } = await supabase
+          .from("lms_course_tools")
+          .select("tool_id")
+          .eq("course_id", filterByCourseId);
+        
+        const courseToolIds = courseTools?.map(ct => ct.tool_id) || [];
+        if (courseToolIds.length > 0) {
+          query = query.in("id", courseToolIds);
+        } else {
+          // No tools assigned to course yet, show empty list
+          setTools([]);
+          setLoading(false);
+          return;
+        }
+      }
+
       const { data } = await query;
       setTools(data || []);
       setLoading(false);
     };
 
     loadTools();
-  }, [filterByPhase]);
+  }, [filterByPhase, filterByCourseId]);
 
   const handleToggle = (toolId: string) => {
     const newSelection = selectedTools.includes(toolId)

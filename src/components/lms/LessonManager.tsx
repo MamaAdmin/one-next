@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, GripVertical, Edit2, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ToolSelector } from "./ToolSelector";
 
 interface Lesson {
   id?: string;
@@ -36,10 +37,11 @@ const getLessonTypeLabel = (type: string): string => {
   return labels[type.toLowerCase()] || type;
 };
 
-export const LessonManager = ({ moduleId }: { moduleId: string }) => {
+export const LessonManager = ({ moduleId, courseId }: { moduleId: string; courseId: string }) => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingLessonTools, setEditingLessonTools] = useState<Record<string, string[]>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -75,10 +77,38 @@ export const LessonManager = ({ moduleId }: { moduleId: string }) => {
     };
     setLessons([...lessons, newLesson]);
     setEditingId("new");
+    setEditingLessonTools(prev => ({ ...prev, new: [] }));
+  };
+
+  const saveLessonTools = async (lessonId: string, toolIds: string[]) => {
+    // Delete existing lesson tools
+    const { error: deleteError } = await supabase
+      .from("lms_lesson_tools")
+      .delete()
+      .eq("lesson_id", lessonId);
+
+    if (deleteError) throw deleteError;
+
+    // Insert new lesson tools
+    if (toolIds.length > 0) {
+      const toolsToInsert = toolIds.map((toolId, index) => ({
+        lesson_id: lessonId,
+        tool_id: toolId,
+        sort_order: index + 1,
+      }));
+
+      const { error: insertError } = await supabase
+        .from("lms_lesson_tools")
+        .insert(toolsToInsert);
+
+      if (insertError) throw insertError;
+    }
   };
 
   const saveLesson = async (lesson: Lesson) => {
     try {
+      let lessonId: string;
+
       if (lesson.id) {
         const { error } = await supabase
           .from("lms_lessons")
@@ -86,13 +116,21 @@ export const LessonManager = ({ moduleId }: { moduleId: string }) => {
           .eq("id", lesson.id);
 
         if (error) throw error;
+        lessonId = lesson.id;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("lms_lessons")
-          .insert([lesson]);
+          .insert([lesson])
+          .select()
+          .single();
 
         if (error) throw error;
+        lessonId = data.id;
       }
+
+      // Save lesson tools
+      const toolIds = editingLessonTools[lesson.id || 'new'] || [];
+      await saveLessonTools(lessonId, toolIds);
 
       toast({ title: "Erfolg", description: "Lektion gespeichert" });
       loadLessons();
@@ -104,6 +142,24 @@ export const LessonManager = ({ moduleId }: { moduleId: string }) => {
         variant: "destructive" 
       });
     }
+  };
+
+  const loadLessonTools = async (lessonId: string) => {
+    const { data } = await supabase
+      .from("lms_lesson_tools")
+      .select("tool_id")
+      .eq("lesson_id", lessonId)
+      .order("sort_order");
+
+    return data?.map(lt => lt.tool_id) || [];
+  };
+
+  const handleEditLesson = async (lessonId: string) => {
+    if (lessonId !== 'new') {
+      const toolIds = await loadLessonTools(lessonId);
+      setEditingLessonTools(prev => ({ ...prev, [lessonId]: toolIds }));
+    }
+    setEditingId(lessonId);
   };
 
   const deleteLesson = async (id: string) => {
@@ -191,7 +247,7 @@ export const LessonManager = ({ moduleId }: { moduleId: string }) => {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => setEditingId(lesson.id || null)}
+                    onClick={() => handleEditLesson(lesson.id || 'new')}
                   >
                     <Edit2 className="h-4 w-4" />
                   </Button>
@@ -295,6 +351,23 @@ export const LessonManager = ({ moduleId }: { moduleId: string }) => {
                   />
                 </div>
               )}
+
+              <div>
+                <Label>Tools</Label>
+                <ToolSelector
+                  selectedTools={editingLessonTools[lesson.id || 'new'] || []}
+                  onChange={(toolIds) => {
+                    setEditingLessonTools(prev => ({
+                      ...prev,
+                      [lesson.id || 'new']: toolIds
+                    }));
+                  }}
+                  filterByCourseId={courseId}
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Wähle Tools aus, die für diese Lektion verfügbar sein sollen.
+                </p>
+              </div>
             </CardContent>
           )}
         </Card>

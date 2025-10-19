@@ -38,7 +38,6 @@ interface Module {
   sort_order: number;
   content_text?: string;
   content_video_url?: string;
-  tools?: Tool[];
   resources?: Resource[];
   tags?: string[];
   author?: string;
@@ -116,7 +115,6 @@ const LMSModuleEditor = () => {
     } else if (data) {
       const moduleData = {
         ...data,
-        tools: Array.isArray(data.tools) ? (data.tools as unknown as Tool[]) : [],
         resources: Array.isArray(data.resources) ? (data.resources as unknown as Resource[]) : [],
         tags: Array.isArray(data.tags) ? data.tags : [],
         prerequisites: Array.isArray(data.prerequisites) ? data.prerequisites : [],
@@ -444,7 +442,7 @@ const LMSModuleEditor = () => {
                     {/* Tab 2: Lektionen */}
                     <TabsContent value="lessons" className="space-y-6">
                       {moduleId ? (
-                        <LessonManager moduleId={moduleId} />
+                        <LessonManager moduleId={moduleId} courseId={courseId} />
                       ) : (
                         <div className="text-center py-8 text-muted-foreground">
                           <p>Bitte speichere das Modul zuerst, um Lektionen hinzuzufügen.</p>
@@ -486,10 +484,11 @@ const LMSModuleEditor = () => {
                           selectedTools={selectedToolIds}
                           onChange={handleToolChange}
                           filterByPhase={formData.phase_number}
+                          filterByCourseId={courseId}
                         />
                         <p className="text-xs text-muted-foreground mt-2">
-                          💡 Tipp: Tools werden automatisch nach Phase gefiltert. Ändern Sie die Phase im Allgemein-Tab,
-                          um andere Tools zu sehen.
+                          💡 Tipp: Es werden nur Tools angezeigt, die diesem Kurs zugeordnet sind.
+                          Tools können in der Kursverwaltung hinzugefügt werden.
                         </p>
                       </div>
 

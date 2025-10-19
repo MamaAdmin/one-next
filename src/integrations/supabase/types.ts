@@ -618,7 +618,6 @@ export type Database = {
           tags: string[] | null
           title: string
           tool_recommendation: string | null
-          tools: Json | null
           updated_at: string
         }
         Insert: {
@@ -639,7 +638,6 @@ export type Database = {
           tags?: string[] | null
           title: string
           tool_recommendation?: string | null
-          tools?: Json | null
           updated_at?: string
         }
         Update: {
@@ -660,7 +658,6 @@ export type Database = {
           tags?: string[] | null
           title?: string
           tool_recommendation?: string | null
-          tools?: Json | null
           updated_at?: string
         }
         Relationships: [
@@ -796,6 +793,55 @@ export type Database = {
             columns: ["participant_id"]
             isOneToOne: false
             referencedRelation: "participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_course_tools: {
+        Row: {
+          course_id: string
+          created_at: string | null
+          id: string
+          is_required: boolean | null
+          sort_order: number
+          tool_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          sort_order?: number
+          tool_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          sort_order?: number
+          tool_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_course_tools_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_course_tools_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses_with_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_course_tools_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "lms_tools"
             referencedColumns: ["id"]
           },
         ]
@@ -981,6 +1027,48 @@ export type Database = {
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lms_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_lesson_tools: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_required: boolean | null
+          lesson_id: string
+          sort_order: number
+          tool_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          lesson_id: string
+          sort_order?: number
+          tool_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          lesson_id?: string
+          sort_order?: number
+          tool_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_lesson_tools_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lms_lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_lesson_tools_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "lms_tools"
             referencedColumns: ["id"]
           },
         ]
