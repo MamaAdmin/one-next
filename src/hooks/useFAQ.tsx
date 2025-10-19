@@ -114,26 +114,45 @@ export const useFAQCategories = () => {
   const [categories, setCategories] = useState<FAQCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("faq_categories")
+        .select("*")
+        .order("sort_order", { ascending: true });
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("faq_categories")
-          .select("*")
-          .eq("is_active", true)
-          .order("sort_order", { ascending: true });
-
-        if (error) throw error;
-        setCategories(data || []);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCategories();
+
+    // Realtime subscription for categories
+    const channel = supabase
+      .channel("faq-category-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "faq_categories",
+        },
+        () => {
+          fetchCategories();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  return { categories, loading };
+  return { categories, loading, refetch: fetchCategories };
 };
