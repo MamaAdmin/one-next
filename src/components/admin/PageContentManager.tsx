@@ -316,7 +316,7 @@ const PageContentManager = () => {
                         <div 
                           className="text-sm line-clamp-3 text-muted-foreground prose prose-sm max-w-none"
                           dangerouslySetInnerHTML={{ 
-                            __html: DOMPurify.sanitize(content.content) 
+                            __html: DOMPurify.sanitize(decodeHtmlEntities(content.content)) 
                           }}
                         />
                       ) : (

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DOMPurify from "dompurify";
+import { decodeHtmlEntities } from "@/lib/html";
 
 interface InlineTextAreaProps {
   value: string;
@@ -53,7 +55,12 @@ export const InlineTextArea = ({
   };
 
   if (!isEditMode) {
-    return <p className={className}>{value}</p>;
+    return (
+      <div
+        className={cn("prose prose-base max-w-none", className)}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(decodeHtmlEntities(value)) }}
+      />
+    );
   }
 
   return (
