@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import {
   Popover,
   PopoverContent,
@@ -551,11 +552,16 @@ Ziele: ${data.goals}
                   <FormItem>
                     <FormLabel>Bitte beschreiben Sie kurz Ihre Zielsetzung *</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        {...field} 
-                        rows={5}
-                        placeholder="Welche Ziele verfolgen Sie mit dem Workshop? Was möchten Sie erreichen?"
-                      />
+                      <div className="min-h-[200px]">
+                        <RichTextEditor
+                          value={field.value}
+                          onSave={async (value) => {
+                            field.onChange(value);
+                          }}
+                          isEditMode={true}
+                          placeholder="Welche Ziele verfolgen Sie mit dem Workshop? Was möchten Sie erreichen?"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

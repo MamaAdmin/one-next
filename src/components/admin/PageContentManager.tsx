@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { Pencil, Trash2 } from "lucide-react";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 
 interface PageContent {
   id: string;
@@ -178,13 +179,25 @@ const PageContentManager = () => {
 
             <div className="space-y-2">
               <Label htmlFor="content">Inhalt</Label>
-              <Textarea
-                id="content"
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                rows={8}
-                required
-              />
+              {(formData.content_type === 'text' || formData.content_type === 'html') ? (
+                <RichTextEditor
+                  value={formData.content}
+                  onSave={async (value) => {
+                    setFormData({ ...formData, content: value });
+                  }}
+                  isEditMode={true}
+                  placeholder="Seiteninhalt eingeben..."
+                  className="min-h-[300px]"
+                />
+              ) : (
+                <Textarea
+                  id="content"
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  rows={8}
+                  required
+                />
+              )}
             </div>
 
             <div className="flex flex-wrap gap-2">

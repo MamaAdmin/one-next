@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -58,6 +59,9 @@ const LMSModuleEditor = () => {
   const [courseName, setCourseName] = useState<string>("");
   const [selectedToolIds, setSelectedToolIds] = useState<string[]>([]);
   const [selectedTools, setSelectedTools] = useState<{ id: string; title: string }[]>([]);
+  const [descriptionHtml, setDescriptionHtml] = useState("");
+  const [contentHtml, setContentHtml] = useState("");
+  const [toolRecommendationHtml, setToolRecommendationHtml] = useState("");
   const [formData, setFormData] = useState({
     category: 'understand' as CourseCategory,
     module_type: "Theory",
@@ -117,6 +121,9 @@ const LMSModuleEditor = () => {
         category: data.category as CourseCategory,
       };
       setModule(moduleData);
+      setDescriptionHtml(data.description || "");
+      setContentHtml(data.content_text || "");
+      setToolRecommendationHtml(data.tool_recommendation || "");
       setFormData({
         category: data.category as CourseCategory,
         module_type: data.module_type,
@@ -213,18 +220,18 @@ const LMSModuleEditor = () => {
     const moduleData = {
       course_id: courseId,
       title: form.get("title") as string,
-      description: form.get("description") as string,
+      description: descriptionHtml,
       category: formData.category,
       module_type: form.get("module_type") as string,
       duration_minutes: parseInt(form.get("duration_minutes") as string),
       sort_order: parseInt(form.get("sort_order") as string),
-      content_text: form.get("content_text") as string,
+      content_text: contentHtml,
       content_video_url: form.get("content_video_url") as string,
       resources: resources as any,
       tags: tags,
       author: form.get("author") as string,
       prerequisites: prerequisites,
-      tool_recommendation: form.get("tool_recommendation") as string,
+      tool_recommendation: toolRecommendationHtml,
     };
 
     if (isEditing && moduleId) {
@@ -365,16 +372,15 @@ const LMSModuleEditor = () => {
 
                       <div>
                         <Label htmlFor="description">Beschreibung</Label>
-                        <Textarea
-                          id="description"
-                          name="description"
-                          rows={4}
-                          placeholder="Kurs- oder Modulbeschreibung eingeben..."
-                          defaultValue={module?.description}
+                        <RichTextEditor
+                          value={descriptionHtml}
+                          onSave={async (value) => {
+                            setDescriptionHtml(value);
+                            setHasUnsavedChanges(true);
+                          }}
+                          isEditMode={true}
+                          placeholder="Modulbeschreibung eingeben..."
                         />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Unterstützt: **bold**, *italic*, [links](url)
-                        </p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -460,14 +466,16 @@ const LMSModuleEditor = () => {
                     {/* Tab 3: Inhalte */}
                     <TabsContent value="content" className="space-y-6">
                       <div>
-                        <Label htmlFor="content_text">Content (Markdown)</Label>
-                        <Textarea
-                          id="content_text"
-                          name="content_text"
-                          rows={10}
-                          placeholder="Modulinhalte mit Markdown oder strukturiertem Text eingeben..."
-                          defaultValue={module?.content_text}
-                          className="font-mono text-sm"
+                        <Label htmlFor="content_text">Modul-Inhalt</Label>
+                        <RichTextEditor
+                          value={contentHtml}
+                          onSave={async (value) => {
+                            setContentHtml(value);
+                            setHasUnsavedChanges(true);
+                          }}
+                          isEditMode={true}
+                          placeholder="Modulinhalte eingeben..."
+                          className="min-h-[400px]"
                         />
                         <p className="text-xs text-muted-foreground mt-1">Markdown-Syntax wird unterstützt</p>
                       </div>
@@ -514,12 +522,16 @@ const LMSModuleEditor = () => {
                       </div>
 
                       <div>
-                        <Label htmlFor="tool_recommendation">Empfohlenes Tool</Label>
-                        <Input
-                          id="tool_recommendation"
-                          name="tool_recommendation"
-                          placeholder="z. B. Miro für Ideation-Phase"
-                          defaultValue={module?.tool_recommendation}
+                        <Label htmlFor="tool_recommendation">Tool-Empfehlung</Label>
+                        <RichTextEditor
+                          value={toolRecommendationHtml}
+                          onSave={async (value) => {
+                            setToolRecommendationHtml(value);
+                            setHasUnsavedChanges(true);
+                          }}
+                          isEditMode={true}
+                          placeholder="Empfohlene Tools und deren Verwendung..."
+                          className="min-h-[200px]"
                         />
                       </div>
                     </TabsContent>

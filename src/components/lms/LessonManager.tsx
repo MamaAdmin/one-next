@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, GripVertical, Edit2, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToolSelector } from "./ToolSelector";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 
 interface Lesson {
   id?: string;
@@ -309,18 +310,19 @@ export const LessonManager = ({ moduleId, courseId }: { moduleId: string; course
                 </div>
               </div>
 
-              <div>
-                <Label>Beschreibung</Label>
-                <Textarea
-                  value={lesson.description}
-                  onChange={(e) => {
-                    const updated = [...lessons];
-                    updated[index].description = e.target.value;
-                    setLessons(updated);
-                  }}
-                  rows={3}
-                />
-              </div>
+                        <div>
+                          <Label>Beschreibung</Label>
+                          <RichTextEditor
+                            value={lesson.description || ""}
+                            onSave={async (value) => {
+                              const updated = [...lessons];
+                              updated[index].description = value;
+                              setLessons(updated);
+                            }}
+                            isEditMode={true}
+                            placeholder="Lektionsbeschreibung..."
+                          />
+                        </div>
 
               <div>
                 <Label>Inhalt (Markdown)</Label>

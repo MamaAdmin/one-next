@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useArtifacts } from "@/hooks/useArtifacts";
 import { Upload, FileText, Image, X, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 
 interface ArtifactUploadProps {
   enrollmentId: string;
@@ -131,12 +132,14 @@ export const ArtifactUpload = ({
 
           <div>
             <Label htmlFor="description">Beschreibung</Label>
-            <Textarea
-              id="description"
+            <RichTextEditor
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onSave={async (value) => {
+                setDescription(value);
+              }}
+              isEditMode={true}
               placeholder="Optionale Beschreibung..."
-              rows={3}
+              className="min-h-[120px]"
             />
           </div>
 
