@@ -1035,6 +1035,7 @@ export type Database = {
           is_active: boolean | null
           phase_number: number | null
           slug: string
+          sort_order: number
           tags: string[] | null
           template_data: Json | null
           thumbnail_url: string | null
@@ -1052,6 +1053,7 @@ export type Database = {
           is_active?: boolean | null
           phase_number?: number | null
           slug: string
+          sort_order?: number
           tags?: string[] | null
           template_data?: Json | null
           thumbnail_url?: string | null
@@ -1069,6 +1071,7 @@ export type Database = {
           is_active?: boolean | null
           phase_number?: number | null
           slug?: string
+          sort_order?: number
           tags?: string[] | null
           template_data?: Json | null
           thumbnail_url?: string | null

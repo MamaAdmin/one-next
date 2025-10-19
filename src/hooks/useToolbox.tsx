@@ -16,6 +16,7 @@ export interface Tool {
   thumbnail_url: string | null;
   tags: string[];
   is_active: boolean;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
@@ -51,7 +52,7 @@ export const useToolbox = () => {
       let query = supabase
         .from("lms_tools")
         .select("*")
-        .order("title");
+        .order("sort_order");
 
       if (filters?.category) {
         query = query.eq("category", filters.category);
@@ -160,6 +161,33 @@ export const useToolbox = () => {
     }
   };
 
+  const updateToolsOrder = async (toolsWithNewOrder: { id: string; sort_order: number }[]) => {
+    try {
+      const updates = toolsWithNewOrder.map(({ id, sort_order }) =>
+        supabase
+          .from("lms_tools")
+          .update({ sort_order })
+          .eq("id", id)
+      );
+
+      await Promise.all(updates);
+
+      toast({
+        title: "Erfolg",
+        description: "Sortierung wurde gespeichert",
+      });
+
+      await loadTools();
+    } catch (error) {
+      console.error("Error updating tools order:", error);
+      toast({
+        title: "Fehler",
+        description: "Sortierung konnte nicht gespeichert werden",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     loadTools();
   }, []);
@@ -171,5 +199,6 @@ export const useToolbox = () => {
     createTool,
     updateTool,
     deleteTool,
+    updateToolsOrder,
   };
 };

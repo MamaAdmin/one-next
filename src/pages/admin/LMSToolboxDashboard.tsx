@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToolbox } from "@/hooks/useToolbox";
+import { useToolbox, Tool } from "@/hooks/useToolbox";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -11,8 +11,25 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Plus, Pencil, Trash2, Wrench, ExternalLink } from "lucide-react";
+import { MoreVertical, Plus, Pencil, Trash2, Wrench, ExternalLink, GripVertical } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const categoryLabels: Record<string, string> = {
   understand: "Understand",
@@ -32,14 +49,165 @@ const categoryColors: Record<string, string> = {
   retrospect: "bg-gray-100 text-gray-800",
 };
 
+interface SortableToolRowProps {
+  tool: Tool;
+  categoryLabels: Record<string, string>;
+  categoryColors: Record<string, string>;
+  navigate: any;
+  deleteTool: (id: string) => Promise<void>;
+}
+
+const SortableToolRow = ({ tool, categoryLabels, categoryColors, navigate, deleteTool }: SortableToolRowProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: tool.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr ref={setNodeRef} style={style} className="border-b hover:bg-muted/50">
+      <td className="p-4">
+        <div className="flex items-center gap-2">
+          <button
+            className="cursor-grab active:cursor-grabbing touch-none"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="h-5 w-5 text-muted-foreground" />
+          </button>
+          <div className="flex items-center gap-3">
+            {tool.thumbnail_url && tool.tool_type !== 'embedded' ? (
+              <img src={tool.thumbnail_url} alt={tool.title} className="w-12 h-12 rounded object-cover" />
+            ) : (
+              <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
+                <Wrench className="h-5 w-5 text-muted-foreground" />
+              </div>
+            )}
+            <div>
+              <div className="font-medium">{tool.title}</div>
+              {tool.description && (
+                <div className="text-sm text-muted-foreground line-clamp-1">
+                  {tool.description}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </td>
+      <td className="p-4">
+        <Badge variant="secondary" className={categoryColors[tool.category]}>
+          {categoryLabels[tool.category]}
+        </Badge>
+      </td>
+      <td className="p-4">
+        {tool.phase_number ? `Phase ${tool.phase_number}` : '-'}
+      </td>
+      <td className="p-4">
+        <Badge variant="outline" className="capitalize">{tool.tool_type}</Badge>
+      </td>
+      <td className="p-4">
+        <Badge variant={tool.is_active ? "default" : "secondary"}>
+          {tool.is_active ? 'Aktiv' : 'Inaktiv'}
+        </Badge>
+      </td>
+      <td className="p-4 text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {tool.slug === 'hmw-fragen' ? (
+              <DropdownMenuItem onClick={() => navigate(`/lms/tools/hmw-generator`)}>
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Generator öffnen
+              </DropdownMenuItem>
+            ) : (
+              <>
+                <DropdownMenuItem onClick={() => navigate(`/admin/lms/toolbox/${tool.id}`)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Bearbeiten
+                </DropdownMenuItem>
+                {tool.external_url && (
+                  <DropdownMenuItem onClick={() => window.open(tool.external_url!, '_blank')}>
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Tool öffnen
+                  </DropdownMenuItem>
+                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Löschen
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Tool löschen?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Möchten Sie "{tool.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => deleteTool(tool.id)}>
+                        Löschen
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </td>
+    </tr>
+  );
+};
+
 export default function LMSToolboxDashboard() {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdmin();
-  const { tools, loading, loadTools, deleteTool } = useToolbox();
+  const { tools, loading, loadTools, deleteTool, updateToolsOrder } = useToolbox();
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<string>("phase");
+  const [sortBy, setSortBy] = useState<string>("manual");
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = filteredTools.findIndex((tool) => tool.id === active.id);
+      const newIndex = filteredTools.findIndex((tool) => tool.id === over.id);
+
+      const reorderedTools = arrayMove(filteredTools, oldIndex, newIndex);
+      
+      const toolsWithNewOrder = reorderedTools.map((tool, index) => ({
+        id: tool.id,
+        sort_order: index,
+      }));
+
+      updateToolsOrder(toolsWithNewOrder);
+    }
+  };
 
   const breadcrumbItems = [
     { label: "Admin", href: "/admin" },
@@ -56,6 +224,9 @@ export default function LMSToolboxDashboard() {
     })
     .sort((a, b) => {
       switch (sortBy) {
+        case "manual":
+          return a.sort_order - b.sort_order;
+
         case "phase":
           // Sort by phase_number: tools with phase come first, then by phase number
           if (a.phase_number && !b.phase_number) return -1;
@@ -82,9 +253,6 @@ export default function LMSToolboxDashboard() {
       }
     });
 
-  const handleDelete = async (id: string) => {
-    await deleteTool(id);
-  };
 
   if (adminLoading) {
     return (
@@ -170,6 +338,7 @@ export default function LMSToolboxDashboard() {
                     <SelectValue placeholder="Sortierung" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="manual">Manuell (Drag & Drop)</SelectItem>
                     <SelectItem value="phase">Nach Phase</SelectItem>
                     <SelectItem value="title">Alphabetisch</SelectItem>
                     <SelectItem value="category">Nach Kategorie</SelectItem>
@@ -183,122 +352,46 @@ export default function LMSToolboxDashboard() {
           {/* Desktop Table */}
           <Card className="hidden md:block">
             <CardContent className="p-0">
-              <table className="w-full">
-                <thead className="border-b">
-                  <tr>
-                    <th className="text-left p-4 font-medium">Tool</th>
-                    <th className="text-left p-4 font-medium">Kategorie</th>
-                    <th className="text-left p-4 font-medium">Phase</th>
-                    <th className="text-left p-4 font-medium">Typ</th>
-                    <th className="text-left p-4 font-medium">Status</th>
-                    <th className="text-right p-4 font-medium">Aktionen</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTools.map((tool) => (
-                    <tr key={tool.id} className="border-b hover:bg-muted/50">
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          {tool.thumbnail_url && tool.tool_type !== 'embedded' ? (
-                            <img
-                              src={tool.thumbnail_url}
-                              alt={tool.title}
-                              className="w-12 h-12 rounded object-cover"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
-                              <Wrench className="h-5 w-5 text-muted-foreground" />
-                            </div>
-                          )}
-                          <div>
-                            <div className="font-medium">{tool.title}</div>
-                            {tool.description && (
-                              <div className="text-sm text-muted-foreground line-clamp-1">
-                                {tool.description}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <Badge variant="secondary" className={categoryColors[tool.category]}>
-                          {categoryLabels[tool.category]}
-                        </Badge>
-                      </td>
-                      <td className="p-4">
-                        {tool.phase_number ? `Phase ${tool.phase_number}` : "-"}
-                      </td>
-                      <td className="p-4">
-                        <Badge variant="outline" className="capitalize">
-                          {tool.tool_type}
-                        </Badge>
-                      </td>
-                      <td className="p-4">
-                        <Badge variant={tool.is_active ? "default" : "secondary"}>
-                          {tool.is_active ? "Aktiv" : "Inaktiv"}
-                        </Badge>
-                      </td>
-                      <td className="p-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            {tool.slug === 'hmw-fragen' ? (
-                              <DropdownMenuItem onClick={() => navigate(`/lms/tools/hmw-generator`)}>
-                                <ExternalLink className="mr-2 h-4 w-4" />
-                                Generator öffnen
-                              </DropdownMenuItem>
-                            ) : (
-                              <>
-                                <DropdownMenuItem onClick={() => navigate(`/admin/lms/toolbox/${tool.id}`)}>
-                                  <Pencil className="mr-2 h-4 w-4" />
-                                  Bearbeiten
-                                </DropdownMenuItem>
-                                {tool.external_url && (
-                                  <DropdownMenuItem onClick={() => window.open(tool.external_url!, '_blank')}>
-                                    <ExternalLink className="mr-2 h-4 w-4" />
-                                    Tool öffnen
-                                  </DropdownMenuItem>
-                                )}
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                      <Trash2 className="mr-2 h-4 w-4" />
-                                      Löschen
-                                    </DropdownMenuItem>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Tool löschen?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Möchten Sie "{tool.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => handleDelete(tool.id)}>
-                                        Löschen
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <table className="w-full">
+                  <thead className="border-b">
+                    <tr>
+                      <th className="text-left p-4 font-medium">Tool</th>
+                      <th className="text-left p-4 font-medium">Kategorie</th>
+                      <th className="text-left p-4 font-medium">Phase</th>
+                      <th className="text-left p-4 font-medium">Typ</th>
+                      <th className="text-left p-4 font-medium">Status</th>
+                      <th className="text-right p-4 font-medium">Aktionen</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {filteredTools.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  Keine Tools gefunden
-                </div>
-              )}
+                  </thead>
+                  <tbody>
+                    <SortableContext
+                      items={filteredTools.map(t => t.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {filteredTools.map((tool) => (
+                        <SortableToolRow
+                          key={tool.id}
+                          tool={tool}
+                          categoryLabels={categoryLabels}
+                          categoryColors={categoryColors}
+                          navigate={navigate}
+                          deleteTool={deleteTool}
+                        />
+                      ))}
+                    </SortableContext>
+                  </tbody>
+                </table>
+                {filteredTools.length === 0 && (
+                  <div className="text-center py-12 text-muted-foreground">
+                    Keine Tools gefunden
+                  </div>
+                )}
+              </DndContext>
             </CardContent>
           </Card>
 
@@ -359,7 +452,7 @@ export default function LMSToolboxDashboard() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleDelete(tool.id)}>
+                                  <AlertDialogAction onClick={() => deleteTool(tool.id)}>
                                     Löschen
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
