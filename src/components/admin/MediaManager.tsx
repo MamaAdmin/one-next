@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { Upload, Trash2, Search, Filter } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
+import MediaFileNameEdit from "./MediaFileNameEdit";
 import {
   Select,
   SelectContent,
@@ -226,6 +227,29 @@ const MediaManager = () => {
     toast({ title: "Kopiert", description: "URL wurde in die Zwischenablage kopiert." });
   };
 
+  const handleRename = async (id: string, newFilename: string) => {
+    try {
+      const { error } = await supabase
+        .from("media")
+        .update({ filename: newFilename })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Erfolg",
+        description: "Datei wurde erfolgreich umbenannt.",
+      });
+      fetchMedia();
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const filteredFiles = files.filter((file) => {
     const matchesSearch = file.filename.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || file.file_type.startsWith(filterType);
@@ -318,7 +342,10 @@ const MediaManager = () => {
                   className="w-full h-48 object-cover"
                 />
                   <div className="p-4 space-y-2">
-                    <p className="text-sm font-medium truncate">{file.filename}</p>
+                    <MediaFileNameEdit
+                      filename={file.filename}
+                      onRename={(newName) => handleRename(file.id, newName)}
+                    />
                     {file.width && file.height && (
                       <p className="text-xs text-muted-foreground">
                         {file.width} × {file.height} • {(file.file_size / 1024).toFixed(0)} KB
