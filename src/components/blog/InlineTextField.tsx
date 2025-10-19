@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DOMPurify from "dompurify";
+import { decodeHtmlEntitiesDeep } from "@/lib/html";
 
 interface InlineTextFieldProps {
   value: string;
@@ -54,9 +56,19 @@ export const InlineTextField = ({
       (e.target as HTMLInputElement).blur();
     }
   };
+  const decoded = decodeHtmlEntitiesDeep(value || "");
+  const looksLikeHtml = /<[^>]+>/.test(decoded) || decoded.includes("&lt;") || decoded.includes("&gt;");
 
   if (!isEditMode) {
-    return <Component className={className}>{value}</Component>;
+    if (looksLikeHtml) {
+      return (
+        <Component
+          className={cn("prose max-w-none", className)}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(decoded) }}
+        />
+      );
+    }
+    return <Component className={className}>{decoded}</Component>;
   }
 
   return (

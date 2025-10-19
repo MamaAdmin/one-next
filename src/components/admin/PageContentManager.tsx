@@ -10,7 +10,7 @@ import { Pencil, Trash2, Search } from "lucide-react";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Badge } from "@/components/ui/badge";
 import DOMPurify from "dompurify";
-import { decodeHtmlEntities } from "@/lib/html";
+import { decodeHtmlEntitiesDeep } from "@/lib/html";
 import {
   Accordion,
   AccordionContent,
@@ -109,7 +109,7 @@ const PageContentManager = () => {
       page_name: content.page_name,
       section_name: content.section_name,
       content_type: content.content_type,
-      content: decodeHtmlEntities(content.content),
+      content: decodeHtmlEntitiesDeep(content.content),
     });
   };
 
@@ -316,7 +316,7 @@ const PageContentManager = () => {
                         <div 
                           className="text-sm line-clamp-3 text-muted-foreground prose prose-sm max-w-none"
                           dangerouslySetInnerHTML={{ 
-                            __html: DOMPurify.sanitize(decodeHtmlEntities(content.content)) 
+                            __html: DOMPurify.sanitize(decodeHtmlEntitiesDeep(content.content)) 
                           }}
                         />
                       ) : (

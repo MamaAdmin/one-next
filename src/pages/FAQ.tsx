@@ -9,7 +9,7 @@ import { createBreadcrumbSchema } from "@/config/seoConfig";
 import { useFAQ, useFAQCategories } from "@/hooks/useFAQ";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
-import { decodeHtmlEntities } from "@/lib/html";
+import { decodeHtmlEntitiesDeep } from "@/lib/html";
 import {
   Accordion,
   AccordionContent,
@@ -237,7 +237,7 @@ const FAQ = () => {
                           <AccordionContent className="px-6 pb-6">
                             <div
                               className="text-muted-foreground leading-relaxed mb-4 prose prose-sm max-w-none"
-                              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(decodeHtmlEntities(faq.answer)) }}
+                              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(decodeHtmlEntitiesDeep(faq.answer)) }}
                             />
 
                             {/* Helpful buttons */}

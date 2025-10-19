@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DOMPurify from "dompurify";
-import { decodeHtmlEntities } from "@/lib/html";
+import { decodeHtmlEntitiesDeep } from "@/lib/html";
 
 interface InlineTextAreaProps {
   value: string;
@@ -34,7 +34,7 @@ export const InlineTextArea = ({
     if (localValue !== value && localValue.trim()) {
       setIsSaving(true);
       try {
-        await onSave(localValue.trim());
+        await onSave(decodeHtmlEntitiesDeep(localValue.trim()));
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 2000);
       } catch (error) {
@@ -58,7 +58,7 @@ export const InlineTextArea = ({
     return (
       <div
         className={cn("prose prose-base max-w-none", className)}
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(decodeHtmlEntities(value)) }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(decodeHtmlEntitiesDeep(value)) }}
       />
     );
   }
