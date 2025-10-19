@@ -934,6 +934,113 @@ export type Database = {
           },
         ]
       }
+      lms_lesson_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          is_completed: boolean
+          lesson_id: string
+          started_at: string | null
+          time_spent_minutes: number | null
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          is_completed?: boolean
+          lesson_id: string
+          started_at?: string | null
+          time_spent_minutes?: number | null
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          is_completed?: boolean
+          lesson_id?: string
+          started_at?: string | null
+          time_spent_minutes?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_lesson_progress_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "lms_course_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lms_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_lessons: {
+        Row: {
+          content_text: string | null
+          content_video_url: string | null
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_locked: boolean | null
+          is_required: boolean | null
+          lesson_type: string
+          module_id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content_text?: string | null
+          content_video_url?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_locked?: boolean | null
+          is_required?: boolean | null
+          lesson_type?: string
+          module_id: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content_text?: string | null
+          content_video_url?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_locked?: boolean | null
+          is_required?: boolean | null
+          lesson_type?: string
+          module_id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "lms_course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lms_module_progress: {
         Row: {
           completed_at: string | null

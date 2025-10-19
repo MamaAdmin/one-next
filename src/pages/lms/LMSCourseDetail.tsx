@@ -14,6 +14,7 @@ import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
 import { supabase } from "@/integrations/supabase/client";
 import { CoursePreview } from "@/components/lms/CoursePreview";
+import { LessonsList } from "@/components/lms/LessonsList";
 
 export default function LMSCourseDetail() {
   const { enrollmentId } = useParams<{ enrollmentId: string }>();
@@ -210,6 +211,14 @@ export default function LMSCourseDetail() {
               )}
             </CardContent>
           </Card>
+
+          {/* Lektionen Section */}
+          {currentModule && (
+            <LessonsList
+              moduleId={currentModule.id}
+              enrollmentId={enrollmentId}
+            />
+          )}
 
           {/* Tools Section */}
           {currentModule?.module_tools && currentModule.module_tools.length > 0 && (
