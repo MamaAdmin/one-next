@@ -15,6 +15,9 @@ import { toast } from "@/hooks/use-toast";
 import { DndContext, DragEndEvent, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+const MAX_NAVIGATION_DEPTH = 2;
+
 interface SortableItemProps {
   item: NavigationItem;
   depth?: number;
@@ -84,9 +87,11 @@ const SortableItem = ({
             {item.children && item.children.length > 0 && <Badge variant="secondary" className="text-xs">
                 {item.children.length} Sub
               </Badge>}
-            <Button variant="ghost" size="sm" onClick={() => onAddSubItem(item.id)} title="Untermenü hinzufügen">
-              <Plus className="h-3 w-3" />
-            </Button>
+            {depth < MAX_NAVIGATION_DEPTH && (
+              <Button variant="ghost" size="sm" onClick={() => onAddSubItem(item.id)} title="Untermenü hinzufügen">
+                <Plus className="h-3 w-3" />
+              </Button>
+            )}
             <Button variant="ghost" size="sm" onClick={() => onDelete(item.id)}>
               <Trash2 className="h-4 w-4" />
             </Button>
