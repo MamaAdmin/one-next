@@ -297,7 +297,6 @@ export default function LMSCourseDashboard() {
                               Bearbeiten
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
-                              <Settings className="mr-2 h-4 w-4" />
                               Module verwalten
                             </DropdownMenuItem>
                             <DropdownMenuItem 
@@ -357,7 +356,6 @@ export default function LMSCourseDashboard() {
                             Bearbeiten
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
-                            <Settings className="mr-2 h-4 w-4" />
                             Module verwalten
                           </DropdownMenuItem>
                           <DropdownMenuItem 

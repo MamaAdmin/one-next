@@ -87,11 +87,21 @@ export default function LMSModuleDashboard() {
   }, [isAdmin, adminLoading, navigate]);
 
   useEffect(() => {
-    loadCourses();
-    const courseParam = searchParams.get('course');
-    if (courseParam) {
-      setSelectedCourse(courseParam);
-    }
+    const initializeCourses = async () => {
+      const { data } = await supabase
+        .from("lms_courses")
+        .select("*")
+        .order("title");
+      setCourses(data || []);
+      
+      const courseParam = searchParams.get('course');
+      if (courseParam) {
+        setSelectedCourse(courseParam);
+      } else if (data && data.length > 0) {
+        setSelectedCourse(data[0].id);
+      }
+    };
+    initializeCourses();
   }, [searchParams]);
 
   useEffect(() => {
@@ -107,9 +117,6 @@ export default function LMSModuleDashboard() {
       .select("*")
       .order("title");
     setCourses(data || []);
-    if (data && data.length > 0) {
-      setSelectedCourse(data[0].id);
-    }
   };
 
   const loadModules = async () => {
