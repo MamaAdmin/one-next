@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -287,9 +288,9 @@ export function CoursePreview({
             <Checkbox id="gdpr" />
             <label htmlFor="gdpr" className="text-xs leading-relaxed cursor-pointer">
               Ich habe die{" "}
-              <a href="/agb" className="underline hover:text-primary">
+              <Link to="/agb" className="underline hover:text-primary">
                 AGB
-              </a>{" "}
+              </Link>{" "}
               gelesen und bin einverstanden
             </label>
           </div>
