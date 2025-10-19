@@ -25,21 +25,36 @@ export default function LMSCoursePreview() {
 
   const loadCourse = async () => {
     try {
-      // Load course
+      // Load course without protected author join
       const { data, error } = await supabase
         .from("lms_courses")
-        .select(`
-          *,
-          author:profiles(full_name, avatar_url)
-        `)
+        .select("*")
         .eq("id", courseId)
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error loading course:", error.message);
+        if (error.message?.includes("permission denied")) {
+          toast({
+            title: "Keine Berechtigung",
+            description: "Du hast keine Berechtigung, diesen Kurs anzuzeigen. Bitte als Admin anmelden.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Fehler",
+            description: "Kurs konnte nicht geladen werden",
+            variant: "destructive"
+          });
+        }
+        navigate("/admin/lms/courses");
+        return;
+      }
+
       if (!data) {
         toast({
           title: "Fehler",
-          description: "Kurs nicht gefunden",
+          description: "Kurs nicht gefunden oder nicht aktiv",
           variant: "destructive"
         });
         navigate("/admin/lms/courses");
@@ -48,16 +63,36 @@ export default function LMSCoursePreview() {
 
       setCourse(data);
 
-      // Load modules
-      const { data: modulesData } = await supabase
+      // Load public author info separately
+      const { data: authorMeta } = await supabase
+        .from("lms_courses_with_stats")
+        .select("author_name, author_avatar")
+        .eq("id", courseId)
+        .maybeSingle();
+
+      if (authorMeta) {
+        setCourse(prev => prev ? {
+          ...prev,
+          author: { 
+            full_name: authorMeta.author_name, 
+            avatar_url: authorMeta.author_avatar 
+          }
+        } : prev);
+      }
+
+      // Load modules with robust error handling
+      const { data: modulesData, error: modulesError } = await supabase
         .from("lms_course_modules")
         .select("id, title, duration_minutes, phase_number, sort_order")
         .eq("course_id", courseId)
         .order("phase_number", { ascending: true })
         .order("sort_order", { ascending: true });
 
-      if (modulesData) {
-        setModules(modulesData);
+      if (modulesError) {
+        console.warn("Module können nicht geladen werden (RLS):", modulesError.message);
+        setModules([]);
+      } else {
+        setModules(modulesData || []);
       }
 
       // Load related courses (same course_type)
