@@ -13,6 +13,8 @@ import DOMPurify from 'dompurify';
 import { CourseRating } from "./CourseRating";
 import { CourseTabs } from "./CourseTabs";
 import { CourseCard } from "./CourseCard";
+import { categoryLabels, categoryColors, type CourseCategory } from "@/lib/categoryMappings";
+
 interface CoursePreviewProps {
   course: {
     id: string;
@@ -42,13 +44,13 @@ interface CoursePreviewProps {
   enrollment?: {
     enrolled_at: string;
     progress_percentage: number;
-    current_phase: number;
+    current_category: CourseCategory;
   };
   modules?: Array<{
     id: string;
     title: string;
     duration_minutes?: number;
-    phase_number: number;
+    category: CourseCategory;
   }>;
   relatedCourses?: Array<{
     id: string;
@@ -163,9 +165,9 @@ export function CoursePreview({
                             </div>
                           </AccordionTrigger>
                           <AccordionContent>
-                            <p className="text-sm text-muted-foreground">
-                              Phase {module.phase_number}
-                            </p>
+                            <Badge className={categoryColors[module.category]}>
+                              {categoryLabels[module.category]}
+                            </Badge>
                           </AccordionContent>
                         </AccordionItem>
                       ))}

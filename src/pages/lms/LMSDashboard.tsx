@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Play, Trophy, Flame, Award, CheckCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { categoryLabels } from "@/lib/categoryMappings";
 
 interface Achievement {
   id: string;
