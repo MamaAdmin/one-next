@@ -394,19 +394,19 @@ const AIConsultingServices = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
+      <section className="py-24 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-4xl lg:text-5xl font-bold text-primary-foreground">
+            <h2 className="text-4xl lg:text-5xl font-bold">
               Starten Sie Ihre AI-Journey mit uns
             </h2>
             
-            <p className="text-xl text-primary-foreground/90 leading-relaxed">
+            <p className="text-xl text-muted-foreground leading-relaxed">
               Lassen Sie uns gemeinsam herausfinden, wie künstliche Intelligenz Ihr Unternehmen 
               transformieren kann. Vereinbaren Sie ein unverbindliches Erstgespräch mit unseren 
               AI-Experten und erhalten Sie eine erste Einschätzung Ihrer AI-Potenziale.
@@ -415,7 +415,7 @@ const AIConsultingServices = () => {
             <CalendarBookingDialog
               buttonText="Kostenloses Beratungsgespräch vereinbaren"
               buttonSize="lg"
-              buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6"
+              buttonClassName="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6"
             />
           </div>
         </div>

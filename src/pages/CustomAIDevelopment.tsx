@@ -253,20 +253,25 @@ const CustomAIDevelopment = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-primary text-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">
               Bereit für Ihre individuelle KI-Lösung?
             </h2>
-            <p className="text-xl text-white/90">
+            <p className="text-xl text-muted-foreground">
               Vereinbaren Sie ein unverbindliches Erstgespräch und erfahren Sie, wie der BMAD-Ansatz Ihr KI-Projekt zum Erfolg führt.
             </p>
             <div className="pt-4">
               <CalendarBookingDialog
                 buttonText="Jetzt Erstgespräch buchen"
                 buttonSize="lg"
-                buttonClassName="bg-white text-primary hover:bg-white/90"
+                buttonClassName="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6"
               />
             </div>
           </div>
