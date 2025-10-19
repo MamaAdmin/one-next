@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HMWGenerator } from "./HMWGenerator";
 import { UserTestingForm } from "./UserTestingForm";
+import { SmartSailboat } from "./SmartSailboat";
 
 interface TemplateRendererProps {
   data: any;
@@ -22,6 +23,11 @@ export function TemplateRenderer({ data, enrollmentId, moduleId }: TemplateRende
   // Special handling for HMW Generator
   if (data?.type === 'hmw-generator') {
     return <HMWGenerator />;
+  }
+
+  // Special handling for Smart Sailboat
+  if (data?.type === 'smart-sailboat') {
+    return <SmartSailboat />;
   }
 
   // Special handling for User Testing Form
