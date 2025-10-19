@@ -222,7 +222,7 @@ const CustomAIDevelopment = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-              🚀 Nächster Schritt: Externe Umsetzung
+              Nächster Schritt: Externe Umsetzung
             </h2>
             <Card className="bg-muted/50">
               <CardContent className="pt-6">
