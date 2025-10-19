@@ -1,20 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Tool {
-  name: string;
-  url: string;
-}
-
-interface Resource {
-  title: string;
-  url: string;
-}
+import type { CourseCategory } from "@/lib/categoryMappings";
 
 interface LMSModule {
   id: string;
   course_id: string;
-  phase_number: number;
+  category: CourseCategory;
   title: string;
   description: string | null;
   module_type: string;
@@ -24,8 +15,8 @@ interface LMSModule {
   is_required: boolean;
   created_at: string;
   updated_at: string;
-  tools?: Tool[];
-  resources?: Resource[];
+  tools?: { name: string; url: string }[];
+  resources?: { title: string; url: string }[];
   tags?: string[];
   author?: string;
   prerequisites?: string[];
@@ -73,7 +64,6 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
             )
           `)
           .eq("course_id", courseId)
-          .order("phase_number", { ascending: true })
           .order("sort_order", { ascending: true });
 
         if (modulesError) throw modulesError;

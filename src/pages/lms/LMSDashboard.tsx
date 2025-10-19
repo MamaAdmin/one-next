@@ -95,7 +95,7 @@ export default function LMSDashboard() {
                     <div>
                       <CardTitle className="text-2xl">Learning fortsetzen</CardTitle>
                       <CardDescription>
-                        Phase {currentEnrollment.current_phase} von 5
+                        {categoryLabels[currentEnrollment.current_category]}
                       </CardDescription>
                     </div>
                     <Badge variant="default" className="text-lg px-4 py-2">
@@ -105,21 +105,6 @@ export default function LMSDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Progress value={currentEnrollment.progress_percentage} className="h-3" />
-                  
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((phase) => (
-                      <div
-                        key={phase}
-                        className={`flex-1 h-2 rounded ${
-                          phase < currentEnrollment.current_phase
-                            ? "bg-primary"
-                            : phase === currentEnrollment.current_phase
-                            ? "bg-primary/50"
-                            : "bg-muted"
-                        }`}
-                      />
-                    ))}
-                  </div>
 
                   <Button size="lg" className="w-full" asChild>
                     <Link to={`/lms/course/${currentEnrollment.id}`}>
@@ -162,7 +147,9 @@ export default function LMSDashboard() {
                     <Award className="h-4 w-4 text-blue-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">Phase {currentEnrollment.current_phase + 1}</div>
+                    <div className="text-2xl font-bold">
+                      {categoryLabels[currentEnrollment.current_category]}
+                    </div>
                     <p className="text-xs text-muted-foreground">Noch 2 Module</p>
                   </CardContent>
                 </Card>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { CourseCategory } from "@/lib/categoryMappings";
 
 interface Enrollment {
   id: string;
@@ -8,7 +9,7 @@ interface Enrollment {
   enrolled_at: string;
   completed_at: string | null;
   status: "active" | "completed" | "dropped";
-  current_phase: number;
+  current_category: CourseCategory;
   progress_percentage: number;
 }
 
@@ -80,10 +81,10 @@ export const useLMSEnrollment = () => {
     };
   }, []);
 
-  const updateProgress = async (enrollmentId: string, phaseNumber: number) => {
+  const updateProgress = async (enrollmentId: string, category: CourseCategory) => {
     const { error } = await (supabase as any)
       .from("lms_course_enrollments")
-      .update({ current_phase: phaseNumber })
+      .update({ current_category: category })
       .eq("id", enrollmentId);
 
     if (error) {

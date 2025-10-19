@@ -157,12 +157,12 @@ export function ToolSelector({ selectedTools, onChange, filterByCourseId }: Tool
               )}
             </div>
             
-            <div className="flex gap-2 flex-shrink-0">
-              <Badge variant="secondary" className={`text-xs ${categoryColors[tool.category]}`}>
-                {categoryLabels[tool.category] || tool.category}
-              </Badge>
-              <Badge variant="outline" className="text-xs">{tool.tool_type}</Badge>
-            </div>
+          <div className="flex gap-2 flex-shrink-0">
+            <Badge variant="secondary" className={`text-xs ${categoryColors[tool.category]}`}>
+              {categoryLabels[tool.category] || tool.category}
+            </Badge>
+            <Badge variant="outline" className="text-xs">{tool.tool_type}</Badge>
+          </div>
           </div>
         ))}
         

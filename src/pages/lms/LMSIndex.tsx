@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, CheckCircle2, Clock, Trophy } from "lucide-react";
+import { categoryLabels } from "@/lib/categoryMappings";
 
 const LMSIndex = () => {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ const LMSIndex = () => {
                         Kurs #{enrollment.id.slice(0, 8)}
                       </CardTitle>
                       <CardDescription>
-                        Phase {enrollment.current_phase} • Status: {
+                        {categoryLabels[enrollment.current_category]} • Status: {
                           enrollment.status === "active" ? "Aktiv" :
                           enrollment.status === "completed" ? "Abgeschlossen" :
                           "Abgebrochen"

@@ -549,7 +549,7 @@ export type Database = {
         Row: {
           completed_at: string | null
           created_at: string
-          current_phase: number
+          current_category: string
           enrolled_at: string
           id: string
           participant_id: string
@@ -561,7 +561,7 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           created_at?: string
-          current_phase?: number
+          current_category?: string
           enrolled_at?: string
           id?: string
           participant_id: string
@@ -573,7 +573,7 @@ export type Database = {
         Update: {
           completed_at?: string | null
           created_at?: string
-          current_phase?: number
+          current_category?: string
           enrolled_at?: string
           id?: string
           participant_id?: string
@@ -602,6 +602,7 @@ export type Database = {
       lms_course_modules: {
         Row: {
           author: string | null
+          category: string
           content_text: string | null
           content_video_url: string | null
           course_id: string
@@ -611,7 +612,6 @@ export type Database = {
           id: string
           is_required: boolean
           module_type: string
-          phase_number: number
           prerequisites: string[] | null
           resources: Json | null
           sort_order: number
@@ -622,6 +622,7 @@ export type Database = {
         }
         Insert: {
           author?: string | null
+          category?: string
           content_text?: string | null
           content_video_url?: string | null
           course_id: string
@@ -631,7 +632,6 @@ export type Database = {
           id?: string
           is_required?: boolean
           module_type?: string
-          phase_number: number
           prerequisites?: string[] | null
           resources?: Json | null
           sort_order: number
@@ -642,6 +642,7 @@ export type Database = {
         }
         Update: {
           author?: string | null
+          category?: string
           content_text?: string | null
           content_video_url?: string | null
           course_id?: string
@@ -651,7 +652,6 @@ export type Database = {
           id?: string
           is_required?: boolean
           module_type?: string
-          phase_number?: number
           prerequisites?: string[] | null
           resources?: Json | null
           sort_order?: number

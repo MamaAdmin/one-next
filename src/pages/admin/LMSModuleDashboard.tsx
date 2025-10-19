@@ -6,10 +6,8 @@ import { HomeIcon } from "@/components/ui/custom-icons";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -30,11 +28,7 @@ import {
 } from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-
-interface Tool {
-  name: string;
-  url: string;
-}
+import { CourseCategory, categoryLabels, categoryColors, categoryOrder } from "@/lib/categoryMappings";
 
 interface Resource {
   title: string;
@@ -44,7 +38,7 @@ interface Resource {
 interface Module {
   id: string;
   course_id: string;
-  phase_number: number;
+  category: CourseCategory;
   title: string;
   description: string;
   module_type: string;
@@ -110,35 +104,38 @@ export default function LMSModuleDashboard() {
     }
   }, [selectedCourse]);
 
-  const loadCourses = async () => {
-    const { data } = await supabase
-      .from("lms_courses")
-      .select("*")
-      .order("title");
-    setCourses(data || []);
-  };
-
   const loadModules = async () => {
     setLoading(true);
     const { data } = await supabase
       .from("lms_course_modules")
       .select("*")
       .eq("course_id", selectedCourse)
-      .order("phase_number")
       .order("sort_order");
     
-    // Transform data to match Module interface
-    const transformedData = (data || []).map(module => ({
-      ...module,
-      resources: Array.isArray(module.resources) ? (module.resources as unknown as Resource[]) : [],
-      tags: Array.isArray(module.tags) ? module.tags : [],
-      prerequisites: Array.isArray(module.prerequisites) ? module.prerequisites : [],
-    }));
-    
-    setModules(transformedData);
+    if (data) {
+      // Sort by category order
+      const transformedModules = data.map((module: any) => ({
+        ...module,
+        resources: module.resources || [],
+        tags: module.tags || [],
+        prerequisites: module.prerequisites || [],
+        category: module.category as CourseCategory,
+      }));
+      
+      transformedModules.sort((a, b) => {
+        const orderA = categoryOrder.indexOf(a.category);
+        const orderB = categoryOrder.indexOf(b.category);
+        
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+        return a.sort_order - b.sort_order;
+      });
+      
+      setModules(transformedModules);
+    }
     setLoading(false);
   };
-
 
   const handleDelete = async (id: string) => {
     if (!confirm("Modul wirklich löschen?")) return;
@@ -157,11 +154,32 @@ export default function LMSModuleDashboard() {
   };
 
   const moveModule = async (module: Module, direction: "up" | "down") => {
-    const newOrder = direction === "up" ? module.sort_order - 1 : module.sort_order + 1;
+    const currentIndex = modules.findIndex((m) => m.id === module.id);
+    if (currentIndex === -1) return;
+
+    const sameCategoryModules = modules.filter(
+      (m) => m.category === module.category
+    );
+    const moduleIndexInCategory = sameCategoryModules.findIndex(
+      (m) => m.id === module.id
+    );
+
+    if (
+      (direction === "up" && moduleIndexInCategory === 0) ||
+      (direction === "down" &&
+        moduleIndexInCategory === sameCategoryModules.length - 1)
+    ) {
+      return;
+    }
+
+    const newSortOrder =
+      direction === "up"
+        ? sameCategoryModules[moduleIndexInCategory - 1].sort_order
+        : sameCategoryModules[moduleIndexInCategory + 1].sort_order;
     
     await supabase
       .from("lms_course_modules")
-      .update({ sort_order: newOrder })
+      .update({ sort_order: newSortOrder })
       .eq("id", module.id);
     
     loadModules();
@@ -223,48 +241,28 @@ export default function LMSModuleDashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Titel</TableHead>
-                    <TableHead>Phase</TableHead>
+                    <TableHead>Kategorie</TableHead>
                     <TableHead>Typ</TableHead>
                     <TableHead>Dauer</TableHead>
-                    <TableHead>Reihenfolge</TableHead>
-                    <TableHead>Aktionen</TableHead>
+                    <TableHead>Sortierung</TableHead>
+                    <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {modules.map((module) => (
                     <TableRow key={module.id}>
                       <TableCell>
-                        <div className="flex items-center gap-3">
-                          <img 
-                            src="/placeholder.svg" 
-                            alt={module.title}
-                            className="w-16 h-12 object-cover rounded"
-                          />
-                          <div>
-                            <div className="font-medium">{module.title}</div>
-                            <div className="text-xs text-muted-foreground flex items-center gap-3">
-                              <span className="flex items-center gap-1">
-                                <BookIcon className="h-3 w-3" />
-                                Thema: 1
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <LessonIcon className="h-3 w-3" />
-                                Lektion: {module.content_text ? 1 : 0}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <QuizIcon className="h-3 w-3" />
-                                Test: 0
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <TaskIcon className="h-3 w-3" />
-                                Aufgabe: 0
-                              </span>
-                            </div>
+                        <div className="font-medium">{module.title}</div>
+                        {module.description && (
+                          <div className="text-sm text-muted-foreground line-clamp-1">
+                            {module.description}
                           </div>
-                        </div>
+                        )}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary">Phase {module.phase_number}</Badge>
+                        <Badge className={categoryColors[module.category]}>
+                          {categoryLabels[module.category]}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">{module.module_type}</Badge>
@@ -272,7 +270,7 @@ export default function LMSModuleDashboard() {
                       <TableCell>{module.duration_minutes} Min</TableCell>
                       <TableCell>{module.sort_order}</TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 justify-end">
                           <Button
                             variant="ghost"
                             size="sm"
@@ -321,42 +319,30 @@ export default function LMSModuleDashboard() {
               {modules.map((module) => (
                 <Card key={module.id}>
                   <CardContent className="p-4">
-                    <div className="flex gap-3">
-                      <img 
-                        src="/placeholder.svg"
-                        alt={module.title}
-                        className="w-20 h-16 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-medium">{module.title}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          Phase {module.phase_number} • {module.module_type}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary">{module.duration_minutes} Min</Badge>
-                          <Badge variant="outline">#{module.sort_order}</Badge>
-                        </div>
-                      </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <DotsIcon className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => navigate(`/admin/lms/modules/${module.id}/edit?courseId=${selectedCourse}`)}
-                          >
-                            Bearbeiten
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive"
-                            onClick={() => handleDelete(module.id)}
-                          >
-                            Löschen
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{module.title}</span>
+                      <Badge className={categoryColors[module.category]}>
+                        {categoryLabels[module.category]}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {module.module_type} • {module.duration_minutes} Min • #{module.sort_order}
+                    </p>
+                    <div className="flex gap-2 mt-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/admin/lms/modules/${module.id}/edit?courseId=${selectedCourse}`)}
+                      >
+                        Bearbeiten
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(module.id)}
+                      >
+                        Löschen
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

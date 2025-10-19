@@ -16,6 +16,7 @@ import { Loader2, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { categoryLabels, categoryColors, CourseCategory } from "@/lib/categoryMappings";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LMSEnrollmentDashboard() {
@@ -38,7 +39,7 @@ export default function LMSEnrollmentDashboard() {
           {
             ...formData,
             status: "active",
-            current_phase: 0,
+            current_category: "understand",
             progress_percentage: 0,
           },
         ]);
@@ -170,7 +171,11 @@ export default function LMSEnrollmentDashboard() {
               {enrollments.map((enrollment) => (
                 <TableRow key={enrollment.id}>
                   <TableCell>Enrollment {enrollment.id.slice(0, 8)}</TableCell>
-                  <TableCell>Phase {enrollment.current_phase}</TableCell>
+                  <TableCell>
+                    <Badge className={categoryColors[enrollment.current_category as CourseCategory]}>
+                      {categoryLabels[enrollment.current_category as CourseCategory]}
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Progress value={enrollment.progress_percentage} className="w-24" />

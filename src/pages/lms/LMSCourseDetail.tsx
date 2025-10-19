@@ -15,6 +15,7 @@ import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
 import { supabase } from "@/integrations/supabase/client";
 import { CoursePreview } from "@/components/lms/CoursePreview";
 import { LessonsList } from "@/components/lms/LessonsList";
+import { categoryLabels } from "@/lib/categoryMappings";
 
 export default function LMSCourseDetail() {
   const { enrollmentId } = useParams<{ enrollmentId: string }>();
@@ -154,7 +155,7 @@ export default function LMSCourseDetail() {
         <h2 className="text-2xl font-bold mb-2">Kursmodule</h2>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">
-            Phase {currentEnrollment?.current_phase || 0}/5
+            {categoryLabels[currentEnrollment?.current_category] || "Verstehen"}
           </span>
           <Progress value={currentEnrollment?.progress_percentage || 0} className="flex-1 max-w-xs" />
           <span className="text-sm font-medium">

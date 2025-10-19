@@ -16,11 +16,7 @@ import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { ToolSelector } from "@/components/lms/ToolSelector";
 import { LessonManager } from "@/components/lms/LessonManager";
-
-interface Tool {
-  name: string;
-  url: string;
-}
+import { CourseCategory, categoryLabels, categoryColors, categoryOrder } from "@/lib/categoryMappings";
 
 interface Resource {
   title: string;
@@ -30,7 +26,7 @@ interface Resource {
 interface Module {
   id?: string;
   course_id: string;
-  phase_number: number;
+  category: CourseCategory;
   title: string;
   description: string;
   module_type: string;
@@ -63,7 +59,7 @@ const LMSModuleEditor = () => {
   const [selectedToolIds, setSelectedToolIds] = useState<string[]>([]);
   const [selectedTools, setSelectedTools] = useState<{ id: string; title: string }[]>([]);
   const [formData, setFormData] = useState({
-    phase_number: 1,
+    category: 'understand' as CourseCategory,
     module_type: "Theory",
     duration_minutes: 30,
     tags: [] as string[],
@@ -118,10 +114,11 @@ const LMSModuleEditor = () => {
         resources: Array.isArray(data.resources) ? (data.resources as unknown as Resource[]) : [],
         tags: Array.isArray(data.tags) ? data.tags : [],
         prerequisites: Array.isArray(data.prerequisites) ? data.prerequisites : [],
+        category: data.category as CourseCategory,
       };
       setModule(moduleData);
       setFormData({
-        phase_number: data.phase_number,
+        category: data.category as CourseCategory,
         module_type: data.module_type,
         duration_minutes: data.duration_minutes,
         tags: Array.isArray(data.tags) ? data.tags : [],
@@ -176,13 +173,13 @@ const LMSModuleEditor = () => {
     if (!formRef.current || !courseId) return;
 
     setSaving(true);
-    const formData = new FormData(formRef.current);
+    const form = new FormData(formRef.current);
 
     // Parse JSON fields
     let resources: Resource[] = [];
 
     try {
-      const resourcesJson = formData.get("resources_json") as string;
+      const resourcesJson = form.get("resources_json") as string;
       if (resourcesJson?.trim()) {
         resources = JSON.parse(resourcesJson);
       }
@@ -197,7 +194,7 @@ const LMSModuleEditor = () => {
     }
 
     // Parse comma-separated arrays
-    const tagsString = formData.get("tags") as string;
+    const tagsString = form.get("tags") as string;
     const tags = tagsString
       ? tagsString
           .split(",")
@@ -205,7 +202,7 @@ const LMSModuleEditor = () => {
           .filter(Boolean)
       : [];
 
-    const prereqsString = formData.get("prerequisites") as string;
+    const prereqsString = form.get("prerequisites") as string;
     const prerequisites = prereqsString
       ? prereqsString
           .split(",")
@@ -215,19 +212,19 @@ const LMSModuleEditor = () => {
 
     const moduleData = {
       course_id: courseId,
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
-      phase_number: parseInt(formData.get("phase_number") as string),
-      module_type: formData.get("module_type") as string,
-      duration_minutes: parseInt(formData.get("duration_minutes") as string),
-      sort_order: parseInt(formData.get("sort_order") as string),
-      content_text: formData.get("content_text") as string,
-      content_video_url: formData.get("content_video_url") as string,
+      title: form.get("title") as string,
+      description: form.get("description") as string,
+      category: formData.category,
+      module_type: form.get("module_type") as string,
+      duration_minutes: parseInt(form.get("duration_minutes") as string),
+      sort_order: parseInt(form.get("sort_order") as string),
+      content_text: form.get("content_text") as string,
+      content_video_url: form.get("content_video_url") as string,
       resources: resources as any,
       tags: tags,
-      author: formData.get("author") as string,
+      author: form.get("author") as string,
       prerequisites: prerequisites,
-      tool_recommendation: formData.get("tool_recommendation") as string,
+      tool_recommendation: form.get("tool_recommendation") as string,
     };
 
     if (isEditing && moduleId) {
@@ -382,19 +379,29 @@ const LMSModuleEditor = () => {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="phase_number">Phase *</Label>
-                          <Input
-                            id="phase_number"
-                            name="phase_number"
-                            type="number"
-                            min="1"
-                            max="5"
-                            defaultValue={module?.phase_number || 1}
-                            onChange={(e) =>
-                              setFormData((prev) => ({ ...prev, phase_number: parseInt(e.target.value) || 1 }))
-                            }
-                            required
-                          />
+                          <Label htmlFor="category">Kategorie *</Label>
+                          <Select
+                            value={formData.category}
+                            onValueChange={(value: CourseCategory) => {
+                              setFormData((prev) => ({ ...prev, category: value }));
+                              setHasUnsavedChanges(true);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categoryOrder.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  <div className="flex items-center gap-2">
+                                    <Badge className={categoryColors[category]}>
+                                      {categoryLabels[category]}
+                                    </Badge>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div>
                           <Label htmlFor="sort_order">Reihenfolge *</Label>
@@ -578,7 +585,10 @@ const LMSModuleEditor = () => {
               <CardContent>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <span className="font-medium">Phase:</span> {formData.phase_number}
+                    <span className="font-medium">Kategorie:</span>
+                    <Badge className={`ml-2 ${categoryColors[formData.category]}`}>
+                      {categoryLabels[formData.category]}
+                    </Badge>
                   </div>
                   <div>
                     <span className="font-medium">Typ:</span> {formData.module_type}
