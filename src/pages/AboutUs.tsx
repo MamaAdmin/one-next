@@ -80,7 +80,10 @@ const AboutUs = () => {
             <CardContent className="p-8">
               <div className="grid md:grid-cols-[auto_1fr] gap-8 items-center">
                 <Avatar className="h-48 w-48">
-                  <AvatarImage src={juliaProfile} alt="Julia Haitz" />
+                  <AvatarImage 
+                    src={juliaProfile} 
+                    alt="Julia Haitz, Gründerin und CEO von one-next, Expertin für AI Design Sprints und Innovation" 
+                  />
                   <AvatarFallback>JH</AvatarFallback>
                 </Avatar>
                 

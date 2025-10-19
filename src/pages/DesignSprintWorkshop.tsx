@@ -79,7 +79,7 @@ const DesignSprintWorkshop = () => {
             <div className="relative">
               <img 
                 src={workshopImage} 
-                alt="Design Sprint Workshop" 
+                alt="AI Design Sprint Workshop mit Teilnehmern und Facilitator bei der Entwicklung eines Prototyps" 
                 className="rounded-2xl shadow-2xl w-full h-auto"
               />
             </div>

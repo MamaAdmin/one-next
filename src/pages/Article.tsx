@@ -12,6 +12,8 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { createBlogPostingSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 
 interface Article {
   id: string;
@@ -124,7 +126,30 @@ const Article = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title={article.title}
+        description={article.content.substring(0, 160).replace(/<[^>]+>/g, '')}
+        canonical={`https://one-next.de/blog/${article.slug}`}
+        ogType="article"
+        ogImage={article.featured_image}
+        structuredData={[
+          createBlogPostingSchema(
+            article.title,
+            article.content.substring(0, 200).replace(/<[^>]+>/g, ''),
+            article.author,
+            article.published_at,
+            `https://one-next.de/blog/${article.slug}`,
+            article.featured_image
+          ),
+          createBreadcrumbSchema([
+            { name: "Home", url: "https://one-next.de/" },
+            { name: "Blog", url: "https://one-next.de/blog" },
+            { name: article.title, url: `https://one-next.de/blog/${article.slug}` }
+          ])
+        ]}
+      />
+      <div className="min-h-screen">
       <Navigation />
       <main className="container mx-auto px-6 pt-32 pb-20">
         <article className="max-w-3xl mx-auto">
@@ -166,7 +191,7 @@ const Article = () => {
           {article.featured_image && (
             <img
               src={article.featured_image}
-              alt={article.title}
+              alt={`Titelbild für Artikel: ${article.title}`}
               className="w-full h-auto rounded-lg mb-8"
             />
           )}
@@ -186,7 +211,8 @@ const Article = () => {
           onToggle={() => setIsEditMode(!isEditMode)}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

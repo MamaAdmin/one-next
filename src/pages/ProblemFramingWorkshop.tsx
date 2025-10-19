@@ -8,10 +8,47 @@ import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSectio
 import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
 import workshopImage from "@/assets/workshop-collaboration.jpg";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
+import { SEO } from "@/components/SEO";
+import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 
 const ProblemFramingWorkshop = () => {
+  const structuredData = [
+    createEventSchema(
+      "Problem-Framing-Workshop",
+      "1-2 Tage intensive Challenge-Klärung zur präzisen Definition Ihrer Herausforderung und Vorbereitung für den Design Sprint.",
+      "https://one-next.de/problem-framing-workshop"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Workshops", url: "https://one-next.de/sprint-uebersicht" },
+      { name: "Problem Framing Workshop", url: "https://one-next.de/problem-framing-workshop" }
+    ]),
+    createFAQSchema([
+      {
+        question: "Wann brauche ich einen Problem-Framing-Workshop?",
+        answer: "Wenn Ihre Challenge noch unklar ist, die Zielgruppe nicht definiert oder das Problem nicht präzise formuliert werden kann. Der Workshop schafft Klarheit bevor der Design Sprint startet."
+      },
+      {
+        question: "Wie lange dauert der Problem-Framing-Workshop?",
+        answer: "Der Workshop dauert 1-2 Tage, je nach Komplexität der Challenge und Anzahl der Stakeholder."
+      },
+      {
+        question: "Was ist das Ergebnis des Workshops?",
+        answer: "Eine klar definierte Challenge, priorisierte Zielgruppe und ein sprint-ready Setup für den anschließenden Design Sprint."
+      }
+    ])
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
+      <SEO
+        title="Problem-Framing-Workshop | Challenge definieren | one-next"
+        description="1-2 Tage intensive Challenge-Klärung. Definieren Sie Ihre Herausforderung präzise und machen Sie Ihr Team sprint-ready für den Design Sprint."
+        keywords="Problem Framing, Challenge Definition, Workshop, Design Sprint Vorbereitung, Stakeholder Alignment"
+        canonical="https://one-next.de/problem-framing-workshop"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen flex flex-col">
       <Navigation />
       
       {/* Hero Section */}
@@ -57,7 +94,7 @@ const ProblemFramingWorkshop = () => {
             <div className="relative">
               <img 
                 src={workshopImage} 
-                alt="Problem Framing Workshop" 
+                alt="Team bei einem kollaborativen Problem-Framing-Workshop mit Whiteboard und Post-its zur Challenge-Definition" 
                 className="rounded-2xl shadow-2xl w-full h-auto"
               />
             </div>
@@ -515,7 +552,8 @@ const ProblemFramingWorkshop = () => {
       </section>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

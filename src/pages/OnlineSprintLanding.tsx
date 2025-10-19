@@ -6,7 +6,36 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Target, Map, Pencil, CheckCircle, Wrench, TestTube, Clipboard, Users, Clock, Zap, FileText, BarChart3 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { SEO } from "@/components/SEO";
+import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 const OnlineSprintLanding = () => {
+  const structuredData = [
+    createEventSchema(
+      "Online Design Sprint",
+      "Flexibler Online Design Sprint über mehrere Wochen. Arbeiten Sie im eigenen Tempo mit KI-Unterstützung und automatisierter Dokumentation.",
+      "https://one-next.de/sprint-uebersicht/online"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "AI Design Sprint", url: "https://one-next.de/sprint-uebersicht" },
+      { name: "Online Sprint", url: "https://one-next.de/sprint-uebersicht/online" }
+    ]),
+    createFAQSchema([
+      {
+        question: "Wie unterscheidet sich der Online Sprint vom Workshop?",
+        answer: "Der Online Sprint ist flexibel über mehrere Wochen durchführbar, während der Workshop konzentriert an 2 Tagen vor Ort stattfindet. Beide nutzen das gleiche Design Sprint Framework."
+      },
+      {
+        question: "Welche KI-Unterstützung gibt es?",
+        answer: "KI-gestützte Tools für HMW-Generierung, Ideen-Clustering, automatisierte Report-Erstellung und intelligente Vorschläge während des gesamten Sprint-Prozesses."
+      },
+      {
+        question: "Kann ich den Sprint pausieren?",
+        answer: "Ja, Sie können jederzeit pausieren und später fortsetzen. Alle Daten werden automatisch gespeichert."
+      }
+    ])
+  ];
+
   const phases = [
     {
       icon: Clipboard,
@@ -71,7 +100,15 @@ const OnlineSprintLanding = () => {
     title: "Innovation Teams",
     description: "Experimentieren ohne große Investition mit iterativem Ansatz"
   }];
-  return <div className="min-h-screen">
+  return <>
+      <SEO
+        title="Online Design Sprint | Flexibel & Remote | one-next"
+        description="Flexibler Online Design Sprint mit KI-Unterstützung. Arbeiten Sie im eigenen Tempo über mehrere Wochen mit automatisierten Tools und Reports."
+        keywords="Online Design Sprint, Remote Sprint, Digital Design Sprint, KI-gestützt, Async Sprint"
+        canonical="https://one-next.de/sprint-uebersicht/online"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen">
       <Navigation />
       
       {/* Hero Section */}
@@ -305,6 +342,7 @@ const OnlineSprintLanding = () => {
       </section>
 
       <Footer />
-    </div>;
+    </div>
+    </>;
 };
 export default OnlineSprintLanding;

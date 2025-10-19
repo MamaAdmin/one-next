@@ -15,6 +15,20 @@ export default function DataQualityAuditPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const { isContentManager } = useContentManager();
   const { content, loading, updateContent } = usePageContent('data-quality-audit');
+
+  const structuredData = [
+    createServiceSchema(
+      "Data Quality Audit",
+      "Professionelle Datenqualitäts-Auditierung für AI-Projekte. Systematische Bewertung Ihrer Daten nach Vollständigkeit, Konsistenz, Aktualität und Validität.",
+      "https://one-next.de/data-quality-audit"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Services", url: "https://one-next.de/#services" },
+      { name: "Data Quality Audit", url: "https://one-next.de/data-quality-audit" }
+    ])
+  ];
+
   const phases = [
     {
       title: "Phase 1 – Kick-off & Scope-Definition",
@@ -163,7 +177,15 @@ export default function DataQualityAuditPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <SEO
+        title="Data Quality Audit | Datenqualität professionell prüfen | one-next"
+        description="Professionelles Data Quality Audit für AI-Projekte. Systematische Bewertung nach Vollständigkeit, Konsistenz, Aktualität und Validität."
+        keywords="Data Quality Audit, Datenqualität, Data Audit, AI Datenprüfung, Data Quality Assessment"
+        canonical="https://one-next.de/data-quality-audit"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-background text-foreground">
       <Navigation />
 
       {/* Hero */}
@@ -441,6 +463,7 @@ export default function DataQualityAuditPage() {
           onToggle={() => setIsEditMode(!isEditMode)}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 }
