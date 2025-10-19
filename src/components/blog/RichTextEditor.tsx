@@ -7,7 +7,8 @@ import DOMPurify from "dompurify";
 
 interface RichTextEditorProps {
   value: string;
-  onSave: (value: string) => Promise<void>;
+  onSave?: (value: string) => Promise<void>;
+  onChange?: (value: string) => void;
   isEditMode: boolean;
   className?: string;
   placeholder?: string;
@@ -47,6 +48,7 @@ const formats = [
 export const RichTextEditor = ({
   value,
   onSave,
+  onChange,
   isEditMode,
   className,
   placeholder,
@@ -59,8 +61,16 @@ export const RichTextEditor = ({
     setLocalValue(value);
   }, [value]);
 
+  const handleChange = (content: string) => {
+    setLocalValue(content);
+    // Sofortige Synchronisation wenn onChange bereitgestellt wird
+    if (onChange) {
+      onChange(content);
+    }
+  };
+
   const handleBlur = async () => {
-    if (localValue !== value && localValue.trim()) {
+    if (onSave && localValue !== value && localValue.trim()) {
       setIsSaving(true);
       try {
         await onSave(localValue.trim());
@@ -88,7 +98,7 @@ export const RichTextEditor = ({
       <ReactQuill
         theme="snow"
         value={localValue}
-        onChange={setLocalValue}
+        onChange={handleChange}
         onBlur={handleBlur}
         modules={modules}
         formats={formats}

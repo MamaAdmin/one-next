@@ -573,9 +573,8 @@ const FAQManager = () => {
               <Label htmlFor="answer">Antwort (Rich Text)</Label>
               <RichTextEditor
                 value={editorContent}
-                onSave={async (content) => {
+                onChange={(content) => {
                   setEditorContent(content);
-                  setFormData({ ...formData, answer: content });
                 }}
                 isEditMode={true}
                 className="min-h-[300px]"
