@@ -11,29 +11,19 @@ import {
 import oneNextLogo from "@/assets/one-next-logo-new.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useNavigation } from "@/hooks/useNavigation";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [companyOpen, setCompanyOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const { isAdmin } = useAdmin();
-
-  const servicesItems = [
-    { label: "Analyse", href: "/sprint-uebersicht" },
-    { label: "Datenaudit", href: "/data-quality-audit" },
-    { label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
-    { label: "Workshops", href: "/design-sprint-workshop" },
-    { label: "AI Beratung", href: "/ai-consulting-services" },
-  ];
-
-  const companyItems = [
-    { label: "Über uns", href: "/about-us" },
-    { label: "FAQ", href: "/faq" },
-    { label: "Blog", href: "/blog" },
-    { label: "Kontakt", href: "/workshop-registration" },
-  ];
+  
+  // Load navigation dynamically from database
+  const { items: headerItems } = useNavigation("header");
+  
+  // Filter top-level items (without parent_id)
+  const topLevelItems = headerItems.filter(item => !item.parent_id && item.is_active);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,53 +66,43 @@ const Navigation = () => {
             />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Dynamic */}
           <nav className="hidden md:flex items-center gap-8">
-            <DropdownMenu open={servicesOpen} onOpenChange={setServicesOpen}>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
-                Leistungen <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="z-50 bg-background">
-                {servicesItems.map((item) => (
-                  <DropdownMenuItem key={item.label} asChild>
-                    {item.href.startsWith('/') ? (
-                      <Link to={item.href} className="cursor-pointer" onClick={() => setServicesOpen(false)}>
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <a href={item.href} className="cursor-pointer" onClick={() => setServicesOpen(false)}>
-                        {item.label}
-                      </a>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu open={companyOpen} onOpenChange={setCompanyOpen}>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
-                Unternehmen <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="z-50 bg-background">
-                {companyItems.map((item) => (
-                  <DropdownMenuItem key={item.label} asChild>
-                    {item.href.startsWith('/') ? (
-                      <Link to={item.href} className="cursor-pointer" onClick={() => setCompanyOpen(false)}>
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <a href={item.href} className="cursor-pointer" onClick={() => setCompanyOpen(false)}>
-                        {item.label}
-                      </a>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Link to="/blog" className="text-foreground hover:text-primary transition-colors">
-              Blog
-            </Link>
+            {topLevelItems.map((item) => {
+              // Has children? → Dropdown
+              if (item.children && item.children.length > 0) {
+                return (
+                  <DropdownMenu key={item.id}>
+                    <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
+                      {item.label} <ChevronDown className="w-4 h-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="z-50 bg-background">
+                      {item.children
+                        .filter(child => child.is_active)
+                        .sort((a, b) => a.sort_order - b.sort_order)
+                        .map((child) => (
+                          <DropdownMenuItem key={child.id} asChild>
+                            <Link to={child.url || "#"} className="cursor-pointer">
+                              {child.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              }
+              
+              // No dropdown → direct link
+              return item.url ? (
+                <Link 
+                  key={item.id} 
+                  to={item.url} 
+                  className="text-foreground hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ) : null;
+            })}
 
             {user ? (
               <DropdownMenu>
@@ -192,63 +172,28 @@ const Navigation = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Dynamic */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-6 pb-4">
             <div className="flex flex-col gap-4">
-              <div className="border-b pb-4">
-                <p className="text-sm font-semibold mb-2">Leistungen</p>
-                {servicesItems.map((item) => (
-                  item.href.startsWith('/') ? (
-                    <Link
-                      key={item.label}
-                      to={item.href}
-                      className="block py-2 px-4 hover:bg-accent rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      className="block py-2 px-4 hover:bg-accent rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </a>
-                  )
-                ))}
-              </div>
-
-              <div className="border-b pb-4">
-                <p className="text-sm font-semibold mb-2">Unternehmen</p>
-                {companyItems.map((item) => (
-                  item.href.startsWith('/') ? (
-                    <Link
-                      key={item.label}
-                      to={item.href}
-                      className="block py-2 px-4 hover:bg-accent rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      className="block py-2 px-4 hover:bg-accent rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </a>
-                  )
-                ))}
-              </div>
-
-              <Link to="/blog" className="block py-2 px-4 hover:bg-accent rounded-md">
-                Blog
-              </Link>
+              {topLevelItems.map((item) => (
+                <div key={item.id} className="border-b pb-4">
+                  <p className="text-sm font-semibold mb-2">{item.label}</p>
+                  {item.children
+                    ?.filter(child => child.is_active)
+                    .sort((a, b) => a.sort_order - b.sort_order)
+                    .map((child) => (
+                      <Link
+                        key={child.id}
+                        to={child.url || "#"}
+                        className="block py-2 px-4 hover:bg-accent rounded-md"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                </div>
+              ))}
 
               {user ? (
                 <>

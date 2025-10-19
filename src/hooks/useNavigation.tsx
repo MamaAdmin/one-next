@@ -22,6 +22,18 @@ export interface NavigationMenu {
   sort_order?: number;
 }
 
+interface NavigationItemDB {
+  id: string;
+  menu_id: string;
+  parent_id: string | null;
+  label: string;
+  url: string | null;
+  icon: string | null;
+  target: string | null;
+  sort_order: number;
+  is_active: boolean;
+}
+
 export const useNavigation = (menuName?: string) => {
   const [menus, setMenus] = useState<NavigationMenu[]>([]);
   const [items, setItems] = useState<NavigationItem[]>([]);
@@ -201,9 +213,33 @@ export const useNavigation = (menuName?: string) => {
 
   useEffect(() => {
     fetchMenus();
-    if (menuName) {
-      fetchItems(menuName);
-    }
+  }, []);
+
+  // Realtime subscription for navigation changes
+  useEffect(() => {
+    if (!menuName) return;
+
+    fetchItems(menuName);
+
+    const channel = supabase
+      .channel('navigation-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'navigation_items',
+        },
+        (payload) => {
+          console.log('Navigation changed:', payload);
+          fetchItems(menuName);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [menuName]);
 
   const findItemsByUrl = async (url: string) => {

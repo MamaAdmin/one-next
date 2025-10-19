@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Trash2, GripVertical, Plus, Edit2 } from "lucide-react";
 import { URLEditDialog } from "./URLEditDialog";
+import { cn } from "@/lib/utils";
 import {
   DndContext,
   DragEndEvent,
@@ -28,12 +30,21 @@ import { CSS } from "@dnd-kit/utilities";
 
 interface SortableItemProps {
   item: NavigationItem;
+  depth?: number;
   onUpdate: (id: string, updates: Partial<NavigationItem>) => void;
   onDelete: (id: string) => void;
   onEditUrl: (item: NavigationItem) => void;
+  onAddSubItem: (parentId: string) => void;
 }
 
-const SortableItem = ({ item, onUpdate, onDelete, onEditUrl }: SortableItemProps) => {
+const SortableItem = ({ 
+  item, 
+  depth = 0, 
+  onUpdate, 
+  onDelete, 
+  onEditUrl,
+  onAddSubItem 
+}: SortableItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
   });
@@ -41,58 +52,101 @@ const SortableItem = ({ item, onUpdate, onDelete, onEditUrl }: SortableItemProps
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    paddingLeft: `${depth * 24}px`,
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="flex items-center gap-2 mb-2">
-      <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
-        <GripVertical className="h-5 w-5 text-muted-foreground" />
-      </button>
-      
-      <div className="flex-1 grid grid-cols-4 gap-2">
-        <Input
-          value={item.label}
-          onChange={(e) => onUpdate(item.id, { label: e.target.value })}
-          placeholder="Label"
-        />
-        <div className="flex-1 relative">
+    <>
+      <div 
+        ref={setNodeRef} 
+        style={style} 
+        className={cn(
+          "flex items-center gap-2 mb-2",
+          depth > 0 && "ml-6 border-l-2 border-muted pl-4"
+        )}
+      >
+        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </button>
+        
+        <div className="flex-1 grid grid-cols-5 gap-2 items-center">
           <Input
-            value={item.url || ""}
-            readOnly
-            placeholder="URL (keine)"
-            className="pr-8"
+            value={item.label}
+            onChange={(e) => onUpdate(item.id, { label: e.target.value })}
+            placeholder="Label"
           />
-          {item.url && (
+          <div className="relative">
+            <Input
+              value={item.url || ""}
+              readOnly
+              placeholder="URL (keine)"
+              className="pr-8"
+            />
+            {item.url && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full w-8"
+                onClick={() => onEditUrl(item)}
+              >
+                <Edit2 className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+          <Input
+            value={item.icon || ""}
+            onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
+            placeholder="Icon"
+          />
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={item.is_active}
+              onCheckedChange={(checked) => onUpdate(item.id, { is_active: checked })}
+            />
+            <span className="text-xs text-muted-foreground">Aktiv</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {item.children && item.children.length > 0 && (
+              <Badge variant="secondary" className="text-xs">
+                {item.children.length} Sub
+              </Badge>
+            )}
             <Button
               variant="ghost"
-              size="icon"
-              className="absolute right-0 top-0 h-full w-8"
-              onClick={() => onEditUrl(item)}
+              size="sm"
+              onClick={() => onAddSubItem(item.id)}
+              title="Untermenü hinzufügen"
             >
-              <Edit2 className="h-4 w-4" />
+              <Plus className="h-3 w-3" />
             </Button>
-          )}
-        </div>
-        <Input
-          value={item.icon || ""}
-          onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
-          placeholder="Icon"
-        />
-        <div className="flex items-center gap-2">
-          <Switch
-            checked={item.is_active}
-            onCheckedChange={(checked) => onUpdate(item.id, { is_active: checked })}
-          />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onDelete(item.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(item.id)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+      
+      {/* Recursively render children */}
+      {item.children && item.children.length > 0 && (
+        <div>
+          {item.children.map((child) => (
+            <SortableItem
+              key={child.id}
+              item={child}
+              depth={depth + 1}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+              onEditUrl={onEditUrl}
+              onAddSubItem={onAddSubItem}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
@@ -110,6 +164,28 @@ const NavigationManager = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const findItemById = (items: NavigationItem[], id: string): NavigationItem | null => {
+    for (const item of items) {
+      if (item.id === id) return item;
+      if (item.children) {
+        const found = findItemById(item.children, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const getAllItemIds = (items: NavigationItem[]): string[] => {
+    const ids: string[] = [];
+    items.forEach(item => {
+      ids.push(item.id);
+      if (item.children) {
+        ids.push(...getAllItemIds(item.children));
+      }
+    });
+    return ids;
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -143,6 +219,29 @@ const NavigationManager = () => {
       target: "_self",
       icon: null,
       parent_id: null,
+    };
+
+    await createItem(menuId, newItem);
+  };
+
+  const handleAddSubItem = async (parentId: string) => {
+    const menuId = menus.find((m) => m.name === selectedMenu)?.id;
+    if (!menuId) return;
+
+    const parentItem = findItemById(items, parentId);
+    const maxSortOrder = Math.max(
+      ...(parentItem?.children?.map(c => c.sort_order) || [0]),
+      0
+    );
+
+    const newItem: Partial<NavigationItem> = {
+      label: "Neues Untermenü",
+      url: "/",
+      sort_order: maxSortOrder + 1,
+      is_active: true,
+      target: "_self",
+      icon: null,
+      parent_id: parentId,
     };
 
     await createItem(menuId, newItem);
@@ -206,7 +305,7 @@ const NavigationManager = () => {
                   onDragEnd={handleDragEnd}
                 >
                   <SortableContext
-                    items={items.map((item) => item.id)}
+                    items={getAllItemIds(items)}
                     strategy={verticalListSortingStrategy}
                   >
                     {items.map((item) => (
@@ -216,6 +315,7 @@ const NavigationManager = () => {
                         onUpdate={updateItem}
                         onDelete={deleteItem}
                         onEditUrl={handleEditUrl}
+                        onAddSubItem={handleAddSubItem}
                       />
                     ))}
                   </SortableContext>

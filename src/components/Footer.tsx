@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { useNavigation } from "@/hooks/useNavigation";
 
 interface FooterProps {
   isEditMode?: boolean;
@@ -10,21 +11,12 @@ interface FooterProps {
 
 const Footer = ({ isEditMode = false }: FooterProps) => {
   const { content, updateContent } = usePageContent('footer');
-  const footerLinks = {
-    Leistungen: [
-      { label: "AI Design Sprint", href: "/sprint-uebersicht" },
-      { label: "Datenaudit", href: "/data-quality-audit" },
-      { label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
-      { label: "Workshops", href: "/design-sprint-workshop" },
-      { label: "AI Beratung", href: "/ai-consulting-services" },
-    ],
-    Unternehmen: [
-      { label: "Über uns", href: "/about-us" },
-      { label: "FAQ", href: "/faq" },
-      { label: "Blog", href: "/blog" },
-      { label: "Kontakt", href: "/workshop-registration" },
-    ]
-  };
+  
+  // Load navigation dynamically from database
+  const { items: footerItems } = useNavigation("footer");
+  
+  // Filter top-level items (categories like "Leistungen", "Unternehmen")
+  const topLevelItems = footerItems.filter(item => !item.parent_id && item.is_active);
   return <footer className="bg-foreground text-background py-16">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
@@ -60,16 +52,27 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
             </div>
           </div>
 
-          {Object.entries(footerLinks).map(([category, links]) => <div key={category}>
-              <h3 className="font-bold text-lg mb-4">{category}</h3>
+          {/* Dynamic navigation from database */}
+          {topLevelItems.map((category) => (
+            <div key={category.id}>
+              <h3 className="font-bold text-lg mb-4">{category.label}</h3>
               <ul className="space-y-2">
-                {links.map(link => <li key={link.label}>
-                    <Link to={link.href} className="text-background/80 hover:text-background transition-colors">
-                      {link.label}
-                    </Link>
-                  </li>)}
+                {category.children
+                  ?.filter(child => child.is_active)
+                  .sort((a, b) => a.sort_order - b.sort_order)
+                  .map((link) => (
+                    <li key={link.id}>
+                      <Link 
+                        to={link.url || "#"} 
+                        className="text-background/80 hover:text-background transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
-            </div>)}
+            </div>
+          ))}
         </div>
 
         <div className="border-t border-background/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
