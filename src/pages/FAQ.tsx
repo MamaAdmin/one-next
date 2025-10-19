@@ -201,7 +201,7 @@ const FAQ = () => {
                       </p>
                       <div className="flex gap-4 justify-center">
                         <Button asChild>
-                          <a href="mailto:info@one-next.de">
+                          <a href="mailto:info@one-next.com">
                             <Mail className="mr-2 h-4 w-4" />
                             E-Mail senden
                           </a>
@@ -321,7 +321,7 @@ const FAQ = () => {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button asChild size="lg">
-                <a href="mailto:info@one-next.de">
+                <a href="mailto:info@one-next.com">
                   <Mail className="mr-2 h-5 w-5" />
                   Nachricht senden
                 </a>
