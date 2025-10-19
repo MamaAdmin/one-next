@@ -23,7 +23,6 @@ export interface Tool {
 
 export interface ToolFilters {
   category?: string;
-  phase?: number;
   search?: string;
 }
 
@@ -56,9 +55,6 @@ export const useToolbox = () => {
 
       if (filters?.category) {
         query = query.eq("category", filters.category);
-      }
-      if (filters?.phase) {
-        query = query.eq("phase_number", filters.phase);
       }
       if (filters?.search) {
         query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);

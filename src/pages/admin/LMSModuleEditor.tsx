@@ -483,7 +483,6 @@ const LMSModuleEditor = () => {
                         <ToolSelector
                           selectedTools={selectedToolIds}
                           onChange={handleToolChange}
-                          filterByPhase={formData.phase_number}
                           filterByCourseId={courseId}
                         />
                         <p className="text-xs text-muted-foreground mt-2">

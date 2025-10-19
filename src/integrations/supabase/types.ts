@@ -1228,7 +1228,6 @@ export type Database = {
           external_url: string | null
           id: string
           is_active: boolean | null
-          phase_number: number | null
           slug: string
           sort_order: number
           tags: string[] | null
@@ -1246,7 +1245,6 @@ export type Database = {
           external_url?: string | null
           id?: string
           is_active?: boolean | null
-          phase_number?: number | null
           slug: string
           sort_order?: number
           tags?: string[] | null
@@ -1264,7 +1262,6 @@ export type Database = {
           external_url?: string | null
           id?: string
           is_active?: boolean | null
-          phase_number?: number | null
           slug?: string
           sort_order?: number
           tags?: string[] | null

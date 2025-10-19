@@ -105,9 +105,6 @@ const SortableToolRow = ({ tool, categoryLabels, categoryColors, navigate, delet
         </Badge>
       </td>
       <td className="p-4">
-        {tool.phase_number ? `Phase ${tool.phase_number}` : '-'}
-      </td>
-      <td className="p-4">
         <Badge variant="outline" className="capitalize">{tool.tool_type}</Badge>
       </td>
       <td className="p-4">
@@ -176,7 +173,6 @@ export default function LMSToolboxDashboard() {
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { tools, loading, loadTools, deleteTool, updateToolsOrder } = useToolbox();
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<string>("manual");
 
@@ -214,7 +210,6 @@ export default function LMSToolboxDashboard() {
   const filteredTools = tools
     .filter((tool) => {
       if (categoryFilter !== "all" && tool.category !== categoryFilter) return false;
-      if (phaseFilter !== "all" && tool.phase_number?.toString() !== phaseFilter) return false;
       if (searchQuery && !tool.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     })
@@ -222,24 +217,14 @@ export default function LMSToolboxDashboard() {
       switch (sortBy) {
         case "manual":
           return a.sort_order - b.sort_order;
-
-        case "phase":
-          // Sort by phase_number: tools with phase come first, then by phase number
-          if (a.phase_number && !b.phase_number) return -1;
-          if (!a.phase_number && b.phase_number) return 1;
-          if (a.phase_number && b.phase_number) return a.phase_number - b.phase_number;
-          return 0;
         
         case "title":
-          // Alphabetical sorting
           return a.title.localeCompare(b.title);
         
         case "category":
-          // Sort by category
           return a.category.localeCompare(b.category);
         
         case "status":
-          // Active tools first
           if (a.is_active && !b.is_active) return -1;
           if (!a.is_active && b.is_active) return 1;
           return 0;
@@ -315,26 +300,12 @@ export default function LMSToolboxDashboard() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={phaseFilter} onValueChange={setPhaseFilter}>
-                  <SelectTrigger className="w-full md:w-[150px]">
-                    <SelectValue placeholder="Phase" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Alle Phasen</SelectItem>
-                    <SelectItem value="1">Phase 1</SelectItem>
-                    <SelectItem value="2">Phase 2</SelectItem>
-                    <SelectItem value="3">Phase 3</SelectItem>
-                    <SelectItem value="4">Phase 4</SelectItem>
-                    <SelectItem value="5">Phase 5</SelectItem>
-                  </SelectContent>
-                </Select>
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-full md:w-[180px]">
                     <SelectValue placeholder="Sortierung" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="manual">Manuell (Drag & Drop)</SelectItem>
-                    <SelectItem value="phase">Nach Phase</SelectItem>
                     <SelectItem value="title">Alphabetisch</SelectItem>
                     <SelectItem value="category">Nach Kategorie</SelectItem>
                     <SelectItem value="status">Nach Status</SelectItem>
@@ -357,7 +328,6 @@ export default function LMSToolboxDashboard() {
                     <tr>
                       <th className="text-left p-4 font-medium">Tool</th>
                       <th className="text-left p-4 font-medium">Kategorie</th>
-                      <th className="text-left p-4 font-medium">Phase</th>
                       <th className="text-left p-4 font-medium">Typ</th>
                       <th className="text-left p-4 font-medium">Status</th>
                       <th className="text-right p-4 font-medium">Aktionen</th>
@@ -405,9 +375,6 @@ export default function LMSToolboxDashboard() {
                         <Badge variant="secondary" className={categoryColors[tool.category]}>
                           {categoryLabels[tool.category]}
                         </Badge>
-                        {tool.phase_number && (
-                          <Badge variant="outline">Phase {tool.phase_number}</Badge>
-                        )}
                         <Badge variant={tool.is_active ? "default" : "secondary"}>
                           {tool.is_active ? "Aktiv" : "Inaktiv"}
                         </Badge>

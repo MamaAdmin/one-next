@@ -33,7 +33,6 @@ export default function LMSToolboxEditor() {
     slug: "",
     description: "",
     category: "understand",
-    phase_number: 1,
     tool_type: "external",
     external_url: "",
     embed_code: "",
@@ -78,7 +77,6 @@ export default function LMSToolboxEditor() {
           slug: data.slug || "",
           description: data.description || "",
           category: data.category || "understand",
-          phase_number: data.phase_number || 1,
           tool_type: data.tool_type || "external",
           external_url: data.external_url || "",
           embed_code: data.embed_code || "",
@@ -140,7 +138,6 @@ export default function LMSToolboxEditor() {
         slug: formData.slug,
         description: formData.description || undefined,
         category: formData.category,
-        phase_number: formData.phase_number || undefined,
         tool_type: formData.tool_type,
         external_url: formData.external_url || undefined,
         embed_code: formData.embed_code || undefined,
@@ -294,51 +291,27 @@ export default function LMSToolboxEditor() {
                           />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="category">Kategorie *</Label>
-                            <Select
-                              value={formData.category}
-                              onValueChange={(value) => {
-                                setFormData({ ...formData, category: value });
-                                handleFormChange();
-                              }}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="understand">Verstehen</SelectItem>
-                                <SelectItem value="ideate">Ideen entwickeln</SelectItem>
-                                <SelectItem value="decide">Entscheiden</SelectItem>
-                                <SelectItem value="prototype">Prototyp</SelectItem>
-                                <SelectItem value="validate">Validieren</SelectItem>
-                                <SelectItem value="retrospect">Retrospektive</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div>
-                            <Label htmlFor="phase">Phase</Label>
-                            <Select
-                              value={formData.phase_number.toString()}
-                              onValueChange={(value) => {
-                                setFormData({ ...formData, phase_number: parseInt(value) });
-                                handleFormChange();
-                              }}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="1">Phase 1</SelectItem>
-                                <SelectItem value="2">Phase 2</SelectItem>
-                                <SelectItem value="3">Phase 3</SelectItem>
-                                <SelectItem value="4">Phase 4</SelectItem>
-                                <SelectItem value="5">Phase 5</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
+                        <div>
+                          <Label htmlFor="category">Kategorie *</Label>
+                          <Select
+                            value={formData.category}
+                            onValueChange={(value) => {
+                              setFormData({ ...formData, category: value });
+                              handleFormChange();
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="understand">Verstehen</SelectItem>
+                              <SelectItem value="ideate">Ideen entwickeln</SelectItem>
+                              <SelectItem value="decide">Entscheiden</SelectItem>
+                              <SelectItem value="prototype">Prototyp</SelectItem>
+                              <SelectItem value="validate">Validieren</SelectItem>
+                              <SelectItem value="retrospect">Retrospektive</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </CardContent>
                     </Card>
@@ -544,9 +517,6 @@ export default function LMSToolboxEditor() {
                   <div className="flex gap-2">
                     <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
                       {formData.category}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded bg-muted">
-                      Phase {formData.phase_number}
                     </span>
                     <span className="text-xs px-2 py-1 rounded bg-muted">
                       {formData.tool_type}

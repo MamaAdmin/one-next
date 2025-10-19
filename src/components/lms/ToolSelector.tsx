@@ -18,7 +18,6 @@ interface Tool {
 interface ToolSelectorProps {
   selectedTools: string[];
   onChange: (toolIds: string[]) => void;
-  filterByPhase?: number;
   filterByCourseId?: string;
 }
 
@@ -40,7 +39,7 @@ const categoryLabels: Record<string, string> = {
   retrospect: "Retrospektive",
 };
 
-export function ToolSelector({ selectedTools, onChange, filterByPhase, filterByCourseId }: ToolSelectorProps) {
+export function ToolSelector({ selectedTools, onChange, filterByCourseId }: ToolSelectorProps) {
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,10 +50,6 @@ export function ToolSelector({ selectedTools, onChange, filterByPhase, filterByC
         .select("id, title, description, category, tool_type, external_url")
         .eq("is_active", true)
         .order("title");
-
-      if (filterByPhase) {
-        query = query.eq("phase_number", filterByPhase);
-      }
 
       // Filter by course: only show tools assigned to this course
       if (filterByCourseId) {
@@ -80,7 +75,7 @@ export function ToolSelector({ selectedTools, onChange, filterByPhase, filterByC
     };
 
     loadTools();
-  }, [filterByPhase, filterByCourseId]);
+  }, [filterByCourseId]);
 
   const handleToggle = (toolId: string) => {
     const newSelection = selectedTools.includes(toolId)
