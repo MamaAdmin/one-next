@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -7,17 +7,30 @@ import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import ArticleManager from "@/components/admin/ArticleManager";
+import ArticleManagerEnhanced from "@/components/admin/ArticleManagerEnhanced";
 import MediaManager from "@/components/admin/MediaManager";
 import PageContentManager from "@/components/admin/PageContentManager";
 import FAQManager from "@/components/admin/FAQManager";
-import { BMADSessionIcon, BMADArtifactIcon, BMADAnalyticsIcon } from "@/components/ui/custom-icons";
+import { NavigationManager } from "@/components/admin/NavigationManager";
+import { RedirectManager } from "@/components/admin/RedirectManager";
+import { 
+  BMADSessionIcon, 
+  BMADArtifactIcon, 
+  BMADAnalyticsIcon,
+  DocumentIcon,
+  GridIcon,
+  LayersIcon,
+  MessageIcon,
+  CompassIcon,
+  LinkIcon
+} from "@/components/ui/custom-icons";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin, loading } = useAdmin();
   const [searchParams] = useSearchParams();
-  const defaultTab = searchParams.get('tab') || 'articles';
+  const defaultTab = searchParams.get('tab') || 'cms';
+  const [cmsSection, setCmsSection] = useState<string>('articles');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -66,29 +79,85 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="articles">Artikel</TabsTrigger>
-              <TabsTrigger value="media">Medien</TabsTrigger>
-              <TabsTrigger value="pages">Seiteninhalte</TabsTrigger>
-              <TabsTrigger value="faq">FAQ</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
               <TabsTrigger value="bmad">BMAD</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="articles">
-              <ArticleManager />
-            </TabsContent>
+            <TabsContent value="cms">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Content Management System</CardTitle>
+                  <CardDescription>
+                    Verwalten Sie alle Inhalte: Artikel, Medien, Seiten, Navigation und SEO
+                  </CardDescription>
+                </CardHeader>
+                <div className="p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('articles')}
+                    >
+                      <DocumentIcon className="w-14 h-14 text-primary" />
+                      <span>Artikel</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('media')}
+                    >
+                      <GridIcon className="w-14 h-14 text-primary" />
+                      <span>Medien</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('pages')}
+                    >
+                      <LayersIcon className="w-14 h-14 text-primary" />
+                      <span>Seiteninhalte</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('faq')}
+                    >
+                      <MessageIcon className="w-14 h-14 text-primary" />
+                      <span>FAQ</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('navigation')}
+                    >
+                      <CompassIcon className="w-14 h-14 text-primary" />
+                      <span>Navigation</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('seo')}
+                    >
+                      <LinkIcon className="w-14 h-14 text-primary" />
+                      <span>SEO & Redirects</span>
+                    </Button>
+                  </div>
 
-            <TabsContent value="media">
-              <MediaManager />
-            </TabsContent>
-
-            <TabsContent value="pages">
-              <PageContentManager />
-            </TabsContent>
-
-            <TabsContent value="faq">
-              <FAQManager />
+                  {cmsSection === 'articles' && <ArticleManagerEnhanced />}
+                  {cmsSection === 'media' && <MediaManager />}
+                  {cmsSection === 'pages' && <PageContentManager />}
+                  {cmsSection === 'faq' && <FAQManager />}
+                  {cmsSection === 'navigation' && <NavigationManager />}
+                  {cmsSection === 'seo' && <RedirectManager />}
+                </div>
+              </Card>
             </TabsContent>
 
             <TabsContent value="lms">

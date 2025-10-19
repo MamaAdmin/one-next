@@ -495,6 +495,31 @@ export const LayersIcon = ({ className, ...props }: IconProps) => (
   </svg>
 );
 
+export const LinkIcon = ({ className, ...props }: IconProps) => (
+  <svg viewBox="0 0 100 100" className={className} {...props}>
+    {/* Left link */}
+    <path
+      d="M 35 35 L 25 35 Q 15 35 15 45 Q 15 55 25 55 L 35 55"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Right link */}
+    <path
+      d="M 65 45 L 75 45 Q 85 45 85 55 Q 85 65 75 65 L 65 65"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Connecting line */}
+    <line x1="40" y1="45" x2="60" y2="55" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>
+);
+
 export const SettingsIcon = ({ className, ...props }: IconProps) => (
   <svg viewBox="0 0 100 100" className={className} {...props}>
     {/* Gear circle */}
