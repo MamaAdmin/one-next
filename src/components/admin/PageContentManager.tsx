@@ -10,6 +10,7 @@ import { Pencil, Trash2, Search } from "lucide-react";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Badge } from "@/components/ui/badge";
 import DOMPurify from "dompurify";
+import { decodeHtmlEntities } from "@/lib/html";
 import {
   Accordion,
   AccordionContent,
@@ -108,7 +109,7 @@ const PageContentManager = () => {
       page_name: content.page_name,
       section_name: content.section_name,
       content_type: content.content_type,
-      content: content.content,
+      content: decodeHtmlEntities(content.content),
     });
   };
 

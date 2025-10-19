@@ -36,6 +36,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, Plus, Eye, ThumbsUp, ThumbsDown, HelpCircle, Rocket, DollarSign, Code, Play, Settings, Users, Book } from "lucide-react";
 import * as Icons from "lucide-react";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
+import { decodeHtmlEntities } from "@/lib/html";
 
 const FAQManager = () => {
   const { faqs, loading, refetch } = useFAQ();
@@ -159,7 +160,7 @@ const FAQManager = () => {
       is_published: faq.is_published,
       sort_order: faq.sort_order,
     });
-    setEditorContent(faq.answer);
+    setEditorContent(decodeHtmlEntities(faq.answer));
     setIsDialogOpen(true);
   };
 
