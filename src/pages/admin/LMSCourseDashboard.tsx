@@ -18,8 +18,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2 } from "lucide-react";
-import { 
+import { Loader2, BookOpen } from "lucide-react";
+import {
   BookIcon, 
   LessonIcon, 
   QuizIcon, 
@@ -296,6 +296,10 @@ export default function LMSCourseDashboard() {
                             }}>
                               Bearbeiten
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
+                              <BookOpen className="mr-2 h-4 w-4" />
+                              Module verwalten
+                            </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive"
                               onClick={() => handleDelete(course.id)}
@@ -351,6 +355,10 @@ export default function LMSCourseDashboard() {
                             setActiveView("edit");
                           }}>
                             Bearbeiten
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
+                            <BookOpen className="mr-2 h-4 w-4" />
+                            Module verwalten
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             className="text-destructive"
