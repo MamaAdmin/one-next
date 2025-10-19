@@ -1,4 +1,5 @@
 import { Github, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
@@ -10,8 +11,19 @@ interface FooterProps {
 const Footer = ({ isEditMode = false }: FooterProps) => {
   const { content, updateContent } = usePageContent('footer');
   const footerLinks = {
-    Leistungen: ["AI Design Sprint", "Nachweis der KI-Entwicklung", "Datenqualitäts-Audit", "Individuelle KI-Entwicklung", "Strategieberatung"],
-    Unternehmen: ["Über uns", "Karriere", "Blog", "Fallstudien", "Kontakt"]
+    Leistungen: [
+      { label: "AI Design Sprint", href: "/sprint-uebersicht" },
+      { label: "Datenaudit", href: "/data-quality-audit" },
+      { label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
+      { label: "Workshops", href: "/design-sprint-workshop" },
+      { label: "AI Beratung", href: "/ai-consulting-services" },
+    ],
+    Unternehmen: [
+      { label: "Über uns", href: "/about-us" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Blog", href: "/blog" },
+      { label: "Kontakt", href: "/workshop-registration" },
+    ]
   };
   return <footer className="bg-foreground text-background py-16">
       <div className="container mx-auto px-6">
@@ -51,10 +63,10 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
           {Object.entries(footerLinks).map(([category, links]) => <div key={category}>
               <h3 className="font-bold text-lg mb-4">{category}</h3>
               <ul className="space-y-2">
-                {links.map(link => <li key={link}>
-                    <a href="#" className="text-background/80 hover:text-background transition-colors">
-                      {link}
-                    </a>
+                {links.map(link => <li key={link.label}>
+                    <Link to={link.href} className="text-background/80 hover:text-background transition-colors">
+                      {link.label}
+                    </Link>
                   </li>)}
               </ul>
             </div>)}
@@ -65,15 +77,15 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
             © 2025 one-next. Alle Rechte vorbehalten.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-background/60 hover:text-background transition-colors">
+            <Link to="/datenschutz" className="text-background/60 hover:text-background transition-colors">
               Datenschutz
-            </a>
-            <a href="#" className="text-background/60 hover:text-background transition-colors">
+            </Link>
+            <Link to="/impressum" className="text-background/60 hover:text-background transition-colors">
               Impressum
-            </a>
-            <a href="#" className="text-background/60 hover:text-background transition-colors">
+            </Link>
+            <Link to="/agb" className="text-background/60 hover:text-background transition-colors">
               AGB
-            </a>
+            </Link>
           </div>
         </div>
       </div>

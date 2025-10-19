@@ -16,6 +16,7 @@ import AIConsultingServices from "./pages/AIConsultingServices";
 import CustomAIDevelopment from "./pages/CustomAIDevelopment";
 import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
+import FAQ from "./pages/FAQ";
 import Auth from "./pages/Auth";
 import PasswordReset from "./pages/PasswordReset";
 import UpdatePassword from "./pages/UpdatePassword";
@@ -78,6 +79,7 @@ const App = () => (
           <Route path="/custom-ai-development" element={<CustomAIDevelopment />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/data-quality-audit" element={<DataQualityAudit />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/password-reset" element={<PasswordReset />} />
           <Route path="/update-password" element={<UpdatePassword />} />
