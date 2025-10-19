@@ -45,37 +45,18 @@ export function ToolSelector({ selectedTools, onChange, filterByCourseId }: Tool
 
   useEffect(() => {
     const loadTools = async () => {
-      let query = supabase
+      const { data } = await supabase
         .from("lms_tools")
         .select("id, title, description, category, tool_type, external_url")
         .eq("is_active", true)
         .order("title");
 
-      // Filter by course: only show tools assigned to this course
-      if (filterByCourseId) {
-        const { data: courseTools } = await supabase
-          .from("lms_course_tools")
-          .select("tool_id")
-          .eq("course_id", filterByCourseId);
-        
-        const courseToolIds = courseTools?.map(ct => ct.tool_id) || [];
-        if (courseToolIds.length > 0) {
-          query = query.in("id", courseToolIds);
-        } else {
-          // No tools assigned to course yet, show empty list
-          setTools([]);
-          setLoading(false);
-          return;
-        }
-      }
-
-      const { data } = await query;
       setTools(data || []);
       setLoading(false);
     };
 
     loadTools();
-  }, [filterByCourseId]);
+  }, []);
 
   const handleToggle = (toolId: string) => {
     const newSelection = selectedTools.includes(toolId)
