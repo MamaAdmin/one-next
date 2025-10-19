@@ -63,6 +63,7 @@ const LMSModuleEditor = () => {
   const [contentHtml, setContentHtml] = useState("");
   const [toolRecommendationHtml, setToolRecommendationHtml] = useState("");
   const [formData, setFormData] = useState({
+    title: "",
     category: 'understand' as CourseCategory,
     module_type: "Theory",
     duration_minutes: 30,
@@ -125,6 +126,7 @@ const LMSModuleEditor = () => {
       setContentHtml(data.content_text || "");
       setToolRecommendationHtml(data.tool_recommendation || "");
       setFormData({
+        title: data.title || "",
         category: data.category as CourseCategory,
         module_type: data.module_type,
         duration_minutes: data.duration_minutes,
@@ -219,11 +221,11 @@ const LMSModuleEditor = () => {
 
     const moduleData = {
       course_id: courseId,
-      title: form.get("title") as string,
+      title: formData.title,
       description: descriptionHtml,
       category: formData.category,
-      module_type: form.get("module_type") as string,
-      duration_minutes: parseInt(form.get("duration_minutes") as string),
+      module_type: formData.module_type,
+      duration_minutes: formData.duration_minutes,
       sort_order: parseInt(form.get("sort_order") as string),
       content_text: contentHtml,
       content_video_url: form.get("content_video_url") as string,
@@ -238,7 +240,11 @@ const LMSModuleEditor = () => {
       const { error } = await supabase.from("lms_course_modules").update(moduleData).eq("id", moduleId);
 
       if (error) {
-        toast({ title: "Fehler", description: error.message, variant: "destructive" });
+        const errorMsg = error.message.toLowerCase();
+        const description = (errorMsg.includes('null') || errorMsg.includes('not-null') || errorMsg.includes('permission'))
+          ? "Modul konnte nicht gespeichert werden. Bitte alle Pflichtfelder ausfüllen und Berechtigungen prüfen."
+          : error.message;
+        toast({ title: "Fehler", description, variant: "destructive" });
         setSaving(false);
         return;
       }
@@ -364,7 +370,11 @@ const LMSModuleEditor = () => {
                         <Input
                           id="title"
                           name="title"
-                          defaultValue={module?.title}
+                          value={formData.title}
+                          onChange={(e) => {
+                            setFormData((prev) => ({ ...prev, title: e.target.value }));
+                            setHasUnsavedChanges(true);
+                          }}
                           placeholder="Modultitel eingeben..."
                           required
                         />
@@ -425,7 +435,14 @@ const LMSModuleEditor = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="module_type">Typ *</Label>
-                          <Select name="module_type" defaultValue={module?.module_type || "Theory"}>
+                          <Select
+                            name="module_type"
+                            value={formData.module_type}
+                            onValueChange={(value) => {
+                              setFormData((prev) => ({ ...prev, module_type: value }));
+                              setHasUnsavedChanges(true);
+                            }}
+                          >
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -445,7 +462,11 @@ const LMSModuleEditor = () => {
                             name="duration_minutes"
                             type="number"
                             min="1"
-                            defaultValue={module?.duration_minutes || 30}
+                            value={formData.duration_minutes}
+                            onChange={(e) => {
+                              setFormData((prev) => ({ ...prev, duration_minutes: Number(e.target.value || 0) }));
+                              setHasUnsavedChanges(true);
+                            }}
                             required
                           />
                         </div>
@@ -544,7 +565,12 @@ const LMSModuleEditor = () => {
                           id="tags"
                           name="tags"
                           placeholder="#AI, #DesignSprint, #Innovation"
-                          defaultValue={module?.tags?.join(", ")}
+                          value={formData.tags.join(", ")}
+                          onChange={(e) => {
+                            const tags = (e.target.value || "").split(",").map(t => t.trim()).filter(Boolean);
+                            setFormData((prev) => ({ ...prev, tags }));
+                            setHasUnsavedChanges(true);
+                          }}
                         />
                         <p className="text-xs text-muted-foreground mt-1">
                           Komma-getrennte Stichworte zur Kategorisierung
@@ -597,6 +623,20 @@ const LMSModuleEditor = () => {
               <CardContent>
                 <div className="space-y-3 text-sm">
                   <div>
+                    <span className="font-medium">Titel:</span>
+                    <div className="mt-1 text-base font-semibold">
+                      {formData.title || "(Unbenannt)"}
+                    </div>
+                  </div>
+                  {descriptionHtml && (
+                    <div className="pt-2 border-t">
+                      <div className="text-xs text-muted-foreground line-clamp-3">
+                        {descriptionHtml.replace(/<[^>]+>/g, "").slice(0, 140)}
+                        {descriptionHtml.replace(/<[^>]+>/g, "").length > 140 ? "…" : ""}
+                      </div>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t">
                     <span className="font-medium">Kategorie:</span>
                     <Badge className={`ml-2 ${categoryColors[formData.category]}`}>
                       {categoryLabels[formData.category]}
