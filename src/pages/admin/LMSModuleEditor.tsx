@@ -15,7 +15,6 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { ToolSelector } from "@/components/lms/ToolSelector";
-import { LessonManager } from "@/components/lms/LessonManager";
 
 interface Tool {
   name: string;
@@ -53,7 +52,7 @@ const LMSModuleEditor = () => {
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const courseId = searchParams.get('courseId');
+  const courseId = searchParams.get("courseId");
   const isEditing = !!moduleId;
 
   const [loading, setLoading] = useState(isEditing);
@@ -62,7 +61,7 @@ const LMSModuleEditor = () => {
   const [module, setModule] = useState<Module | null>(null);
   const [courseName, setCourseName] = useState<string>("");
   const [selectedToolIds, setSelectedToolIds] = useState<string[]>([]);
-  const [selectedTools, setSelectedTools] = useState<{id: string, title: string}[]>([]);
+  const [selectedTools, setSelectedTools] = useState<{ id: string; title: string }[]>([]);
   const [formData, setFormData] = useState({
     phase_number: 1,
     module_type: "Theory",
@@ -86,20 +85,16 @@ const LMSModuleEditor = () => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasUnsavedChanges) {
         e.preventDefault();
-        e.returnValue = '';
+        e.returnValue = "";
       }
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
   const loadCourseName = async (id: string) => {
-    const { data } = await supabase
-      .from("lms_courses")
-      .select("title")
-      .eq("id", id)
-      .single();
+    const { data } = await supabase.from("lms_courses").select("title").eq("id", id).single();
 
     if (data) {
       setCourseName(data.title);
@@ -108,11 +103,7 @@ const LMSModuleEditor = () => {
 
   const loadModule = async (id: string) => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("lms_course_modules")
-      .select("*")
-      .eq("id", id)
-      .single();
+    const { data, error } = await supabase.from("lms_course_modules").select("*").eq("id", id).single();
 
     if (error) {
       toast({
@@ -143,13 +134,11 @@ const LMSModuleEditor = () => {
         .select("tool_id, lms_tools(id, title)")
         .eq("module_id", id)
         .order("sort_order");
-      
+
       if (!toolsError && linkedTools) {
-        const toolIds = linkedTools.map(t => t.tool_id);
-        const tools = linkedTools
-          .map(t => t.lms_tools)
-          .filter(Boolean) as {id: string, title: string}[];
-        
+        const toolIds = linkedTools.map((t) => t.tool_id);
+        const tools = linkedTools.map((t) => t.lms_tools).filter(Boolean) as { id: string; title: string }[];
+
         setSelectedToolIds(toolIds);
         setSelectedTools(tools);
       }
@@ -165,19 +154,16 @@ const LMSModuleEditor = () => {
     if (hasUnsavedChanges) {
       if (!confirm("Ungespeicherte Änderungen verwerfen?")) return;
     }
-    navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
+    navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ""}`);
   };
 
   const handleToolChange = async (toolIds: string[]) => {
     setSelectedToolIds(toolIds);
     setHasUnsavedChanges(true);
-    
+
     if (toolIds.length > 0) {
-      const { data } = await supabase
-        .from("lms_tools")
-        .select("id, title")
-        .in("id", toolIds);
-      
+      const { data } = await supabase.from("lms_tools").select("id, title").in("id", toolIds);
+
       if (data) {
         setSelectedTools(data);
       }
@@ -213,10 +199,20 @@ const LMSModuleEditor = () => {
 
     // Parse comma-separated arrays
     const tagsString = formData.get("tags") as string;
-    const tags = tagsString ? tagsString.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const tags = tagsString
+      ? tagsString
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : [];
 
     const prereqsString = formData.get("prerequisites") as string;
-    const prerequisites = prereqsString ? prereqsString.split(',').map(p => p.trim()).filter(Boolean) : [];
+    const prerequisites = prereqsString
+      ? prereqsString
+          .split(",")
+          .map((p) => p.trim())
+          .filter(Boolean)
+      : [];
 
     const moduleData = {
       course_id: courseId,
@@ -236,10 +232,7 @@ const LMSModuleEditor = () => {
     };
 
     if (isEditing && moduleId) {
-      const { error } = await supabase
-        .from("lms_course_modules")
-        .update(moduleData)
-        .eq("id", moduleId);
+      const { error } = await supabase.from("lms_course_modules").update(moduleData).eq("id", moduleId);
 
       if (error) {
         toast({ title: "Fehler", description: error.message, variant: "destructive" });
@@ -248,22 +241,17 @@ const LMSModuleEditor = () => {
       }
 
       // Update tools in lms_module_tools
-      await supabase
-        .from("lms_module_tools")
-        .delete()
-        .eq("module_id", moduleId);
+      await supabase.from("lms_module_tools").delete().eq("module_id", moduleId);
 
       if (selectedToolIds.length > 0) {
         const toolLinks = selectedToolIds.map((toolId, index) => ({
           module_id: moduleId,
           tool_id: toolId,
           sort_order: index + 1,
-          is_required: false
+          is_required: false,
         }));
 
-        const { error: toolsError } = await supabase
-          .from("lms_module_tools")
-          .insert(toolLinks);
+        const { error: toolsError } = await supabase.from("lms_module_tools").insert(toolLinks);
 
         if (toolsError) {
           console.error("Tools konnten nicht gespeichert werden:", toolsError);
@@ -272,7 +260,7 @@ const LMSModuleEditor = () => {
 
       toast({ title: "Erfolg", description: "Modul aktualisiert" });
       setHasUnsavedChanges(false);
-      navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
+      navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ""}`);
     } else {
       const { data: newModule, error } = await supabase
         .from("lms_course_modules")
@@ -292,17 +280,15 @@ const LMSModuleEditor = () => {
           module_id: newModule.id,
           tool_id: toolId,
           sort_order: index + 1,
-          is_required: false
+          is_required: false,
         }));
 
-        await supabase
-          .from("lms_module_tools")
-          .insert(toolLinks);
+        await supabase.from("lms_module_tools").insert(toolLinks);
       }
 
       toast({ title: "Erfolg", description: "Modul erstellt" });
       setHasUnsavedChanges(false);
-      navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ''}`);
+      navigate(`/admin/lms/modules${courseId ? `?course=${courseId}` : ""}`);
     }
 
     setSaving(false);
@@ -333,23 +319,12 @@ const LMSModuleEditor = () => {
           <div className="flex justify-between items-center">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleCancel}
-                  className="h-8 w-8 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={handleCancel} className="h-8 w-8 p-0">
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
-                <h1 className="text-3xl font-bold">
-                  {isEditing ? "Modul bearbeiten" : "Neues Modul erstellen"}
-                </h1>
+                <h1 className="text-3xl font-bold">{isEditing ? "Modul bearbeiten" : "Neues Modul erstellen"}</h1>
               </div>
-              {courseName && (
-                <p className="text-muted-foreground ml-10">
-                  Für Kurs: {courseName}
-                </p>
-              )}
+              {courseName && <p className="text-muted-foreground ml-10">Für Kurs: {courseName}</p>}
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={handleCancel}>
@@ -370,10 +345,9 @@ const LMSModuleEditor = () => {
             <Card>
               <CardContent className="p-6">
                 <Tabs defaultValue="general" className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 mb-6">
+                  <TabsList className="grid w-full grid-cols-4 mb-6">
                     <TabsTrigger value="general">Allgemein</TabsTrigger>
                     <TabsTrigger value="content">Inhalte</TabsTrigger>
-                    <TabsTrigger value="lessons">Lektionen</TabsTrigger>
                     <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
                     <TabsTrigger value="meta">Meta</TabsTrigger>
                   </TabsList>
@@ -416,7 +390,9 @@ const LMSModuleEditor = () => {
                             min="1"
                             max="5"
                             defaultValue={module?.phase_number || 1}
-                            onChange={(e) => setFormData(prev => ({ ...prev, phase_number: parseInt(e.target.value) || 1 }))}
+                            onChange={(e) =>
+                              setFormData((prev) => ({ ...prev, phase_number: parseInt(e.target.value) || 1 }))
+                            }
                             required
                           />
                         </div>
@@ -441,11 +417,11 @@ const LMSModuleEditor = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Theory">Theory</SelectItem>
-                              <SelectItem value="Practice">Practice</SelectItem>
+                              <SelectItem value="Theory">Theorie</SelectItem>
+                              <SelectItem value="Practice">Übung</SelectItem>
                               <SelectItem value="Workshop">Workshop</SelectItem>
                               <SelectItem value="Case Study">Case Study</SelectItem>
-                              <SelectItem value="Reflection">Reflection</SelectItem>
+                              <SelectItem value="Reflection">Reflektion</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -475,9 +451,7 @@ const LMSModuleEditor = () => {
                           defaultValue={module?.content_text}
                           className="font-mono text-sm"
                         />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Markdown-Syntax wird unterstützt
-                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">Markdown-Syntax wird unterstützt</p>
                       </div>
 
                       <div>
@@ -492,18 +466,6 @@ const LMSModuleEditor = () => {
                       </div>
                     </TabsContent>
 
-                    {/* Tab: Lektionen */}
-                    <TabsContent value="lessons" className="space-y-6">
-                      {moduleId && (
-                        <LessonManager moduleId={moduleId} />
-                      )}
-                      {!moduleId && (
-                        <div className="text-center py-8 text-muted-foreground">
-                          <p>Bitte speichere das Modul zuerst, um Lektionen hinzuzufügen.</p>
-                        </div>
-                      )}
-                    </TabsContent>
-
                     {/* Tab 3: Tools & Ressourcen */}
                     <TabsContent value="tools" className="space-y-6">
                       <div>
@@ -513,21 +475,19 @@ const LMSModuleEditor = () => {
                           filterByPhase={formData.phase_number}
                         />
                         <p className="text-xs text-muted-foreground mt-2">
-                          💡 Tipp: Tools werden automatisch nach Phase gefiltert. 
-                          Ändern Sie die Phase im Allgemein-Tab, um andere Tools zu sehen.
+                          💡 Tipp: Tools werden automatisch nach Phase gefiltert. Ändern Sie die Phase im Allgemein-Tab,
+                          um andere Tools zu sehen.
                         </p>
                       </div>
 
                       <div>
                         <Label>Ressourcen & Dateien</Label>
-                        <p className="text-xs text-muted-foreground mb-3">
-                          Externe Links, PDFs oder Confluence-Seiten
-                        </p>
+                        <p className="text-xs text-muted-foreground mb-3">Externe Links, PDFs oder Confluence-Seiten</p>
                         <Input
                           id="resources_json"
                           name="resources_json"
                           placeholder='[{"title":"Guide","url":"https://..."}]'
-                          defaultValue={module?.resources ? JSON.stringify(module.resources) : ''}
+                          defaultValue={module?.resources ? JSON.stringify(module.resources) : ""}
                           className="font-mono text-sm"
                         />
                         <p className="text-xs text-muted-foreground mt-1">
@@ -554,7 +514,7 @@ const LMSModuleEditor = () => {
                           id="tags"
                           name="tags"
                           placeholder="#AI, #DesignSprint, #Innovation"
-                          defaultValue={module?.tags?.join(', ')}
+                          defaultValue={module?.tags?.join(", ")}
                         />
                         <p className="text-xs text-muted-foreground mt-1">
                           Komma-getrennte Stichworte zur Kategorisierung
@@ -563,12 +523,7 @@ const LMSModuleEditor = () => {
 
                       <div>
                         <Label htmlFor="author">Autor / Trainer</Label>
-                        <Input
-                          id="author"
-                          name="author"
-                          placeholder="Name des Autors"
-                          defaultValue={module?.author}
-                        />
+                        <Input id="author" name="author" placeholder="Name des Autors" defaultValue={module?.author} />
                       </div>
 
                       <div>
@@ -577,7 +532,7 @@ const LMSModuleEditor = () => {
                           id="prerequisites"
                           name="prerequisites"
                           placeholder="Modulname oder ID (komma-getrennt)"
-                          defaultValue={module?.prerequisites?.join(', ')}
+                          defaultValue={module?.prerequisites?.join(", ")}
                         />
                         <p className="text-xs text-muted-foreground mt-1">
                           Andere Module, die vorher abgeschlossen sein sollten
@@ -588,11 +543,10 @@ const LMSModuleEditor = () => {
                         <div className="flex gap-2">
                           <span className="text-xl">⚠️</span>
                           <div>
-                            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                              DSGVO-Hinweis
-                            </p>
+                            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">DSGVO-Hinweis</p>
                             <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
-                              Keine personenbezogenen Daten oder internen Unternehmensinformationen in dieses Modul einfügen.
+                              Keine personenbezogenen Daten oder internen Unternehmensinformationen in dieses Modul
+                              einfügen.
                             </p>
                           </div>
                         </div>
