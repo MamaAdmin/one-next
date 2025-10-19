@@ -66,7 +66,14 @@ const Navigation = () => {
       <div className="container mx-auto px-6 py-2">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img src={oneNextLogo} alt="one-next Logo" className="h-14 w-auto" />
+            <img 
+              src={oneNextLogo} 
+              alt="one-next Logo" 
+              className="h-14 w-auto" 
+              width="120" 
+              height="56"
+              loading="eager"
+            />
           </Link>
 
           {/* Desktop Navigation */}
