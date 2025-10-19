@@ -22,6 +22,20 @@ interface Lesson {
   is_required: boolean;
 }
 
+const getLessonTypeLabel = (type: string): string => {
+  const labels: Record<string, string> = {
+    'theory': 'Theorie',
+    'video': 'Video',
+    'quiz': 'Quiz',
+    'exercise': 'Übung',
+    'practice': 'Praxis',
+    'workshop': 'Workshop',
+    'case_study': 'Fallstudie',
+    'reflection': 'Reflexion'
+  };
+  return labels[type.toLowerCase()] || type;
+};
+
 export const LessonManager = ({ moduleId }: { moduleId: string }) => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -209,10 +223,16 @@ export const LessonManager = ({ moduleId }: { moduleId: string }) => {
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue>
+                        {getLessonTypeLabel(lesson.lesson_type)}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="theory">Theorie</SelectItem>
+                      <SelectItem value="practice">Praxis</SelectItem>
+                      <SelectItem value="workshop">Workshop</SelectItem>
+                      <SelectItem value="case_study">Fallstudie</SelectItem>
+                      <SelectItem value="reflection">Reflexion</SelectItem>
                       <SelectItem value="video">Video</SelectItem>
                       <SelectItem value="quiz">Quiz</SelectItem>
                       <SelectItem value="exercise">Übung</SelectItem>

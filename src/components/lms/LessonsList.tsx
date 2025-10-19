@@ -6,7 +6,21 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export const LessonsList = ({ 
+const getLessonTypeLabel = (type: string): string => {
+  const labels: Record<string, string> = {
+    'theory': 'Theorie',
+    'video': 'Video',
+    'quiz': 'Quiz',
+    'exercise': 'Übung',
+    'practice': 'Praxis',
+    'workshop': 'Workshop',
+    'case_study': 'Fallstudie',
+    'reflection': 'Reflexion'
+  };
+  return labels[type.toLowerCase()] || type;
+};
+
+export const LessonsList = ({
   moduleId, 
   enrollmentId 
 }: { 
@@ -89,7 +103,7 @@ export const LessonsList = ({
                   <div className="flex-1">
                     <div className="font-medium">{lesson.title}</div>
                     <div className="text-xs opacity-80">
-                      {lesson.duration_minutes} Min · {lesson.lesson_type}
+                      {lesson.duration_minutes} Min · {getLessonTypeLabel(lesson.lesson_type)}
                     </div>
                   </div>
                 </button>
