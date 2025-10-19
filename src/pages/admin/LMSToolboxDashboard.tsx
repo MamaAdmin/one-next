@@ -46,12 +46,20 @@ export default function LMSToolboxDashboard() {
     { label: "Toolbox", active: true },
   ];
 
-  const filteredTools = tools.filter((tool) => {
-    if (categoryFilter !== "all" && tool.category !== categoryFilter) return false;
-    if (phaseFilter !== "all" && tool.phase_number?.toString() !== phaseFilter) return false;
-    if (searchQuery && !tool.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
-  });
+  const filteredTools = tools
+    .filter((tool) => {
+      if (categoryFilter !== "all" && tool.category !== categoryFilter) return false;
+      if (phaseFilter !== "all" && tool.phase_number?.toString() !== phaseFilter) return false;
+      if (searchQuery && !tool.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      // Sort by phase_number: tools with phase come first, then by phase number
+      if (a.phase_number && !b.phase_number) return -1;
+      if (!a.phase_number && b.phase_number) return 1;
+      if (a.phase_number && b.phase_number) return a.phase_number - b.phase_number;
+      return 0;
+    });
 
   const handleDelete = async (id: string) => {
     await deleteTool(id);
