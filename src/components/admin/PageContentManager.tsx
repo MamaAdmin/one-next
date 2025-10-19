@@ -6,8 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Search } from "lucide-react";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
+import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface PageContent {
   id: string;
@@ -27,6 +34,8 @@ const contentTypeLabels: Record<string, string> = {
 const PageContentManager = () => {
   const [contents, setContents] = useState<PageContent[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
   const [formData, setFormData] = useState({
     page_name: "",
     section_name: "",
@@ -129,6 +138,38 @@ const PageContentManager = () => {
     });
   };
 
+  const filteredContents = contents.filter((content) => {
+    const matchesSearch =
+      content.page_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      content.section_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      content.content.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesType = filterType === "all" || content.content_type === filterType;
+
+    return matchesSearch && matchesType;
+  });
+
+  const groupedContents = filteredContents.reduce((acc, content) => {
+    if (!acc[content.page_name]) {
+      acc[content.page_name] = [];
+    }
+    acc[content.page_name].push(content);
+    return acc;
+  }, {} as Record<string, PageContent[]>);
+
+  const getBadgeVariant = (contentType: string) => {
+    switch (contentType) {
+      case "html":
+        return "secondary";
+      case "image":
+        return "outline";
+      case "json":
+        return "destructive";
+      default:
+        return "default";
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -182,7 +223,7 @@ const PageContentManager = () => {
               {(formData.content_type === 'text' || formData.content_type === 'html') ? (
                 <RichTextEditor
                   value={formData.content}
-                  onSave={async (value) => {
+                  onChange={(value) => {
                     setFormData({ ...formData, content: value });
                   }}
                   isEditMode={true}
@@ -217,46 +258,88 @@ const PageContentManager = () => {
       <Card>
         <CardHeader>
           <CardTitle>Vorhandene Seiteninhalte</CardTitle>
+          <div className="flex gap-4 mt-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Seiteninhalte durchsuchen..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="w-[180px] rounded-md border border-input bg-background px-3 py-2"
+            >
+              <option value="all">Alle Typen</option>
+              <option value="text">Text</option>
+              <option value="html">HTML</option>
+              <option value="image">Bild-URL</option>
+              <option value="json">JSON</option>
+            </select>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {contents.map((content) => (
-              <div
-                key={content.id}
-                className="flex items-start justify-between p-4 border rounded-lg"
-              >
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-semibold">{content.page_name}</span>
-                    <span className="text-muted-foreground">/</span>
-                    <span className="text-sm text-muted-foreground">{content.section_name}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Typ: {contentTypeLabels[content.content_type] ?? content.content_type}
-                  </p>
-                  <p className="text-sm line-clamp-2">{content.content}</p>
-                </div>
-                <div className="flex gap-2 ml-4">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleEdit(content)}
-                    aria-label="Seiteninhalt bearbeiten"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleDelete(content.id)}
-                    aria-label="Seiteninhalt löschen"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+          {Object.keys(groupedContents).length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              Keine Seiteninhalte gefunden
+            </p>
+          ) : (
+            <Accordion type="multiple" className="w-full">
+              {Object.entries(groupedContents).map(([pageName, pageContents]) => (
+                <AccordionItem key={pageName} value={pageName}>
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold">{pageName}</span>
+                      <Badge variant="secondary">{pageContents.length} Bereiche</Badge>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pt-2">
+                      {pageContents.map((content) => (
+                        <div
+                          key={content.id}
+                          className="flex items-start justify-between p-4 border rounded-lg bg-accent/50"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="font-medium">{content.section_name}</span>
+                              <Badge variant={getBadgeVariant(content.content_type)}>
+                                {contentTypeLabels[content.content_type]}
+                              </Badge>
+                            </div>
+                            <p className="text-sm line-clamp-3 text-muted-foreground">
+                              {content.content}
+                            </p>
+                          </div>
+                          <div className="flex gap-2 ml-4">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEdit(content)}
+                              aria-label="Seiteninhalt bearbeiten"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDelete(content.id)}
+                              aria-label="Seiteninhalt löschen"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
         </CardContent>
       </Card>
     </div>
