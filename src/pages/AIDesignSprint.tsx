@@ -23,42 +23,27 @@ const AIDesignSprint = () => {
     content,
     updateContent
   } = usePageContent('sprint-uebersicht');
-
-  const structuredData = [
-    createServiceSchema(
-      "AI Design Sprint Workshop",
-      "Identifizieren Sie AI-Potenziale und entwickeln Sie innovative Lösungen in einem strukturierten 2-Tage Workshop. Von der Challenge zum getesteten Prototyp.",
-      "https://one-next.de/sprint-uebersicht"
-    ),
-    createBreadcrumbSchema([
-      { name: "Home", url: "https://one-next.de/" },
-      { name: "Services", url: "https://one-next.de/#services" },
-      { name: "AI Design Sprint", url: "https://one-next.de/sprint-uebersicht" }
-    ]),
-    createFAQSchema([
-      {
-        question: "Was ist ein AI Design Sprint?",
-        answer: "Ein AI Design Sprint ist ein strukturierter 2-Tage Workshop, in dem Sie systematisch AI-Potenziale identifizieren, Lösungsansätze entwickeln und einen ersten Prototyp testen."
-      },
-      {
-        question: "Für wen eignet sich der AI Design Sprint?",
-        answer: "Der Workshop richtet sich an Unternehmen, die AI-Potenziale entdecken, Innovation fördern und schnell validierte Lösungen entwickeln möchten."
-      },
-      {
-        question: "Was ist der Unterschied zwischen Workshop und Online Sprint?",
-        answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
-      }
-    ])
-  ];
-
+  const structuredData = [createServiceSchema("AI Design Sprint Workshop", "Identifizieren Sie AI-Potenziale und entwickeln Sie innovative Lösungen in einem strukturierten 2-Tage Workshop. Von der Challenge zum getesteten Prototyp.", "https://one-next.de/sprint-uebersicht"), createBreadcrumbSchema([{
+    name: "Home",
+    url: "https://one-next.de/"
+  }, {
+    name: "Services",
+    url: "https://one-next.de/#services"
+  }, {
+    name: "AI Design Sprint",
+    url: "https://one-next.de/sprint-uebersicht"
+  }]), createFAQSchema([{
+    question: "Was ist ein AI Design Sprint?",
+    answer: "Ein AI Design Sprint ist ein strukturierter 2-Tage Workshop, in dem Sie systematisch AI-Potenziale identifizieren, Lösungsansätze entwickeln und einen ersten Prototyp testen."
+  }, {
+    question: "Für wen eignet sich der AI Design Sprint?",
+    answer: "Der Workshop richtet sich an Unternehmen, die AI-Potenziale entdecken, Innovation fördern und schnell validierte Lösungen entwickeln möchten."
+  }, {
+    question: "Was ist der Unterschied zwischen Workshop und Online Sprint?",
+    answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
+  }])];
   return <>
-      <SEO
-        title="AI Design Sprint Workshop | Innovation in 2 Tagen | one-next"
-        description="Entdecken Sie AI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp."
-        keywords="AI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping"
-        canonical="https://one-next.de/sprint-uebersicht"
-        structuredData={structuredData}
-      />
+      <SEO title="AI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie AI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="AI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
       <div className="min-h-screen">
       <Navigation />
       
@@ -83,11 +68,7 @@ const AIDesignSprint = () => {
             
             {/* CTA Button */}
             <div className="mt-6">
-              <CalendarBookingDialog
-                buttonText="Beratungsgespräch vereinbaren"
-                buttonSize="lg"
-                buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6"
-              />
+              <CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6" />
             </div>
           </div>
         </div>
@@ -279,7 +260,7 @@ const AIDesignSprint = () => {
                   <Target className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop</h3>
+                  <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop (Mit AI)</h3>
                   <p className="text-sm text-muted-foreground">Ihre Challenge schärfen</p>
                 </div>
                 <ul className="space-y-3">
@@ -316,7 +297,8 @@ const AIDesignSprint = () => {
                   <Users className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (Mit AI)</h3>
+                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop
+(Mit AI)</h3>
                   <p className="text-sm text-muted-foreground">Intensiv, expert-geführt, maßgeschneidert</p>
                 </div>
                 <ul className="space-y-3">
@@ -356,7 +338,8 @@ const AIDesignSprint = () => {
                   <Laptop className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Online Design Sprint</h3>
+                  <h3 className="text-xl font-bold mb-2">Online Design Sprint
+(Comming S</h3>
                   <p className="text-sm text-muted-foreground">Flexibel, strukturiert, selbstgeführt</p>
                 </div>
                 <ul className="space-y-3">
@@ -394,7 +377,9 @@ const AIDesignSprint = () => {
       </section>
 
       {/* CTA Section - Dual Option */}
-      <section id="cta-section" className="py-24 relative overflow-hidden" style={{ backgroundColor: '#FFF0ED' }}>
+      <section id="cta-section" className="py-24 relative overflow-hidden" style={{
+        backgroundColor: '#FFF0ED'
+      }}>
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
