@@ -30,7 +30,7 @@ export default function LMSCoursePreview() {
         .from("lms_courses")
         .select(`
           *,
-          author:profiles!lms_courses_author_id_fkey(full_name, avatar_url)
+          author:profiles(full_name, avatar_url)
         `)
         .eq("id", courseId)
         .maybeSingle();
