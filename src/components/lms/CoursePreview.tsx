@@ -172,7 +172,7 @@ export function CoursePreview({
           {/* Course Includes Card */}
           <Card>
             <CardContent className="p-6 space-y-3">
-              <h3 className="font-semibold text-lg mb-4">Course Includes</h3>
+              <h3 className="font-semibold text-lg mb-4">Im Kurs enthalten</h3>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
