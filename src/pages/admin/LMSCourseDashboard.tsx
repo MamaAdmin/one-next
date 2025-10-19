@@ -37,13 +37,14 @@ import Footer from "@/components/Footer";
 
 export default function LMSCourseDashboard() {
   const navigate = useNavigate();
-  const { courses, loading, deleteCourse, reload } = useLMSCourse();
+  const { courses, loading, deleteCourse, updateCourse, reload } = useLMSCourse();
   const { profile } = useUserProfile();
   
   const [activeView, setActiveView] = useState<"list" | "create" | "edit">("list");
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"title" | "date">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedCourses, setSelectedCourses] = useState<Set<string>>(new Set());
@@ -53,7 +54,10 @@ export default function LMSCourseDashboard() {
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            course.description?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = filterCategory === "all" || course.course_type === filterCategory;
-      return matchesSearch && matchesCategory;
+      const matchesStatus = filterStatus === "all" ||
+        (filterStatus === "published" && course.visibility === "public") ||
+        (filterStatus === "draft" && course.visibility === "draft");
+      return matchesSearch && matchesCategory && matchesStatus;
     });
 
     result.sort((a, b) => {
@@ -69,7 +73,7 @@ export default function LMSCourseDashboard() {
     });
 
     return result;
-  }, [courses, searchQuery, filterCategory, sortBy, sortOrder]);
+  }, [courses, searchQuery, filterCategory, filterStatus, sortBy, sortOrder]);
 
   const toggleSort = (column: "title" | "date") => {
     if (sortBy === column) {
@@ -159,6 +163,16 @@ export default function LMSCourseDashboard() {
                       <SelectItem value="5-day-sprint">5-Day Sprint</SelectItem>
                       <SelectItem value="problem-framing">Problem Framing</SelectItem>
                       <SelectItem value="custom">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Alle Status</SelectItem>
+                      <SelectItem value="published">Veröffentlicht</SelectItem>
+                      <SelectItem value="draft">Entwurf</SelectItem>
                     </SelectContent>
                   </Select>
                   <Button variant="outline" size="icon">
@@ -279,10 +293,10 @@ export default function LMSCourseDashboard() {
                       </TableCell>
                       <TableCell>
                         <Badge 
-                          variant={course.is_active ? "default" : "secondary"}
-                          className={course.is_active ? "bg-green-500 hover:bg-green-600" : ""}
+                          variant={course.visibility === "public" ? "default" : "secondary"}
+                          className={course.visibility === "public" ? "bg-green-500 hover:bg-green-600" : ""}
                         >
-                          {course.is_active ? "Veröffentlicht" : "Entwurf"}
+                          {course.visibility === "public" ? "Veröffentlicht" : "Entwurf"}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -304,6 +318,15 @@ export default function LMSCourseDashboard() {
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
                               Module verwalten
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={async () => {
+                                const newVisibility = course.visibility === "public" ? "draft" : "public";
+                                await updateCourse(course.id, { visibility: newVisibility });
+                                reload();
+                              }}
+                            >
+                              {course.visibility === "public" ? "Zurück zu Entwurf" : "Jetzt veröffentlichen"}
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive"
@@ -348,9 +371,12 @@ export default function LMSCourseDashboard() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 mt-2">
-                          <Badge variant={course.is_active ? "default" : "secondary"}>
-                            {course.is_active ? "Aktiv" : "Inaktiv"}
-                          </Badge>
+                        <Badge 
+                          variant={course.visibility === "public" ? "default" : "secondary"}
+                          className={course.visibility === "public" ? "bg-green-500 hover:bg-green-600" : ""}
+                        >
+                          {course.visibility === "public" ? "Veröffentlicht" : "Entwurf"}
+                        </Badge>
                         </div>
                       </div>
                       <DropdownMenu>
@@ -371,6 +397,15 @@ export default function LMSCourseDashboard() {
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
                             Module verwalten
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={async () => {
+                              const newVisibility = course.visibility === "public" ? "draft" : "public";
+                              await updateCourse(course.id, { visibility: newVisibility });
+                              reload();
+                            }}
+                          >
+                            {course.visibility === "public" ? "Zurück zu Entwurf" : "Jetzt veröffentlichen"}
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             className="text-destructive"
