@@ -84,7 +84,7 @@ const SortableItem = ({
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </button>
         
-        <div className="flex-1 grid grid-cols-5 gap-2 items-center">
+        <div className="flex-1 grid grid-cols-4 gap-3 items-center">
           <Input
             value={displayItem.label}
             onChange={(e) => onUpdate(item.id, { label: e.target.value })}
@@ -114,14 +114,7 @@ const SortableItem = ({
               {renderIcon(displayItem.icon)}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={displayItem.is_active}
-              onCheckedChange={(checked) => onUpdate(item.id, { is_active: checked })}
-            />
-            <span className="text-xs text-muted-foreground">Aktiv</span>
-          </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             {item.children && item.children.length > 0 && (
               <Badge variant="secondary" className="text-xs">
                 {item.children.length} Sub
