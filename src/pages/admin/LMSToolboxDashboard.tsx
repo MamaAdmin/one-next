@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Plus, Pencil, Trash2, Wrench, ExternalLink, GripVertical } from "lucide-react";
+import { MoreVertical, Plus, Pencil, Trash2, ExternalLink, GripVertical } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import {
   DndContext,
@@ -32,12 +32,12 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 const categoryLabels: Record<string, string> = {
-  understand: "Understand",
-  ideate: "Ideate",
-  decide: "Decide",
-  prototype: "Prototype",
-  validate: "Validate",
-  retrospect: "Retrospect",
+  understand: "Verstehen",
+  ideate: "Ideen entwickeln",
+  decide: "Entscheiden",
+  prototype: "Prototyp",
+  validate: "Validieren",
+  retrospect: "Retrospektive",
 };
 
 const categoryColors: Record<string, string> = {
@@ -85,12 +85,8 @@ const SortableToolRow = ({ tool, categoryLabels, categoryColors, navigate, delet
             <GripVertical className="h-5 w-5 text-muted-foreground" />
           </button>
           <div className="flex items-center gap-3">
-            {tool.thumbnail_url && tool.tool_type !== 'embedded' ? (
+            {tool.thumbnail_url && tool.tool_type !== 'embedded' && (
               <img src={tool.thumbnail_url} alt={tool.title} className="w-12 h-12 rounded object-cover" />
-            ) : (
-              <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
-                <Wrench className="h-5 w-5 text-muted-foreground" />
-              </div>
             )}
             <div>
               <div className="font-medium">{tool.title}</div>
@@ -278,8 +274,7 @@ export default function LMSToolboxDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-3xl flex items-center gap-2">
-                    <Wrench className="h-8 w-8" />
+                  <CardTitle className="text-3xl">
                     Toolbox-Verwaltung
                   </CardTitle>
                   <CardDescription className="mt-2">
