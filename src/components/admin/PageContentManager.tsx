@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { Pencil, Trash2, Search } from "lucide-react";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Badge } from "@/components/ui/badge";
+import DOMPurify from "dompurify";
 import {
   Accordion,
   AccordionContent,
@@ -310,9 +311,18 @@ const PageContentManager = () => {
                                 {contentTypeLabels[content.content_type]}
                               </Badge>
                             </div>
-                            <p className="text-sm line-clamp-3 text-muted-foreground">
-                              {content.content}
-                            </p>
+                      {content.content_type === 'html' || content.content_type === 'text' ? (
+                        <div 
+                          className="text-sm line-clamp-3 text-muted-foreground prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ 
+                            __html: DOMPurify.sanitize(content.content) 
+                          }}
+                        />
+                      ) : (
+                        <p className="text-sm line-clamp-3 text-muted-foreground font-mono">
+                          {content.content}
+                        </p>
+                      )}
                           </div>
                           <div className="flex gap-2 ml-4">
                             <Button
