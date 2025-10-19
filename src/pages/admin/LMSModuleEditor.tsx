@@ -15,6 +15,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { ToolSelector } from "@/components/lms/ToolSelector";
+import { LessonManager } from "@/components/lms/LessonManager";
 
 interface Tool {
   name: string;
@@ -345,9 +346,10 @@ const LMSModuleEditor = () => {
             <Card>
               <CardContent className="p-6">
                 <Tabs defaultValue="general" className="w-full">
-                  <TabsList className="grid w-full grid-cols-4 mb-6">
+                  <TabsList className="grid w-full grid-cols-5 mb-6">
                     <TabsTrigger value="general">Allgemein</TabsTrigger>
                     <TabsTrigger value="content">Inhalte</TabsTrigger>
+                    <TabsTrigger value="lessons">Lektionen</TabsTrigger>
                     <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
                     <TabsTrigger value="meta">Meta</TabsTrigger>
                   </TabsList>
@@ -466,7 +468,18 @@ const LMSModuleEditor = () => {
                       </div>
                     </TabsContent>
 
-                    {/* Tab 3: Tools & Ressourcen */}
+                    {/* Tab 3: Lektionen */}
+                    <TabsContent value="lessons" className="space-y-6">
+                      {moduleId ? (
+                        <LessonManager moduleId={moduleId} />
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <p>Bitte speichere das Modul zuerst, um Lektionen hinzuzufügen.</p>
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    {/* Tab 4: Tools & Ressourcen */}
                     <TabsContent value="tools" className="space-y-6">
                       <div>
                         <ToolSelector
@@ -506,7 +519,7 @@ const LMSModuleEditor = () => {
                       </div>
                     </TabsContent>
 
-                    {/* Tab 4: Meta */}
+                    {/* Tab 5: Meta */}
                     <TabsContent value="meta" className="space-y-6">
                       <div>
                         <Label htmlFor="tags">Tags / Lernziele</Label>
