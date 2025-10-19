@@ -27,6 +27,12 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Unauthorized');
+    }
+
     const { to, type, data }: EmailRequest = await req.json();
     console.log(`Sending ${type} email to ${to}`);
 

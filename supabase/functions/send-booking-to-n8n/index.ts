@@ -12,6 +12,25 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Unauthorized');
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !user) {
+      throw new Error('Invalid authentication token');
+    }
+
+    console.log("Authenticated user:", user.email);
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -19,6 +38,18 @@ serve(async (req) => {
 
     const { bookingId } = await req.json();
     console.log("Sending booking to N8N:", bookingId);
+
+    // Verify booking ownership
+    const { data: bookingCheck } = await supabaseAdmin
+      .from("sprint_bookings")
+      .select("email")
+      .eq("id", bookingId)
+      .eq("email", user.email)
+      .single();
+
+    if (!bookingCheck) {
+      throw new Error("Unauthorized access to booking");
+    }
 
     // Fetch booking details
     const { data: booking, error } = await supabaseAdmin

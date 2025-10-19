@@ -16,21 +16,42 @@ serve(async (req) => {
     const { bookingId } = await req.json();
     console.log("Creating checkout session for booking:", bookingId);
 
-    // Initialize Supabase
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Unauthorized');
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !user) {
+      throw new Error('Invalid authentication token');
+    }
+
+    console.log("Authenticated user:", user.email);
+
+    // Initialize Supabase admin client
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get booking details
+    // Get booking details and verify ownership
     const { data: booking, error } = await supabaseAdmin
       .from("sprint_bookings")
       .select("*")
       .eq("id", bookingId)
+      .eq("email", user.email)
       .single();
 
     if (error || !booking) {
-      throw new Error("Booking not found");
+      console.error("Booking not found or unauthorized:", error);
+      throw new Error("Booking not found or unauthorized");
     }
 
     // Initialize Stripe
