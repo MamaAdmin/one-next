@@ -27,8 +27,11 @@ export default function LMSCoursePreview() {
     try {
       // Load course
       const { data, error } = await supabase
-        .from("lms_courses_with_stats")
-        .select("*")
+        .from("lms_courses")
+        .select(`
+          *,
+          author:profiles!lms_courses_author_id_fkey(full_name, avatar_url)
+        `)
         .eq("id", courseId)
         .maybeSingle();
 

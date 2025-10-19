@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Calendar, Share2, DollarSign, Users, Book, FileQuestion, BarChart, Globe, Mail, Link as LinkIcon } from "lucide-react";
-import { UsersIcon, StarburstIcon, BookIcon, QuizIcon } from "@/components/ui/custom-icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, Share2, Globe, Mail, Link as LinkIcon, BarChart } from "lucide-react";
+import { UsersIcon, StarburstIcon, BookIcon, QuizIcon, LessonIcon } from "@/components/ui/custom-icons";
 import { format, addDays } from "date-fns";
 import { de } from "date-fns/locale";
 import DOMPurify from 'dompurify';
@@ -17,7 +18,9 @@ interface CoursePreviewProps {
     id: string;
     title: string;
     description: string;
+    description_html?: string;
     thumbnail_url?: string;
+    featured_image?: string;
     price_chf: number | null;
     skill_level?: string;
     difficulty?: string;
@@ -31,6 +34,10 @@ interface CoursePreviewProps {
     language?: string;
     course_type: string;
     updated_at?: string;
+    author?: {
+      full_name: string;
+      avatar_url?: string;
+    };
   };
   enrollment?: {
     enrolled_at: string;
@@ -98,6 +105,18 @@ export function CoursePreview({
               ratingCount={course.rating_count || 0} 
             />
             
+            {course.author && (
+              <div className="flex items-center gap-2 mt-3">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src={course.author.avatar_url} />
+                  <AvatarFallback>{course.author.full_name?.[0]}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm text-muted-foreground">
+                  von {course.author.full_name}
+                </span>
+              </div>
+            )}
+            
             <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
               {course.updated_at && (
                 <span className="flex items-center gap-1">
@@ -122,7 +141,7 @@ export function CoursePreview({
                   <h3 className="text-lg font-medium mb-3">Kursziel</h3>
                   <div 
                     className="prose prose-sm max-w-none text-muted-foreground"
-                    dangerouslySetInnerHTML={sanitizeHtml(course.description)} 
+                    dangerouslySetInnerHTML={sanitizeHtml(course.description_html || course.description)} 
                   />
                 </div>
 
@@ -161,9 +180,9 @@ export function CoursePreview({
         {/* Rechte Spalte - 1/3 Breite */}
         <div className="space-y-4">
           {/* Großes Thumbnail */}
-          {course.thumbnail_url && (
+          {(course.thumbnail_url || course.featured_image) && (
             <img 
-              src={course.thumbnail_url} 
+              src={course.thumbnail_url || course.featured_image} 
               alt={course.title} 
               className="w-full h-48 object-cover rounded-lg shadow-md" 
             />
@@ -173,20 +192,10 @@ export function CoursePreview({
           <Card>
             <CardContent className="p-6 space-y-3">
               <h3 className="font-semibold text-lg mb-4">Im Kurs enthalten</h3>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">Preis</span>
-                </div>
-                <Badge variant={course.price_chf === 0 || course.price_chf === null ? "secondary" : "default"}>
-                  {course.price_chf === 0 || course.price_chf === null ? "Kostenlos" : `CHF ${course.price_chf}`}
-                </Badge>
-              </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <UsersIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">Teilnehmende</span>
                 </div>
                 <span className="text-sm font-medium">
@@ -196,7 +205,7 @@ export function CoursePreview({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Book className="h-4 w-4 text-muted-foreground" />
+                  <LessonIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">Lektionen</span>
                 </div>
                 <span className="text-sm font-medium">
@@ -206,7 +215,7 @@ export function CoursePreview({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <FileQuestion className="h-4 w-4 text-muted-foreground" />
+                  <QuizIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">Quizze</span>
                 </div>
                 <span className="text-sm font-medium">
@@ -286,7 +295,7 @@ export function CoursePreview({
           {/* Share This */}
           <Card>
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-3">Share This:</h3>
+              <h3 className="font-semibold mb-3">Kurs teilen</h3>
               <div className="flex gap-2">
                 <Button variant="outline" size="icon" title="Link kopieren">
                   <LinkIcon className="h-4 w-4" />
@@ -306,7 +315,7 @@ export function CoursePreview({
       {/* Related Courses */}
       {relatedCourses.length > 0 && (
         <div className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">Related Courses</h2>
+          <h2 className="text-2xl font-bold mb-6">Ähnliche Kurse</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedCourses.map(relatedCourse => (
               <CourseCard key={relatedCourse.id} course={relatedCourse} />
