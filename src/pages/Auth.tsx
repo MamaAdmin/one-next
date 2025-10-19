@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -197,12 +197,12 @@ const Auth = () => {
                       {loading ? "Anmeldung läuft..." : "Anmelden"}
                     </Button>
                     <div className="text-center mt-4">
-                      <a
-                        href="/password-reset"
+                      <Link
+                        to="/password-reset"
                         className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       >
                         Passwort vergessen?
-                      </a>
+                      </Link>
                     </div>
                   </form>
                 </CardContent>
