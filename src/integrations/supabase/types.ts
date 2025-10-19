@@ -48,6 +48,7 @@ export type Database = {
         Row: {
           author: string | null
           author_id: string | null
+          canonical_url: string | null
           category_id: string | null
           content: string
           created_at: string
@@ -56,15 +57,26 @@ export type Database = {
           id: string
           meta_description: string | null
           meta_title: string | null
+          og_image: string | null
+          og_type: string | null
           published_at: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          robots_meta: string | null
+          scheduled_publish_at: string | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
           slug: string
           status: string
           title: string
           updated_at: string
+          workflow_status: string | null
         }
         Insert: {
           author?: string | null
           author_id?: string | null
+          canonical_url?: string | null
           category_id?: string | null
           content: string
           created_at?: string
@@ -73,15 +85,26 @@ export type Database = {
           id?: string
           meta_description?: string | null
           meta_title?: string | null
+          og_image?: string | null
+          og_type?: string | null
           published_at?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          robots_meta?: string | null
+          scheduled_publish_at?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
           slug: string
           status?: string
           title: string
           updated_at?: string
+          workflow_status?: string | null
         }
         Update: {
           author?: string | null
           author_id?: string | null
+          canonical_url?: string | null
           category_id?: string | null
           content?: string
           created_at?: string
@@ -90,11 +113,21 @@ export type Database = {
           id?: string
           meta_description?: string | null
           meta_title?: string | null
+          og_image?: string | null
+          og_type?: string | null
           published_at?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          robots_meta?: string | null
+          scheduled_publish_at?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
           slug?: string
           status?: string
           title?: string
           updated_at?: string
+          workflow_status?: string | null
         }
         Relationships: [
           {
@@ -292,6 +325,39 @@ export type Database = {
         }
         Relationships: []
       }
+      content_versions: {
+        Row: {
+          change_summary: string | null
+          changed_by: string | null
+          content: Json
+          content_id: string
+          content_type: string
+          created_at: string | null
+          id: string
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          changed_by?: string | null
+          content: Json
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          version_number: number
+        }
+        Update: {
+          change_summary?: string | null
+          changed_by?: string | null
+          content?: Json
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          version_number?: number
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address: string | null
@@ -463,9 +529,12 @@ export type Database = {
           is_published: boolean | null
           not_helpful_count: number | null
           question: string
+          reviewed_at: string | null
+          reviewed_by: string | null
           sort_order: number | null
           updated_at: string | null
           view_count: number | null
+          workflow_status: string | null
         }
         Insert: {
           answer: string
@@ -476,9 +545,12 @@ export type Database = {
           is_published?: boolean | null
           not_helpful_count?: number | null
           question: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           sort_order?: number | null
           updated_at?: string | null
           view_count?: number | null
+          workflow_status?: string | null
         }
         Update: {
           answer?: string
@@ -489,9 +561,12 @@ export type Database = {
           is_published?: boolean | null
           not_helpful_count?: number | null
           question?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           sort_order?: number | null
           updated_at?: string | null
           view_count?: number | null
+          workflow_status?: string | null
         }
         Relationships: [
           {
@@ -1442,8 +1517,12 @@ export type Database = {
           file_size: number | null
           file_type: string
           filename: string
+          height: number | null
           id: string
+          optimized_path: string | null
+          thumbnail_path: string | null
           uploaded_by: string | null
+          width: number | null
         }
         Insert: {
           alt_text?: string | null
@@ -1453,8 +1532,12 @@ export type Database = {
           file_size?: number | null
           file_type: string
           filename: string
+          height?: number | null
           id?: string
+          optimized_path?: string | null
+          thumbnail_path?: string | null
           uploaded_by?: string | null
+          width?: number | null
         }
         Update: {
           alt_text?: string | null
@@ -1464,38 +1547,150 @@ export type Database = {
           file_size?: number | null
           file_type?: string
           filename?: string
+          height?: number | null
           id?: string
+          optimized_path?: string | null
+          thumbnail_path?: string | null
           uploaded_by?: string | null
+          width?: number | null
+        }
+        Relationships: []
+      }
+      navigation_items: {
+        Row: {
+          created_at: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          label: string
+          menu_id: string | null
+          parent_id: string | null
+          sort_order: number
+          target: string | null
+          updated_at: string | null
+          url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          label: string
+          menu_id?: string | null
+          parent_id?: string | null
+          sort_order?: number
+          target?: string | null
+          updated_at?: string | null
+          url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          label?: string
+          menu_id?: string | null
+          parent_id?: string | null
+          sort_order?: number
+          target?: string | null
+          updated_at?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_items_menu_id_fkey"
+            columns: ["menu_id"]
+            isOneToOne: false
+            referencedRelation: "navigation_menus"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "navigation_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "navigation_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      navigation_menus: {
+        Row: {
+          created_at: string | null
+          id: string
+          label: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          label: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          label?: string
+          name?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
       page_content: {
         Row: {
+          canonical_url: string | null
           content: string
           content_type: string
           created_at: string
           id: string
+          og_image: string | null
           page_name: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          robots_meta: string | null
           section_name: string
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
           updated_at: string
+          workflow_status: string | null
         }
         Insert: {
+          canonical_url?: string | null
           content: string
           content_type: string
           created_at?: string
           id?: string
+          og_image?: string | null
           page_name: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          robots_meta?: string | null
           section_name: string
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
           updated_at?: string
+          workflow_status?: string | null
         }
         Update: {
+          canonical_url?: string | null
           content?: string
           content_type?: string
           created_at?: string
           id?: string
+          og_image?: string | null
           page_name?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          robots_meta?: string | null
           section_name?: string
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
           updated_at?: string
+          workflow_status?: string | null
         }
         Relationships: []
       }
@@ -1564,6 +1759,33 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_redirects: {
+        Row: {
+          created_at: string | null
+          from_path: string
+          id: string
+          is_active: boolean | null
+          redirect_type: number | null
+          to_path: string
+        }
+        Insert: {
+          created_at?: string | null
+          from_path: string
+          id?: string
+          is_active?: boolean | null
+          redirect_type?: number | null
+          to_path: string
+        }
+        Update: {
+          created_at?: string | null
+          from_path?: string
+          id?: string
+          is_active?: boolean | null
+          redirect_type?: number | null
+          to_path?: string
         }
         Relationships: []
       }
@@ -1740,6 +1962,33 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      workflow_comments: {
+        Row: {
+          comment: string
+          content_id: string
+          content_type: string
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          comment: string
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
