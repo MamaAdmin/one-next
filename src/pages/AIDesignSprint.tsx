@@ -363,7 +363,7 @@ const AIDesignSprint = () => {
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <Card className="border-2 shadow-2xl max-w-5xl mx-auto" style={{ backgroundColor: '#FFF0ED' }}>
+          <Card className="bg-white border-2 shadow-2xl max-w-5xl mx-auto">
             <CardContent className="p-12">
               <div className="text-center space-y-8">
                 <h2 className="text-4xl font-bold">
