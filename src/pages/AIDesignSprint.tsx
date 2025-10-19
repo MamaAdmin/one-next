@@ -8,6 +8,7 @@ import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 const AIDesignSprint = () => {
@@ -24,23 +25,32 @@ const AIDesignSprint = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center bg-gradient-hero pt-20">
+      <section className="pt-32 pb-20 bg-gradient-hero relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
         </div>
         
-        <div className="container mx-auto px-6 py-20 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-7xl font-bold" placeholder="Titel des Hero-Bereichs" as="h1" />
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
+            {/* Badge with Icon */}
+            <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
+              <Target className="w-5 h-5" />
+              <span className="font-semibold">AI Design Sprint</span>
+            </div>
             
-            <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Begleitet oder oder Online selbstgeführt
-            </p>
+            <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold text-white" placeholder="Titel des Hero-Bereichs" as="h1" />
             
-            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg text-muted-foreground max-w-3xl mx-auto" placeholder="Beschreibung des Hero-Bereichs" />
+            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-white/90 leading-relaxed" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
             
-            
+            {/* CTA Button */}
+            <div className="mt-6">
+              <CalendarBookingDialog
+                buttonText="Beratungsgespräch vereinbaren"
+                buttonSize="lg"
+                buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6"
+              />
+            </div>
           </div>
         </div>
       </section>

@@ -99,47 +99,43 @@ const CustomAIDevelopment = () => {
       )}
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-hero text-white py-20 md:py-32">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold">
-              <InlineTextField
-                value={content.hero_title || "Individuelle KI-Entwicklung mit dem BMAD-Ansatz"}
-                onSave={(value) => updateContent("hero_title", value, "text")}
-                isEditMode={isEditMode}
-                as="h1"
-                className="text-4xl md:text-6xl font-bold"
-              />
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90">
-              <InlineTextField
-                value={content.hero_subtitle || "Von der ersten Idee bis zur Übergabe an externe Entwicklerteams"}
-                onSave={(value) => updateContent("hero_subtitle", value, "text")}
-                isEditMode={isEditMode}
-                className="text-xl md:text-2xl text-white/90"
-              />
-            </p>
-            <div className="pt-4">
-              <InlineTextArea
-                value={content.hero_description || "Nicht jedes Unternehmen verfügt über die Kapazitäten oder das Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Mit unserem BMAD-Ansatz schaffen wir eine strukturierte Brücke von der ersten Idee bis zur Übergabe an externe Entwicklerteams."}
-                onSave={(value) => updateContent("hero_description", value, "text")}
-                isEditMode={isEditMode}
-                className="text-lg text-white/80 max-w-3xl mx-auto"
-              />
+      <section className="pt-32 pb-20 bg-gradient-hero relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
+            {/* Badge with Icon */}
+            <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
+              <Target className="w-5 h-5" />
+              <span className="font-semibold">Custom AI Development</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+            
+            <InlineTextField
+              value={content.hero_title || "Individuelle KI-Entwicklung mit dem BMAD-Ansatz"}
+              onSave={(value) => updateContent("hero_title", value, "text")}
+              isEditMode={isEditMode}
+              as="h1"
+              className="text-5xl lg:text-6xl font-bold text-white"
+            />
+            
+            <InlineTextArea
+              value={content.hero_description || "Nicht jedes Unternehmen verfügt über die Kapazitäten oder das Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Mit unserem BMAD-Ansatz schaffen wir eine strukturierte Brücke von der ersten Idee bis zur Übergabe an externe Entwicklerteams."}
+              onSave={(value) => updateContent("hero_description", value, "text")}
+              isEditMode={isEditMode}
+              className="text-xl text-white/90 leading-relaxed"
+              minRows={3}
+            />
+            
+            {/* CTA Button */}
+            <div className="mt-6">
               <CalendarBookingDialog
                 buttonText="Erstgespräch buchen"
                 buttonSize="lg"
+                buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6"
               />
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => scrollToSection("approach")}
-                className="border-white text-white hover:bg-white hover:text-primary"
-              >
-                Mehr erfahren
-              </Button>
             </div>
           </div>
         </div>
