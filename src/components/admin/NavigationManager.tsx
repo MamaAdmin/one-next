@@ -109,19 +109,10 @@ const SortableItem = ({
               </Button>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center">
             <div className="w-8 h-8 flex items-center justify-center border rounded bg-background">
               {renderIcon(displayItem.icon)}
             </div>
-            <Input
-              value={displayItem.icon || ""}
-              onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
-              placeholder="Icon (z.B. Briefcase)"
-              className={cn(
-                "flex-1",
-                hasEdits && editedItems[item.id]?.icon !== undefined && "border-yellow-400 bg-yellow-50"
-              )}
-            />
           </div>
           <div className="flex items-center gap-2">
             <Switch
