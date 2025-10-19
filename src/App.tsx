@@ -12,6 +12,7 @@ import OnlineSprintLanding from "./pages/OnlineSprintLanding";
 import ProblemFramingWorkshop from "./pages/ProblemFramingWorkshop";
 import DesignSprintWorkshop from "./pages/DesignSprintWorkshop";
 import AIConsultingServices from "./pages/AIConsultingServices";
+import CustomAIDevelopment from "./pages/CustomAIDevelopment";
 import AboutUs from "./pages/AboutUs";
 import DataQualityAudit from "./pages/DataQualityAudit";
 import Auth from "./pages/Auth";
@@ -69,6 +70,7 @@ const App = () => (
           <Route path="/workshop-registration" element={<WorkshopRegistration />} />
           
           <Route path="/ai-consulting-services" element={<AIConsultingServices />} />
+          <Route path="/custom-ai-development" element={<CustomAIDevelopment />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/data-quality-audit" element={<DataQualityAudit />} />
           <Route path="/auth" element={<Auth />} />

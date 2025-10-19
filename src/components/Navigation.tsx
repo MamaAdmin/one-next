@@ -23,7 +23,8 @@ const Navigation = () => {
   const servicesItems = [
     { label: "Analyse", href: "/ai-design-sprint" },
     { label: "Datenaudit", href: "/data-quality-audit" },
-    { label: "Individuelle KI-Entwicklung", href: "#services" },
+    { label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
+    { label: "Workshops", href: "/design-sprint-workshop" },
     { label: "AI Beratung", href: "/ai-consulting-services" },
   ];
 

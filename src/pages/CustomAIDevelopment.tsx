@@ -1,0 +1,281 @@
+import { useState } from "react";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { InlineTextField } from "@/components/blog/InlineTextField";
+import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { usePageContent } from "@/hooks/usePageContent";
+import { useContentManager } from "@/hooks/useContentManager";
+import { Target, Zap, GitBranch, Check, Users, Database, Layers, Map, FileText, Settings } from "lucide-react";
+
+const CustomAIDevelopment = () => {
+  const { content, updateContent } = usePageContent("custom-ai-development");
+  const { isContentManager } = useContentManager();
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const approachSteps = [
+    {
+      icon: Target,
+      title: "Problem Framing",
+      description: "Gemeinsam identifizieren wir die relevanten Herausforderungen, Nutzerbedürfnisse und Geschäftspotenziale.",
+      result: "Klar definierte Opportunity Statements und priorisierte Problemfelder."
+    },
+    {
+      icon: Zap,
+      title: "Design Sprint",
+      description: "In nur wenigen Tagen entwickeln wir konkrete Lösungsideen, erste Prototypen und sammeln Nutzerfeedback.",
+      result: "Validiertes Konzept mit ersten User Journeys und Use Cases."
+    },
+    {
+      icon: GitBranch,
+      title: "BMAD-Integration",
+      description: "Alle Ergebnisse aus Problem Framing & Design Sprint werden in das BMAD-Modell überführt. Damit entsteht ein vollständiger Projekt-Blueprint für die KI-Entwicklung.",
+      result: "Vollständiger Blueprint für externe Entwickler."
+    }
+  ];
+
+  const bmadAdvantages = [
+    {
+      icon: Target,
+      title: "Business Alignment",
+      description: "Klare Verbindung von KI-Projekt zu strategischen Unternehmenszielen."
+    },
+    {
+      icon: FileText,
+      title: "Use Case Definition",
+      description: "Präzise beschriebene KI-Anwendungsfälle mit Mehrwert, Priorisierung und Abgrenzung."
+    },
+    {
+      icon: Database,
+      title: "Datenanforderungen",
+      description: "Übersicht über relevante Datenquellen, Qualität, Volumen und erste Datenschutz-/Compliance-Bewertung."
+    },
+    {
+      icon: Settings,
+      title: "AI Solution Design",
+      description: "Vorstrukturierte Modell-Ideen (z. B. Klassifikation, Generative KI, Empfehlungssysteme) basierend auf den validierten Use Cases."
+    },
+    {
+      icon: Layers,
+      title: "Architektur-Blueprint",
+      description: "High-Level-Skizze von Systemarchitektur, Schnittstellen und Integrationspunkten."
+    },
+    {
+      icon: Users,
+      title: "Rollen & Verantwortlichkeiten",
+      description: "Zuweisung nach BMAD-Methodik (Analyst, Product Manager, Architect, Orchestrator, Developer)."
+    },
+    {
+      icon: Map,
+      title: "Roadmap & Milestones",
+      description: "Klare Umsetzungsschritte für externe Entwickler, ergänzt durch Akzeptanzkriterien."
+    }
+  ];
+
+  const benefits = [
+    "Zeit sparen durch klare Vorgaben",
+    "Risiken reduzieren durch validierte Konzepte",
+    "Business-Relevanz von Anfang an sicherstellen",
+    "Nahtlose Übergabe an externe Entwickler"
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      
+      {isContentManager && (
+        <EditToggleButton
+          isEditMode={isEditMode}
+          onToggle={() => setIsEditMode(!isEditMode)}
+        />
+      )}
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-hero text-white py-20 md:py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <h1 className="text-4xl md:text-6xl font-bold">
+              <InlineTextField
+                value={content.hero_title || "Individuelle KI-Entwicklung mit dem BMAD-Ansatz"}
+                onSave={(value) => updateContent("hero_title", value, "text")}
+                isEditMode={isEditMode}
+                as="h1"
+                className="text-4xl md:text-6xl font-bold"
+              />
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90">
+              <InlineTextField
+                value={content.hero_subtitle || "Von der ersten Idee bis zur Übergabe an externe Entwicklerteams"}
+                onSave={(value) => updateContent("hero_subtitle", value, "text")}
+                isEditMode={isEditMode}
+                className="text-xl md:text-2xl text-white/90"
+              />
+            </p>
+            <div className="pt-4">
+              <InlineTextArea
+                value={content.hero_description || "Nicht jedes Unternehmen verfügt über die Kapazitäten oder das Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Mit unserem BMAD-Ansatz schaffen wir eine strukturierte Brücke von der ersten Idee bis zur Übergabe an externe Entwicklerteams."}
+                onSave={(value) => updateContent("hero_description", value, "text")}
+                isEditMode={isEditMode}
+                className="text-lg text-white/80 max-w-3xl mx-auto"
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+              <CalendarBookingDialog
+                buttonText="Erstgespräch buchen"
+                buttonSize="lg"
+              />
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => scrollToSection("approach")}
+                className="border-white text-white hover:bg-white hover:text-primary"
+              >
+                Mehr erfahren
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Approach Section */}
+      <section id="approach" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <InlineTextField
+                value={content.approach_title || "🔹 So funktioniert es"}
+                onSave={(value) => updateContent("approach_title", value, "text")}
+                isEditMode={isEditMode}
+                as="h2"
+                className="text-3xl md:text-4xl font-bold"
+              />
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {approachSteps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <Card key={index} className="hover:shadow-elegant transition-shadow">
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle>{step.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">{step.description}</p>
+                    <div className="pt-2 border-t">
+                      <p className="text-sm font-medium">→ Ergebnis:</p>
+                      <p className="text-sm text-muted-foreground">{step.result}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* BMAD Advantages Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <InlineTextField
+                value={content.bmad_title || "✅ Was durch das BMAD-Modell schon fertig ist"}
+                onSave={(value) => updateContent("bmad_title", value, "text")}
+                isEditMode={isEditMode}
+                as="h2"
+                className="text-3xl md:text-4xl font-bold"
+              />
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {bmadAdvantages.map((advantage, index) => {
+              const Icon = advantage.icon;
+              return (
+                <Card key={index} className="hover:shadow-elegant transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <CardTitle className="text-lg">{advantage.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">{advantage.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Next Steps Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+              🚀 Nächster Schritt: Externe Umsetzung
+            </h2>
+            <Card className="bg-muted/50">
+              <CardContent className="pt-6">
+                <p className="text-lg mb-6">
+                  <InlineTextArea
+                    value={content.benefits_description || "Mit diesem vollständig vorbereiteten BMAD-Blueprint können externe Entwickler und Experten sofort produktiv starten – ohne Umwege, ohne offene Grundsatzfragen."}
+                    onSave={(value) => updateContent("benefits_description", value, "text")}
+                    isEditMode={isEditMode}
+                    className="text-lg"
+                  />
+                </p>
+                <div className="space-y-3">
+                  {benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-primary text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Bereit für Ihre individuelle KI-Lösung?
+            </h2>
+            <p className="text-xl text-white/90">
+              Vereinbaren Sie ein unverbindliches Erstgespräch und erfahren Sie, wie der BMAD-Ansatz Ihr KI-Projekt zum Erfolg führt.
+            </p>
+            <div className="pt-4">
+              <CalendarBookingDialog
+                buttonText="Jetzt Erstgespräch buchen"
+                buttonSize="lg"
+                buttonClassName="bg-white text-primary hover:bg-white/90"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default CustomAIDevelopment;
