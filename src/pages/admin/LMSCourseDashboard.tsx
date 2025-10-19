@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2, BookOpen } from "lucide-react";
+import { Loader2, Settings } from "lucide-react";
 import {
   BookIcon, 
   LessonIcon, 
@@ -297,7 +297,7 @@ export default function LMSCourseDashboard() {
                               Bearbeiten
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
-                              <BookOpen className="mr-2 h-4 w-4" />
+                              <Settings className="mr-2 h-4 w-4" />
                               Module verwalten
                             </DropdownMenuItem>
                             <DropdownMenuItem 
@@ -357,7 +357,7 @@ export default function LMSCourseDashboard() {
                             Bearbeiten
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
-                            <BookOpen className="mr-2 h-4 w-4" />
+                            <Settings className="mr-2 h-4 w-4" />
                             Module verwalten
                           </DropdownMenuItem>
                           <DropdownMenuItem 

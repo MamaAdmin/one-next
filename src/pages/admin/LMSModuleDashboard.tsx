@@ -92,7 +92,7 @@ export default function LMSModuleDashboard() {
     if (courseParam) {
       setSelectedCourse(courseParam);
     }
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     if (selectedCourse) {
