@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, GripVertical, Plus, Edit2, Save, X } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { URLEditDialog } from "./URLEditDialog";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -62,6 +63,13 @@ const SortableItem = ({
   const displayItem = { ...item, ...(editedItems[item.id] || {}) };
   const hasEdits = editedItems[item.id] !== undefined;
 
+  // Render icon helper
+  const renderIcon = (iconName: string | null) => {
+    if (!iconName) return null;
+    const Icon = (LucideIcons as any)[iconName];
+    return Icon ? <Icon className="h-4 w-4" /> : null;
+  };
+
   return (
     <>
       <div 
@@ -101,12 +109,20 @@ const SortableItem = ({
               </Button>
             )}
           </div>
-          <Input
-            value={displayItem.icon || ""}
-            onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
-            placeholder="Icon"
-            className={cn(hasEdits && editedItems[item.id]?.icon !== undefined && "border-yellow-400 bg-yellow-50")}
-          />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 flex items-center justify-center border rounded bg-background">
+              {renderIcon(displayItem.icon)}
+            </div>
+            <Input
+              value={displayItem.icon || ""}
+              onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
+              placeholder="Icon (z.B. Briefcase)"
+              className={cn(
+                "flex-1",
+                hasEdits && editedItems[item.id]?.icon !== undefined && "border-yellow-400 bg-yellow-50"
+              )}
+            />
+          </div>
           <div className="flex items-center gap-2">
             <Switch
               checked={displayItem.is_active}

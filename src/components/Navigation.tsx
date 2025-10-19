@@ -25,6 +25,26 @@ const Navigation = () => {
   // Filter top-level items (without parent_id)
   const topLevelItems = headerItems.filter(item => !item.parent_id && item.is_active);
 
+  // Helper: Get all descendants (children + grandchildren) with depth
+  const getAllDescendants = (item: any): any[] => {
+    const descendants: any[] = [];
+    
+    const traverse = (current: any, depth: number = 0) => {
+      if (current.children) {
+        current.children
+          .filter((child: any) => child.is_active)
+          .sort((a: any, b: any) => a.sort_order - b.sort_order)
+          .forEach((child: any) => {
+            descendants.push({ ...child, depth });
+            traverse(child, depth + 1);
+          });
+      }
+    };
+    
+    traverse(item, 0);
+    return descendants;
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -77,16 +97,18 @@ const Navigation = () => {
                       {item.label} <ChevronDown className="w-4 h-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="z-50 bg-background">
-                      {item.children
-                        .filter(child => child.is_active)
-                        .sort((a, b) => a.sort_order - b.sort_order)
-                        .map((child) => (
-                          <DropdownMenuItem key={child.id} asChild>
-                            <Link to={child.url || "#"} className="cursor-pointer">
-                              {child.label}
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
+                      {getAllDescendants(item).map((child) => (
+                        <DropdownMenuItem 
+                          key={child.id} 
+                          asChild
+                          className={child.depth > 0 ? "pl-8" : ""}
+                        >
+                          <Link to={child.url || "#"} className="cursor-pointer">
+                            {child.depth > 0 && "└─ "}
+                            {child.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 );
@@ -179,19 +201,19 @@ const Navigation = () => {
               {topLevelItems.map((item) => (
                 <div key={item.id} className="border-b pb-4">
                   <p className="text-sm font-semibold mb-2">{item.label}</p>
-                  {item.children
-                    ?.filter(child => child.is_active)
-                    .sort((a, b) => a.sort_order - b.sort_order)
-                    .map((child) => (
-                      <Link
-                        key={child.id}
-                        to={child.url || "#"}
-                        className="block py-2 px-4 hover:bg-accent rounded-md"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
+                  {getAllDescendants(item).map((child) => (
+                    <Link
+                      key={child.id}
+                      to={child.url || "#"}
+                      className={`block py-2 hover:bg-accent rounded-md ${
+                        child.depth > 0 ? "pl-8" : "pl-4"
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {child.depth > 0 && "└─ "}
+                      {child.label}
+                    </Link>
+                  ))}
                 </div>
               ))}
 
