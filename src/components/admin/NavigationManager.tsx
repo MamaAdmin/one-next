@@ -181,11 +181,13 @@ const NavigationManager = () => {
         <CardContent>
           <Tabs value={selectedMenu} onValueChange={setSelectedMenu}>
             <TabsList>
-              {menus.map((menu) => (
-                <TabsTrigger key={menu.id} value={menu.name}>
-                  {menu.label}
-                </TabsTrigger>
-              ))}
+              {menus
+                .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+                .map((menu) => (
+                  <TabsTrigger key={menu.id} value={menu.name}>
+                    {menu.label}
+                  </TabsTrigger>
+                ))}
             </TabsList>
 
             {menus.map((menu) => (

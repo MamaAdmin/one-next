@@ -19,6 +19,7 @@ export interface NavigationMenu {
   id: string;
   name: string;
   label: string;
+  sort_order?: number;
 }
 
 export const useNavigation = (menuName?: string) => {
@@ -32,6 +33,7 @@ export const useNavigation = (menuName?: string) => {
       const { data, error } = await supabase
         .from("navigation_menus")
         .select("*")
+        .order("sort_order", { ascending: true })
         .order("name");
 
       if (error) throw error;
