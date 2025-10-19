@@ -204,6 +204,89 @@ export const useNavigation = (menuName?: string) => {
     }
   }, [menuName]);
 
+  const findItemsByUrl = async (url: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("navigation_items")
+        .select("id, label, menu_id")
+        .eq("url", url);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error("Error finding items by URL:", error);
+      return [];
+    }
+  };
+
+  const updateUrlWithRedirect = async (
+    itemId: string,
+    oldUrl: string,
+    newUrl: string,
+    options: {
+      createRedirect: boolean;
+      updateAllItems: boolean;
+    }
+  ) => {
+    try {
+      // 1. Find all affected items
+      const affectedItems = await findItemsByUrl(oldUrl);
+      
+      // 2. Create redirect if requested
+      if (options.createRedirect && oldUrl !== newUrl) {
+        const { error: redirectError } = await supabase
+          .from("seo_redirects")
+          .insert({
+            from_path: oldUrl,
+            to_path: newUrl,
+            redirect_type: 301,
+            is_active: true,
+          });
+
+        if (redirectError) {
+          console.error("Error creating redirect:", redirectError);
+        }
+      }
+      
+      // 3. Update all items or just the current one
+      if (options.updateAllItems && affectedItems.length > 0) {
+        const updates = affectedItems.map(item => 
+          supabase
+            .from("navigation_items")
+            .update({ url: newUrl })
+            .eq("id", item.id)
+        );
+        await Promise.all(updates);
+
+        toast({
+          title: "Erfolg",
+          description: `URL aktualisiert. ${affectedItems.length} Element${affectedItems.length !== 1 ? "e" : ""} aktualisiert${options.createRedirect ? ", Redirect erstellt" : ""}.`,
+        });
+      } else {
+        await supabase
+          .from("navigation_items")
+          .update({ url: newUrl })
+          .eq("id", itemId);
+
+        toast({
+          title: "Erfolg",
+          description: `URL aktualisiert${options.createRedirect ? ", Redirect erstellt" : ""}.`,
+        });
+      }
+
+      if (menuName) await fetchItems(menuName);
+      return true;
+    } catch (error) {
+      console.error("Error updating URL with redirect:", error);
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Aktualisieren der URL",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   return {
     menus,
     items,
@@ -212,6 +295,8 @@ export const useNavigation = (menuName?: string) => {
     reorderItems,
     deleteItem,
     createItem,
+    updateUrlWithRedirect,
+    findItemsByUrl,
     refetch: () => menuName && fetchItems(menuName),
   };
 };

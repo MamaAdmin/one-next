@@ -11,7 +11,7 @@ import ArticleManagerEnhanced from "@/components/admin/ArticleManagerEnhanced";
 import MediaManager from "@/components/admin/MediaManager";
 import PageContentManager from "@/components/admin/PageContentManager";
 import FAQManager from "@/components/admin/FAQManager";
-import { NavigationManager } from "@/components/admin/NavigationManager";
+import NavigationManager from "@/components/admin/NavigationManager";
 import { RedirectManager } from "@/components/admin/RedirectManager";
 import { 
   BMADSessionIcon, 

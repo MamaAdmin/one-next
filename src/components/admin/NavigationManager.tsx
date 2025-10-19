@@ -1,27 +1,21 @@
 import { useState } from "react";
 import { useNavigation, NavigationItem } from "@/hooks/useNavigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Trash2, Plus, GripVertical } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Trash2, GripVertical, Plus, Edit2 } from "lucide-react";
+import { URLEditDialog } from "./URLEditDialog";
 import {
   DndContext,
+  DragEndEvent,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -32,15 +26,14 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const SortableItem = ({
-  item,
-  onUpdate,
-  onDelete,
-}: {
+interface SortableItemProps {
   item: NavigationItem;
   onUpdate: (id: string, updates: Partial<NavigationItem>) => void;
   onDelete: (id: string) => void;
-}) => {
+  onEditUrl: (item: NavigationItem) => void;
+}
+
+const SortableItem = ({ item, onUpdate, onDelete, onEditUrl }: SortableItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
   });
@@ -62,15 +55,28 @@ const SortableItem = ({
           onChange={(e) => onUpdate(item.id, { label: e.target.value })}
           placeholder="Label"
         />
-        <Input
-          value={item.url || ""}
-          onChange={(e) => onUpdate(item.id, { url: e.target.value })}
-          placeholder="URL"
-        />
+        <div className="flex-1 relative">
+          <Input
+            value={item.url || ""}
+            readOnly
+            placeholder="URL (keine)"
+            className="pr-8"
+          />
+          {item.url && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full w-8"
+              onClick={() => onEditUrl(item)}
+            >
+              <Edit2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         <Input
           value={item.icon || ""}
           onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
-          placeholder="Icon (z.B. Home)"
+          placeholder="Icon"
         />
         <div className="flex items-center gap-2">
           <Switch
@@ -90,10 +96,13 @@ const SortableItem = ({
   );
 };
 
-export const NavigationManager = () => {
-  const [activeMenu, setActiveMenu] = useState("header");
-  const { menus, items, updateItem, reorderItems, deleteItem, createItem } = useNavigation(activeMenu);
-  const [localItems, setLocalItems] = useState<NavigationItem[]>([]);
+const NavigationManager = () => {
+  const [selectedMenu, setSelectedMenu] = useState<string>("header");
+  const { menus, items, loading, updateItem, reorderItems, deleteItem, createItem, updateUrlWithRedirect } = useNavigation(selectedMenu);
+  const [editingUrl, setEditingUrl] = useState<{
+    itemId: string;
+    currentUrl: string;
+  } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -101,8 +110,6 @@ export const NavigationManager = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  const currentMenu = menus.find((m) => m.name === activeMenu);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -112,83 +119,128 @@ export const NavigationManager = () => {
       const newIndex = items.findIndex((item) => item.id === over.id);
 
       const reordered = arrayMove(items, oldIndex, newIndex);
-      const updates = reordered.map((item, index) => ({
-        id: item.id,
-        sort_order: index,
-      }));
+      const menuId = menus.find((m) => m.name === selectedMenu)?.id;
 
-      if (currentMenu) {
-        reorderItems(currentMenu.id, updates);
+      if (menuId) {
+        const updates = reordered.map((item, index) => ({
+          id: item.id,
+          sort_order: index,
+        }));
+        reorderItems(menuId, updates);
       }
     }
   };
 
-  const handleAddItem = () => {
-    if (currentMenu) {
-      createItem(currentMenu.id, {
-        label: "Neues Element",
-        url: "/",
-        sort_order: items.length,
-        is_active: true,
-        target: "_self",
+  const handleAddItem = async () => {
+    const menuId = menus.find((m) => m.name === selectedMenu)?.id;
+    if (!menuId) return;
+
+    const newItem: Partial<NavigationItem> = {
+      label: "Neues Element",
+      url: "/",
+      sort_order: items.length,
+      is_active: true,
+      target: "_self",
+      icon: null,
+      parent_id: null,
+    };
+
+    await createItem(menuId, newItem);
+  };
+
+  const handleEditUrl = (item: NavigationItem) => {
+    if (item.url) {
+      setEditingUrl({
+        itemId: item.id,
+        currentUrl: item.url,
       });
     }
   };
 
+  const handleSaveUrl = async (
+    newUrl: string,
+    options: { createRedirect: boolean; updateAllItems: boolean }
+  ) => {
+    if (!editingUrl) return;
+    
+    await updateUrlWithRedirect(
+      editingUrl.itemId,
+      editingUrl.currentUrl,
+      newUrl,
+      options
+    );
+    setEditingUrl(null);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Navigation Manager</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Tabs value={activeMenu} onValueChange={setActiveMenu}>
-          <TabsList>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Navigation Manager</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={selectedMenu} onValueChange={setSelectedMenu}>
+            <TabsList>
+              {menus.map((menu) => (
+                <TabsTrigger key={menu.id} value={menu.name}>
+                  {menu.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
             {menus.map((menu) => (
-              <TabsTrigger key={menu.id} value={menu.name}>
-                {menu.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {menus.map((menu) => (
-            <TabsContent key={menu.id} value={menu.name} className="space-y-4">
-              <div className="flex justify-between items-center">
-                <Label>Menü-Elemente</Label>
-                <Button onClick={handleAddItem} size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Element hinzufügen
-                </Button>
-              </div>
-
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext
-                  items={items.map((item) => item.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {items.map((item) => (
-                    <SortableItem
-                      key={item.id}
-                      item={item}
-                      onUpdate={updateItem}
-                      onDelete={deleteItem}
-                    />
-                  ))}
-                </SortableContext>
-              </DndContext>
-
-              {items.length === 0 && (
-                <div className="text-center text-muted-foreground py-8">
-                  Noch keine Menü-Elemente vorhanden
+              <TabsContent key={menu.id} value={menu.name} className="space-y-4">
+                <div className="flex justify-between items-center mb-4">
+                  <Label>Menü-Elemente</Label>
+                  <Button onClick={handleAddItem} size="sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Element hinzufügen
+                  </Button>
                 </div>
-              )}
-            </TabsContent>
-          ))}
-        </Tabs>
-      </CardContent>
-    </Card>
+
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={items.map((item) => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {items.map((item) => (
+                      <SortableItem
+                        key={item.id}
+                        item={item}
+                        onUpdate={updateItem}
+                        onDelete={deleteItem}
+                        onEditUrl={handleEditUrl}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+
+                {items.length === 0 && (
+                  <div className="text-center text-muted-foreground py-8">
+                    Noch keine Menü-Elemente vorhanden
+                  </div>
+                )}
+              </TabsContent>
+            ))}
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {editingUrl && (
+        <URLEditDialog
+          currentUrl={editingUrl.currentUrl}
+          itemId={editingUrl.itemId}
+          open={!!editingUrl}
+          onOpenChange={(open) => !open && setEditingUrl(null)}
+          onSave={handleSaveUrl}
+        />
+      )}
+    </>
   );
 };
+
+export default NavigationManager;
