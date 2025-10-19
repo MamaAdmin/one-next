@@ -32,7 +32,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, Plus, Eye, ThumbsUp, ThumbsDown } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
 
 const FAQManager = () => {
   const { faqs, loading, refetch } = useFAQ();
@@ -47,19 +47,37 @@ const FAQManager = () => {
     is_published: true,
     sort_order: 0,
   });
+  const [editorContent, setEditorContent] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate that answer is not empty (after stripping HTML tags)
+    const strippedAnswer = editorContent.replace(/<[^>]*>/g, '').trim();
+    if (!strippedAnswer) {
+      toast({
+        title: "Fehler",
+        description: "Die Antwort darf nicht leer sein",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
+      const dataToSubmit = {
+        ...formData,
+        answer: editorContent,
+      };
+      
       if (editingFAQ) {
         const { error } = await supabase
           .from("faq_items")
-          .update(formData)
+          .update(dataToSubmit)
           .eq("id", editingFAQ.id);
         if (error) throw error;
         toast({ title: "FAQ aktualisiert" });
       } else {
-        const { error } = await supabase.from("faq_items").insert(formData);
+        const { error } = await supabase.from("faq_items").insert(dataToSubmit);
         if (error) throw error;
         toast({ title: "FAQ erstellt" });
       }
@@ -72,6 +90,7 @@ const FAQManager = () => {
         is_published: true,
         sort_order: 0,
       });
+      setEditorContent("");
       refetch();
     } catch (error: any) {
       toast({
@@ -125,6 +144,7 @@ const FAQManager = () => {
       is_published: faq.is_published,
       sort_order: faq.sort_order,
     });
+    setEditorContent(faq.answer);
     setIsDialogOpen(true);
   };
 
@@ -137,6 +157,7 @@ const FAQManager = () => {
       is_published: true,
       sort_order: faqs.length,
     });
+    setEditorContent("");
     setIsDialogOpen(true);
   };
 
@@ -278,7 +299,7 @@ const FAQManager = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingFAQ ? "FAQ bearbeiten" : "Neue FAQ erstellen"}
@@ -300,15 +321,16 @@ const FAQManager = () => {
               />
             </div>
             <div>
-              <Label htmlFor="answer">Antwort (HTML erlaubt)</Label>
-              <Textarea
-                id="answer"
-                value={formData.answer}
-                onChange={(e) =>
-                  setFormData({ ...formData, answer: e.target.value })
-                }
-                rows={8}
-                required
+              <Label htmlFor="answer">Antwort (Rich Text)</Label>
+              <RichTextEditor
+                value={editorContent}
+                onSave={async (content) => {
+                  setEditorContent(content);
+                  setFormData({ ...formData, answer: content });
+                }}
+                isEditMode={true}
+                className="min-h-[300px]"
+                placeholder="Schreiben Sie hier die Antwort mit Formatierungen..."
               />
             </div>
             <div>
