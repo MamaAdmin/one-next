@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { Button } from "@/components/ui/button";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
@@ -37,6 +38,7 @@ import Footer from "@/components/Footer";
 export default function LMSCourseDashboard() {
   const navigate = useNavigate();
   const { courses, loading, deleteCourse, reload } = useLMSCourse();
+  const { profile } = useUserProfile();
   
   const [activeView, setActiveView] = useState<"list" | "create" | "edit">("list");
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
@@ -198,7 +200,6 @@ export default function LMSCourseDashboard() {
                       </div>
                     </TableHead>
                     <TableHead>Kategorien</TableHead>
-                    <TableHead>Preis</TableHead>
                     <TableHead>Autor</TableHead>
                     <TableHead className="cursor-pointer" onClick={() => toggleSort("date")}>
                       <div className="flex items-center gap-2">
@@ -228,11 +229,23 @@ export default function LMSCourseDashboard() {
                           />
                           <div>
                             <div className="font-medium">{course.title}</div>
-                            <div className="text-xs text-muted-foreground">
-                              📚 Thema: {course.module_count || 0} | 
-                              📖 Lektion: {course.total_lessons || 0} | 
-                              📝 Test: {course.total_quizzes || 0} | 
-                              📋 Aufgabe: 0
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <BookIcon className="h-3 w-3" />
+                                Thema: {course.module_count || 0}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <LessonIcon className="h-3 w-3" />
+                                Lektion: {course.total_lessons || 0}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <QuizIcon className="h-3 w-3" />
+                                Test: {course.total_quizzes || 0}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <TaskIcon className="h-3 w-3" />
+                                Aufgabe: 0
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -241,19 +254,12 @@ export default function LMSCourseDashboard() {
                         <Badge variant="secondary">{course.course_type}</Badge>
                       </TableCell>
                       <TableCell>
-                        {course.price_chf === 0 ? (
-                          <Badge variant="secondary">Kostenlos</Badge>
-                        ) : (
-                          <span className="font-medium">CHF {course.price_chf}</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
                         <div className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
-                            <AvatarImage src={course.author_avatar || "/placeholder.svg"} />
-                            <AvatarFallback>MA</AvatarFallback>
+                            <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} />
+                            <AvatarFallback>{profile?.full_name?.[0] || "A"}</AvatarFallback>
                           </Avatar>
-                          <span className="text-sm">{course.author_name || "Admin"}</span>
+                          <span className="text-sm">{profile?.full_name || "Admin"}</span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -327,16 +333,24 @@ export default function LMSCourseDashboard() {
                       />
                       <div className="flex-1">
                         <h3 className="font-medium">{course.title}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          {course.course_type}
-                        </p>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                          <span className="flex items-center gap-1">
+                            <BookIcon className="h-3 w-3" />
+                            {course.module_count || 0}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <LessonIcon className="h-3 w-3" />
+                            {course.total_lessons || 0}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <QuizIcon className="h-3 w-3" />
+                            {course.total_quizzes || 0}
+                          </span>
+                        </div>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge variant={course.is_active ? "default" : "secondary"}>
                             {course.is_active ? "Aktiv" : "Inaktiv"}
                           </Badge>
-                          <span className="text-sm font-medium">
-                            CHF {course.price_chf}
-                          </span>
                         </div>
                       </div>
                       <DropdownMenu>
