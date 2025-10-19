@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import ArticleManager from "@/components/admin/ArticleManager";
 import MediaManager from "@/components/admin/MediaManager";
 import PageContentManager from "@/components/admin/PageContentManager";
+import FAQManager from "@/components/admin/FAQManager";
 import { BMADSessionIcon, BMADArtifactIcon, BMADAnalyticsIcon } from "@/components/ui/custom-icons";
 
 const AdminDashboard = () => {
@@ -65,10 +66,11 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="articles">Artikel</TabsTrigger>
               <TabsTrigger value="media">Medien</TabsTrigger>
               <TabsTrigger value="pages">Seiteninhalte</TabsTrigger>
+              <TabsTrigger value="faq">FAQ</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
               <TabsTrigger value="bmad">BMAD</TabsTrigger>
             </TabsList>
@@ -83,6 +85,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="pages">
               <PageContentManager />
+            </TabsContent>
+
+            <TabsContent value="faq">
+              <FAQManager />
             </TabsContent>
 
             <TabsContent value="lms">

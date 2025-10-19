@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Search, ThumbsUp, ThumbsDown, Mail } from "lucide-react";
+import { Search, ThumbsUp, ThumbsDown, Mail, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import * as Icons from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { createBreadcrumbSchema } from "@/config/seoConfig";
 import { useFAQ, useFAQCategories } from "@/hooks/useFAQ";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Accordion,
   AccordionContent,
@@ -15,13 +17,21 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 
 const FAQ = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [feedbackFaqId, setFeedbackFaqId] = useState<string | null>(null);
+  const [feedbackText, setFeedbackText] = useState("");
   const { faqs, loading, trackView, trackHelpful } = useFAQ();
   const { categories, loading: categoriesLoading } = useFAQCategories();
+  const { toast } = useToast();
 
   // Filter FAQs
   const filteredFAQs = faqs.filter((faq) => {
@@ -31,6 +41,29 @@ const FAQ = () => {
     const matchesCategory = !selectedCategoryId || faq.category_id === selectedCategoryId;
     return matchesSearch && matchesCategory;
   });
+
+  // Most viewed FAQs (top 5)
+  const mostViewedFAQs = [...faqs]
+    .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
+    .slice(0, 5);
+
+  // Submit feedback
+  const handleFeedbackSubmit = async (faqId: string) => {
+    try {
+      await supabase.from("faq_feedback").insert({
+        faq_id: faqId,
+        feedback_text: feedbackText,
+      });
+      toast({
+        title: "Danke für Ihr Feedback!",
+        description: "Wir werden die Antwort verbessern.",
+      });
+      setFeedbackFaqId(null);
+      setFeedbackText("");
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    }
+  };
 
   // Generate FAQ Schema
   const faqSchema = {
@@ -89,6 +122,38 @@ const FAQ = () => {
           </div>
         </section>
 
+        {/* Most Viewed FAQs */}
+        {!loading && mostViewedFAQs.length > 0 && (
+          <section className="py-12 px-6 bg-accent/30">
+            <div className="container mx-auto max-w-6xl">
+              <div className="flex items-center gap-3 mb-6">
+                <TrendingUp className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-bold">Meist gelesene FAQs</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {mostViewedFAQs.map((faq, index) => {
+                  const category = categories.find((c) => c.id === faq.category_id);
+                  return (
+                    <Card key={faq.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <Badge variant="outline" className="mb-2">
+                            {category?.name}
+                          </Badge>
+                          <Badge variant="secondary">{faq.view_count} Aufrufe</Badge>
+                        </div>
+                        <CardTitle className="text-base line-clamp-2">
+                          {faq.question}
+                        </CardTitle>
+                      </CardHeader>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Category Tabs */}
         <section className="py-12 px-6">
           <div className="container mx-auto max-w-6xl">
@@ -100,16 +165,28 @@ const FAQ = () => {
                     onClick={() => setSelectedCategoryId(null)}
                   >
                     Alle Fragen
+                    <Badge variant="secondary" className="ml-2">
+                      {faqs.length}
+                    </Badge>
                   </TabsTrigger>
-                  {categories.map((cat) => (
-                    <TabsTrigger
-                      key={cat.id}
-                      value={cat.slug}
-                      onClick={() => setSelectedCategoryId(cat.id)}
-                    >
-                      {cat.name}
-                    </TabsTrigger>
-                  ))}
+                  {categories.map((cat) => {
+                    const Icon = cat.icon ? (Icons as any)[cat.icon] : null;
+                    const count = faqs.filter((f) => f.category_id === cat.id).length;
+                    return (
+                      <TabsTrigger
+                        key={cat.id}
+                        value={cat.slug}
+                        onClick={() => setSelectedCategoryId(cat.id)}
+                        className="gap-2"
+                      >
+                        {Icon && <Icon className="h-4 w-4" />}
+                        {cat.name}
+                        <Badge variant="secondary" className="ml-1">
+                          {count}
+                        </Badge>
+                      </TabsTrigger>
+                    );
+                  })}
                 </TabsList>
 
                 <TabsContent value={selectedCategoryId || "all"}>
@@ -162,26 +239,66 @@ const FAQ = () => {
                             />
 
                             {/* Helpful buttons */}
-                            <div className="flex items-center gap-4 pt-4 border-t">
-                              <span className="text-sm text-muted-foreground">
-                                War diese Antwort hilfreich?
-                              </span>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => trackHelpful(faq.id, true)}
-                              >
-                                <ThumbsUp className="h-4 w-4 mr-2" />
-                                Ja
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => trackHelpful(faq.id, false)}
-                              >
-                                <ThumbsDown className="h-4 w-4 mr-2" />
-                                Nein
-                              </Button>
+                            <div className="space-y-3 pt-4 border-t">
+                              <div className="flex items-center gap-4">
+                                <span className="text-sm text-muted-foreground">
+                                  War diese Antwort hilfreich?
+                                </span>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    trackHelpful(faq.id, true);
+                                  }}
+                                >
+                                  <ThumbsUp className="h-4 w-4 mr-2" />
+                                  Ja
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    trackHelpful(faq.id, false);
+                                    setFeedbackFaqId(faq.id);
+                                  }}
+                                >
+                                  <ThumbsDown className="h-4 w-4 mr-2" />
+                                  Nein
+                                </Button>
+                              </div>
+
+                              {/* Feedback form (shown after "No" click) */}
+                              {feedbackFaqId === faq.id && (
+                                <div className="space-y-2 pl-4 border-l-2 border-primary/30">
+                                  <Label className="text-sm">
+                                    Was hätten Sie erwartet? (Optional)
+                                  </Label>
+                                  <Textarea
+                                    value={feedbackText}
+                                    onChange={(e) => setFeedbackText(e.target.value)}
+                                    placeholder="Ihr Feedback hilft uns, die Antwort zu verbessern..."
+                                    rows={3}
+                                  />
+                                  <div className="flex gap-2">
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleFeedbackSubmit(faq.id)}
+                                    >
+                                      Absenden
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => {
+                                        setFeedbackFaqId(null);
+                                        setFeedbackText("");
+                                      }}
+                                    >
+                                      Abbrechen
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </AccordionContent>
                         </AccordionItem>

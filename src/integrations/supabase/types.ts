@@ -421,6 +421,38 @@ export type Database = {
         }
         Relationships: []
       }
+      faq_feedback: {
+        Row: {
+          created_at: string | null
+          expected_answer: string | null
+          faq_id: string
+          feedback_text: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expected_answer?: string | null
+          faq_id: string
+          feedback_text?: string | null
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          expected_answer?: string | null
+          faq_id?: string
+          feedback_text?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faq_feedback_faq_id_fkey"
+            columns: ["faq_id"]
+            isOneToOne: false
+            referencedRelation: "faq_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faq_items: {
         Row: {
           answer: string
