@@ -308,12 +308,12 @@ export default function LMSToolboxEditor() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="understand">Understand</SelectItem>
-                                <SelectItem value="ideate">Ideate</SelectItem>
-                                <SelectItem value="decide">Decide</SelectItem>
-                                <SelectItem value="prototype">Prototype</SelectItem>
-                                <SelectItem value="validate">Validate</SelectItem>
-                                <SelectItem value="retrospect">Retrospect</SelectItem>
+                                <SelectItem value="understand">Verstehen</SelectItem>
+                                <SelectItem value="ideate">Ideen entwickeln</SelectItem>
+                                <SelectItem value="decide">Entscheiden</SelectItem>
+                                <SelectItem value="prototype">Prototyp</SelectItem>
+                                <SelectItem value="validate">Validieren</SelectItem>
+                                <SelectItem value="retrospect">Retrospektive</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>

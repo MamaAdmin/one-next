@@ -31,6 +31,15 @@ const categoryColors: Record<string, string> = {
   retrospect: "bg-gray-100 text-gray-800",
 };
 
+const categoryLabels: Record<string, string> = {
+  understand: "Verstehen",
+  ideate: "Ideen entwickeln",
+  decide: "Entscheiden",
+  prototype: "Prototyp",
+  validate: "Validieren",
+  retrospect: "Retrospektive",
+};
+
 const toolTypeIcons: Record<string, any> = {
   external: ExternalLink,
   embedded: Code,
@@ -66,7 +75,7 @@ export function ToolCard({ tool, enrollmentId, moduleId }: ToolCardProps) {
             </CardTitle>
             <div className="flex gap-2 mt-2">
               <Badge variant="secondary" className={categoryColors[tool.category]}>
-                {tool.category}
+                {categoryLabels[tool.category] || tool.category}
               </Badge>
             </div>
           </div>

@@ -31,6 +31,15 @@ const categoryColors: Record<string, string> = {
   retrospect: "bg-gray-100 text-gray-800",
 };
 
+const categoryLabels: Record<string, string> = {
+  understand: "Verstehen",
+  ideate: "Ideen entwickeln",
+  decide: "Entscheiden",
+  prototype: "Prototyp",
+  validate: "Validieren",
+  retrospect: "Retrospektive",
+};
+
 export function ToolSelector({ selectedTools, onChange, filterByPhase, filterByCourseId }: ToolSelectorProps) {
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +126,7 @@ export function ToolSelector({ selectedTools, onChange, filterByPhase, filterByC
               </div>
               <div className="flex gap-2 mt-2">
                 <Badge variant="secondary" className={categoryColors[tool.category]}>
-                  {tool.category}
+                  {categoryLabels[tool.category] || tool.category}
                 </Badge>
                 <Badge variant="outline">{tool.tool_type}</Badge>
               </div>
