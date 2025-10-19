@@ -10,13 +10,47 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
+import { SEO } from "@/components/SEO";
+import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 
 const AIConsultingServices = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const { isContentManager } = useContentManager();
   const { content, loading, updateContent } = usePageContent('ai-consulting-services');
+  
+  const structuredData = [
+    createServiceSchema(
+      "AI Consulting Services",
+      "Strategische AI-Beratung für Unternehmen. Von der Potenzialanalyse bis zur Umsetzungsbegleitung - individuell auf Ihre Bedürfnisse zugeschnitten.",
+      "https://one-next.de/ai-consulting-services"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Services", url: "https://one-next.de/#services" },
+      { name: "AI Consulting", url: "https://one-next.de/ai-consulting-services" }
+    ]),
+    createFAQSchema([
+      {
+        question: "Was umfasst AI Consulting?",
+        answer: "AI Consulting umfasst die strategische Beratung von Unternehmen bei der Identifikation, Bewertung und Umsetzung von AI-Potenzialen - von der ersten Analyse bis zur erfolgreichen Implementierung."
+      },
+      {
+        question: "Für welche Unternehmen eignet sich AI Consulting?",
+        answer: "AI Consulting eignet sich für Unternehmen jeder Größe, die KI-Technologien strategisch nutzen möchten, um Prozesse zu optimieren, neue Geschäftsmodelle zu entwickeln oder Wettbewerbsvorteile zu schaffen."
+      }
+    ])
+  ];
+
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title="AI Consulting Services | Strategische KI-Beratung | one-next"
+        description="Professionelle AI-Beratung für Ihr Unternehmen. Von der Potenzialanalyse über Strategieentwicklung bis zur Umsetzungsbegleitung. Individuell und praxisnah."
+        keywords="AI Consulting, KI-Beratung, AI Strategie, Künstliche Intelligenz Beratung, AI Transformation, Innovation Consulting"
+        canonical="https://one-next.de/ai-consulting-services"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen">
       <Navigation />
       
       {/* Hero Section */}
@@ -428,7 +462,8 @@ const AIConsultingServices = () => {
           onToggle={() => setIsEditMode(!isEditMode)}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

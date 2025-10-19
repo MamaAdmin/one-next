@@ -13,13 +13,33 @@ import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { SEO } from "@/components/SEO";
+import { personSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 
 const AboutUs = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const { isContentManager } = useContentManager();
   const { content, loading, updateContent } = usePageContent('about-us');
+
+  const structuredData = [
+    personSchema,
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Über uns", url: "https://one-next.de/about-us" }
+    ])
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <>
+      <SEO
+        title="Über one-next | Julia Haitz - AI & Innovation Expertin"
+        description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für AI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact."
+        keywords="Julia Haitz, one-next, AI Expertin, Design Sprint, Innovation Consulting, KI-Beratung"
+        canonical="https://one-next.de/about-us"
+        ogType="profile"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-gradient-subtle">
       <Navigation />
       
       {/* Hero Section */}
@@ -286,6 +306,7 @@ const AboutUs = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

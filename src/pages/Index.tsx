@@ -7,14 +7,24 @@ import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
+import { SEO } from "@/components/SEO";
+import { organizationSchema } from "@/config/seoConfig";
 
 const Index = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const { isContentManager, loading } = useContentManager();
 
   return (
-    <div className="min-h-screen">
-      <Navigation />
+    <>
+      <SEO
+        title="one-next | KI-Entwicklung & AI Design Sprints"
+        description="Entdecken Sie AI-Potenziale mit innovativen Design Sprints und individueller KI-Entwicklung. Von der Idee zum getesteten Prototyp in 2 Tagen."
+        keywords="KI-Entwicklung, AI Design Sprint, Design Thinking, Innovation Workshop, Künstliche Intelligenz, AI Consulting"
+        canonical="https://one-next.de/"
+        structuredData={organizationSchema}
+      />
+      <div className="min-h-screen">
+        <Navigation />
       <Hero isEditMode={isEditMode} />
       <ValueCards isEditMode={isEditMode} />
       <About isEditMode={isEditMode} />
@@ -26,7 +36,8 @@ const Index = () => {
           onToggle={() => setIsEditMode(!isEditMode)}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

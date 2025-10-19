@@ -12,6 +12,8 @@ import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { useToast } from "@/hooks/use-toast";
 import DOMPurify from "dompurify";
+import { SEO } from "@/components/SEO";
+import { createBreadcrumbSchema } from "@/config/seoConfig";
 
 interface Article {
   id: string;
@@ -79,7 +81,18 @@ const Blog = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title="Blog | AI & Innovation Insights | one-next"
+        description="Aktuelle Einblicke, Updates und Perspektiven rund um KI, Innovation und Technologie. Expertenwissen aus der Praxis von one-next."
+        keywords="AI Blog, KI Insights, Innovation Blog, Technologie News, AI Trends, Design Thinking"
+        canonical="https://one-next.de/blog"
+        structuredData={createBreadcrumbSchema([
+          { name: "Home", url: "https://one-next.de/" },
+          { name: "Blog", url: "https://one-next.de/blog" }
+        ])}
+      />
+      <div className="min-h-screen">
       <Navigation />
       <main className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-4xl mx-auto">
@@ -179,7 +192,8 @@ const Blog = () => {
           onToggle={() => setIsEditMode(!isEditMode)}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

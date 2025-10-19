@@ -7,11 +7,34 @@ import { Link } from "react-router-dom";
 import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
 import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
 import workshopImage from "@/assets/design-sprint-workshop.jpg";
+import { SEO } from "@/components/SEO";
+import { createEventSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 
 const DesignSprintWorkshop = () => {
+  const structuredData = [
+    createEventSchema(
+      "Design Sprint Workshop",
+      "Strukturierter 2-Tage Workshop zur Entwicklung und Testung innovativer Lösungen mit dem Design Sprint Framework.",
+      "https://one-next.de/design-sprint-workshop"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Workshops", url: "https://one-next.de/sprint-uebersicht" },
+      { name: "Design Sprint Workshop", url: "https://one-next.de/design-sprint-workshop" }
+    ])
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
+    <>
+      <SEO
+        title="Design Sprint Workshop | 2-Tage Intensiv-Workshop | one-next"
+        description="Strukturierter Design Sprint Workshop über 2 Tage. Von der Challenge zum getesteten Prototyp mit erfahrenen Facilitators."
+        keywords="Design Sprint Workshop, Innovation Workshop, Prototyping, Design Thinking Workshop"
+        canonical="https://one-next.de/design-sprint-workshop"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
       
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
@@ -599,7 +622,8 @@ const DesignSprintWorkshop = () => {
       </section>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

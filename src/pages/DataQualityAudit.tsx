@@ -8,6 +8,8 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
+import { SEO } from "@/components/SEO";
+import { createServiceSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 
 export default function DataQualityAuditPage() {
   const [isEditMode, setIsEditMode] = useState(false);

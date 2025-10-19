@@ -11,6 +11,8 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { SEO } from "@/components/SEO";
+import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 const AIDesignSprint = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const {
@@ -21,7 +23,43 @@ const AIDesignSprint = () => {
     content,
     updateContent
   } = usePageContent('sprint-uebersicht');
-  return <div className="min-h-screen">
+
+  const structuredData = [
+    createServiceSchema(
+      "AI Design Sprint Workshop",
+      "Identifizieren Sie AI-Potenziale und entwickeln Sie innovative Lösungen in einem strukturierten 2-Tage Workshop. Von der Challenge zum getesteten Prototyp.",
+      "https://one-next.de/sprint-uebersicht"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Services", url: "https://one-next.de/#services" },
+      { name: "AI Design Sprint", url: "https://one-next.de/sprint-uebersicht" }
+    ]),
+    createFAQSchema([
+      {
+        question: "Was ist ein AI Design Sprint?",
+        answer: "Ein AI Design Sprint ist ein strukturierter 2-Tage Workshop, in dem Sie systematisch AI-Potenziale identifizieren, Lösungsansätze entwickeln und einen ersten Prototyp testen."
+      },
+      {
+        question: "Für wen eignet sich der AI Design Sprint?",
+        answer: "Der Workshop richtet sich an Unternehmen, die AI-Potenziale entdecken, Innovation fördern und schnell validierte Lösungen entwickeln möchten."
+      },
+      {
+        question: "Was ist der Unterschied zwischen Workshop und Online Sprint?",
+        answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
+      }
+    ])
+  ];
+
+  return <>
+      <SEO
+        title="AI Design Sprint Workshop | Innovation in 2 Tagen | one-next"
+        description="Entdecken Sie AI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp."
+        keywords="AI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping"
+        canonical="https://one-next.de/sprint-uebersicht"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen">
       <Navigation />
       
       {/* Hero Section */}
@@ -407,6 +445,7 @@ const AIDesignSprint = () => {
       <Footer />
       
       {isContentManager && !loading && <EditToggleButton isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />}
-    </div>;
+    </div>
+    </>;
 };
 export default AIDesignSprint;

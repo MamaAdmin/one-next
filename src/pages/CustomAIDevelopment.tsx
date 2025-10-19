@@ -10,6 +10,8 @@ import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { usePageContent } from "@/hooks/usePageContent";
 import { useContentManager } from "@/hooks/useContentManager";
 import { Target, Zap, GitBranch, Check, Users, Database, Layers, Map, FileText, Settings } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { createServiceSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 
 const CustomAIDevelopment = () => {
   const { content, updateContent } = usePageContent("custom-ai-development");
@@ -20,6 +22,19 @@ const CustomAIDevelopment = () => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const structuredData = [
+    createServiceSchema(
+      "Individuelle KI-Entwicklung mit BMAD",
+      "Maßgeschneiderte AI-Lösungen von der Konzeption bis zur Umsetzung. Agile Entwicklung mit dem BMAD-Framework für schnelle, iterative Erfolge.",
+      "https://one-next.de/custom-ai-development"
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Services", url: "https://one-next.de/#services" },
+      { name: "Custom AI Development", url: "https://one-next.de/custom-ai-development" }
+    ])
+  ];
 
   const approachSteps = [
     {
@@ -88,7 +103,15 @@ const CustomAIDevelopment = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
+      <SEO
+        title="Custom AI Development | Individuelle KI-Lösungen | one-next"
+        description="Maßgeschneiderte AI-Entwicklung mit dem BMAD-Framework. Von der Konzeption bis zur Umsetzung - agil, iterativ und business-fokussiert."
+        keywords="KI-Entwicklung, Custom AI, BMAD Framework, AI Consulting, Individuelle AI-Lösungen, Agile AI Development"
+        canonical="https://one-next.de/custom-ai-development"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen flex flex-col">
       <Navigation />
       
       {isContentManager && (
@@ -275,7 +298,8 @@ const CustomAIDevelopment = () => {
       </section>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 
