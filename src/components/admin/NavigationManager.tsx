@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, GripVertical, Plus, Edit2, Save, X } from "lucide-react";
+import { Trash2, GripVertical, Plus, Edit2, Save, X, Eye, EyeOff } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { URLEditDialog } from "./URLEditDialog";
 import { cn } from "@/lib/utils";
@@ -65,15 +65,43 @@ const SortableItem = ({
     return Icon ? <Icon className="h-4 w-4" /> : null;
   };
   return <>
-      <div ref={setNodeRef} style={style} className={cn("flex items-center gap-2 mb-2", depth > 0 && "ml-6 border-l-2 border-muted pl-4")}>
+      <div ref={setNodeRef} style={style} className={cn(
+        "flex items-center gap-2 mb-2", 
+        depth > 0 && "ml-6 border-l-2 border-muted pl-4",
+        !displayItem.is_active && "opacity-50"
+      )}>
         <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </button>
         
         <div className="flex-1 grid grid-cols-4 gap-3 items-center">
-          <Input value={displayItem.label} onChange={e => onUpdate(item.id, {
-          label: e.target.value
-        })} placeholder="Label" className={cn(hasEdits && editedItems[item.id]?.label !== undefined && "border-yellow-400 bg-yellow-50")} />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onUpdate(item.id, { is_active: !displayItem.is_active })}
+              className={cn(
+                "transition-colors hover:text-foreground",
+                displayItem.is_active 
+                  ? "text-muted-foreground" 
+                  : "text-muted-foreground/40"
+              )}
+              title={displayItem.is_active ? "Menü ausblenden" : "Menü einblenden"}
+            >
+              {displayItem.is_active ? (
+                <Eye className="h-4 w-4" />
+              ) : (
+                <EyeOff className="h-4 w-4" />
+              )}
+            </button>
+            <Input 
+              value={displayItem.label} 
+              onChange={e => onUpdate(item.id, { label: e.target.value })} 
+              placeholder="Label" 
+              className={cn(
+                hasEdits && editedItems[item.id]?.label !== undefined && "border-yellow-400 bg-yellow-50",
+                !displayItem.is_active && "opacity-60"
+              )} 
+            />
+          </div>
           <div className="relative">
             <Input value={displayItem.url || ""} readOnly placeholder="URL (keine)" className="pr-8" />
             {displayItem.url && <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-full w-8" onClick={() => onEditUrl(item)}>
