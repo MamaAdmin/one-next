@@ -21,7 +21,7 @@ const Navigation = () => {
   const { isAdmin } = useAdmin();
 
   const servicesItems = [
-    { label: "Analyse", href: "/ai-design-sprint" },
+    { label: "Analyse", href: "/sprint-uebersicht" },
     { label: "Datenaudit", href: "/data-quality-audit" },
     { label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
     { label: "Workshops", href: "/design-sprint-workshop" },

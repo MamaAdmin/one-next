@@ -63,8 +63,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Article />} />
-          <Route path="/ai-design-sprint" element={<AIDesignSprint />} />
-          <Route path="/ai-design-sprint/online" element={<OnlineSprintLanding />} />
+        <Route path="/sprint-uebersicht" element={<AIDesignSprint />} />
+        <Route path="/sprint-uebersicht/online" element={<OnlineSprintLanding />} />
+        {/* Redirects for old URLs */}
+        <Route path="/ai-design-sprint" element={<Navigate to="/sprint-uebersicht" replace />} />
+        <Route path="/ai-design-sprint/online" element={<Navigate to="/sprint-uebersicht/online" replace />} />
           <Route path="/problem-framing-workshop" element={<ProblemFramingWorkshop />} />
           <Route path="/design-sprint-workshop" element={<DesignSprintWorkshop />} />
           <Route path="/workshop-registration" element={<WorkshopRegistration />} />

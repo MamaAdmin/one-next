@@ -101,7 +101,7 @@ const OnlineSprintLanding = () => {
                 <Link to="/workshop-registration">Jetzt starten</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-                <Link to="/ai-design-sprint">Workshop-Variante ansehen</Link>
+                <Link to="/sprint-uebersicht">Workshop-Variante ansehen</Link>
               </Button>
               <Button size="lg" variant="ghost" className="text-lg px-8 py-6" asChild>
                 

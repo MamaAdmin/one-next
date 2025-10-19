@@ -588,7 +588,7 @@ const DesignSprintWorkshop = () => {
                       Selbstgeführter Online Sprint für einfachere Challenges
                     </p>
                     <Button size="lg" variant="outline" className="w-full" asChild>
-                      <Link to="/ai-design-sprint/online">Mehr zum Online Sprint</Link>
+                      <Link to="/sprint-uebersicht/online">Mehr zum Online Sprint</Link>
                     </Button>
                   </div>
                 </div>

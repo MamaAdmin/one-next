@@ -19,7 +19,7 @@ const AIDesignSprint = () => {
   const {
     content,
     updateContent
-  } = usePageContent('ai-design-sprint');
+  } = usePageContent('sprint-uebersicht');
   return <div className="min-h-screen">
       <Navigation />
       
@@ -336,7 +336,7 @@ const AIDesignSprint = () => {
                 <div className="pt-4 border-t space-y-4">
                   <p className="text-sm font-semibold">Preis auf Anfrage</p>
                   <Button className="w-full bg-black hover:bg-black/90 text-white" asChild>
-                    <Link to="/ai-design-sprint/online">Online Sprint entdecken</Link>
+                    <Link to="/sprint-uebersicht/online">Online Sprint entdecken</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -384,7 +384,7 @@ const AIDesignSprint = () => {
                       Selbstgeführter Online Sprint
                     </p>
                     <Button size="lg" variant="outline" className="w-full" asChild>
-                      <Link to="/ai-design-sprint/online">Mehr erfahren</Link>
+                      <Link to="/sprint-uebersicht/online">Mehr erfahren</Link>
                     </Button>
                   </div>
                 </div>
