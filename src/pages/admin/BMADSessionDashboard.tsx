@@ -201,7 +201,7 @@ const BMADSessionDashboard = () => {
           { label: "BMAD Sessions", icon: <BMADSessionIcon className="w-5 h-5" />, active: true }
         ]}
       />
-      <main className="container mx-auto px-6 pt-48 pb-20">
+      <main className="container mx-auto px-6 pt-[140px] pb-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex justify-between items-center">
             <div>

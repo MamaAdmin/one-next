@@ -370,7 +370,7 @@ export default function BMADSessionDetail() {
         ]}
       />
       
-      <main className="flex-1 container mx-auto px-4 pt-32 py-8">
+      <main className="flex-1 container mx-auto px-4 pt-[140px] py-8">
         <Button 
           variant="ghost" 
           className="mb-4"

@@ -22,7 +22,7 @@ interface BMADBreadcrumbProps {
 
 export const BMADBreadcrumb = ({ items }: BMADBreadcrumbProps) => {
   return (
-    <nav className="fixed top-16 left-0 right-0 z-40 bg-accent/30 border-b border-border">
+    <nav className="fixed top-[72px] left-0 right-0 z-40 bg-accent/30 border-b border-border">
       <div className="container mx-auto px-6 py-3">
         <Breadcrumb>
           <BreadcrumbList>

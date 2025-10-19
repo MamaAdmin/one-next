@@ -104,7 +104,7 @@ const BMADAnalytics = () => {
           { label: "BMAD Analytics", icon: <BMADAnalyticsIcon className="w-5 h-5" />, active: true }
         ]}
       />
-      <main className="container mx-auto px-6 pt-48 pb-20">
+      <main className="container mx-auto px-6 pt-[140px] pb-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">BMAD Analytics</h1>
