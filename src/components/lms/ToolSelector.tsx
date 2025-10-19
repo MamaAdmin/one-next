@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Wrench, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 interface Tool {
   id: string;
@@ -42,6 +43,9 @@ const categoryLabels: Record<string, string> = {
 export function ToolSelector({ selectedTools, onChange, filterByCourseId }: ToolSelectorProps) {
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<string>("title");
 
   useEffect(() => {
     const loadTools = async () => {
@@ -65,6 +69,23 @@ export function ToolSelector({ selectedTools, onChange, filterByCourseId }: Tool
     onChange(newSelection);
   };
 
+  const filteredTools = tools
+    .filter((tool) => {
+      if (categoryFilter !== "all" && tool.category !== categoryFilter) return false;
+      if (searchQuery && !tool.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "title":
+          return a.title.localeCompare(b.title);
+        case "category":
+          return a.category.localeCompare(b.category);
+        default:
+          return 0;
+      }
+    });
+
   if (loading) {
     return <div className="text-sm text-muted-foreground">Tools werden geladen...</div>;
   }
@@ -72,53 +93,88 @@ export function ToolSelector({ selectedTools, onChange, filterByCourseId }: Tool
   return (
     <div className="space-y-4">
       <Label>Tools aus der Toolbox auswählen</Label>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {tools.map((tool) => (
-          <Card
+      
+      {/* Filter Section */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <Input
+            placeholder="Tool suchen..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Kategorie" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Alle Kategorien</SelectItem>
+            {Object.entries(categoryLabels).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-full md:w-[180px]">
+            <SelectValue placeholder="Sortierung" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="title">Alphabetisch</SelectItem>
+            <SelectItem value="category">Nach Kategorie</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Compact Tool List */}
+      <div className="border rounded-lg divide-y">
+        {filteredTools.map((tool) => (
+          <div
             key={tool.id}
-            className={`cursor-pointer transition-colors ${
-              selectedTools.includes(tool.id) ? "border-primary bg-primary/5" : ""
+            className={`p-4 flex items-center gap-3 hover:bg-accent cursor-pointer transition-colors ${
+              selectedTools.includes(tool.id) ? "bg-primary/5 border-l-4 border-l-primary" : ""
             }`}
             onClick={() => handleToggle(tool.id)}
           >
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    checked={selectedTools.includes(tool.id)}
-                    onCheckedChange={() => handleToggle(tool.id)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <div>
-                    <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <Wrench className="h-3 w-3" />
-                      {tool.title}
-                    </CardTitle>
-                  </div>
-                </div>
+            <Checkbox
+              checked={selectedTools.includes(tool.id)}
+              onCheckedChange={() => handleToggle(tool.id)}
+              onClick={(e) => e.stopPropagation()}
+            />
+            
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">{tool.title}</span>
                 {tool.external_url && (
-                  <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                  <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                 )}
               </div>
-              <div className="flex gap-2 mt-2">
-                <Badge variant="secondary" className={categoryColors[tool.category]}>
-                  {categoryLabels[tool.category] || tool.category}
-                </Badge>
-                <Badge variant="outline">{tool.tool_type}</Badge>
-              </div>
-            </CardHeader>
-            {tool.description && (
-              <CardContent className="pt-0">
-                <CardDescription className="text-xs line-clamp-2">
+              {tool.description && (
+                <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
                   {tool.description}
-                </CardDescription>
-              </CardContent>
-            )}
-          </Card>
+                </p>
+              )}
+            </div>
+            
+            <div className="flex gap-2 flex-shrink-0">
+              <Badge variant="secondary" className={`text-xs ${categoryColors[tool.category]}`}>
+                {categoryLabels[tool.category] || tool.category}
+              </Badge>
+              <Badge variant="outline" className="text-xs">{tool.tool_type}</Badge>
+            </div>
+          </div>
         ))}
+        
+        {filteredTools.length === 0 && (
+          <div className="p-8 text-center text-sm text-muted-foreground">
+            Keine Tools gefunden
+          </div>
+        )}
       </div>
+      
       <p className="text-xs text-muted-foreground">
-        {selectedTools.length} Tool(s) ausgewählt
+        {selectedTools.length} von {filteredTools.length} Tool(s) ausgewählt
       </p>
     </div>
   );
