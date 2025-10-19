@@ -348,8 +348,8 @@ const LMSModuleEditor = () => {
                 <Tabs defaultValue="general" className="w-full">
                   <TabsList className="grid w-full grid-cols-5 mb-6">
                     <TabsTrigger value="general">Allgemein</TabsTrigger>
-                    <TabsTrigger value="content">Inhalte</TabsTrigger>
                     <TabsTrigger value="lessons">Lektionen</TabsTrigger>
+                    <TabsTrigger value="content">Inhalte</TabsTrigger>
                     <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
                     <TabsTrigger value="meta">Meta</TabsTrigger>
                   </TabsList>
@@ -441,7 +441,18 @@ const LMSModuleEditor = () => {
                       </div>
                     </TabsContent>
 
-                    {/* Tab 2: Inhalte */}
+                    {/* Tab 2: Lektionen */}
+                    <TabsContent value="lessons" className="space-y-6">
+                      {moduleId ? (
+                        <LessonManager moduleId={moduleId} />
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <p>Bitte speichere das Modul zuerst, um Lektionen hinzuzufügen.</p>
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    {/* Tab 3: Inhalte */}
                     <TabsContent value="content" className="space-y-6">
                       <div>
                         <Label htmlFor="content_text">Content (Markdown)</Label>
@@ -466,17 +477,6 @@ const LMSModuleEditor = () => {
                           defaultValue={module?.content_video_url}
                         />
                       </div>
-                    </TabsContent>
-
-                    {/* Tab 3: Lektionen */}
-                    <TabsContent value="lessons" className="space-y-6">
-                      {moduleId ? (
-                        <LessonManager moduleId={moduleId} />
-                      ) : (
-                        <div className="text-center py-8 text-muted-foreground">
-                          <p>Bitte speichere das Modul zuerst, um Lektionen hinzuzufügen.</p>
-                        </div>
-                      )}
                     </TabsContent>
 
                     {/* Tab 4: Tools & Ressourcen */}
