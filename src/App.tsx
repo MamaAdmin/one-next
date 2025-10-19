@@ -53,6 +53,7 @@ import CompanyProfile from "./pages/CompanyProfile";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import Contact from "./pages/Contact";
 import Analysis from "./pages/Analysis";
+import DynamicPage from "./pages/DynamicPage";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,8 @@ const App = () => (
           <Route path="/voice-bot" element={<VoiceBot />} />
           <Route path="/kontakt" element={<Contact />} />
           <Route path="/analyse" element={<Analysis />} />
+          {/* Dynamic page template routes */}
+          <Route path="/:slug" element={<DynamicPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

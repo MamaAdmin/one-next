@@ -1697,6 +1697,54 @@ export type Database = {
         }
         Relationships: []
       }
+      page_templates: {
+        Row: {
+          canonical_url: string | null
+          content: Json
+          created_at: string | null
+          id: string
+          is_published: boolean | null
+          layout_type: string
+          meta_description: string | null
+          meta_keywords: string[] | null
+          meta_title: string | null
+          og_image: string | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          canonical_url?: string | null
+          content?: Json
+          created_at?: string | null
+          id?: string
+          is_published?: boolean | null
+          layout_type: string
+          meta_description?: string | null
+          meta_keywords?: string[] | null
+          meta_title?: string | null
+          og_image?: string | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          canonical_url?: string | null
+          content?: Json
+          created_at?: string | null
+          id?: string
+          is_published?: boolean | null
+          layout_type?: string
+          meta_description?: string | null
+          meta_keywords?: string[] | null
+          meta_title?: string | null
+          og_image?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       participants: {
         Row: {
           created_at: string

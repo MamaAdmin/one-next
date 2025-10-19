@@ -13,6 +13,7 @@ import PageContentManager from "@/components/admin/PageContentManager";
 import FAQManager from "@/components/admin/FAQManager";
 import NavigationManager from "@/components/admin/NavigationManager";
 import { RedirectManager } from "@/components/admin/RedirectManager";
+import { PageTemplateManager } from "@/components/admin/PageTemplateManager";
 import { 
   BMADSessionIcon, 
   BMADArtifactIcon, 
@@ -24,6 +25,7 @@ import {
   CompassIcon,
   LinkIcon
 } from "@/components/ui/custom-icons";
+import { FileText } from "lucide-react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -143,6 +145,15 @@ const AdminDashboard = () => {
                     <Button 
                       variant="outline" 
                       className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('page-templates')}
+                    >
+                      <FileText className="w-14 h-14 text-primary" />
+                      <span>Seiten-Templates</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
                       onClick={() => setCmsSection('seo')}
                     >
                       <LinkIcon className="w-14 h-14 text-primary" />
@@ -155,6 +166,7 @@ const AdminDashboard = () => {
                   {cmsSection === 'pages' && <PageContentManager />}
                   {cmsSection === 'faq' && <FAQManager />}
                   {cmsSection === 'navigation' && <NavigationManager />}
+                  {cmsSection === 'page-templates' && <PageTemplateManager />}
                   {cmsSection === 'seo' && <RedirectManager />}
                 </div>
               </Card>
