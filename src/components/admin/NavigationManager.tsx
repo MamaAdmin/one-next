@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, GripVertical, Plus, Edit2 } from "lucide-react";
+import { Trash2, GripVertical, Plus, Edit2, Save, X } from "lucide-react";
 import { URLEditDialog } from "./URLEditDialog";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 import {
   DndContext,
   DragEndEvent,
@@ -35,6 +36,7 @@ interface SortableItemProps {
   onDelete: (id: string) => void;
   onEditUrl: (item: NavigationItem) => void;
   onAddSubItem: (parentId: string) => void;
+  editedItems: Record<string, Partial<NavigationItem>>;
 }
 
 const SortableItem = ({ 
@@ -43,7 +45,8 @@ const SortableItem = ({
   onUpdate, 
   onDelete, 
   onEditUrl,
-  onAddSubItem 
+  onAddSubItem,
+  editedItems 
 }: SortableItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
@@ -54,6 +57,10 @@ const SortableItem = ({
     transition,
     paddingLeft: `${depth * 24}px`,
   };
+
+  // Get item with local edits applied
+  const displayItem = { ...item, ...(editedItems[item.id] || {}) };
+  const hasEdits = editedItems[item.id] !== undefined;
 
   return (
     <>
@@ -71,18 +78,19 @@ const SortableItem = ({
         
         <div className="flex-1 grid grid-cols-5 gap-2 items-center">
           <Input
-            value={item.label}
+            value={displayItem.label}
             onChange={(e) => onUpdate(item.id, { label: e.target.value })}
             placeholder="Label"
+            className={cn(hasEdits && editedItems[item.id]?.label !== undefined && "border-yellow-400 bg-yellow-50")}
           />
           <div className="relative">
             <Input
-              value={item.url || ""}
+              value={displayItem.url || ""}
               readOnly
               placeholder="URL (keine)"
               className="pr-8"
             />
-            {item.url && (
+            {displayItem.url && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -94,13 +102,14 @@ const SortableItem = ({
             )}
           </div>
           <Input
-            value={item.icon || ""}
+            value={displayItem.icon || ""}
             onChange={(e) => onUpdate(item.id, { icon: e.target.value })}
             placeholder="Icon"
+            className={cn(hasEdits && editedItems[item.id]?.icon !== undefined && "border-yellow-400 bg-yellow-50")}
           />
           <div className="flex items-center gap-2">
             <Switch
-              checked={item.is_active}
+              checked={displayItem.is_active}
               onCheckedChange={(checked) => onUpdate(item.id, { is_active: checked })}
             />
             <span className="text-xs text-muted-foreground">Aktiv</span>
@@ -142,6 +151,7 @@ const SortableItem = ({
               onDelete={onDelete}
               onEditUrl={onEditUrl}
               onAddSubItem={onAddSubItem}
+              editedItems={editedItems}
             />
           ))}
         </div>
@@ -157,6 +167,10 @@ const NavigationManager = () => {
     itemId: string;
     currentUrl: string;
   } | null>(null);
+  
+  // Local edit state
+  const [editedItems, setEditedItems] = useState<Record<string, Partial<NavigationItem>>>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -247,6 +261,58 @@ const NavigationManager = () => {
     await createItem(menuId, newItem);
   };
 
+  // Local update handler (doesn't save to DB)
+  const handleLocalUpdate = (id: string, updates: Partial<NavigationItem>) => {
+    setEditedItems(prev => ({
+      ...prev,
+      [id]: { ...(prev[id] || {}), ...updates }
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  // Save all changes to database
+  const handleSaveChanges = async () => {
+    const savePromises = Object.entries(editedItems).map(([id, updates]) => 
+      updateItem(id, updates)
+    );
+    
+    await Promise.all(savePromises);
+    
+    const count = Object.keys(editedItems).length;
+    setEditedItems({});
+    setHasUnsavedChanges(false);
+    toast({
+      title: "Änderungen gespeichert",
+      description: `${count} ${count === 1 ? 'Element' : 'Elemente'} wurden aktualisiert.`,
+    });
+  };
+
+  // Discard all local changes
+  const handleDiscardChanges = () => {
+    setEditedItems({});
+    setHasUnsavedChanges(false);
+    toast({
+      title: "Änderungen verworfen",
+      description: "Alle ungespeicherten Änderungen wurden zurückgesetzt.",
+      variant: "destructive",
+    });
+  };
+
+  // Handle menu change with unsaved warning
+  const handleMenuChange = (newMenu: string) => {
+    if (hasUnsavedChanges) {
+      const confirmed = window.confirm(
+        "Sie haben ungespeicherte Änderungen. Möchten Sie wirklich fortfahren?"
+      );
+      if (!confirmed) return;
+      
+      setEditedItems({});
+      setHasUnsavedChanges(false);
+    }
+    
+    setSelectedMenu(newMenu);
+  };
+
   const handleEditUrl = (item: NavigationItem) => {
     if (item.url) {
       setEditingUrl({
@@ -278,7 +344,7 @@ const NavigationManager = () => {
           <CardTitle>Navigation Manager</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={selectedMenu} onValueChange={setSelectedMenu}>
+          <Tabs value={selectedMenu} onValueChange={handleMenuChange}>
             <TabsList>
               {menus
                 .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
@@ -291,6 +357,32 @@ const NavigationManager = () => {
 
             {menus.map((menu) => (
               <TabsContent key={menu.id} value={menu.name} className="space-y-4">
+                {hasUnsavedChanges && (
+                  <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <span className="text-sm text-yellow-800 flex-1">
+                      ⚠️ Sie haben ungespeicherte Änderungen
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDiscardChanges}
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Verwerfen
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={handleSaveChanges}
+                      >
+                        <Save className="h-4 w-4 mr-1" />
+                        Speichern
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex justify-between items-center mb-4">
                   <Label>Menü-Elemente</Label>
                   <Button onClick={handleAddItem} size="sm">
@@ -312,10 +404,11 @@ const NavigationManager = () => {
                       <SortableItem
                         key={item.id}
                         item={item}
-                        onUpdate={updateItem}
+                        onUpdate={handleLocalUpdate}
                         onDelete={deleteItem}
                         onEditUrl={handleEditUrl}
                         onAddSubItem={handleAddSubItem}
+                        editedItems={editedItems}
                       />
                     ))}
                   </SortableContext>
