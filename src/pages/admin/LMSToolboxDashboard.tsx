@@ -39,6 +39,7 @@ export default function LMSToolboxDashboard() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<string>("phase");
 
   const breadcrumbItems = [
     { label: "Admin", href: "/admin" },
@@ -54,11 +55,31 @@ export default function LMSToolboxDashboard() {
       return true;
     })
     .sort((a, b) => {
-      // Sort by phase_number: tools with phase come first, then by phase number
-      if (a.phase_number && !b.phase_number) return -1;
-      if (!a.phase_number && b.phase_number) return 1;
-      if (a.phase_number && b.phase_number) return a.phase_number - b.phase_number;
-      return 0;
+      switch (sortBy) {
+        case "phase":
+          // Sort by phase_number: tools with phase come first, then by phase number
+          if (a.phase_number && !b.phase_number) return -1;
+          if (!a.phase_number && b.phase_number) return 1;
+          if (a.phase_number && b.phase_number) return a.phase_number - b.phase_number;
+          return 0;
+        
+        case "title":
+          // Alphabetical sorting
+          return a.title.localeCompare(b.title);
+        
+        case "category":
+          // Sort by category
+          return a.category.localeCompare(b.category);
+        
+        case "status":
+          // Active tools first
+          if (a.is_active && !b.is_active) return -1;
+          if (!a.is_active && b.is_active) return 1;
+          return 0;
+        
+        default:
+          return 0;
+      }
     });
 
   const handleDelete = async (id: string) => {
@@ -142,6 +163,17 @@ export default function LMSToolboxDashboard() {
                     <SelectItem value="3">Phase 3</SelectItem>
                     <SelectItem value="4">Phase 4</SelectItem>
                     <SelectItem value="5">Phase 5</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full md:w-[180px]">
+                    <SelectValue placeholder="Sortierung" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="phase">Nach Phase</SelectItem>
+                    <SelectItem value="title">Alphabetisch</SelectItem>
+                    <SelectItem value="category">Nach Kategorie</SelectItem>
+                    <SelectItem value="status">Nach Status</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
