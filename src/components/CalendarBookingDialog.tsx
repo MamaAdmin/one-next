@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
 
 interface CalendarBookingDialogProps {
   buttonText?: string;
@@ -16,8 +15,7 @@ export function CalendarBookingDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size={buttonSize} className={buttonClassName}>
-          <Calendar className="mr-2 h-4 w-4" />
+        <Button size={buttonSize} className={`${buttonClassName} text-foreground`}>
           {buttonText}
         </Button>
       </DialogTrigger>
