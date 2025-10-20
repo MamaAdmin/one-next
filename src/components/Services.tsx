@@ -63,10 +63,12 @@ const Services = () => {
                         Mehr erfahren
                         <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
-                    </Link> : <Button variant="ghost" className="group/btn p-0 h-auto text-primary hover:text-primary-glow">
-                      Mehr erfahren
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Button>}
+                    </Link> : <Link to="/custom-ai-development">
+                      <Button variant="ghost" className="group/btn p-0 h-auto text-primary hover:text-primary-glow">
+                        Mehr erfahren
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>}
                 </CardContent>
               </Card>;
         })}
