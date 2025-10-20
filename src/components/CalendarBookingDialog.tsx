@@ -15,7 +15,7 @@ export function CalendarBookingDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size={buttonSize} className={`${buttonClassName} text-primary-foreground`}>
+        <Button size={buttonSize} className={`${buttonClassName} text-foreground`}>
           {buttonText}
         </Button>
       </DialogTrigger>
