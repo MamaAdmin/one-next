@@ -353,18 +353,18 @@ const LMSModuleEditor = () => {
           <div className="lg:col-span-2">
             <Card>
               <CardContent className="p-6">
-                <Tabs defaultValue="general" className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 mb-6">
-                    <TabsTrigger value="general">Allgemein</TabsTrigger>
-                    <TabsTrigger value="lessons">Lektionen</TabsTrigger>
-                    <TabsTrigger value="content">Inhalte</TabsTrigger>
-                    <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
-                    <TabsTrigger value="meta">Meta</TabsTrigger>
-                  </TabsList>
+                  <Tabs defaultValue="general" className="w-full">
+                    <TabsList className="grid w-full grid-cols-5 mb-6">
+                      <TabsTrigger value="general">Allgemein</TabsTrigger>
+                      <TabsTrigger value="lessons">Lektionen</TabsTrigger>
+                      <TabsTrigger value="content">Inhalte</TabsTrigger>
+                      <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
+                      <TabsTrigger value="meta">Meta</TabsTrigger>
+                    </TabsList>
 
-                  <form ref={formRef} onSubmit={handleSave} onChange={handleFormChange}>
-                    {/* Tab 1: Allgemein */}
-                    <TabsContent value="general" className="space-y-6">
+                    <form ref={formRef} onSubmit={handleSave} onChange={handleFormChange}>
+                      {/* Tab 1: Allgemein */}
+                      <TabsContent value="general" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       <div>
                         <Label htmlFor="title">Titel *</Label>
                         <Input
@@ -474,7 +474,7 @@ const LMSModuleEditor = () => {
                     </TabsContent>
 
                     {/* Tab 2: Lektionen */}
-                    <TabsContent value="lessons" className="space-y-6">
+                    <TabsContent value="lessons" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       {moduleId ? (
                         <LessonManager moduleId={moduleId} courseId={courseId} />
                       ) : (
@@ -485,7 +485,7 @@ const LMSModuleEditor = () => {
                     </TabsContent>
 
                     {/* Tab 3: Inhalte */}
-                    <TabsContent value="content" className="space-y-6">
+                    <TabsContent value="content" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       <div>
                         <Label htmlFor="content_text">Modul-Inhalt</Label>
                         <RichTextEditor
@@ -514,7 +514,7 @@ const LMSModuleEditor = () => {
                     </TabsContent>
 
                     {/* Tab 4: Tools & Ressourcen */}
-                    <TabsContent value="tools" className="space-y-6">
+                    <TabsContent value="tools" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       <div>
                         <ToolSelector
                           selectedTools={selectedToolIds}
@@ -558,7 +558,7 @@ const LMSModuleEditor = () => {
                     </TabsContent>
 
                     {/* Tab 5: Meta */}
-                    <TabsContent value="meta" className="space-y-6">
+                    <TabsContent value="meta" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       <div>
                         <Label htmlFor="tags">Tags / Lernziele</Label>
                         <Input
