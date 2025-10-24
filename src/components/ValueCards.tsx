@@ -44,7 +44,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               <CalendarBookingDialog
                 buttonText={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
                 buttonSize="lg"
-                buttonClassName="rounded-full border-2 border-foreground/20 hover:bg-foreground/5 bg-transparent"
+                buttonClassName="rounded-full border-2 border-foreground/20 hover:bg-background/90 bg-background text-foreground"
               />
             </div>
           </div>
