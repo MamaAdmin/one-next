@@ -21,7 +21,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:auto-rows-[400px]">
           
           {/* Expertise Card - spans 1 col on mobile, 2 cols on tablet, 1 col on desktop */}
-          <div className="bg-secondary rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 md:col-span-2 lg:col-span-1 h-full flex flex-col justify-between">
+          <div className="bg-secondary rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 md:col-span-2 lg:col-span-1 h-full flex flex-col justify-between text-foreground">
             <div className="space-y-4 md:space-y-6">
               <InlineTextField
                 value={content.expertise_title || 'Expertise'}
