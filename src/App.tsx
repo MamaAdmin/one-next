@@ -52,6 +52,7 @@ import WorkshopRegistration from "./pages/WorkshopRegistration";
 import UserProfile from "./pages/UserProfile";
 import CompanyProfile from "./pages/CompanyProfile";
 import AcceptInvitation from "./pages/AcceptInvitation";
+import AcceptEnrollmentInvitation from "./pages/lms/AcceptEnrollmentInvitation";
 import Contact from "./pages/Contact";
 import Analysis from "./pages/Analysis";
 import DynamicPage from "./pages/DynamicPage";
@@ -119,8 +120,9 @@ const App = () => (
           <Route path="/lms/account/delete" element={<DeleteAccountPage />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/company/profile" element={<CompanyProfile />} />
-          <Route path="/accept-invitation" element={<AcceptInvitation />} />
-          <Route path="/voice-bot" element={<VoiceBot />} />
+           <Route path="/accept-invitation" element={<AcceptInvitation />} />
+           <Route path="/accept-enrollment-invitation" element={<AcceptEnrollmentInvitation />} />
+           <Route path="/voice-bot" element={<VoiceBot />} />
           <Route path="/kontakt" element={<Contact />} />
           <Route path="/analyse" element={<Analysis />} />
           {/* Dynamic page template routes */}

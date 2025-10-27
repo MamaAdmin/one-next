@@ -1,10 +1,12 @@
 import { useLMSLessons } from "@/hooks/useLMSLessons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Circle, Play } from "lucide-react";
-import { useState } from "react";
+import { CheckCircle2, Circle, Play, FileQuestion } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 
 const getLessonTypeLabel = (type: string): string => {
   const labels: Record<string, string> = {
@@ -31,10 +33,49 @@ export const LessonsList = ({
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [completing, setCompleting] = useState(false);
   const { toast } = useToast();
+  const [quizData, setQuizData] = useState<Record<string, { count: number; passed: boolean }>>({});
 
   const currentLesson = selectedLessonId
     ? lessons.find(l => l.id === selectedLessonId)
     : lessons[0];
+
+  // Load quiz data for lessons
+  useEffect(() => {
+    const loadQuizData = async () => {
+      if (!moduleId || !enrollmentId) return;
+
+      try {
+        const { data: quizzes } = await supabase
+          .from("lms_quizzes")
+          .select(`
+            id,
+            lesson_id,
+            lms_quiz_attempts!inner(is_passed)
+          `)
+          .eq("module_id", moduleId);
+
+        if (quizzes) {
+          const quizMap: Record<string, { count: number; passed: boolean }> = {};
+          
+          quizzes.forEach((quiz: any) => {
+            if (quiz.lesson_id) {
+              const hasPassed = quiz.lms_quiz_attempts?.some((a: any) => a.is_passed);
+              quizMap[quiz.lesson_id] = {
+                count: (quizMap[quiz.lesson_id]?.count || 0) + 1,
+                passed: hasPassed || quizMap[quiz.lesson_id]?.passed || false
+              };
+            }
+          });
+
+          setQuizData(quizMap);
+        }
+      } catch (error) {
+        console.error("Error loading quiz data:", error);
+      }
+    };
+
+    loadQuizData();
+  }, [moduleId, enrollmentId]);
 
   const handleComplete = async () => {
     if (!currentLesson || !enrollmentId) return;
@@ -101,7 +142,19 @@ export const LessonsList = ({
                     <Circle className="h-5 w-5 text-muted-foreground" />
                   )}
                   <div className="flex-1">
-                    <div className="font-medium">{lesson.title}</div>
+                    <div className="font-medium flex items-center gap-2">
+                      {lesson.title}
+                      {quizData[lesson.id] && (
+                        <div className="flex items-center gap-1">
+                          <FileQuestion className="h-3 w-3" />
+                          {quizData[lesson.id].passed && (
+                            <Badge variant="outline" className="text-green-600 border-green-600 text-xs px-1 py-0">
+                              ✓
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     <div className="text-xs opacity-80">
                       {lesson.duration_minutes} Min · {getLessonTypeLabel(lesson.lesson_type)}
                     </div>

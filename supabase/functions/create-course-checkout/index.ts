@@ -109,8 +109,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/lms/purchase-confirmation?session_id={CHECKOUT_SESSION_ID}&purchase_id=${purchase.id}`,
-      cancel_url: `${req.headers.get("origin")}/lms?canceled=true`,
+      success_url: `${req.headers.get("origin")}/lms/purchase/confirmation?session_id={CHECKOUT_SESSION_ID}&purchase_id=${purchase.id}`,
+      cancel_url: `${req.headers.get("origin")}/lms/courses/${courseId}/preview`,
       metadata: {
         purchase_id: purchase.id,
         course_id: courseId,

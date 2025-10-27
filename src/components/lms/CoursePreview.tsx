@@ -15,6 +15,12 @@ import { CourseRating } from "./CourseRating";
 import { CourseTabs } from "./CourseTabs";
 import { CourseCard } from "./CourseCard";
 import { categoryLabels, categoryColors, type CourseCategory } from "@/lib/categoryMappings";
+import { useState } from "react";
+import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
+import { CourseCheckout } from "./CourseCheckout";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface CoursePreviewProps {
   course: {
@@ -68,6 +74,18 @@ export function CoursePreview({
   modules = [],
   relatedCourses = []
 }: CoursePreviewProps) {
+  const { toast } = useToast();
+  const [gdprConsent, setGdprConsent] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [customerId, setCustomerId] = useState<string | null>(null);
+  const { enrollments, loading: enrollmentsLoading } = useLMSEnrollment();
+
+  // Check if user is enrolled in this course
+  const userEnrollment = enrollments.find(e => {
+    // We need to check the purchase's course_id
+    return e.purchase_id && course.id;
+  });
+
   // Übersetzungs-Mappings
   const difficultyLabels: Record<string, string> = {
     'beginner': 'Anfänger',
@@ -88,6 +106,52 @@ export function CoursePreview({
     return {
       __html: DOMPurify.sanitize(html)
     };
+  };
+
+  const handleBuyCourse = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Anmeldung erforderlich",
+          description: "Bitte melden Sie sich an, um Kurse zu kaufen.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Get customer_id from participant
+      const { data: participant } = await supabase
+        .from("participants")
+        .select("customer_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!participant?.customer_id) {
+        toast({
+          title: "Fehler",
+          description: "Kundenprofil nicht gefunden.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setCustomerId(participant.customer_id);
+      setShowCheckout(true);
+    } catch (error) {
+      console.error("Error preparing checkout:", error);
+      toast({
+        title: "Fehler",
+        description: "Checkout konnte nicht vorbereitet werden.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleGoToCourse = () => {
+    if (userEnrollment) {
+      window.location.href = `/lms/courses/${course.id}`;
+    }
   };
   const completionDate = enrollment ? addDays(new Date(enrollment.enrolled_at), course.completion_deadline_days || 30) : null;
   
@@ -274,26 +338,45 @@ export function CoursePreview({
           </Card>
 
           {/* CTA Buttons */}
-          <div className="space-y-2">
-            <Button className="w-full" size="lg">
-              Mit dem Lernen beginnen
-            </Button>
-            <Button variant="outline" className="w-full">
-              Zu Wunschliste hinzufügen
-            </Button>
-          </div>
+          <Card>
+            <CardContent className="p-6 space-y-4">
+              {/* GDPR Checkbox */}
+              <div className="flex items-start gap-2 p-4 bg-muted/50 rounded-lg">
+                <Checkbox 
+                  id="gdpr" 
+                  checked={gdprConsent}
+                  onCheckedChange={(checked) => setGdprConsent(checked as boolean)}
+                />
+                <label htmlFor="gdpr" className="text-xs leading-relaxed cursor-pointer">
+                  Ich habe die{" "}
+                  <Link to="/agb" className="underline hover:text-primary">
+                    AGB
+                  </Link>{" "}
+                  gelesen und bin einverstanden
+                </label>
+              </div>
 
-          {/* GDPR Checkbox */}
-          <div className="flex items-start gap-2 p-4 bg-muted/50 rounded-lg">
-            <Checkbox id="gdpr" />
-            <label htmlFor="gdpr" className="text-xs leading-relaxed cursor-pointer">
-              Ich habe die{" "}
-              <Link to="/agb" className="underline hover:text-primary">
-                AGB
-              </Link>{" "}
-              gelesen und bin einverstanden
-            </label>
-          </div>
+              {/* Main CTA */}
+              {enrollmentsLoading ? (
+                <Button size="lg" className="w-full" disabled>
+                  Lädt...
+                </Button>
+              ) : userEnrollment ? (
+                <Button size="lg" className="w-full" onClick={handleGoToCourse}>
+                  Zum Kurs
+                </Button>
+              ) : (
+                <Button 
+                  size="lg" 
+                  className="w-full" 
+                  disabled={!gdprConsent}
+                  onClick={handleBuyCourse}
+                >
+                  Kurs kaufen - CHF {course.price_chf}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Share This */}
           <Card>
@@ -326,6 +409,19 @@ export function CoursePreview({
           </div>
         </div>
       )}
+
+      <Dialog open={showCheckout} onOpenChange={setShowCheckout}>
+        <DialogContent className="max-w-md">
+          {customerId && (
+            <CourseCheckout
+              courseId={course.id}
+              courseTitle={course.title}
+              coursePrice={course.price_chf || 0}
+              customerId={customerId}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 

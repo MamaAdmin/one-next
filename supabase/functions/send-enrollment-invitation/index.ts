@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending invitation email to:", email);
 
-    const inviteUrl = `${Deno.env.get("SUPABASE_URL")?.replace(".supabase.co", ".lovableproject.com")}/accept-invitation?token=${token}`;
+    const inviteUrl = `${Deno.env.get("SUPABASE_URL")?.replace(".supabase.co", ".lovableproject.com")}/accept-enrollment-invitation?token=${token}`;
 
     const emailResponse = await resend.emails.send({
       from: "OneNext <onboarding@resend.dev>",
