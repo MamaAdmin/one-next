@@ -40,6 +40,7 @@ import LMSToolboxEditor from "./pages/admin/LMSToolboxEditor";
 import LMSCoursePreview from "./pages/lms/LMSCoursePreview";
 import LMSHMWTool from "./pages/lms/LMSHMWTool";
 import LMSSmartSailboat from "./pages/lms/LMSSmartSailboat";
+import LMSPurchaseConfirmation from "./pages/lms/LMSPurchaseConfirmation";
 import VoiceBot from "./pages/VoiceBot";
 import NotFound from "./pages/NotFound";
 import BMADSessionDashboard from "./pages/admin/BMADSessionDashboard";
@@ -113,6 +114,7 @@ const App = () => (
           <Route path="/lms" element={<LMSIndex />} />
           <Route path="/lms/dashboard" element={<LMSDashboard />} />
           <Route path="/lms/enrollment/:enrollmentId" element={<LMSCourseDetail />} />
+          <Route path="/lms/purchase-confirmation" element={<LMSPurchaseConfirmation />} />
           <Route path="/lms/data-export" element={<LMSDataExport />} />
           <Route path="/lms/account/delete" element={<DeleteAccountPage />} />
           <Route path="/profile" element={<UserProfile />} />

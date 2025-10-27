@@ -1,0 +1,201 @@
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { Clock, CheckCircle2 } from "lucide-react";
+import { useQuizAttempts } from "@/hooks/useQuizAttempts";
+import { useQuizzes, QuizQuestion } from "@/hooks/useQuizzes";
+import { toast } from "sonner";
+
+interface QuizTakingProps {
+  quizId: string;
+  enrollmentId: string;
+  onComplete: () => void;
+}
+
+export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps) => {
+  const { startAttempt, saveAnswer, submitAttempt, currentAttempt } = useQuizAttempts(enrollmentId, quizId);
+  const { loadQuestions } = useQuizzes();
+  
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [startTime] = useState(Date.now());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const init = async () => {
+      const qs = await loadQuestions(quizId);
+      setQuestions(qs);
+      
+      if (!currentAttempt) {
+        await startAttempt(quizId, enrollmentId);
+      } else {
+        setAnswers(currentAttempt.answers || {});
+      }
+    };
+    init();
+  }, [quizId, enrollmentId]);
+
+  useEffect(() => {
+    if (timeLeft === null) return;
+    if (timeLeft <= 0) {
+      handleSubmit();
+      return;
+    }
+    
+    const timer = setInterval(() => {
+      setTimeLeft(prev => (prev ? prev - 1 : 0));
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const currentQuestion = questions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+
+  const handleAnswerChange = async (answer: string) => {
+    if (!currentAttempt) return;
+    
+    const newAnswers = { ...answers, [currentQuestion.id]: answer };
+    setAnswers(newAnswers);
+    await saveAnswer(currentAttempt.id, currentQuestion.id, answer);
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+    }
+  };
+
+  const calculateScore = (): { score: number; isPassed: boolean } => {
+    let totalPoints = 0;
+    let earnedPoints = 0;
+
+    questions.forEach(q => {
+      totalPoints += q.points;
+      const userAnswer = answers[q.id];
+      
+      if (q.question_type === "multiple_choice" || q.question_type === "true_false") {
+        if (userAnswer === q.correct_answer) {
+          earnedPoints += q.points;
+        }
+      }
+    });
+
+    const scorePercentage = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0;
+    return {
+      score: scorePercentage,
+      isPassed: scorePercentage >= 70 // Default passing score
+    };
+  };
+
+  const handleSubmit = async () => {
+    if (!currentAttempt) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { score, isPassed } = calculateScore();
+      const timeSpentSeconds = Math.floor((Date.now() - startTime) / 1000);
+      
+      await submitAttempt(currentAttempt.id, score, isPassed, timeSpentSeconds);
+      onComplete();
+    } catch (error) {
+      toast.error("Fehler beim Abschicken des Quiz");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (questions.length === 0) {
+    return <div className="flex justify-center p-8">Lade Quiz...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold">Quiz</h2>
+          <p className="text-sm text-muted-foreground">
+            Frage {currentQuestionIndex + 1} von {questions.length}
+          </p>
+        </div>
+        {timeLeft !== null && (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Clock className="h-4 w-4" />
+            <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+          </div>
+        )}
+      </div>
+
+      <Progress value={progress} className="h-2" />
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">
+            {currentQuestion.question_text}
+          </CardTitle>
+          <CardDescription>
+            {currentQuestion.points} {currentQuestion.points === 1 ? "Punkt" : "Punkte"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {(currentQuestion.question_type === "multiple_choice" || currentQuestion.question_type === "true_false") && (
+            <RadioGroup
+              value={answers[currentQuestion.id] || ""}
+              onValueChange={handleAnswerChange}
+            >
+              {(currentQuestion.options as string[])?.map((option, idx) => (
+                <div key={idx} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={`option-${idx}`} />
+                  <Label htmlFor={`option-${idx}`} className="cursor-pointer">
+                    {option}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          )}
+
+          {currentQuestion.question_type === "short_answer" && (
+            <Textarea
+              value={answers[currentQuestion.id] || ""}
+              onChange={(e) => handleAnswerChange(e.target.value)}
+              placeholder="Ihre Antwort..."
+              rows={4}
+            />
+          )}
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+          >
+            Zurück
+          </Button>
+          
+          {currentQuestionIndex === questions.length - 1 ? (
+            <Button onClick={handleSubmit} disabled={isSubmitting}>
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              Quiz abschicken
+            </Button>
+          ) : (
+            <Button onClick={handleNext}>
+              Weiter
+            </Button>
+          )}
+        </CardFooter>
+      </Card>
+    </div>
+  );
+};

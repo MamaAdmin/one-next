@@ -10,19 +10,24 @@ import { Separator } from "@/components/ui/separator";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { CourseList } from "@/components/profile/CourseList";
 import { ProfileStats } from "@/components/profile/ProfileStats";
+import { PurchaseHistory } from "@/components/profile/PurchaseHistory";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { useCourseRatings } from "@/hooks/useCourseRatings";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 const UserProfile = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { profile, participant, loading: profileLoading, updateProfile, uploadAvatar, updateParticipantPhone } = useUserProfile();
   const { enrollments, loading: enrollmentsLoading } = useLMSEnrollment();
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [updating, setUpdating] = useState(false);
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || "profile");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -104,80 +109,96 @@ const UserProfile = () => {
             achievements={0}
           />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Persönliche Informationen</CardTitle>
-              <CardDescription>
-                Aktualisieren Sie Ihr Profilfoto und Ihre Daten
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <AvatarUpload
-                currentAvatar={profile?.avatar_url}
-                userName={profile?.full_name || undefined}
-                onUpload={uploadAvatar}
-              />
-
-              <Separator />
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="fullName">Vollständiger Name</Label>
-                  <Input
-                    id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Ihr Name"
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="profile">Profil</TabsTrigger>
+              <TabsTrigger value="courses">Meine Kurse</TabsTrigger>
+              <TabsTrigger value="purchases">Käufe</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="profile" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Persönliche Informationen</CardTitle>
+                  <CardDescription>
+                    Aktualisieren Sie Ihr Profilfoto und Ihre Daten
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <AvatarUpload
+                    currentAvatar={profile?.avatar_url}
+                    userName={profile?.full_name || undefined}
+                    onUpload={uploadAvatar}
                   />
-                </div>
 
-                <div>
-                  <Label htmlFor="email">E-Mail-Adresse</Label>
-                  <Input
-                    id="email"
-                    value={profile?.email || ""}
-                    disabled
-                    className="bg-muted"
-                  />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Die E-Mail-Adresse kann nicht geändert werden
-                  </p>
-                </div>
+                  <Separator />
 
-                <div>
-                  <Label htmlFor="phone">Telefon</Label>
-                  <Input
-                    id="phone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Telefonnummer"
-                  />
-                </div>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="fullName">Vollständiger Name</Label>
+                      <Input
+                        id="fullName"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Ihr Name"
+                      />
+                    </div>
 
-                <Button onClick={handleUpdateProfile} disabled={updating}>
-                  {updating ? "Wird gespeichert..." : "Änderungen speichern"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                    <div>
+                      <Label htmlFor="email">E-Mail-Adresse</Label>
+                      <Input
+                        id="email"
+                        value={profile?.email || ""}
+                        disabled
+                        className="bg-muted"
+                      />
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Die E-Mail-Adresse kann nicht geändert werden
+                      </p>
+                    </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Meine Kurse</CardTitle>
-              <CardDescription>
-                Ihre eingeschriebenen und abgeschlossenen Kurse
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {courses.length > 0 ? (
-                <CourseList courses={courses} onRatingSubmit={handleRatingSubmit} />
-              ) : (
-                <p className="text-muted-foreground text-center py-8">
-                  Sie sind noch in keinen Kursen eingeschrieben
-                </p>
-              )}
-            </CardContent>
-          </Card>
+                    <div>
+                      <Label htmlFor="phone">Telefon</Label>
+                      <Input
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="Telefonnummer"
+                      />
+                    </div>
+
+                    <Button onClick={handleUpdateProfile} disabled={updating}>
+                      {updating ? "Wird gespeichert..." : "Änderungen speichern"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="courses">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Meine Kurse</CardTitle>
+                  <CardDescription>
+                    Ihre eingeschriebenen und abgeschlossenen Kurse
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {courses.length > 0 ? (
+                    <CourseList courses={courses} onRatingSubmit={handleRatingSubmit} />
+                  ) : (
+                    <p className="text-muted-foreground text-center py-8">
+                      Sie sind noch in keinen Kursen eingeschrieben
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="purchases">
+              <PurchaseHistory />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />

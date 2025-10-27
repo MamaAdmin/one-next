@@ -15,7 +15,9 @@ import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
 import { supabase } from "@/integrations/supabase/client";
 import { CoursePreview } from "@/components/lms/CoursePreview";
 import { LessonsList } from "@/components/lms/LessonsList";
+import { QuizView } from "@/components/lms/QuizView";
 import { categoryLabels } from "@/lib/categoryMappings";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LMSCourseDetail() {
   const { enrollmentId } = useParams<{ enrollmentId: string }>();
@@ -213,12 +215,26 @@ export default function LMSCourseDetail() {
             </CardContent>
           </Card>
 
-          {/* Lektionen Section */}
-          {currentModule && (
-            <LessonsList
-              moduleId={currentModule.id}
-              enrollmentId={enrollmentId}
-            />
+          {/* Lektionen & Quizzes */}
+          {currentModule && enrollmentId && (
+            <Tabs defaultValue="lessons" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="lessons">Lektionen</TabsTrigger>
+                <TabsTrigger value="quizzes">Quizzes</TabsTrigger>
+              </TabsList>
+              <TabsContent value="lessons">
+                <LessonsList
+                  moduleId={currentModule.id}
+                  enrollmentId={enrollmentId}
+                />
+              </TabsContent>
+              <TabsContent value="quizzes">
+                <QuizView
+                  moduleId={currentModule.id}
+                  enrollmentId={enrollmentId}
+                />
+              </TabsContent>
+            </Tabs>
           )}
 
           {/* Tools Section */}
