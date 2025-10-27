@@ -17,6 +17,7 @@ import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { ToolSelector } from "@/components/lms/ToolSelector";
 import { LessonManager } from "@/components/lms/LessonManager";
+import { QuizManager } from "@/components/lms/QuizManager";
 import { CourseCategory, categoryLabels, categoryColors, categoryOrder } from "@/lib/categoryMappings";
 
 interface Resource {
@@ -353,10 +354,11 @@ const LMSModuleEditor = () => {
           <div className="lg:col-span-2">
             <Card>
               <CardContent className="p-6">
-                  <Tabs defaultValue="general" className="w-full">
-                    <TabsList className="grid w-full grid-cols-5 mb-6">
+                <Tabs defaultValue="general" className="w-full">
+                    <TabsList className="grid w-full grid-cols-6 mb-6">
                       <TabsTrigger value="general">Allgemein</TabsTrigger>
                       <TabsTrigger value="lessons">Lektionen</TabsTrigger>
+                      <TabsTrigger value="quizzes">Quizzes</TabsTrigger>
                       <TabsTrigger value="content">Inhalte</TabsTrigger>
                       <TabsTrigger value="tools">Tools & Ressourcen</TabsTrigger>
                       <TabsTrigger value="meta">Meta</TabsTrigger>

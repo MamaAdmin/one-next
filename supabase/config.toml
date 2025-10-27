@@ -3,6 +3,12 @@ project_id = "ookvxyctxmtcxowcwnij"
 [functions.voice-rag]
 verify_jwt = false
 
+[functions.create-course-checkout]
+verify_jwt = true
+
+[functions.verify-course-purchase]
+verify_jwt = true
+
 [functions.check-phase-gate]
 verify_jwt = true
 

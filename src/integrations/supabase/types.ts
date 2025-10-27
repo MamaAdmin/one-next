@@ -1409,6 +1409,166 @@ export type Database = {
           },
         ]
       }
+      lms_quiz_attempts: {
+        Row: {
+          answers: Json | null
+          attempt_number: number
+          completed_at: string | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          is_passed: boolean | null
+          quiz_id: string
+          score: number | null
+          started_at: string
+          time_spent_seconds: number | null
+          updated_at: string
+        }
+        Insert: {
+          answers?: Json | null
+          attempt_number?: number
+          completed_at?: string | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          is_passed?: boolean | null
+          quiz_id: string
+          score?: number | null
+          started_at?: string
+          time_spent_seconds?: number | null
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json | null
+          attempt_number?: number
+          completed_at?: string | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          is_passed?: boolean | null
+          quiz_id?: string
+          score?: number | null
+          started_at?: string
+          time_spent_seconds?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_quiz_attempts_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "lms_course_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "lms_quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_quiz_questions: {
+        Row: {
+          correct_answer: Json
+          created_at: string
+          explanation: string | null
+          id: string
+          options: Json | null
+          points: number
+          question_text: string
+          question_type: string
+          quiz_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          correct_answer: Json
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          points?: number
+          question_text: string
+          question_type: string
+          quiz_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          correct_answer?: Json
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          points?: number
+          question_text?: string
+          question_type?: string
+          quiz_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "lms_quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lms_quizzes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_required: boolean | null
+          max_attempts: number | null
+          module_id: string
+          passing_score: number
+          sort_order: number
+          time_limit_minutes: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_required?: boolean | null
+          max_attempts?: number | null
+          module_id: string
+          passing_score?: number
+          sort_order?: number
+          time_limit_minutes?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_required?: boolean | null
+          max_attempts?: number | null
+          module_id?: string
+          passing_score?: number
+          sort_order?: number
+          time_limit_minutes?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_quizzes_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "lms_course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lms_tools: {
         Row: {
           category: string
@@ -1957,6 +2117,7 @@ export type Database = {
           expires_at: string
           full_name: string
           id: string
+          invitation_message: string | null
           invited_by: string
           status: string
           token: string
@@ -1969,6 +2130,7 @@ export type Database = {
           expires_at?: string
           full_name: string
           id?: string
+          invitation_message?: string | null
           invited_by: string
           status?: string
           token: string
@@ -1981,6 +2143,7 @@ export type Database = {
           expires_at?: string
           full_name?: string
           id?: string
+          invitation_message?: string | null
           invited_by?: string
           status?: string
           token?: string
@@ -2079,10 +2242,7 @@ export type Database = {
         Args: { p_enrollment_id: string }
         Returns: undefined
       }
-      calculate_streak: {
-        Args: { p_participant_id: string }
-        Returns: number
-      }
+      calculate_streak: { Args: { p_participant_id: string }; Returns: number }
       generate_unique_slug: {
         Args: { course_id?: string; course_title: string }
         Returns: string
@@ -2094,10 +2254,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_faq_view: {
-        Args: { faq_id: string }
-        Returns: undefined
-      }
+      increment_faq_view: { Args: { faq_id: string }; Returns: undefined }
       is_company_admin: {
         Args: { _customer_id: string; _user_id: string }
         Returns: boolean
