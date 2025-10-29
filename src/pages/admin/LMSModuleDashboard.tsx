@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowUp, ArrowDown } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, Eye } from "lucide-react";
 import { 
   BookIcon, 
   LessonIcon, 
@@ -294,6 +294,12 @@ export default function LMSModuleDashboard() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem
+                                onClick={() => navigate(`/admin/lms/modules/${module.id}/preview?courseId=${selectedCourse}`)}
+                              >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Vorschau
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
                                 onClick={() => navigate(`/admin/lms/modules/${module.id}/edit?courseId=${selectedCourse}`)}
                               >
                                 Bearbeiten
@@ -329,6 +335,14 @@ export default function LMSModuleDashboard() {
                       {module.module_type} • {module.duration_minutes} Min • #{module.sort_order}
                     </p>
                     <div className="flex gap-2 mt-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/admin/lms/modules/${module.id}/preview?courseId=${selectedCourse}`)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        Vorschau
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
