@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Clock, CheckCircle2 } from "lucide-react";
+import { Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { useQuizAttempts } from "@/hooks/useQuizAttempts";
 import { useQuizzes, QuizQuestion } from "@/hooks/useQuizzes";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ interface QuizTakingProps {
 
 export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps) => {
   const { startAttempt, saveAnswer, submitAttempt, currentAttempt } = useQuizAttempts(enrollmentId, quizId);
-  const { loadQuestions } = useQuizzes();
+  const { loadQuestions, quizzes } = useQuizzes();
   
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -26,16 +26,32 @@ export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [startTime] = useState(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [quiz, setQuiz] = useState<any>(null);
 
   useEffect(() => {
     const init = async () => {
-      const qs = await loadQuestions(quizId);
-      setQuestions(qs);
-      
-      if (!currentAttempt) {
-        await startAttempt(quizId, enrollmentId);
-      } else {
-        setAnswers(currentAttempt.answers || {});
+      try {
+        setLoading(true);
+        const qs = await loadQuestions(quizId);
+        setQuestions(qs);
+        
+        // Find the quiz details
+        const quizData = quizzes.find(q => q.id === quizId);
+        setQuiz(quizData);
+        
+        // Set time limit if exists
+        if (quizData?.time_limit_minutes) {
+          setTimeLeft(quizData.time_limit_minutes * 60);
+        }
+        
+        if (!currentAttempt) {
+          await startAttempt(quizId, enrollmentId);
+        } else {
+          setAnswers(currentAttempt.answers || {});
+        }
+      } finally {
+        setLoading(false);
       }
     };
     init();
@@ -87,16 +103,29 @@ export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps
       const userAnswer = answers[q.id];
       
       if (q.question_type === "multiple_choice" || q.question_type === "true_false") {
-        if (userAnswer === q.correct_answer) {
+        // Fix: Compare with first element of correct_answer array
+        const correctAnswer = Array.isArray(q.correct_answer) 
+          ? q.correct_answer[0] 
+          : q.correct_answer;
+        if (userAnswer === correctAnswer) {
+          earnedPoints += q.points;
+        }
+      } else if (q.question_type === "short_answer") {
+        // Simple case-insensitive exact match for auto-grading
+        const correctAnswer = Array.isArray(q.correct_answer) 
+          ? q.correct_answer[0] 
+          : q.correct_answer;
+        if (userAnswer?.toLowerCase().trim() === correctAnswer?.toLowerCase().trim()) {
           earnedPoints += q.points;
         }
       }
     });
 
     const scorePercentage = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0;
+    const passingScore = quiz?.passing_score || 70;
     return {
       score: scorePercentage,
-      isPassed: scorePercentage >= 70 // Default passing score
+      isPassed: scorePercentage >= passingScore
     };
   };
 
@@ -117,8 +146,27 @@ export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps
     }
   };
 
-  if (questions.length === 0) {
+  if (loading) {
     return <div className="flex justify-center p-8">Lade Quiz...</div>;
+  }
+
+  if (questions.length === 0) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-12 space-y-4">
+          <AlertCircle className="h-12 w-12 text-muted-foreground" />
+          <div className="text-center space-y-2">
+            <p className="text-lg font-medium">Dieses Quiz hat noch keine Fragen</p>
+            <p className="text-sm text-muted-foreground">
+              Der Administrator muss noch Fragen hinzufügen, bevor Sie das Quiz durchführen können.
+            </p>
+          </div>
+          <Button variant="outline" onClick={onComplete}>
+            Zurück zur Übersicht
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Plus, Pencil, Trash2, GraduationCap } from "lucide-react";
@@ -21,11 +21,12 @@ interface QuizManagerProps {
 }
 
 export const QuizManager = ({ moduleId }: QuizManagerProps) => {
-  const { quizzes, loading, deleteQuiz } = useQuizzes(moduleId);
+  const { quizzes, loading, deleteQuiz, loadQuestions } = useQuizzes(moduleId);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
+  const [questionCounts, setQuestionCounts] = useState<Record<string, number>>({});
 
   const handleEdit = (quiz: Quiz) => {
     setSelectedQuiz(quiz);
@@ -48,6 +49,20 @@ export const QuizManager = ({ moduleId }: QuizManagerProps) => {
     setQuizToDelete(quizId);
     setDeleteDialogOpen(true);
   };
+
+  useEffect(() => {
+    const loadAllQuestionCounts = async () => {
+      const counts: Record<string, number> = {};
+      for (const quiz of quizzes) {
+        const questions = await loadQuestions(quiz.id);
+        counts[quiz.id] = questions.length;
+      }
+      setQuestionCounts(counts);
+    };
+    if (quizzes.length > 0) {
+      loadAllQuestionCounts();
+    }
+  }, [quizzes]);
 
   if (loading) {
     return <div className="text-center py-4">Lädt Quizzes...</div>;
@@ -89,6 +104,12 @@ export const QuizManager = ({ moduleId }: QuizManagerProps) => {
                         Pflicht
                       </Badge>
                     )}
+                    <Badge 
+                      variant={(questionCounts[quiz.id] || 0) === 0 ? "destructive" : "outline"} 
+                      className="text-xs"
+                    >
+                      {questionCounts[quiz.id] || 0} {(questionCounts[quiz.id] || 0) === 1 ? "Frage" : "Fragen"}
+                    </Badge>
                   </div>
                   {quiz.description && (
                     <p className="text-sm text-muted-foreground mb-2">

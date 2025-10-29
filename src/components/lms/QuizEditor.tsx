@@ -17,6 +17,7 @@ import { QuestionEditor } from "./QuestionEditor";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface QuizEditorProps {
   isOpen: boolean;
@@ -40,6 +41,8 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
   const [isQuestionEditorOpen, setIsQuestionEditorOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<QuizQuestion | null>(null);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("settings");
+  const [currentQuizId, setCurrentQuizId] = useState<string | null>(null);
 
   useEffect(() => {
     if (quiz) {
@@ -52,7 +55,9 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
         is_required: quiz.is_required,
         sort_order: quiz.sort_order,
       });
+      setCurrentQuizId(quiz.id);
       loadQuizQuestions();
+      setActiveTab("settings");
     } else {
       setFormData({
         title: "",
@@ -64,6 +69,8 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
         sort_order: 1,
       });
       setQuestions([]);
+      setCurrentQuizId(null);
+      setActiveTab("settings");
     }
   }, [quiz]);
 
@@ -78,12 +85,21 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
       setLoading(true);
       if (quiz) {
         await updateQuiz(quiz.id, formData);
+        toast.success("Quiz aktualisiert");
       } else {
-        await createQuiz({ ...formData, module_id: moduleId });
+        const newQuiz = await createQuiz({ ...formData, module_id: moduleId });
+        toast.success("Quiz erstellt! Fügen Sie jetzt Fragen hinzu.");
+        setCurrentQuizId(newQuiz.id);
+        setActiveTab("questions");
+        setTimeout(() => {
+          setIsQuestionEditorOpen(true);
+        }, 100);
+        return; // Don't close dialog, let user add questions
       }
       onClose();
     } catch (error) {
       console.error("Error saving quiz:", error);
+      toast.error("Fehler beim Speichern des Quiz");
     } finally {
       setLoading(false);
     }
@@ -118,10 +134,10 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
             </DialogTitle>
           </DialogHeader>
 
-          <Tabs defaultValue="settings" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="settings">Einstellungen</TabsTrigger>
-              <TabsTrigger value="questions" disabled={!quiz}>
+              <TabsTrigger value="questions" disabled={!currentQuizId}>
                 Fragen ({questions.length})
               </TabsTrigger>
             </TabsList>
@@ -217,6 +233,14 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
             </TabsContent>
 
             <TabsContent value="questions" className="space-y-4 mt-4">
+              {questions.length === 0 && (
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                    ⚠️ Dieses Quiz hat noch keine Fragen. Fügen Sie mindestens eine Frage hinzu, damit Teilnehmer das Quiz durchführen können.
+                  </p>
+                </div>
+              )}
+              
               <div className="flex justify-between items-center">
                 <p className="text-sm text-muted-foreground">
                   {questions.length} {questions.length === 1 ? "Frage" : "Fragen"}
@@ -235,9 +259,19 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
 
               {questions.length === 0 ? (
                 <Card className="p-8 text-center">
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground mb-4">
                     Noch keine Fragen vorhanden
                   </p>
+                  <Button
+                    onClick={() => {
+                      setSelectedQuestion(null);
+                      setIsQuestionEditorOpen(true);
+                    }}
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Erste Frage hinzufügen
+                  </Button>
                 </Card>
               ) : (
                 <div className="space-y-2">
@@ -293,7 +327,7 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
         </DialogContent>
       </Dialog>
 
-      {quiz && (
+      {currentQuizId && (
         <QuestionEditor
           isOpen={isQuestionEditorOpen}
           onClose={() => {
@@ -302,7 +336,7 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
             loadQuizQuestions();
           }}
           question={selectedQuestion}
-          quizId={quiz.id}
+          quizId={currentQuizId}
         />
       )}
     </>

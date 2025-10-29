@@ -25,7 +25,11 @@ export const QuizResults = ({ attempt, questions, onRetake, canRetake }: QuizRes
       return { isCorrect: null, icon: null };
     }
     
-    const isCorrect = userAnswer === question.correct_answer;
+    // Fix: Compare with first element of correct_answer array
+    const correctAnswer = Array.isArray(question.correct_answer) 
+      ? question.correct_answer[0] 
+      : question.correct_answer;
+    const isCorrect = userAnswer === correctAnswer;
     return {
       isCorrect,
       icon: isCorrect ? (
@@ -126,7 +130,9 @@ export const QuizResults = ({ attempt, questions, onRetake, canRetake }: QuizRes
                     <span className="text-sm font-medium text-green-600">Richtige Antwort:</span>
                     <div className="mt-1">
                       <Badge variant="outline" className="border-green-600">
-                        {question.correct_answer as string}
+                        {Array.isArray(question.correct_answer) 
+                          ? question.correct_answer[0] 
+                          : question.correct_answer}
                       </Badge>
                     </div>
                   </div>

@@ -19,6 +19,7 @@ export const QuizView = ({ moduleId, enrollmentId }: QuizViewProps) => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [questions, setQuestions] = useState<any[]>([]);
+  const [questionCounts, setQuestionCounts] = useState<Record<string, number>>({});
   const { attempts, loading: attemptsLoading, getBestAttempt, canRetake } = useQuizAttempts(
     enrollmentId,
     selectedQuiz?.id
@@ -29,6 +30,20 @@ export const QuizView = ({ moduleId, enrollmentId }: QuizViewProps) => {
       setSelectedQuiz(quizzes[0]);
     }
   }, [quizzes, selectedQuiz]);
+
+  useEffect(() => {
+    const loadAllQuestionCounts = async () => {
+      const counts: Record<string, number> = {};
+      for (const quiz of quizzes) {
+        const qs = await loadQuestions(quiz.id);
+        counts[quiz.id] = qs.length;
+      }
+      setQuestionCounts(counts);
+    };
+    if (quizzes.length > 0) {
+      loadAllQuestionCounts();
+    }
+  }, [quizzes]);
 
   const bestAttempt = getBestAttempt();
   
@@ -100,6 +115,7 @@ export const QuizView = ({ moduleId, enrollmentId }: QuizViewProps) => {
             const passed = quizAttempts.some(a => a.is_passed);
             const attemptCount = quizAttempts.length;
             const canTakeQuiz = canRetake(quiz.max_attempts);
+            const hasQuestions = (questionCounts[quiz.id] || 0) > 0;
 
             return (
               <Card key={quiz.id} className={passed ? "border-green-600" : ""}>
@@ -146,7 +162,12 @@ export const QuizView = ({ moduleId, enrollmentId }: QuizViewProps) => {
                   </div>
 
                   <div className="flex gap-2">
-                    {canTakeQuiz && (
+                    {!hasQuestions && (
+                      <p className="text-sm text-muted-foreground">
+                        Dieses Quiz hat noch keine Fragen.
+                      </p>
+                    )}
+                    {canTakeQuiz && hasQuestions && (
                       <Button
                         onClick={() => {
                           setSelectedQuiz(quiz);
