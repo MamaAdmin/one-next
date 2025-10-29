@@ -486,6 +486,17 @@ const LMSModuleEditor = () => {
                       )}
                     </TabsContent>
 
+                    {/* Tab 2.5: Quizzes */}
+                    <TabsContent value="quizzes" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
+                      {moduleId ? (
+                        <QuizManager moduleId={moduleId} />
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <p>Bitte speichere das Modul zuerst, um Quizzes hinzuzufügen.</p>
+                        </div>
+                      )}
+                    </TabsContent>
+
                     {/* Tab 3: Inhalte */}
                     <TabsContent value="content" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       <div>
