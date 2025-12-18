@@ -4,7 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -53,13 +53,6 @@ const Contact = () => {
                     <div>
                       <h3 className="font-medium mb-1">E-Mail</h3>
                       <p className="text-muted-foreground">info@onenext.ch</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <Phone className="h-6 w-6 text-primary mt-1" />
-                    <div>
-                      <h3 className="font-medium mb-1">Telefon</h3>
-                      <p className="text-muted-foreground">+41 XX XXX XX XX</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
