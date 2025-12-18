@@ -26,8 +26,8 @@ const Impressum = () => {
           <div>
             <h2 className="text-xl font-semibold text-foreground mb-2">E-Mail</h2>
             <p>
-              <a href="mailto:julia@onenext.ch" className="text-primary hover:underline">
-                julia@onenext.ch
+              <a href="mailto:info@one-next.com" className="text-primary hover:underline">
+                info@one-next.com
               </a>
             </p>
           </div>
