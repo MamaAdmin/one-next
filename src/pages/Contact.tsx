@@ -4,10 +4,16 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
+
 const Contact = () => {
-  return <>
-      <SEO title="Kontakt | One Next" description="Kontaktieren Sie uns für AI-Beratung und Innovation. Wir helfen Ihnen bei Ihren KI-Projekten." canonical="/kontakt" />
+  return (
+    <>
+      <SEO 
+        title="Kontakt | One Next" 
+        description="Kontaktieren Sie uns für AI-Beratung und Innovation. Wir helfen Ihnen bei Ihren KI-Projekten." 
+        canonical="/kontakt" 
+      />
       <Navigation />
       <div className="min-h-screen pt-20">
         <div className="container mx-auto px-4 py-16">
@@ -46,26 +52,17 @@ const Contact = () => {
                     <Mail className="h-6 w-6 text-primary mt-1" />
                     <div>
                       <h3 className="font-medium mb-1">E-Mail</h3>
-                      <p className="text-muted-foreground">info@onenext.ch</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <Phone className="h-6 w-6 text-primary mt-1" />
-                    <div>
-                      <h3 className="font-medium mb-1">Telefon</h3>
-                      <p className="text-muted-foreground">Rietweisstrasse 111
-8810 Horgen
-Schweiz</p>
+                      <p className="text-muted-foreground">info@one-next.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
                     <MapPin className="h-6 w-6 text-primary mt-1" />
                     <div>
                       <h3 className="font-medium mb-1">Adresse</h3>
-                      <p className="text-muted-foreground">
-                        One Next<br />
-                        Schweiz
-                      </p>
+                      <p className="text-muted-foreground">One Next</p>
+                      <p className="text-muted-foreground">Rietwiesstrasse 111</p>
+                      <p className="text-muted-foreground">8810 Horgen</p>
+                      <p className="text-muted-foreground">Schweiz</p>
                     </div>
                   </div>
                 </div>
@@ -75,6 +72,8 @@ Schweiz</p>
         </div>
       </div>
       <Footer />
-    </>;
+    </>
+  );
 };
+
 export default Contact;
