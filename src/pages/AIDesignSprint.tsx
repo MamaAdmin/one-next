@@ -365,7 +365,7 @@ const AIDesignSprint = () => {
                 <div className="pt-4 border-t space-y-4">
                   <p className="text-sm font-semibold">Preis auf Anfrage</p>
                   <Button className="w-full bg-black hover:bg-black/90 text-white" asChild>
-                    <Link to="/sprint-uebersicht/online">Online Sprint entdecken</Link>
+                    
                   </Button>
                 </div>
               </CardContent>
