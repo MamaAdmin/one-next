@@ -15,30 +15,25 @@ import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { SEO } from "@/components/SEO";
 import { personSchema, createBreadcrumbSchema } from "@/config/seoConfig";
-
 const AboutUs = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const { isContentManager } = useContentManager();
-  const { content, loading, updateContent } = usePageContent('about-us');
-
-  const structuredData = [
-    personSchema,
-    createBreadcrumbSchema([
-      { name: "Home", url: "https://one-next.de/" },
-      { name: "Über uns", url: "https://one-next.de/about-us" }
-    ])
-  ];
-
-  return (
-    <>
-      <SEO
-        title="Über one-next | Julia Haitz - AI & Innovation Expertin"
-        description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für AI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact."
-        keywords="Julia Haitz, one-next, AI Expertin, Design Sprint, Innovation Consulting, KI-Beratung"
-        canonical="https://one-next.de/about-us"
-        ogType="profile"
-        structuredData={structuredData}
-      />
+  const {
+    isContentManager
+  } = useContentManager();
+  const {
+    content,
+    loading,
+    updateContent
+  } = usePageContent('about-us');
+  const structuredData = [personSchema, createBreadcrumbSchema([{
+    name: "Home",
+    url: "https://one-next.de/"
+  }, {
+    name: "Über uns",
+    url: "https://one-next.de/about-us"
+  }])];
+  return <>
+      <SEO title="Über one-next | Julia Haitz - AI & Innovation Expertin" description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für AI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact." keywords="Julia Haitz, one-next, AI Expertin, Design Sprint, Innovation Consulting, KI-Beratung" canonical="https://one-next.de/about-us" ogType="profile" structuredData={structuredData} />
       <div className="min-h-screen bg-gradient-subtle">
       <Navigation />
       
@@ -46,22 +41,8 @@ const AboutUs = () => {
       <section className="pt-32 pb-20 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-6 animate-fade-in">
-            <InlineTextField
-              value={content.hero_title || 'Über one-next'}
-              onSave={(value) => updateContent('hero_title', value)}
-              isEditMode={isEditMode}
-              className="text-5xl lg:text-6xl font-bold"
-              placeholder="Hero title"
-              as="h1"
-            />
-            <InlineTextArea
-              value={content.hero_description || 'Wir sind ein innovatives AI-Entwicklungsunternehmen mit Sitz in Deutschland, das Unternehmen dabei hilft, das volle Potenzial künstlicher Intelligenz zu nutzen.'}
-              onSave={(value) => updateContent('hero_description', value)}
-              isEditMode={isEditMode}
-              className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-              placeholder="Hero description"
-              minRows={3}
-            />
+            <InlineTextField value={content.hero_title || 'Über one-next'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold" placeholder="Hero title" as="h1" />
+            <InlineTextArea value={content.hero_description || 'Wir sind ein innovatives AI-Entwicklungsunternehmen mit Sitz in Deutschland, das Unternehmen dabei hilft, das volle Potenzial künstlicher Intelligenz zu nutzen.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" placeholder="Hero description" minRows={3} />
           </div>
         </div>
       </section>
@@ -80,10 +61,7 @@ const AboutUs = () => {
             <CardContent className="p-8">
               <div className="grid md:grid-cols-[auto_1fr] gap-8 items-center">
                 <Avatar className="h-48 w-48">
-                  <AvatarImage 
-                    src={juliaProfile} 
-                    alt="Julia Haitz, Gründerin und CEO von one-next, Expertin für AI Design Sprints und Innovation" 
-                  />
+                  <AvatarImage src={juliaProfile} alt="Julia Haitz, Gründerin und CEO von one-next, Expertin für AI Design Sprints und Innovation" />
                   <AvatarFallback>JH</AvatarFallback>
                 </Avatar>
                 
@@ -93,24 +71,13 @@ const AboutUs = () => {
                     <p className="text-lg text-primary font-semibold mb-4">
                       Gründerin & CEO
                     </p>
-                    <a 
-                      href="https://www.linkedin.com/in/juliha/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-primary hover:underline"
-                    >
+                    <a href="https://www.linkedin.com/in/juliha/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-primary hover:underline">
                       <Linkedin className="w-5 h-5" />
                       LinkedIn Profil
                     </a>
                   </div>
                   
-                  <p className="text-muted-foreground leading-relaxed">
-                    Julia Haitz ist eine visionäre Unternehmerin mit langjähriger Erfahrung 
-                    im Bereich künstliche Intelligenz und digitale Transformation. Mit ihrer 
-                    Leidenschaft für innovative Technologien und strategischem Geschäftssinn 
-                    hat sie one-next gegründet, um Unternehmen dabei zu unterstützen, durch 
-                    maßgeschneiderte KI-Lösungen echte Wettbewerbsvorteile zu erzielen.
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">Julia Haitz ist Gründerin mit langjähriger Erfahrung in künstlicher Intelligenz und digitaler Transformation. Seit 2019 baut sie ihre KI‑Expertise kontinuierlich aus, unter anderem durch Weiterbildungen am MIT, wo sie Mitglied des Global GenAI Program ist. Mit one‑next unterstützt sie Unternehmen dabei, durch maßgeschneiderte KI‑Lösungen nachhaltige Wettbewerbsvorteile zu erzielen</p>
                   
                   <p className="text-muted-foreground leading-relaxed">
                     Ihre Mission ist es, die Lücke zwischen technologischer Innovation und 
@@ -302,15 +269,8 @@ const AboutUs = () => {
       </section>
 
       <Footer />
-      {isContentManager && !loading && (
-        <EditToggleButton
-          isEditMode={isEditMode}
-          onToggle={() => setIsEditMode(!isEditMode)}
-        />
-      )}
+      {isContentManager && !loading && <EditToggleButton isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />}
     </div>
-    </>
-  );
+    </>;
 };
-
 export default AboutUs;
