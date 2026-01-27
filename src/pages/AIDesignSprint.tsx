@@ -330,9 +330,7 @@ const AIDesignSprint = () => {
 
             {/* Online Design Sprint */}
             <Card className="hover:shadow-hover transition-all relative">
-              <div className="absolute top-4 right-4 bg-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                Neu verfügbar
-              </div>
+              <div className="absolute top-4 right-4 bg-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full">Comming soon</div>
               <CardContent className="p-8 space-y-6">
                 <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
                   <Laptop className="w-8 h-8 text-white" />
