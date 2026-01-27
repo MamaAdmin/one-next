@@ -265,11 +265,22 @@ const DesignSprintWorkshop = () => {
 
             {/* Tag 1 */}
             <div className="mb-8">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <span className="text-2xl font-bold text-primary-foreground">1</span>
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
+                    <span className="text-2xl font-bold text-primary-foreground">1</span>
+                  </div>
+                  <h3 className="text-2xl font-bold">Tag 1: Verstehen & Definieren</h3>
                 </div>
-                <a href="https://gamma.app/docs/Design-Sprint-Workshop-Tag-1-5fegu8ugsh41wrl?mode=doc" target="_blank" rel="noopener noreferrer" className="text-2xl font-bold hover:text-primary transition-colors">Tag 1: Verstehen & Definieren</a>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open('https://gamma.app/docs/Design-Sprint-Workshop-Tag-1-5fegu8ugsh41wrl?mode=doc', '_blank')}
+                  className="flex items-center gap-2"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Pick Agenda
+                </Button>
               </div>
               
               <div className="space-y-4 ml-18">
