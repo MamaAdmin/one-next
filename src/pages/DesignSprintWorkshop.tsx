@@ -269,7 +269,7 @@ const DesignSprintWorkshop = () => {
                 <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
                   <span className="text-2xl font-bold text-primary-foreground">1</span>
                 </div>
-                <h3 className="text-2xl font-bold">Tag 1: Verstehen & Definieren</h3>
+                <a href="https://gamma.app/docs/Design-Sprint-Workshop-Tag-1-5fegu8ugsh41wrl?mode=doc" target="_blank" rel="noopener noreferrer" className="text-2xl font-bold hover:text-primary transition-colors">Tag 1: Verstehen & Definieren</a>
               </div>
               
               <div className="space-y-4 ml-18">
