@@ -145,15 +145,11 @@ const Blog = () => {
                     className="lg:col-span-5 group"
                   >
                     <article className="relative h-[500px] rounded-xl overflow-hidden">
-                      {featuredArticle.featured_image ? (
-                        <img
-                          src={featuredArticle.featured_image}
-                          alt={featuredArticle.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5" />
-                      )}
+                      <img
+                        src={featuredArticle.featured_image || "/placeholder.svg"}
+                        alt={featuredArticle.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-6">
                         <Badge className="mb-3 bg-primary text-primary-foreground">
@@ -180,15 +176,11 @@ const Blog = () => {
                       className="group block"
                     >
                       <article className="relative h-[240px] rounded-xl overflow-hidden">
-                        {article.featured_image ? (
-                          <img
-                            src={article.featured_image}
-                            alt={article.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-secondary/50 to-secondary/20" />
-                        )}
+                        <img
+                          src={article.featured_image || "/placeholder.svg"}
+                          alt={article.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-4">
                           <Badge variant="secondary" className="mb-2 bg-primary text-primary-foreground text-xs">
@@ -216,15 +208,11 @@ const Blog = () => {
                       className="group flex gap-4"
                     >
                       <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0">
-                        {article.featured_image ? (
-                          <img
-                            src={article.featured_image}
-                            alt={article.title}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-muted to-muted/50" />
-                        )}
+                        <img
+                          src={article.featured_image || "/placeholder.svg"}
+                          alt={article.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 text-sm">
