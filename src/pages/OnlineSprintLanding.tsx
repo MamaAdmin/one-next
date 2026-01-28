@@ -9,70 +9,54 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 const OnlineSprintLanding = () => {
-  const structuredData = [
-    createEventSchema(
-      "Online Design Sprint",
-      "Flexibler Online Design Sprint über mehrere Wochen. Arbeiten Sie im eigenen Tempo mit KI-Unterstützung und automatisierter Dokumentation.",
-      "https://one-next.de/sprint-uebersicht/online"
-    ),
-    createBreadcrumbSchema([
-      { name: "Home", url: "https://one-next.de/" },
-      { name: "AI Design Sprint", url: "https://one-next.de/sprint-uebersicht" },
-      { name: "Online Sprint", url: "https://one-next.de/sprint-uebersicht/online" }
-    ]),
-    createFAQSchema([
-      {
-        question: "Wie unterscheidet sich der Online Sprint vom Workshop?",
-        answer: "Der Online Sprint ist flexibel über mehrere Wochen durchführbar, während der Workshop konzentriert an 2 Tagen vor Ort stattfindet. Beide nutzen das gleiche Design Sprint Framework."
-      },
-      {
-        question: "Welche KI-Unterstützung gibt es?",
-        answer: "KI-gestützte Tools für HMW-Generierung, Ideen-Clustering, automatisierte Report-Erstellung und intelligente Vorschläge während des gesamten Sprint-Prozesses."
-      },
-      {
-        question: "Kann ich den Sprint pausieren?",
-        answer: "Ja, Sie können jederzeit pausieren und später fortsetzen. Alle Daten werden automatisch gespeichert."
-      }
-    ])
-  ];
-
-  const phases = [
-    {
-      icon: Clipboard,
-      title: "Setup-Phase",
-      description: "Team zusammenstellen (4 Kern-Rollen), Kick-off Meeting planen, Experten einladen (optional)"
-    },
-    {
-      icon: Target,
-      title: "Phase 1: Problem Framing",
-      description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
-    },
-    {
-      icon: Map,
-      title: "Phase 2: Map",
-      description: "Langfristziel definieren, Journey Map erstellen, How-Might-We Fragen generieren, Experten-Input (optional)"
-    },
-    {
-      icon: Pencil,
-      title: "Phase 3: Sketch",
-      description: "Crazy 8 Ideation, detaillierte Solution Sketches, Team-Voting"
-    },
-    {
-      icon: CheckCircle,
-      title: "Phase 4: Decide",
-      description: "Heatmap Voting für beste Ideen, Storyboard erstellen, Prototyp-Plan festlegen"
-    },
-    {
-      icon: Wrench,
-      title: "Phase 5: Prototype",
-      description: "Prototyp entwickeln (digital oder Figma), Test-Szenarien vorbereiten"
-    },
-    {
-      icon: TestTube,
-      title: "Phase 6: Test",
-      description: "User Testing durchführen, Feedback sammeln, Experten-Review (optional), automatisierter Report-Generator"
-    }
-  ];
+  const structuredData = [createEventSchema("Online Design Sprint", "Flexibler Online Design Sprint über mehrere Wochen. Arbeiten Sie im eigenen Tempo mit KI-Unterstützung und automatisierter Dokumentation.", "https://one-next.de/sprint-uebersicht/online"), createBreadcrumbSchema([{
+    name: "Home",
+    url: "https://one-next.de/"
+  }, {
+    name: "AI Design Sprint",
+    url: "https://one-next.de/sprint-uebersicht"
+  }, {
+    name: "Online Sprint",
+    url: "https://one-next.de/sprint-uebersicht/online"
+  }]), createFAQSchema([{
+    question: "Wie unterscheidet sich der Online Sprint vom Workshop?",
+    answer: "Der Online Sprint ist flexibel über mehrere Wochen durchführbar, während der Workshop konzentriert an 2 Tagen vor Ort stattfindet. Beide nutzen das gleiche Design Sprint Framework."
+  }, {
+    question: "Welche KI-Unterstützung gibt es?",
+    answer: "KI-gestützte Tools für HMW-Generierung, Ideen-Clustering, automatisierte Report-Erstellung und intelligente Vorschläge während des gesamten Sprint-Prozesses."
+  }, {
+    question: "Kann ich den Sprint pausieren?",
+    answer: "Ja, Sie können jederzeit pausieren und später fortsetzen. Alle Daten werden automatisch gespeichert."
+  }])];
+  const phases = [{
+    icon: Clipboard,
+    title: "Setup-Phase",
+    description: "Team zusammenstellen (4 Kern-Rollen), Kick-off Meeting planen, Experten einladen (optional)"
+  }, {
+    icon: Target,
+    title: "Phase 1: Problem Framing",
+    description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
+  }, {
+    icon: Map,
+    title: "Phase 2: Map",
+    description: "Langfristziel definieren, Journey Map erstellen, How-Might-We Fragen generieren, Experten-Input (optional)"
+  }, {
+    icon: Pencil,
+    title: "Phase 3: Sketch",
+    description: "Crazy 8 Ideation, detaillierte Solution Sketches, Team-Voting"
+  }, {
+    icon: CheckCircle,
+    title: "Phase 4: Decide",
+    description: "Heatmap Voting für beste Ideen, Storyboard erstellen, Prototyp-Plan festlegen"
+  }, {
+    icon: Wrench,
+    title: "Phase 5: Prototype",
+    description: "Prototyp entwickeln (digital oder Figma), Test-Szenarien vorbereiten"
+  }, {
+    icon: TestTube,
+    title: "Phase 6: Test",
+    description: "User Testing durchführen, Feedback sammeln, Experten-Review (optional), automatisierter Report-Generator"
+  }];
   const features = [{
     icon: Clock,
     title: "Flexible Durchführung",
@@ -101,13 +85,7 @@ const OnlineSprintLanding = () => {
     description: "Experimentieren ohne große Investition mit iterativem Ansatz"
   }];
   return <>
-      <SEO
-        title="Online Design Sprint | Flexibel & Remote | one-next"
-        description="Flexibler Online Design Sprint mit KI-Unterstützung. Arbeiten Sie im eigenen Tempo über mehrere Wochen mit automatisierten Tools und Reports."
-        keywords="Online Design Sprint, Remote Sprint, Digital Design Sprint, KI-gestützt, Async Sprint"
-        canonical="https://one-next.de/sprint-uebersicht/online"
-        structuredData={structuredData}
-      />
+      <SEO title="Online Design Sprint | Flexibel & Remote | one-next" description="Flexibler Online Design Sprint mit KI-Unterstützung. Arbeiten Sie im eigenen Tempo über mehrere Wochen mit automatisierten Tools und Reports." keywords="Online Design Sprint, Remote Sprint, Digital Design Sprint, KI-gestützt, Async Sprint" canonical="https://one-next.de/sprint-uebersicht/online" structuredData={structuredData} />
       <div className="min-h-screen">
       <Navigation />
       
@@ -120,9 +98,7 @@ const OnlineSprintLanding = () => {
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge className="bg-accent text-accent-foreground border-none text-lg px-6 py-2">
-              Neu verfügbar
-            </Badge>
+            <Badge className="bg-accent text-accent-foreground border-none text-lg px-6 py-2">Comming Soon</Badge>
             
             <h1 className="text-5xl lg:text-7xl font-bold">
               Online Design Sprint
@@ -167,8 +143,8 @@ const OnlineSprintLanding = () => {
               
               <div className="space-y-8">
                 {phases.map((phase, index) => {
-                const Icon = phase.icon;
-                return <div key={index} className="relative flex items-center gap-8">
+                  const Icon = phase.icon;
+                  return <div key={index} className="relative flex items-center gap-8">
                       <div className={`flex-1 ${index % 2 === 0 ? 'text-right' : 'order-2'}`}>
                         <Card className="inline-block text-left max-w-md">
                           <CardContent className="p-6">
@@ -184,7 +160,7 @@ const OnlineSprintLanding = () => {
                       
                       <div className={`flex-1 ${index % 2 === 0 ? 'order-2' : ''}`} />
                     </div>;
-              })}
+                })}
               </div>
             </div>
           </div>
@@ -202,8 +178,8 @@ const OnlineSprintLanding = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return <Card key={index} className="text-center hover:shadow-hover transition-all">
+              const Icon = feature.icon;
+              return <Card key={index} className="text-center hover:shadow-hover transition-all">
                   <CardContent className="p-6 space-y-4">
                     <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
                       <Icon className="w-7 h-7 text-primary-foreground" />
@@ -212,7 +188,7 @@ const OnlineSprintLanding = () => {
                     <p className="text-muted-foreground text-sm">{feature.description}</p>
                   </CardContent>
                 </Card>;
-          })}
+            })}
           </div>
         </div>
       </section>
