@@ -75,7 +75,7 @@ export default function LMSDashboard() {
       <Navigation />
       <main className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Mein Learning Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-8">Mein Dashboard</h1>
 
           {/* BMAD Portal Card */}
           {(isBmadUser || isAdmin) && (
@@ -102,19 +102,7 @@ export default function LMSDashboard() {
             </Card>
           )}
 
-          {!currentEnrollment ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <h2 className="text-xl font-semibold mb-4">Noch kein aktiver Kurs</h2>
-                <p className="text-muted-foreground mb-6">
-                  Du bist noch in keinem Kurs eingeschrieben. Kontaktiere deinen Administrator.
-                </p>
-                <Button asChild>
-                  <Link to="/lms/courses">Kurse entdecken</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
+          {currentEnrollment && (
             <div className="space-y-6">
               {/* Continue Learning */}
               <Card className="border-primary">
