@@ -24,6 +24,10 @@ interface Article {
   author: string;
   published_at: string;
   featured_image?: string;
+  media?: {
+    file_path: string;
+    alt_text: string | null;
+  };
 }
 
 const Blog = () => {
@@ -37,7 +41,7 @@ const Blog = () => {
     const fetchArticles = async () => {
       const { data, error } = await supabase
         .from("articles")
-        .select("*")
+        .select("*, media:featured_image(file_path, alt_text)")
         .order("published_at", { ascending: false });
 
       if (error) {
@@ -146,8 +150,8 @@ const Blog = () => {
                   >
                     <article className="relative h-[500px] rounded-xl overflow-hidden">
                       <img
-                        src={featuredArticle.featured_image || "/placeholder.svg"}
-                        alt={featuredArticle.title}
+                        src={featuredArticle.media?.file_path || "/placeholder.svg"}
+                        alt={featuredArticle.media?.alt_text || featuredArticle.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
@@ -177,8 +181,8 @@ const Blog = () => {
                     >
                       <article className="relative h-[240px] rounded-xl overflow-hidden">
                         <img
-                          src={article.featured_image || "/placeholder.svg"}
-                          alt={article.title}
+                          src={article.media?.file_path || "/placeholder.svg"}
+                          alt={article.media?.alt_text || article.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
@@ -209,8 +213,8 @@ const Blog = () => {
                     >
                       <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0">
                         <img
-                          src={article.featured_image || "/placeholder.svg"}
-                          alt={article.title}
+                          src={article.media?.file_path || "/placeholder.svg"}
+                          alt={article.media?.alt_text || article.title}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                       </div>
