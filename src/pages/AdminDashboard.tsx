@@ -14,6 +14,7 @@ import FAQManager from "@/components/admin/FAQManager";
 import NavigationManager from "@/components/admin/NavigationManager";
 import { RedirectManager } from "@/components/admin/RedirectManager";
 import { PageTemplateManager } from "@/components/admin/PageTemplateManager";
+import BMADInvitationManager from "@/components/admin/BMADInvitationManager";
 import { 
   BMADSessionIcon, 
   BMADArtifactIcon, 
@@ -25,7 +26,7 @@ import {
   CompassIcon,
   LinkIcon
 } from "@/components/ui/custom-icons";
-import { FileText } from "lucide-react";
+import { FileText, UserPlus } from "lucide-react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -218,7 +219,7 @@ const AdminDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                     <Link to="/admin/bmad/sessions">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
                         <BMADSessionIcon className="w-14 h-14 text-primary" />
@@ -237,7 +238,14 @@ const AdminDashboard = () => {
                         <span>BMAD Analytics</span>
                       </Button>
                     </Link>
+                    <Link to="/bmad">
+                      <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
+                        <UserPlus className="w-8 h-8 text-primary" />
+                        <span>BMAD Portal</span>
+                      </Button>
+                    </Link>
                   </div>
+                  <BMADInvitationManager />
                 </div>
               </Card>
             </TabsContent>

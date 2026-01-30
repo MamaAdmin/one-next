@@ -48,6 +48,9 @@ import BMADSessionDashboard from "./pages/admin/BMADSessionDashboard";
 import BMADArtifactDashboard from "./pages/admin/BMADArtifactDashboard";
 import BMADAnalytics from "./pages/admin/BMADAnalytics";
 import BMADSessionDetail from "./pages/admin/BMADSessionDetail";
+import BMADLogin from "./pages/bmad/BMADLogin";
+import BMADAcceptInvitation from "./pages/bmad/BMADAcceptInvitation";
+import BMADDashboard from "./pages/bmad/BMADDashboard";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
 import UserProfile from "./pages/UserProfile";
@@ -110,6 +113,11 @@ const App = () => (
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
             <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
             <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
+          {/* BMAD User Routes */}
+          <Route path="/bmad/login" element={<BMADLogin />} />
+          <Route path="/bmad/accept-invitation" element={<BMADAcceptInvitation />} />
+          <Route path="/bmad" element={<BMADDashboard />} />
+          <Route path="/bmad/session/:sessionId" element={<BMADSessionDetail />} />
           <Route path="/lms/courses/:courseId/preview" element={<LMSCoursePreview />} />
           <Route path="/lms/tools/hmw" element={<LMSHMWTool />} />
           <Route path="/lms/tools/hmw-generator" element={<Navigate to="/lms/tools/hmw" replace />} />
