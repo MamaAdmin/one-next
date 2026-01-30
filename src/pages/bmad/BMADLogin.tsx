@@ -105,6 +105,14 @@ const BMADLogin = () => {
                 "Anmelden"
               )}
             </Button>
+            <div className="text-center mt-4">
+              <a
+                href="/password-reset"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Passwort vergessen?
+              </a>
+            </div>
           </form>
         </CardContent>
       </Card>
