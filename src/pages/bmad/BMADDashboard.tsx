@@ -4,6 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Brain, Plus, LogOut, Clock, FileText } from "lucide-react";
 import { format } from "date-fns";
@@ -23,6 +34,10 @@ const BMADDashboard = () => {
   const [sessions, setSessions] = useState<BMADSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newSessionTitle, setNewSessionTitle] = useState("");
+  const [newSessionDescription, setNewSessionDescription] = useState("");
+  const [creating, setCreating] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -49,13 +64,13 @@ const BMADDashboard = () => {
       }
 
       setUser(user);
-      fetchSessions();
+      fetchSessions(user.id);
     };
 
     checkAuth();
   }, [navigate]);
 
-  const fetchSessions = async () => {
+  const fetchSessions = async (userId: string) => {
     const { data, error } = await supabase
       .from("bmad_sessions")
       .select("*")
@@ -72,6 +87,52 @@ const BMADDashboard = () => {
       setSessions(data || []);
     }
     setLoading(false);
+  };
+
+  const handleCreateSession = async () => {
+    if (!newSessionTitle.trim()) {
+      toast({
+        title: "Fehler",
+        description: "Bitte geben Sie einen Titel ein.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCreating(true);
+
+    const { data, error } = await supabase
+      .from("bmad_sessions")
+      .insert({
+        title: newSessionTitle.trim(),
+        description: newSessionDescription.trim() || null,
+        created_by: user.id,
+        status: "planning",
+        current_phase: "business_analyst",
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating session:", error);
+      toast({
+        title: "Fehler",
+        description: "Session konnte nicht erstellt werden: " + error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Erfolgreich",
+        description: "Session wurde erstellt.",
+      });
+      setCreateDialogOpen(false);
+      setNewSessionTitle("");
+      setNewSessionDescription("");
+      // Navigate to the new session
+      navigate(`/bmad/session/${data.id}`);
+    }
+
+    setCreating(false);
   };
 
   const handleLogout = async () => {
@@ -143,7 +204,7 @@ const BMADDashboard = () => {
               Verwalten Sie Ihre BMAD-Planungssessions
             </p>
           </div>
-          <Button onClick={() => navigate("/bmad/new")}>
+          <Button onClick={() => setCreateDialogOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Neue Session
           </Button>
@@ -157,7 +218,7 @@ const BMADDashboard = () => {
               <p className="text-muted-foreground mb-4">
                 Erstellen Sie Ihre erste BMAD-Session, um loszulegen.
               </p>
-              <Button onClick={() => navigate("/bmad/new")}>
+              <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Erste Session erstellen
               </Button>
@@ -203,6 +264,54 @@ const BMADDashboard = () => {
           </div>
         )}
       </main>
+
+      {/* Create Session Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Neue BMAD Session erstellen</DialogTitle>
+            <DialogDescription>
+              Erstellen Sie eine neue Planungssession für Ihr Projekt.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Titel *</Label>
+              <Input
+                id="title"
+                placeholder="z.B. Neue App für Kundenmanagement"
+                value={newSessionTitle}
+                onChange={(e) => setNewSessionTitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Beschreibung</Label>
+              <Textarea
+                id="description"
+                placeholder="Kurze Beschreibung des Projekts..."
+                value={newSessionDescription}
+                onChange={(e) => setNewSessionDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+              Abbrechen
+            </Button>
+            <Button onClick={handleCreateSession} disabled={creating}>
+              {creating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Erstellen...
+                </>
+              ) : (
+                "Session erstellen"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
