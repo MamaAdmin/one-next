@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import oneNextLogo from "@/assets/one-next-logo-new.png";
 import { supabase } from "@/integrations/supabase/client";
-import { useAdmin } from "@/hooks/useAdmin";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import { useNavigation } from "@/hooks/useNavigation";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const { isAdmin } = useAdmin();
+  const { isAdmin, isBmadUser } = useUserRoles();
   
   // Load navigation dynamically from database
   const { items: headerItems } = useNavigation("header");
@@ -146,6 +146,14 @@ const Navigation = () => {
                       Meine Kurse
                     </Link>
                   </DropdownMenuItem>
+                  {(isBmadUser || isAdmin) && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/bmad" className="cursor-pointer">
+                        <Brain className="mr-2 h-4 w-4" />
+                        BMAD Portal
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   {isAdmin && (
                     <>
                       <DropdownMenuItem asChild>
@@ -222,6 +230,11 @@ const Navigation = () => {
                   <Link to="/lms/dashboard" className="block py-2 px-4 hover:bg-accent rounded-md">
                     Meine Kurse
                   </Link>
+                  {(isBmadUser || isAdmin) && (
+                    <Link to="/bmad" className="block py-2 px-4 hover:bg-accent rounded-md">
+                      BMAD Portal
+                    </Link>
+                  )}
                   {isAdmin && (
                     <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
                       Admin-Dashboard

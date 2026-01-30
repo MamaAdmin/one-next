@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import { Link } from "react-router-dom";
-import { Play, Trophy, Flame, Award, CheckCircle } from "lucide-react";
+import { Play, Trophy, Flame, Award, CheckCircle, Brain } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { categoryLabels } from "@/lib/categoryMappings";
@@ -21,6 +22,7 @@ interface Achievement {
 
 export default function LMSDashboard() {
   const { currentEnrollment, loading } = useLMSEnrollment();
+  const { isBmadUser, isAdmin } = useUserRoles();
   const [streak, setStreak] = useState(0);
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([
@@ -74,6 +76,31 @@ export default function LMSDashboard() {
       <main className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">Mein Learning Dashboard</h1>
+
+          {/* BMAD Portal Card */}
+          {(isBmadUser || isAdmin) && (
+            <Card className="mb-6 border-purple-500/30 bg-gradient-to-r from-purple-500/5 to-transparent">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-500/10 rounded-lg">
+                      <Brain className="h-6 w-6 text-purple-500" />
+                    </div>
+                    <div>
+                      <CardTitle>BMAD Portal</CardTitle>
+                      <CardDescription>Business Model Agile Development</CardDescription>
+                    </div>
+                  </div>
+                  <Button asChild variant="outline">
+                    <Link to="/bmad">
+                      <Brain className="mr-2 h-4 w-4" />
+                      Zum BMAD Portal
+                    </Link>
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
+          )}
 
           {!currentEnrollment ? (
             <Card>
