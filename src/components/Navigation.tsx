@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, LogOut, User, Brain } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -149,7 +149,6 @@ const Navigation = () => {
                   {(isBmadUser || isAdmin) && (
                     <DropdownMenuItem asChild>
                       <Link to="/bmad" className="cursor-pointer">
-                        <Brain className="mr-2 h-4 w-4" />
                         BMAD Portal
                       </Link>
                     </DropdownMenuItem>
