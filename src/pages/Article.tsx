@@ -23,6 +23,10 @@ interface Article {
   author: string;
   published_at: string;
   featured_image?: string;
+  media?: {
+    file_path: string;
+    alt_text: string | null;
+  };
 }
 
 const Article = () => {
@@ -39,7 +43,7 @@ const Article = () => {
 
       const { data, error } = await supabase
         .from("articles")
-        .select("*")
+        .select("*, media:featured_image(file_path, alt_text)")
         .eq("slug", slug)
         .maybeSingle();
 
@@ -132,7 +136,7 @@ const Article = () => {
         description={article.content.substring(0, 160).replace(/<[^>]+>/g, '')}
         canonical={`https://one-next.de/blog/${article.slug}`}
         ogType="article"
-        ogImage={article.featured_image}
+        ogImage={article.media?.file_path}
         structuredData={[
           createBlogPostingSchema(
             article.title,
@@ -140,7 +144,7 @@ const Article = () => {
             article.author,
             article.published_at,
             `https://one-next.de/blog/${article.slug}`,
-            article.featured_image
+            article.media?.file_path
           ),
           createBreadcrumbSchema([
             { name: "Home", url: "https://one-next.de/" },
@@ -188,10 +192,10 @@ const Article = () => {
             {format(new Date(article.published_at), "d. MMMM yyyy", { locale: de })}
           </div>
 
-          {article.featured_image && (
+          {article.media?.file_path && (
             <img
-              src={article.featured_image}
-              alt={`Titelbild für Artikel: ${article.title}`}
+              src={article.media.file_path}
+              alt={article.media.alt_text || `Titelbild für Artikel: ${article.title}`}
               className="w-full h-auto rounded-lg mb-8"
             />
           )}
