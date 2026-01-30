@@ -253,6 +253,42 @@ export type Database = {
           },
         ]
       }
+      bmad_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          full_name: string
+          id: string
+          invited_by: string
+          status: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          full_name: string
+          id?: string
+          invited_by: string
+          status?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          invited_by?: string
+          status?: string
+          token?: string
+        }
+        Relationships: []
+      }
       bmad_sessions: {
         Row: {
           created_at: string
@@ -2265,7 +2301,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user" | "content_manager"
+      app_role: "admin" | "user" | "content_manager" | "bmad_user"
       bmad_agent_type:
         | "business_analyst"
         | "product_manager"
@@ -2415,7 +2451,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "content_manager"],
+      app_role: ["admin", "user", "content_manager", "bmad_user"],
       bmad_agent_type: [
         "business_analyst",
         "product_manager",
