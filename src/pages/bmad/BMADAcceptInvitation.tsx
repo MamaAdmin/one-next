@@ -230,6 +230,28 @@ const BMADAcceptInvitation = () => {
               )}
             </Button>
           </form>
+          
+          <div className="mt-6 pt-6 border-t">
+            <p className="text-sm text-muted-foreground text-center mb-4">
+              Sie haben bereits ein Konto?
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                onClick={() => navigate("/bmad/login")}
+              >
+                Zum Login
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="w-full text-muted-foreground" 
+                onClick={() => navigate("/password-reset")}
+              >
+                Passwort zurücksetzen
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
