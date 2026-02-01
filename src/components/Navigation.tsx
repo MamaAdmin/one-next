@@ -141,21 +141,23 @@ const Navigation = () => {
                       Mein Profil
                     </Link>
                   </DropdownMenuItem>
-                  {/* Hide LMS for pure BMAD users (only show if admin or not a bmad_user) */}
-                  {(!isBmadUser || isAdmin) && (
+                  {/* Regular users (not admin, not bmad_user) see LMS */}
+                  {!isAdmin && !isBmadUser && (
                     <DropdownMenuItem asChild>
                       <Link to="/lms/dashboard" className="cursor-pointer">
                         Meine Kurse
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  {(isBmadUser || isAdmin) && (
+                  {/* BMAD users (not admin) see BMAD Portal */}
+                  {!isAdmin && isBmadUser && (
                     <DropdownMenuItem asChild>
                       <Link to="/bmad" className="cursor-pointer">
                         BMAD Portal
                       </Link>
                     </DropdownMenuItem>
                   )}
+                  {/* Admin only sees admin links */}
                   {isAdmin && (
                     <>
                       <DropdownMenuItem asChild>
@@ -229,17 +231,19 @@ const Navigation = () => {
 
               {user ? (
                 <>
-                  {/* Hide LMS for pure BMAD users in mobile menu */}
-                  {(!isBmadUser || isAdmin) && (
+                  {/* Regular users (not admin, not bmad_user) see LMS */}
+                  {!isAdmin && !isBmadUser && (
                     <Link to="/lms/dashboard" className="block py-2 px-4 hover:bg-accent rounded-md">
                       Meine Kurse
                     </Link>
                   )}
-                  {(isBmadUser || isAdmin) && (
+                  {/* BMAD users (not admin) see BMAD Portal */}
+                  {!isAdmin && isBmadUser && (
                     <Link to="/bmad" className="block py-2 px-4 hover:bg-accent rounded-md">
                       BMAD Portal
                     </Link>
                   )}
+                  {/* Admin only sees admin links */}
                   {isAdmin && (
                     <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
                       Admin-Dashboard
