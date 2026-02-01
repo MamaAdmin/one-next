@@ -21,10 +21,10 @@ interface UserWithRoles {
 }
 
 const AVAILABLE_ROLES: { value: AppRole; label: string; description: string }[] = [
-  { value: "admin", label: "Admin", description: "Vollzugriff auf alle Funktionen" },
+  { value: "admin", label: "Admin", description: "Vollzugriff auf alle Funktionen über das Admin-Dashboard" },
   { value: "content_manager", label: "Content Manager", description: "Blog-Artikel, FAQs und Inhalte verwalten" },
-  { value: "bmad_user", label: "BMAD User", description: "Zugriff auf das BMAD Portal" },
-  { value: "user", label: "User", description: "Standard-Benutzerrolle" },
+  { value: "bmad_user", label: "BMAD User", description: "Zugriff nur auf das BMAD Portal" },
+  { value: "user", label: "Kurs-Teilnehmer", description: "Zugriff nur auf die eigenen Kurse" },
 ];
 
 const UserRoleManager = () => {
@@ -217,9 +217,9 @@ const UserRoleManager = () => {
             <Card>
               <CardContent className="p-4">
                 <div className="text-2xl font-bold">
-                  {users.filter((u) => u.roles.includes("content_manager")).length}
+                  {users.filter((u) => u.roles.includes("user")).length}
                 </div>
-                <div className="text-sm text-muted-foreground">Content Manager</div>
+                <div className="text-sm text-muted-foreground">Kurs-Teilnehmer</div>
               </CardContent>
             </Card>
           </div>
