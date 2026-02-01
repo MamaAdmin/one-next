@@ -148,22 +148,22 @@ const Blog = () => {
                     to={`/blog/${featuredArticle.slug}`}
                     className="lg:col-span-5 group"
                   >
-                    <article className="relative h-[500px] rounded-xl overflow-hidden">
+                    <article className="relative h-[500px] rounded-[--radius] overflow-hidden shadow-[--shadow-card] hover:shadow-[--shadow-hover] transition-all duration-300 border border-border/50">
                       <img
                         src={featuredArticle.media?.file_path || "/placeholder.svg"}
                         alt={featuredArticle.media?.alt_text || featuredArticle.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 saturate-[0.9]"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/30 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <Badge className="mb-3 bg-primary text-primary-foreground">
+                        <Badge className="mb-3 bg-accent text-accent-foreground border border-border/30">
                           Featured
                         </Badge>
-                        <div className="flex items-center gap-2 text-white/70 text-sm mb-2">
+                        <div className="flex items-center gap-2 text-background/80 text-sm mb-2">
                           <Clock className="w-4 h-4" />
                           <span>{formatDate(featuredArticle.published_at)}</span>
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-white group-hover:text-primary transition-colors">
+                        <h2 className="text-2xl md:text-3xl font-bold text-background group-hover:text-accent transition-colors">
                           {featuredArticle.title}
                         </h2>
                       </div>
@@ -179,22 +179,22 @@ const Blog = () => {
                       to={`/blog/${article.slug}`}
                       className="group block"
                     >
-                      <article className="relative h-[240px] rounded-xl overflow-hidden">
+                      <article className="relative h-[240px] rounded-[--radius] overflow-hidden shadow-[--shadow-card] hover:shadow-[--shadow-hover] transition-all duration-300 border border-border/50">
                         <img
                           src={article.media?.file_path || "/placeholder.svg"}
                           alt={article.media?.alt_text || article.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 saturate-[0.9]"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/30 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <Badge variant="secondary" className="mb-2 bg-primary text-primary-foreground text-xs">
+                          <Badge variant="secondary" className="mb-2 bg-accent text-accent-foreground border border-border/30 text-xs">
                             Artikel
                           </Badge>
-                          <div className="flex items-center gap-2 text-white/70 text-xs mb-1">
+                          <div className="flex items-center gap-2 text-background/80 text-xs mb-1">
                             <Clock className="w-3 h-3" />
                             <span>{formatDate(article.published_at)}</span>
                           </div>
-                          <h3 className="text-lg font-semibold text-white group-hover:text-primary transition-colors line-clamp-2">
+                          <h3 className="text-lg font-semibold text-background group-hover:text-accent transition-colors line-clamp-2">
                             {article.title}
                           </h3>
                         </div>
@@ -209,17 +209,17 @@ const Blog = () => {
                     <Link
                       key={article.id}
                       to={`/blog/${article.slug}`}
-                      className="group flex gap-4"
+                      className="group flex gap-4 p-2 -m-2 rounded-[calc(var(--radius)/2)] hover:bg-muted/50 transition-colors"
                     >
-                      <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0">
+                      <div className="w-20 h-20 rounded-[calc(var(--radius)/2)] overflow-hidden shrink-0 border border-border/50 shadow-sm">
                         <img
                           src={article.media?.file_path || "/placeholder.svg"}
                           alt={article.media?.alt_text || article.title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 saturate-[0.9]"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 text-sm">
+                        <h4 className="font-medium text-foreground group-hover:text-accent-foreground transition-colors line-clamp-2 text-sm">
                           {article.title}
                         </h4>
                         <div className="flex items-center gap-1 text-muted-foreground text-xs mt-1">
