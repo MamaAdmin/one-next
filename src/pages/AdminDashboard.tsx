@@ -15,6 +15,7 @@ import NavigationManager from "@/components/admin/NavigationManager";
 import { RedirectManager } from "@/components/admin/RedirectManager";
 import { PageTemplateManager } from "@/components/admin/PageTemplateManager";
 import BMADInvitationManager from "@/components/admin/BMADInvitationManager";
+import UserRoleManager from "@/components/admin/UserRoleManager";
 import { 
   BMADSessionIcon, 
   BMADArtifactIcon, 
@@ -26,7 +27,7 @@ import {
   CompassIcon,
   LinkIcon
 } from "@/components/ui/custom-icons";
-import { FileText, UserPlus } from "lucide-react";
+import { FileText, UserPlus, Users } from "lucide-react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -82,10 +83,11 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
               <TabsTrigger value="bmad">BMAD</TabsTrigger>
+              <TabsTrigger value="users">Benutzer</TabsTrigger>
             </TabsList>
 
             <TabsContent value="cms">
@@ -248,6 +250,10 @@ const AdminDashboard = () => {
                   <BMADInvitationManager />
                 </div>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="users">
+              <UserRoleManager />
             </TabsContent>
           </Tabs>
         </div>
