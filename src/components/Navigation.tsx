@@ -233,6 +233,14 @@ const Navigation = () => {
                 </div>
               ))}
 
+              <Link
+                to="/kurse"
+                className="block py-2 px-4 hover:bg-accent rounded-md font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Kurse
+              </Link>
+
               {user ? (
                 <>
                   {/* Regular users (not admin, not bmad_user) see LMS */}
