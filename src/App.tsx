@@ -111,7 +111,8 @@ const App = () => (
           <Route path="/admin/lms/toolbox" element={<LMSToolboxDashboard />} />
           <Route path="/admin/lms/toolbox/new" element={<LMSToolboxEditor />} />
           <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
-            <Route path="/admin/bmad/sessions" element={<BMADSessionDashboard />} />
+          <Route path="/admin/bmad/sessions" element={<BMADSessionDashboard />} />
+          <Route path="/admin/kurse" element={<PublicCourseDashboard />} />
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
             <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
             <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
