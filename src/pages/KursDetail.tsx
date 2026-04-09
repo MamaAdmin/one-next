@@ -153,21 +153,9 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
         )}
 
         {/* Modules */}
-        {modules.length > 0 && (
-          <section className="bg-secondary/30">
-            <div className="container mx-auto px-6 py-16">
-              <div className="max-w-4xl mx-auto">
-                <p className="text-xs font-medium tracking-[0.12em] uppercase text-muted-foreground mb-3">Kursmodule</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-10">Kursaufbau</h2>
-                <div className="space-y-6">
-                  {modules.map((mod, idx) => (
-                    <ModuleSection key={mod.id} module={mod} index={idx + 1} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        {modules.length > 0 && modules.map((mod, idx) => (
+          <ModuleSection key={mod.id} module={mod} index={idx + 1} />
+        ))}
 
         {/* Dates */}
         {dates.length > 0 && (
