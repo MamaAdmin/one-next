@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,18 +10,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-interface EmailRequest {
-  to: string;
-  type: "recommendation" | "booking_received" | "payment_confirmed";
-  data: {
-    name: string;
-    sprintType?: string;
-    score?: number;
-    bookingLink?: string;
-    paymentLink?: string;
-    projectLink?: string;
-  };
-}
+const RequestSchema = z.object({
+  to: z.string().email().max(255),
+  type: z.enum(["recommendation", "booking_received", "payment_confirmed"]),
+  data: z.object({
+    name: z.string().trim().min(1).max(200),
+    sprintType: z.string().max(200).optional(),
+    score: z.number().min(0).max(100).optional(),
+    bookingLink: z.string().url().max(2000).optional(),
+    paymentLink: z.string().url().max(2000).optional(),
+    projectLink: z.string().url().max(2000).optional(),
+  }),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -32,7 +33,7 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Access denied' }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -47,14 +48,23 @@ serve(async (req) => {
     if (authError || !authData?.user) {
       console.error("Authentication failed:", authError);
       return new Response(
-        JSON.stringify({ error: 'Invalid authentication token' }),
+        JSON.stringify({ error: 'Access denied' }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     console.log("Authenticated user:", authData.user.id);
 
-    const { to, type, data }: EmailRequest = await req.json();
+    const body = await req.json();
+    const parsed = RequestSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { to, type, data } = parsed.data;
     console.log(`Sending ${type} email to ${to}`);
 
     let subject = "";
@@ -126,9 +136,8 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error sending email:", error);
-    const message = error instanceof Error ? error.message : String(error);
     return new Response(
-      JSON.stringify({ error: message }),
+      JSON.stringify({ error: "Email could not be sent. Please try again later." }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,

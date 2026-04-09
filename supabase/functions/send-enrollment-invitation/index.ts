@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,21 +10,29 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface InvitationEmailRequest {
-  email: string;
-  fullName: string;
-  token: string;
-  companyName: string;
-}
+const InvitationSchema = z.object({
+  email: z.string().email().max(255),
+  fullName: z.string().trim().min(1).max(200),
+  token: z.string().min(1).max(500),
+  companyName: z.string().trim().min(1).max(200),
+});
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { email, fullName, token, companyName }: InvitationEmailRequest = await req.json();
+    const body = await req.json();
+    const parsed = InvitationSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const { email, fullName, token, companyName } = parsed.data;
 
     console.log("Sending invitation email to:", email);
 
@@ -49,15 +58,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
     console.error("Error in send-enrollment-invitation function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Email could not be sent. Please try again later." }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
