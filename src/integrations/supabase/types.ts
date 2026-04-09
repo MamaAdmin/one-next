@@ -2050,6 +2050,56 @@ export type Database = {
           },
         ]
       }
+      public_course_modules: {
+        Row: {
+          content_html: string | null
+          course_id: string
+          created_at: string
+          icon: string | null
+          id: string
+          items: Json | null
+          module_type: string
+          sort_order: number
+          title: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          content_html?: string | null
+          course_id: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          items?: Json | null
+          module_type?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          content_html?: string | null
+          course_id?: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          items?: Json | null
+          module_type?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_course_modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "public_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_course_registrations: {
         Row: {
           amount_paid: number | null

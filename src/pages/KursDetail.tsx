@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { usePublicCourses, useCourseDates, PublicCourse, PublicCourseDate } from "@/hooks/usePublicCourses";
+import { usePublicCourseModules, PublicCourseModule } from "@/hooks/usePublicCourseModules";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, CreditCard, Smartphone, Calendar, Clock, MapPin } from "lucide-react";
+import { Loader2, CreditCard, Smartphone, Clock, MapPin, BookOpen, ListCheck, CheckSquare, BookA } from "lucide-react";
 import { toast } from "sonner";
 
 export default function KursDetail() {
@@ -61,6 +62,7 @@ export default function KursDetail() {
 
 function CourseDetailView({ course }: { course: PublicCourse }) {
   const { dates } = useCourseDates(course.id);
+  const { modules } = usePublicCourseModules(course.id);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   const youtubeEmbedUrl = course.youtube_url
@@ -136,6 +138,37 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
           </div>
         </section>
 
+        {/* Content */}
+        {descriptionHtml && (
+          <section className="container mx-auto px-6 py-16">
+            <div className="max-w-3xl mx-auto">
+              <p className="text-xs font-medium tracking-[0.12em] uppercase text-muted-foreground mb-3">Kursinhalt</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">Was Sie lernen</h2>
+              <div
+                className="prose prose-neutral max-w-none text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* Modules */}
+        {modules.length > 0 && (
+          <section className="bg-secondary/30">
+            <div className="container mx-auto px-6 py-16">
+              <div className="max-w-4xl mx-auto">
+                <p className="text-xs font-medium tracking-[0.12em] uppercase text-muted-foreground mb-3">Kursmodule</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-10">Kursaufbau</h2>
+                <div className="space-y-6">
+                  {modules.map((mod, idx) => (
+                    <ModuleSection key={mod.id} module={mod} index={idx + 1} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Dates */}
         {dates.length > 0 && (
           <section className="bg-secondary/50">
@@ -171,20 +204,6 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
                   ))}
                 </div>
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* Content */}
-        {descriptionHtml && (
-          <section className="container mx-auto px-6 py-16">
-            <div className="max-w-3xl mx-auto">
-              <p className="text-xs font-medium tracking-[0.12em] uppercase text-muted-foreground mb-3">Kursinhalt</p>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">Was Sie lernen</h2>
-              <div
-                className="prose prose-neutral max-w-none text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-              />
             </div>
           </section>
         )}
@@ -227,6 +246,141 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
     </div>
   );
 }
+
+/* ──── Module renderers ──── */
+
+const MODULE_ICONS: Record<string, React.ReactNode> = {
+  content: <BookOpen className="h-5 w-5" />,
+  steps: <ListCheck className="h-5 w-5" />,
+  checklist: <CheckSquare className="h-5 w-5" />,
+  glossary: <BookA className="h-5 w-5" />,
+};
+
+function ModuleSection({ module: mod, index }: { module: PublicCourseModule; index: number }) {
+  const items = Array.isArray(mod.items) ? mod.items : [];
+
+  return (
+    <Card className="border border-border overflow-hidden">
+      <CardContent className="p-0">
+        <div className="flex items-center gap-4 p-6 border-b border-border bg-muted/30">
+          <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
+            {index}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold text-foreground">{mod.title}</h3>
+            <p className="text-xs text-muted-foreground capitalize">{mod.module_type}</p>
+          </div>
+          <div className="text-muted-foreground">
+            {MODULE_ICONS[mod.module_type] || MODULE_ICONS.content}
+          </div>
+        </div>
+
+        <div className="p-6 space-y-4">
+          {mod.content_html && (
+            <div
+              className="prose prose-neutral max-w-none text-muted-foreground prose-sm"
+              dangerouslySetInnerHTML={{ __html: mod.content_html }}
+            />
+          )}
+
+          {mod.youtube_url && (
+            <div className="aspect-video w-full rounded-lg overflow-hidden border border-border">
+              <iframe
+                src={mod.youtube_url.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")}
+                title={mod.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          )}
+
+          {items.length > 0 && (
+            <>
+              {mod.module_type === "steps" && <StepsRenderer items={items} />}
+              {mod.module_type === "checklist" && <ChecklistRenderer items={items} />}
+              {mod.module_type === "glossary" && <GlossaryRenderer items={items} />}
+              {mod.module_type === "content" && <ContentItemsRenderer items={items} />}
+              {mod.module_type === "faq" && <FAQRenderer items={items} />}
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function StepsRenderer({ items }: { items: any[] }) {
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="flex gap-4 p-4 rounded-lg bg-muted/40">
+          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary text-sm font-bold shrink-0">
+            {item.step || i + 1}
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-foreground">{item.title}</p>
+            {item.description && <p className="text-sm text-muted-foreground mt-1">{item.description}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ChecklistRenderer({ items }: { items: any[] }) {
+  return (
+    <div className="space-y-2">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40">
+          <CheckSquare className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <span className="text-sm text-foreground">{item.label || item.title}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GlossaryRenderer({ items }: { items: any[] }) {
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="p-4 rounded-lg bg-muted/40">
+          <p className="font-semibold text-foreground">{item.term}</p>
+          <p className="text-sm text-muted-foreground mt-1">{item.definition}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ContentItemsRenderer({ items }: { items: any[] }) {
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="p-4 rounded-lg bg-muted/40">
+          <p className="font-semibold text-foreground">{item.title}</p>
+          {item.description && <p className="text-sm text-muted-foreground mt-1">{item.description}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FAQRenderer({ items }: { items: any[] }) {
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="p-4 rounded-lg bg-muted/40">
+          <p className="font-semibold text-foreground">{item.question}</p>
+          <p className="text-sm text-muted-foreground mt-2">{item.answer}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ──── Registration Dialog ──── */
 
 function RegistrationDialog({
   course, dates, open, onOpenChange,
