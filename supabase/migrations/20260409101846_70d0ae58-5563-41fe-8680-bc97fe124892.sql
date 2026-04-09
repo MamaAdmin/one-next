@@ -1,0 +1,1 @@
+ALTER TABLE public.public_courses ADD COLUMN stripe_price_id TEXT;
