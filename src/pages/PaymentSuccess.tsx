@@ -21,8 +21,8 @@ export default function PaymentSuccess() {
         <Card className="max-w-lg w-full">
           <CardContent className="pt-8 pb-8 text-center space-y-6">
             <div className="flex justify-center">
-              <div className="rounded-full bg-green-100 p-4">
-                <CheckCircle className="h-12 w-12 text-green-600" />
+              <div className="rounded-full bg-primary/10 p-4">
+                <CheckCircle className="h-12 w-12 text-primary" />
               </div>
             </div>
 
