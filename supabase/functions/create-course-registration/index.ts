@@ -1,11 +1,23 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const RequestSchema = z.object({
+  courseId: z.string().uuid(),
+  courseDateId: z.string().uuid().nullable().optional(),
+  firstName: z.string().trim().min(1).max(100),
+  lastName: z.string().trim().min(1).max(100),
+  email: z.string().email().max(255),
+  phone: z.string().max(50).optional(),
+  company: z.string().max(200).optional(),
+  paymentMethod: z.enum(["stripe", "twint"]).optional().default("stripe"),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -13,14 +25,22 @@ serve(async (req) => {
   }
 
   try {
-    const { courseId, courseDateId, firstName, lastName, email, phone, company, paymentMethod } = await req.json();
-
-    if (!courseId || !firstName || !lastName || !email) {
-      throw new Error("courseId, firstName, lastName, and email are required");
+    const body = await req.json();
+    const parsed = RequestSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
+    const { courseId, courseDateId, firstName, lastName, email, phone, company, paymentMethod } = parsed.data;
+
     if (paymentMethod === "twint" && !phone) {
-      throw new Error("Phone number is required for Twint payment");
+      return new Response(
+        JSON.stringify({ error: "Phone number is required for Twint payment" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const supabaseClient = createClient(
@@ -36,7 +56,10 @@ serve(async (req) => {
       .single();
 
     if (courseError || !course) {
-      throw new Error("Course not found");
+      return new Response(
+        JSON.stringify({ error: "Course not found" }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Create registration
@@ -50,21 +73,26 @@ serve(async (req) => {
         email,
         phone: phone || null,
         company: company || null,
-        payment_method: paymentMethod || "stripe",
+        payment_method: paymentMethod,
         payment_status: "pending",
         amount_paid: course.price_chf,
       })
       .select()
       .single();
 
-    if (regError) throw regError;
+    if (regError) {
+      console.error("Registration error:", regError);
+      return new Response(
+        JSON.stringify({ error: "Registration failed. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Build payment method types based on selection
     const paymentMethodTypes: string[] = [];
     if (paymentMethod === "twint") {
       paymentMethodTypes.push("twint");
@@ -72,7 +100,6 @@ serve(async (req) => {
       paymentMethodTypes.push("card");
     }
 
-    // Create Stripe Checkout Session
     const lineItems = course.stripe_price_id
       ? [{ price: course.stripe_price_id, quantity: 1 }]
       : [
@@ -119,9 +146,12 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("Error:", error);
-    return new Response(JSON.stringify({ error: (error as Error).message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({ error: "An error occurred. Please try again later." }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
+    );
   }
 });

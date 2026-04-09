@@ -1,19 +1,19 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface CreateParticipantRequest {
-  customer_id: string;
-  email: string;
-  full_name: string;
-}
+const RequestSchema = z.object({
+  customer_id: z.string().uuid(),
+  email: z.string().email().max(255),
+  full_name: z.string().trim().min(1).max(200),
+});
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -22,7 +22,10 @@ const handler = async (req: Request): Promise<Response> => {
     // Verify admin user
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      throw new Error("Missing authorization header");
+      return new Response(
+        JSON.stringify({ error: "Access denied" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
     }
 
     const token = authHeader.replace("Bearer ", "");
@@ -36,7 +39,10 @@ const handler = async (req: Request): Promise<Response> => {
     
     if (authError || !user) {
       console.error("Auth error:", authError);
-      throw new Error("Unauthorized");
+      return new Response(
+        JSON.stringify({ error: "Access denied" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
     }
 
     console.log("User authenticated:", user.id);
@@ -56,22 +62,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (roleError) {
       console.error("Role check error:", roleError);
-      throw new Error("Failed to check admin status");
+      return new Response(
+        JSON.stringify({ error: "Access denied" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      );
     }
 
     if (!roles) {
       console.error("User is not an admin:", user.id);
-      throw new Error("User is not an admin");
+      return new Response(
+        JSON.stringify({ error: "Access denied" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      );
     }
 
     console.log("Admin verified:", user.id);
 
-    // Get request data
-    const { customer_id, email, full_name }: CreateParticipantRequest = await req.json();
-
-    if (!customer_id || !email || !full_name) {
-      throw new Error("Missing required fields");
+    // Get and validate request data
+    const body = await req.json();
+    const parsed = RequestSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
     }
+
+    const { customer_id, email, full_name } = parsed.data;
 
     console.log("Creating participant:", { email, full_name, customer_id });
 
@@ -87,12 +104,15 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (signUpError) {
       console.error("Sign up error:", signUpError);
-      throw signUpError;
+      return new Response(
+        JSON.stringify({ error: "Could not create participant. Please try again." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
     }
 
     console.log("Auth user created:", authData.user.id);
 
-    // Create participant record (Service Role Key bypasses RLS)
+    // Create participant record
     const { data: participant, error: participantError } = await supabaseAdmin
       .from("participants")
       .insert({
@@ -106,7 +126,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (participantError) {
       console.error("Participant insert error:", participantError);
-      throw participantError;
+      return new Response(
+        JSON.stringify({ error: "Could not create participant record. Please try again." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
     }
 
     console.log("Participant created:", participant.id);
@@ -121,7 +144,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (roleInsertError) {
       console.error("Role insert error:", roleInsertError);
-      // Don't throw - participant is created, role assignment can be retried
     } else {
       console.log("User role assigned");
     }
@@ -140,12 +162,10 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error creating participant:", error);
     return new Response(
-      JSON.stringify({
-        error: error.message || "Ein Fehler ist aufgetreten",
-      }),
+      JSON.stringify({ error: "An error occurred. Please try again later." }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 500,
       }
     );
   }
