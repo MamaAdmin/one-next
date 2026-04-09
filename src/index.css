@@ -234,3 +234,99 @@ All colors MUST be HSL.
 .dark .ql-editor {
   color: hsl(var(--foreground));
 }
+
+/* ===== Course Detail Page Styles ===== */
+.kurs-page {
+  background: hsl(var(--course-cream));
+  color: hsl(var(--course-dark));
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.kurs-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem 3.5rem;
+  background: hsl(var(--course-cream) / 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid hsl(var(--course-dark) / 0.1);
+}
+.kurs-nav-logo { text-decoration: none; display: flex; align-items: center; }
+.kurs-nav-tag { font-size: 0.72rem; font-weight: 300; color: hsl(var(--course-muted)); letter-spacing: 0.08em; text-transform: uppercase; }
+
+.kurs-hero {
+  padding: 11rem 3.5rem 6rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end;
+  max-width: 1100px; margin: 0 auto;
+}
+.kurs-hero-left h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300; font-size: clamp(2.8rem, 5vw, 4.5rem);
+  line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 2rem;
+}
+.kurs-hero-left p { color: hsl(var(--course-muted)); font-weight: 300; font-size: 0.95rem; max-width: 44ch; margin-bottom: 2.5rem; }
+
+.kurs-stat-strip { background: hsl(var(--course-dark)); color: hsl(var(--course-cream)); display: flex; }
+.kurs-stat-item { flex: 1; padding: 2.5rem 3rem; border-right: 1px solid hsl(var(--course-cream) / 0.1); }
+.kurs-stat-item:last-child { border-right: none; }
+.kurs-stat-val { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 2.8rem; line-height: 1; margin-bottom: 0.3rem; }
+.kurs-stat-lbl { font-size: 0.78rem; font-weight: 300; opacity: 0.55; letter-spacing: 0.04em; }
+
+.kurs-section { max-width: 1100px; margin: 0 auto; padding: 6rem 3.5rem; }
+.kurs-section-label { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: hsl(var(--course-muted)); margin-bottom: 1.25rem; }
+.kurs-section h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 1rem; }
+.kurs-section h2 em { font-style: italic; color: hsl(var(--course-muted)); }
+.kurs-section > p { color: hsl(var(--course-muted)); font-weight: 300; font-size: 0.95rem; max-width: 58ch; margin-bottom: 3rem; }
+
+.kurs-section-bg-cream2 { background: hsl(var(--course-cream2)); border-top: 1px solid hsl(var(--course-dark) / 0.06); border-bottom: 1px solid hsl(var(--course-dark) / 0.06); }
+.kurs-section-bg-rose { background: hsl(var(--course-rose-bg)); border-top: 1px solid hsl(var(--course-dark) / 0.06); border-bottom: 1px solid hsl(var(--course-dark) / 0.06); }
+
+.kurs-dates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px; margin-top: 2rem; }
+.kurs-date-card { padding: 2rem; border-radius: 4px; }
+.kurs-mc-rose { background: hsl(var(--course-rose-bg)); }
+.kurs-mc-sage { background: hsl(var(--course-sage-bg)); }
+.kurs-mc-cream2 { background: hsl(var(--course-cream)); }
+.kurs-date-day { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 3.5rem; line-height: 1; margin-bottom: 0.25rem; opacity: 0.25; }
+.kurs-date-month { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 1.2rem; margin-bottom: 0.75rem; }
+.kurs-date-time { font-size: 0.85rem; font-weight: 300; opacity: 0.7; }
+.kurs-date-location { font-size: 0.82rem; font-weight: 300; opacity: 0.55; margin-top: 0.3rem; }
+.kurs-date-notes { font-size: 0.78rem; font-weight: 300; opacity: 0.45; margin-top: 0.5rem; font-style: italic; }
+
+.kurs-content-html { font-size: 0.95rem; font-weight: 300; line-height: 1.8; color: hsl(var(--course-muted)); max-width: 70ch; }
+.kurs-content-html h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 1.4rem; margin: 2rem 0 0.75rem; color: hsl(var(--course-dark)); }
+.kurs-content-html ul { list-style: none; padding: 0; }
+.kurs-content-html li { padding-left: 1.25rem; position: relative; margin-bottom: 0.4rem; }
+.kurs-content-html li::before { content: '–'; position: absolute; left: 0; opacity: 0.3; }
+
+.kurs-quote { max-width: 700px; margin: 0 auto; text-align: center; padding: 7rem 3.5rem; }
+.kurs-quote blockquote { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-style: italic; font-size: clamp(1.4rem, 2.5vw, 2.2rem); line-height: 1.4; margin-bottom: 1.5rem; }
+.kurs-quote-attr { font-size: 0.75rem; font-weight: 300; color: hsl(var(--course-muted)); letter-spacing: 0.08em; text-transform: uppercase; }
+
+.kurs-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 2rem; padding: 6rem 3.5rem; max-width: 1100px; margin: 0 auto; }
+.kurs-cta h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.2; }
+.kurs-cta h2 em { font-style: italic; color: hsl(var(--course-muted)); }
+.kurs-cta p { color: hsl(var(--course-muted)); font-weight: 300; max-width: 48ch; }
+
+.kurs-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.75rem; font-size: 0.85rem; font-weight: 400; letter-spacing: 0.04em; border-radius: 100px; cursor: pointer; text-decoration: none; transition: all 0.2s; border: 1px solid; }
+.kurs-btn-dark { background: hsl(var(--course-dark)); color: hsl(var(--course-cream)); border-color: hsl(var(--course-dark)); }
+.kurs-btn-dark:hover { background: hsl(var(--course-dark2)); }
+.kurs-btn-dark:disabled { opacity: 0.5; cursor: not-allowed; }
+.kurs-btn-outline { background: transparent; color: hsl(var(--course-dark)); border-color: hsl(var(--course-dark) / 0.15); }
+.kurs-btn-outline:hover { border-color: hsl(var(--course-dark)); }
+
+.kurs-footer { border-top: 1px solid hsl(var(--course-dark) / 0.1); display: flex; justify-content: space-between; align-items: center; padding: 2rem 3.5rem; font-size: 0.78rem; font-weight: 300; color: hsl(var(--course-muted)); }
+
+.kurs-fade { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.kurs-fade-in { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .kurs-nav { padding: 1.25rem 1.5rem; }
+  .kurs-hero { grid-template-columns: 1fr; padding: 9rem 1.5rem 4rem; gap: 2rem; }
+  .kurs-section { padding: 4rem 1.5rem; }
+  .kurs-stat-strip { flex-wrap: wrap; }
+  .kurs-stat-item { flex: 1 1 50%; border-bottom: 1px solid hsl(var(--course-cream) / 0.1); }
+  .kurs-footer { flex-direction: column; gap: 1rem; padding: 1.5rem; text-align: center; }
+  .kurs-cta { padding: 4rem 1.5rem; }
+  .kurs-quote { padding: 4rem 1.5rem; }
+}

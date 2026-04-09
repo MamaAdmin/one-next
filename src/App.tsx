@@ -62,6 +62,7 @@ import Analysis from "./pages/Analysis";
 import Impressum from "./pages/Impressum";
 import DynamicPage from "./pages/DynamicPage";
 import Kurse from "./pages/Kurse";
+import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 
 const queryClient = new QueryClient();
