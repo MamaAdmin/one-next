@@ -104,6 +104,71 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Course page design tokens */
+    --course-cream: 30 24% 92%;
+    --course-cream2: 28 20% 87%;
+    --course-rose: 18 80% 83%;
+    --course-rose-bg: 18 90% 93%;
+    --course-sage: 100 25% 80%;
+    --course-sage-bg: 100 30% 90%;
+    --course-dark: 25 14% 14%;
+    --course-dark2: 25 8% 22%;
+    --course-muted: 25 8% 44%;
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 10%;
+    --primary-glow: 0 0% 90%;
+
+    --secondary: 40 20% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 350 40% 30%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 98%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 98%), hsl(0 0% 90%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 10%), hsl(0 0% 14%));
+    --shadow-card: 0 2px 12px -2px hsl(0 0% 0% / 0.3);
+    --shadow-hover: 0 4px 20px -4px hsl(0 0% 98% / 0.15);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --course-cream: 25 14% 14%;
+    --course-cream2: 25 10% 18%;
+    --course-rose: 18 40% 30%;
+    --course-rose-bg: 18 30% 20%;
+    --course-sage: 100 15% 25%;
+    --course-sage-bg: 100 15% 20%;
+    --course-dark: 0 0% 95%;
+    --course-dark2: 0 0% 85%;
+    --course-muted: 25 8% 60%;
   }
 }
 
