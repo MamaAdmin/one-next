@@ -103,8 +103,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/sprint/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/sprint/booking?step=5`,
+      success_url: `${req.headers.get("origin")}/zahlung-erfolgreich?type=sprint&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/sprint-uebersicht/online`,
       metadata: {
         booking_id: bookingId,
       },

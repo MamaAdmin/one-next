@@ -62,6 +62,7 @@ import Analysis from "./pages/Analysis";
 import Impressum from "./pages/Impressum";
 import DynamicPage from "./pages/DynamicPage";
 import Kurse from "./pages/Kurse";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 
@@ -142,6 +143,7 @@ const App = () => (
           <Route path="/analyse" element={<Analysis />} />
           <Route path="/kurse" element={<Kurse />} />
           <Route path="/kurse/:slug" element={<KursDetail />} />
+          <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />
           <Route path="/impressum" element={<Impressum />} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />

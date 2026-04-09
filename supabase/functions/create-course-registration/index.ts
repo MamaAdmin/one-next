@@ -122,7 +122,7 @@ serve(async (req) => {
       line_items: lineItems as any,
       mode: "payment",
       allow_promotion_codes: true,
-      success_url: `${req.headers.get("origin")}/kurse?success=true&registration_id=${registration.id}`,
+      success_url: `${req.headers.get("origin")}/zahlung-erfolgreich?type=kurs&registration_id=${registration.id}`,
       cancel_url: `${req.headers.get("origin")}/kurse?cancelled=true`,
       metadata: {
         registration_id: registration.id,
