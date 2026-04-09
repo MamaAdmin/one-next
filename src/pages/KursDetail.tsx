@@ -456,9 +456,18 @@ function RegistrationDialog({
           phone: form.phone || null, company: form.company || null, paymentMethod: form.paymentMethod,
         },
       });
-      if (error) throw error;
+      if (error) {
+        console.error("Registration edge function error:", error);
+        throw error;
+      }
+      if (data?.error) {
+        console.error("Registration API error:", data.error);
+        toast.error(data.error);
+        return;
+      }
       if (data?.url) window.location.href = data.url;
-    } catch {
+    } catch (err: any) {
+      console.error("Registration error details:", err);
       toast.error("Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");
     } finally {
       setIsLoading(false);
