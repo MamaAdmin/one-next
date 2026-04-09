@@ -251,7 +251,7 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
 
 const MODULE_ICONS: Record<string, React.ReactNode> = {
   content: <BookOpen className="h-5 w-5" />,
-  steps: <ListChecked className="h-5 w-5" />,
+  steps: <ListCheck className="h-5 w-5" />,
   checklist: <CheckSquare className="h-5 w-5" />,
   glossary: <BookA className="h-5 w-5" />,
 };
