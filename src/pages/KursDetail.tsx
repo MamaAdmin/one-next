@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, CreditCard, Smartphone, Clock, MapPin, BookOpen, ListCheck, CheckSquare, BookA } from "lucide-react";
+import { Loader2, CreditCard, Smartphone, Clock, MapPin, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 export default function KursDetail() {
@@ -153,21 +153,9 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
         )}
 
         {/* Modules */}
-        {modules.length > 0 && (
-          <section className="bg-secondary/30">
-            <div className="container mx-auto px-6 py-16">
-              <div className="max-w-4xl mx-auto">
-                <p className="text-xs font-medium tracking-[0.12em] uppercase text-muted-foreground mb-3">Kursmodule</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-10">Kursaufbau</h2>
-                <div className="space-y-6">
-                  {modules.map((mod, idx) => (
-                    <ModuleSection key={mod.id} module={mod} index={idx + 1} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        {modules.length > 0 && modules.map((mod, idx) => (
+          <ModuleSection key={mod.id} module={mod} index={idx + 1} />
+        ))}
 
         {/* Dates */}
         {dates.length > 0 && (
@@ -249,42 +237,36 @@ function CourseDetailView({ course }: { course: PublicCourse }) {
 
 /* ──── Module renderers ──── */
 
-const MODULE_ICONS: Record<string, React.ReactNode> = {
-  content: <BookOpen className="h-5 w-5" />,
-  steps: <ListCheck className="h-5 w-5" />,
-  checklist: <CheckSquare className="h-5 w-5" />,
-  glossary: <BookA className="h-5 w-5" />,
-};
+// Background colors cycle for visual variety
+const SECTION_BGS = [
+  "", // default/transparent
+  "bg-secondary/30",
+  "bg-accent/20",
+  "bg-muted/30",
+];
 
 function ModuleSection({ module: mod, index }: { module: PublicCourseModule; index: number }) {
   const items = Array.isArray(mod.items) ? mod.items : [];
+  const bgClass = SECTION_BGS[index % SECTION_BGS.length];
 
   return (
-    <Card className="border border-border overflow-hidden">
-      <CardContent className="p-0">
-        <div className="flex items-center gap-4 p-6 border-b border-border bg-muted/30">
-          <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
-            {index}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold text-foreground">{mod.title}</h3>
-            <p className="text-xs text-muted-foreground capitalize">{mod.module_type}</p>
-          </div>
-          <div className="text-muted-foreground">
-            {MODULE_ICONS[mod.module_type] || MODULE_ICONS.content}
-          </div>
-        </div>
+    <section className={bgClass}>
+      <div className="container mx-auto px-6 py-16">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium tracking-[0.12em] uppercase text-muted-foreground mb-3">
+            Teil {String(index).padStart(2, "0")}
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">{mod.title}</h2>
 
-        <div className="p-6 space-y-4">
           {mod.content_html && (
             <div
-              className="prose prose-neutral max-w-none text-muted-foreground prose-sm"
+              className="prose prose-neutral max-w-2xl text-muted-foreground mb-8"
               dangerouslySetInnerHTML={{ __html: mod.content_html }}
             />
           )}
 
           {mod.youtube_url && (
-            <div className="aspect-video w-full rounded-lg overflow-hidden border border-border">
+            <div className="aspect-video w-full max-w-3xl rounded-2xl overflow-hidden border border-border shadow-card mb-8">
               <iframe
                 src={mod.youtube_url.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")}
                 title={mod.title}
@@ -297,43 +279,95 @@ function ModuleSection({ module: mod, index }: { module: PublicCourseModule; ind
 
           {items.length > 0 && (
             <>
-              {mod.module_type === "steps" && <StepsRenderer items={items} />}
+              {mod.module_type === "content" && <MosaicRenderer items={items} />}
+              {mod.module_type === "steps" && <StepsGridRenderer items={items} />}
               {mod.module_type === "checklist" && <ChecklistRenderer items={items} />}
-              {mod.module_type === "glossary" && <GlossaryRenderer items={items} />}
-              {mod.module_type === "content" && <ContentItemsRenderer items={items} />}
-              {mod.module_type === "faq" && <FAQRenderer items={items} />}
+              {mod.module_type === "glossary" && <GlossaryGridRenderer items={items} />}
+              {mod.module_type === "faq" && <AccordionModules items={items} />}
             </>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
 
-function StepsRenderer({ items }: { items: any[] }) {
+/* Mosaic cards - for content/tool overview modules */
+const MOSAIC_COLORS = [
+  "bg-primary text-primary-foreground col-span-2",
+  "bg-accent/40",
+  "bg-secondary",
+  "bg-muted",
+  "bg-accent/30",
+];
+
+function MosaicRenderer({ items }: { items: any[] }) {
   return (
-    <div className="space-y-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
+      {items.map((item, i) => {
+        const colorClass = MOSAIC_COLORS[i % MOSAIC_COLORS.length];
+        return (
+          <div key={i} className={`rounded p-6 flex flex-col justify-between min-h-[200px] ${colorClass}`}>
+            <div>
+              {item.eyebrow && (
+                <p className="text-[0.68rem] font-medium tracking-[0.1em] uppercase opacity-55 mb-2">
+                  {item.eyebrow}
+                </p>
+              )}
+              <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+              {item.description && (
+                <p className="text-sm opacity-70 leading-relaxed">{item.description}</p>
+              )}
+            </div>
+            {item.chip && (
+              <span className="inline-block mt-4 px-3 py-1 border border-current rounded-full text-xs opacity-60 w-fit">
+                {item.chip}
+              </span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* Steps grid - colored cards with large step numbers */
+const STEP_COLORS = [
+  "bg-accent/30",
+  "bg-secondary",
+  "bg-muted",
+];
+
+function StepsGridRenderer({ items }: { items: any[] }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5">
       {items.map((item, i) => (
-        <div key={i} className="flex gap-4 p-4 rounded-lg bg-muted/40">
-          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary text-sm font-bold shrink-0">
-            {item.step || i + 1}
+        <div key={i} className={`rounded p-8 ${STEP_COLORS[i % STEP_COLORS.length]}`}>
+          <div className="text-5xl font-bold opacity-15 leading-none mb-4">
+            {String(item.step || i + 1).padStart(2, "0")}
           </div>
-          <div className="flex-1">
-            <p className="font-semibold text-foreground">{item.title}</p>
-            {item.description && <p className="text-sm text-muted-foreground mt-1">{item.description}</p>}
-          </div>
+          <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+          {item.description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+          )}
+          {item.timeline && (
+            <p className="mt-4 text-xs tracking-[0.08em] uppercase text-muted-foreground">
+              {item.timeline}
+            </p>
+          )}
         </div>
       ))}
     </div>
   );
 }
 
+/* Checklist - with checkmarks */
 function ChecklistRenderer({ items }: { items: any[] }) {
   return (
-    <div className="space-y-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
       {items.map((item, i) => (
-        <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40">
-          <CheckSquare className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+        <div key={i} className="flex items-start gap-3 p-4 rounded bg-muted/40">
+          <span className="text-primary mt-0.5 shrink-0">✓</span>
           <span className="text-sm text-foreground">{item.label || item.title}</span>
         </div>
       ))}
@@ -341,41 +375,52 @@ function ChecklistRenderer({ items }: { items: any[] }) {
   );
 }
 
-function GlossaryRenderer({ items }: { items: any[] }) {
+/* Glossary grid - bordered grid items */
+function GlossaryGridRenderer({ items }: { items: any[] }) {
   return (
-    <div className="space-y-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded overflow-hidden">
       {items.map((item, i) => (
-        <div key={i} className="p-4 rounded-lg bg-muted/40">
-          <p className="font-semibold text-foreground">{item.term}</p>
-          <p className="text-sm text-muted-foreground mt-1">{item.definition}</p>
+        <div key={i} className="bg-background p-5">
+          <p className="font-bold text-foreground mb-1">{item.term}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{item.definition}</p>
         </div>
       ))}
     </div>
   );
 }
 
-function ContentItemsRenderer({ items }: { items: any[] }) {
-  return (
-    <div className="space-y-3">
-      {items.map((item, i) => (
-        <div key={i} className="p-4 rounded-lg bg-muted/40">
-          <p className="font-semibold text-foreground">{item.title}</p>
-          {item.description && <p className="text-sm text-muted-foreground mt-1">{item.description}</p>}
-        </div>
-      ))}
-    </div>
-  );
-}
+/* Accordion-style FAQ modules */
+function AccordionModules({ items }: { items: any[] }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
 
-function FAQRenderer({ items }: { items: any[] }) {
   return (
-    <div className="space-y-3">
-      {items.map((item, i) => (
-        <div key={i} className="p-4 rounded-lg bg-muted/40">
-          <p className="font-semibold text-foreground">{item.question}</p>
-          <p className="text-sm text-muted-foreground mt-2">{item.answer}</p>
-        </div>
-      ))}
+    <div className="border-t border-border">
+      {items.map((item, i) => {
+        const isOpen = openIdx === i;
+        return (
+          <div key={i} className="border-b border-border">
+            <button
+              onClick={() => setOpenIdx(isOpen ? null : i)}
+              className="w-full flex items-center gap-4 py-5 text-left hover:opacity-70 transition-opacity"
+            >
+              <span className="text-xs text-muted-foreground tracking-wide min-w-[2rem]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="flex-1 text-lg font-bold text-foreground">
+                {item.question || item.title}
+              </span>
+              <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`} />
+            </button>
+            {isOpen && (
+              <div className="pb-5 pl-10">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item.answer || item.description}
+                </p>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
