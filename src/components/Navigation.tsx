@@ -126,6 +126,10 @@ const Navigation = () => {
               ) : null;
             })}
 
+            <Link to="/kurse" className="text-foreground hover:text-primary transition-colors">
+              Kurse
+            </Link>
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -228,6 +232,14 @@ const Navigation = () => {
                   ))}
                 </div>
               ))}
+
+              <Link
+                to="/kurse"
+                className="block py-2 px-4 hover:bg-accent rounded-md font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Kurse
+              </Link>
 
               {user ? (
                 <>

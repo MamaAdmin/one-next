@@ -61,6 +61,8 @@ import Contact from "./pages/Contact";
 import Analysis from "./pages/Analysis";
 import Impressum from "./pages/Impressum";
 import DynamicPage from "./pages/DynamicPage";
+import Kurse from "./pages/Kurse";
+import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 
 const queryClient = new QueryClient();
 
@@ -109,7 +111,8 @@ const App = () => (
           <Route path="/admin/lms/toolbox" element={<LMSToolboxDashboard />} />
           <Route path="/admin/lms/toolbox/new" element={<LMSToolboxEditor />} />
           <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
-            <Route path="/admin/bmad/sessions" element={<BMADSessionDashboard />} />
+          <Route path="/admin/bmad/sessions" element={<BMADSessionDashboard />} />
+          <Route path="/admin/kurse" element={<PublicCourseDashboard />} />
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
             <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
             <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
@@ -136,6 +139,7 @@ const App = () => (
            <Route path="/voice-bot" element={<VoiceBot />} />
           <Route path="/kontakt" element={<Contact />} />
           <Route path="/analyse" element={<Analysis />} />
+          <Route path="/kurse" element={<Kurse />} />
           <Route path="/impressum" element={<Impressum />} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
