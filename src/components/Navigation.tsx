@@ -126,6 +126,10 @@ const Navigation = () => {
               ) : null;
             })}
 
+            <Link to="/kurse" className="text-foreground hover:text-primary transition-colors">
+              Kurse
+            </Link>
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
