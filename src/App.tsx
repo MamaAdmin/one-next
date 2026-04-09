@@ -139,6 +139,7 @@ const App = () => (
            <Route path="/voice-bot" element={<VoiceBot />} />
           <Route path="/kontakt" element={<Contact />} />
           <Route path="/analyse" element={<Analysis />} />
+          <Route path="/kurse" element={<Kurse />} />
           <Route path="/impressum" element={<Impressum />} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
