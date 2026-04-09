@@ -76,7 +76,7 @@ const Navigation = () => {
       <div className="container mx-auto px-6 py-2">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <span className="h-8 w-8 rounded-full bg-foreground inline-block" aria-label="one-next Logo" />
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/Y7p4K5s0ZYMhiUT4kyDR1QHgUs42/uploads/1760245953105-one-next-logo-new.png" alt="one-next Logo" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop Navigation - Dynamic */}
