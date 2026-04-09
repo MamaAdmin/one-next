@@ -14,6 +14,7 @@ export interface PublicCourse {
   max_participants: number | null;
   is_active: boolean;
   slug: string | null;
+  stripe_price_id: string | null;
   sort_order: number;
   created_at: string;
   updated_at: string;
