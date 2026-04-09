@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, CreditCard, Smartphone, Clock, MapPin, BookOpen, ListChecked, CheckSquare, BookA } from "lucide-react";
+import { Loader2, CreditCard, Smartphone, Clock, MapPin, BookOpen, ListCheck, CheckSquare, BookA } from "lucide-react";
 import { toast } from "sonner";
 
 export default function KursDetail() {
