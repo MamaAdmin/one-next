@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Plus, Trash2, Calendar, Users, Video, Edit } from "lucide-react";
@@ -107,112 +107,103 @@ export default function PublicCourseDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-4 py-8 mt-32 flex-1">
-        <Tabs defaultValue="courses">
-          <TabsList>
-            <TabsTrigger value="courses">Kurse</TabsTrigger>
-            <TabsTrigger value="dates" disabled={!selectedCourseId}>Termine</TabsTrigger>
-            <TabsTrigger value="registrations" disabled={!selectedCourseId}>Anmeldungen</TabsTrigger>
-          </TabsList>
+      <main className="container mx-auto px-4 py-8 mt-32 flex-1 space-y-8">
+        {/* Kurse */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Kursangebot</CardTitle>
+                <CardDescription>Klicken Sie auf einen Kurs, um Termine und Anmeldungen zu sehen</CardDescription>
+              </div>
+              <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={resetForm}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Neuer Kurs
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Neuer Kurs</DialogTitle>
+                    <DialogDescription>Erstellen Sie einen neuen Kurs</DialogDescription>
+                  </DialogHeader>
+                  <CourseForm form={form} setForm={setForm} />
+                  <DialogFooter>
+                    <Button onClick={handleCreate}>Erstellen</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Kurs</TableHead>
+                  <TableHead>Preis</TableHead>
+                  <TableHead>Max. TN</TableHead>
+                  <TableHead>Video</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Aktionen</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {courses.map((course) => (
+                  <TableRow
+                    key={course.id}
+                    className={`cursor-pointer ${selectedCourseId === course.id ? "bg-primary/10 border-l-2 border-l-primary" : "hover:bg-muted/30"}`}
+                    onClick={() => setSelectedCourseId(selectedCourseId === course.id ? null : course.id)}
+                  >
+                    <TableCell className="font-medium">{course.title}</TableCell>
+                    <TableCell>CHF {course.price_chf}</TableCell>
+                    <TableCell>{course.max_participants || "–"}</TableCell>
+                    <TableCell>
+                      {course.youtube_url ? <Video className="h-4 w-4 text-primary" /> : "–"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={course.is_active ? "default" : "secondary"}>
+                        {course.is_active ? "Aktiv" : "Inaktiv"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openEdit(course); }}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteCourse(course.id); }}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-          <TabsContent value="courses">
+        {/* Termine & Anmeldungen – sichtbar wenn Kurs ausgewählt */}
+        {selectedCourseId && (
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Termine */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Kursangebot</CardTitle>
-                    <CardDescription>Verwalten Sie Ihre öffentlichen Kurse</CardDescription>
-                  </div>
-                  <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                    <DialogTrigger asChild>
-                      <Button onClick={resetForm}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Neuer Kurs
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Neuer Kurs</DialogTitle>
-                        <DialogDescription>Erstellen Sie einen neuen Kurs</DialogDescription>
-                      </DialogHeader>
-                      <CourseForm form={form} setForm={setForm} />
-                      <DialogFooter>
-                        <Button onClick={handleCreate}>Erstellen</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Kurs</TableHead>
-                      <TableHead>Preis</TableHead>
-                      <TableHead>Max. TN</TableHead>
-                      <TableHead>Video</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Aktionen</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {courses.map((course) => (
-                      <TableRow
-                        key={course.id}
-                        className={selectedCourseId === course.id ? "bg-muted/50" : "cursor-pointer hover:bg-muted/30"}
-                        onClick={() => setSelectedCourseId(course.id)}
-                      >
-                        <TableCell className="font-medium">{course.title}</TableCell>
-                        <TableCell>CHF {course.price_chf}</TableCell>
-                        <TableCell>{course.max_participants || "–"}</TableCell>
-                        <TableCell>
-                          {course.youtube_url ? (
-                            <Video className="h-4 w-4 text-primary" />
-                          ) : (
-                            "–"
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={course.is_active ? "default" : "secondary"}>
-                            {course.is_active ? "Aktiv" : "Inaktiv"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openEdit(course); }}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteCourse(course.id); }}>
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="dates">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-lg">
                       <Calendar className="h-5 w-5" />
-                      Kurstermine
+                      Termine
                     </CardTitle>
                     <CardDescription>
-                      Termine für: {courses.find((c) => c.id === selectedCourseId)?.title}
+                      {courses.find((c) => c.id === selectedCourseId)?.title}
                     </CardDescription>
                   </div>
                   <Dialog open={isDateOpen} onOpenChange={setIsDateOpen}>
                     <DialogTrigger asChild>
-                      <Button>
+                      <Button size="sm">
                         <Plus className="mr-2 h-4 w-4" />
-                        Termin hinzufügen
+                        Termin
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
@@ -251,98 +242,68 @@ export default function PublicCourseDashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Datum</TableHead>
-                      <TableHead>Zeit</TableHead>
-                      <TableHead>Ort</TableHead>
-                      <TableHead>Notizen</TableHead>
-                      <TableHead>Aktionen</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                {dates.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">Keine Termine vorhanden</p>
+                ) : (
+                  <div className="space-y-3">
                     {dates.map((d) => (
-                      <TableRow key={d.id}>
-                        <TableCell>{new Date(d.event_date).toLocaleDateString("de-CH")}</TableCell>
-                        <TableCell>{d.start_time}{d.end_time ? ` – ${d.end_time}` : ""}</TableCell>
-                        <TableCell>{d.location || "–"}</TableCell>
-                        <TableCell>{d.notes || "–"}</TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="icon" onClick={() => deleteDate(d.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
+                      <div key={d.id} className="flex items-center justify-between p-3 rounded-md border">
+                        <div>
+                          <p className="font-medium">{new Date(d.event_date).toLocaleDateString("de-CH")}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {d.start_time}{d.end_time ? ` – ${d.end_time}` : ""} · {d.location || "Kein Ort"}
+                          </p>
+                          {d.notes && <p className="text-xs text-muted-foreground mt-1">{d.notes}</p>}
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => deleteDate(d.id)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
                     ))}
-                    {dates.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground">
-                          Keine Termine vorhanden
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="registrations">
+            {/* Anmeldungen */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Users className="h-5 w-5" />
-                  Anmeldungen
+                  Anmeldungen ({registrations.length})
                 </CardTitle>
                 <CardDescription>
-                  Anmeldungen für: {courses.find((c) => c.id === selectedCourseId)?.title}
+                  {courses.find((c) => c.id === selectedCourseId)?.title}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>E-Mail</TableHead>
-                      <TableHead>Telefon</TableHead>
-                      <TableHead>Firma</TableHead>
-                      <TableHead>Zahlung</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Datum</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                {registrations.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">Keine Anmeldungen vorhanden</p>
+                ) : (
+                  <div className="space-y-3">
                     {registrations.map((r) => (
-                      <TableRow key={r.id}>
-                        <TableCell>{r.first_name} {r.last_name}</TableCell>
-                        <TableCell>{r.email}</TableCell>
-                        <TableCell>{r.phone || "–"}</TableCell>
-                        <TableCell>{r.company || "–"}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{r.payment_method === "twint" ? "Twint" : "Karte"}</Badge>
-                        </TableCell>
-                        <TableCell>
+                      <div key={r.id} className="p-3 rounded-md border space-y-1">
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium">{r.first_name} {r.last_name}</p>
                           <Badge variant={r.payment_status === "paid" ? "default" : "secondary"}>
-                            {r.payment_status}
+                            {r.payment_status === "paid" ? "Bezahlt" : r.payment_status}
                           </Badge>
-                        </TableCell>
-                        <TableCell>{new Date(r.registered_at).toLocaleDateString("de-CH")}</TableCell>
-                      </TableRow>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{r.email}</p>
+                        <div className="flex gap-3 text-xs text-muted-foreground">
+                          {r.phone && <span>📱 {r.phone}</span>}
+                          {r.company && <span>🏢 {r.company}</span>}
+                          <span>{r.payment_method === "twint" ? "Twint" : "Karte"}</span>
+                          <span>{new Date(r.registered_at).toLocaleDateString("de-CH")}</span>
+                        </div>
+                      </div>
                     ))}
-                    {registrations.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center text-muted-foreground">
-                          Keine Anmeldungen vorhanden
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
 
         {/* Edit Dialog */}
         <Dialog open={!!editingCourse} onOpenChange={(open) => !open && setEditingCourse(null)}>
