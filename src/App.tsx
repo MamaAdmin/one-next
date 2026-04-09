@@ -141,6 +141,7 @@ const App = () => (
           <Route path="/kontakt" element={<Contact />} />
           <Route path="/analyse" element={<Analysis />} />
           <Route path="/kurse" element={<Kurse />} />
+          <Route path="/kurse/:slug" element={<KursDetail />} />
           <Route path="/impressum" element={<Impressum />} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
