@@ -2009,6 +2009,170 @@ export type Database = {
         }
         Relationships: []
       }
+      public_course_dates: {
+        Row: {
+          course_id: string
+          created_at: string
+          end_time: string | null
+          event_date: string
+          id: string
+          location: string | null
+          notes: string | null
+          start_time: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          end_time?: string | null
+          event_date: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          start_time: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          end_time?: string | null
+          event_date?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_course_dates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "public_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      public_course_registrations: {
+        Row: {
+          amount_paid: number | null
+          company: string | null
+          course_date_id: string | null
+          course_id: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          payment_method: string
+          payment_status: string
+          phone: string | null
+          registered_at: string
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          company?: string | null
+          course_date_id?: string | null
+          course_id: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          payment_method?: string
+          payment_status?: string
+          phone?: string | null
+          registered_at?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          company?: string | null
+          course_date_id?: string | null
+          course_id?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          payment_method?: string
+          payment_status?: string
+          phone?: string | null
+          registered_at?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_course_registrations_course_date_id_fkey"
+            columns: ["course_date_id"]
+            isOneToOne: false
+            referencedRelation: "public_course_dates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_course_registrations_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "public_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      public_courses: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          description_html: string | null
+          featured_image: string | null
+          id: string
+          is_active: boolean
+          max_participants: number | null
+          price_chf: number
+          slug: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_html?: string | null
+          featured_image?: string | null
+          id?: string
+          is_active?: boolean
+          max_participants?: number | null
+          price_chf?: number
+          slug?: string | null
+          sort_order?: number
+          title: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_html?: string | null
+          featured_image?: string | null
+          id?: string
+          is_active?: boolean
+          max_participants?: number | null
+          price_chf?: number
+          slug?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       seo_redirects: {
         Row: {
           created_at: string | null
