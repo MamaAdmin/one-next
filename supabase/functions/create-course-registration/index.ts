@@ -73,22 +73,26 @@ serve(async (req) => {
     }
 
     // Create Stripe Checkout Session
+    const lineItems = course.stripe_price_id
+      ? [{ price: course.stripe_price_id, quantity: 1 }]
+      : [
+          {
+            price_data: {
+              currency: "chf",
+              product_data: {
+                name: course.title,
+                description: course.description || undefined,
+              },
+              unit_amount: Math.round(course.price_chf * 100),
+            },
+            quantity: 1,
+          },
+        ];
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: paymentMethodTypes as any,
       customer_email: email,
-      line_items: [
-        {
-          price_data: {
-            currency: "chf",
-            product_data: {
-              name: course.title,
-              description: course.description || undefined,
-            },
-            unit_amount: Math.round(course.price_chf * 100),
-          },
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems as any,
       mode: "payment",
       success_url: `${req.headers.get("origin")}/kurse?success=true&registration_id=${registration.id}`,
       cancel_url: `${req.headers.get("origin")}/kurse?cancelled=true`,

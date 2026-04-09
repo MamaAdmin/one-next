@@ -2185,6 +2185,7 @@ export type Database = {
           price_chf: number
           slug: string | null
           sort_order: number
+          stripe_price_id: string | null
           title: string
           updated_at: string
           youtube_url: string | null
@@ -2201,6 +2202,7 @@ export type Database = {
           price_chf?: number
           slug?: string | null
           sort_order?: number
+          stripe_price_id?: string | null
           title: string
           updated_at?: string
           youtube_url?: string | null
@@ -2217,6 +2219,7 @@ export type Database = {
           price_chf?: number
           slug?: string | null
           sort_order?: number
+          stripe_price_id?: string | null
           title?: string
           updated_at?: string
           youtube_url?: string | null
