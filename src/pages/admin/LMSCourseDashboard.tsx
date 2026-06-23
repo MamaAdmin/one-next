@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2, Settings } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import {
   BookIcon, 
   LessonIcon, 
@@ -27,7 +27,6 @@ import {
   TaskIcon,
   PlusIcon,
   SearchIcon,
-  FilterIcon,
   DownloadIcon,
   DotsIcon,
   SortIcon

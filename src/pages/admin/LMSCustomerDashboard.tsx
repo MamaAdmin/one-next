@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Building2, Mail, User, Trash2, Edit } from "lucide-react";
-import { toast } from "sonner";
+
 const LMSCustomerDashboard = () => {
   const {
     isAdmin,

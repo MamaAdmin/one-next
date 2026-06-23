@@ -27,7 +27,7 @@ import {
   CompassIcon,
   LinkIcon
 } from "@/components/ui/custom-icons";
-import { FileText, UserPlus, Users } from "lucide-react";
+import { FileText, UserPlus } from "lucide-react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();

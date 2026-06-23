@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
-import heroImage from "@/assets/hero-ai-illustration.jpg";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 

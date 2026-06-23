@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { StarburstIcon, ArrowsOutIcon, GridIcon, BracketsIcon, MessageIcon } from "@/components/ui/custom-icons";
+import { StarburstIcon, ArrowsOutIcon, GridIcon, MessageIcon } from "@/components/ui/custom-icons";
 const Services = () => {
   const services = [{
     icon: StarburstIcon,

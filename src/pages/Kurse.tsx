@@ -6,7 +6,7 @@ import { SEO } from "@/components/SEO";
 import { usePublicCourses, useCourseDates, PublicCourse } from "@/hooks/usePublicCourses";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Calendar, MapPin, Clock } from "lucide-react";
+import { Loader2, Calendar } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Kurse() {
