@@ -271,20 +271,6 @@ export default function BMADSessionDetail() {
     }
   };
 
-  const handleApprove = async (artifactId: string, isApproved: boolean) => {
-    try {
-      const { error } = await supabase.functions.invoke('bmad-approve-artifact', {
-        body: { artifact_id: artifactId, is_approved: isApproved }
-      });
-
-      if (error) throw error;
-
-      toast.success(isApproved ? "Artifact genehmigt" : "Artifact abgelehnt");
-    } catch (error) {
-      console.error("Error approving artifact:", error);
-      toast.error("Fehler beim Genehmigen des Artifacts");
-    }
-  };
 
   const handleRunAllPhases = async () => {
     if (!sessionId) return;
