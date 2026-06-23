@@ -118,7 +118,7 @@ const ProblemFramingWorkshop = () => {
                   <h3 className="text-xl font-semibold">Ziel</h3>
                   <p className="text-muted-foreground">
                     Eine <strong>klare, fokussierte und testbare</strong> Problemformulierung erstellen, 
-                    die als Grundlage für Ihren (KI) Design Sprint dient.
+                    die als Grundlage für Ihren Design Sprint dient.
                   </p>
                 </CardContent>
               </Card>
@@ -177,7 +177,7 @@ const ProblemFramingWorkshop = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold">Decider</p>
+                      <p className="font-semibold">Decider (entscheidungsbefugte Person)</p>
                       <p className="text-sm text-muted-foreground">Entscheidungsbefugt</p>
                     </div>
                   </div>
@@ -502,7 +502,7 @@ const ProblemFramingWorkshop = () => {
                 <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <p className="text-muted-foreground">
                   <strong className="text-foreground">Sprint-Ready-Zustand:</strong> Alle 
-                  Voraussetzungen (Entscheider, Nutzer, Testbarkeit) sind geklärt.
+                  Voraussetzungen (Decider, Nutzer, Testbarkeit) sind geklärt.
                 </p>
               </div>
               <div className="flex items-start gap-3">
