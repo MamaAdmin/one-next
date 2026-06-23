@@ -33,7 +33,7 @@ const AboutUs = () => {
     url: "https://one-next.de/about-us"
   }])];
   return <>
-      <SEO title="Über one-next | Julia Haitz - AI & Innovation Expertin" description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für AI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact." keywords="Julia Haitz, one-next, AI Expertin, Design Sprint, Innovation Consulting, KI-Beratung" canonical="https://one-next.de/about-us" ogType="profile" structuredData={structuredData} />
+      <SEO title="Über one-next | Julia Haitz - KI AI & Innovation Expertin Innovation Expertin" description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für KI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact." keywords="Julia Haitz, one-next, KI-Expertin, Design Sprint, Innovation Consulting, KI-Beratung" canonical="https://one-next.de/about-us" ogType="profile" structuredData={structuredData} />
       <div className="min-h-screen bg-gradient-subtle">
       <Navigation />
       
@@ -42,7 +42,7 @@ const AboutUs = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-6 animate-fade-in">
             <InlineTextField value={content.hero_title || 'Über one-next'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold" placeholder="Hero title" as="h1" />
-            <InlineTextArea value={content.hero_description || 'Wir sind ein innovatives AI-Entwicklungsunternehmen mit Sitz in Deutschland, das Unternehmen dabei hilft, das volle Potenzial künstlicher Intelligenz zu nutzen.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" placeholder="Hero description" minRows={3} />
+            <InlineTextArea value={content.hero_description || 'Wir sind ein innovatives KI-Entwicklungsunternehmen mit Sitz in Deutschland, das Unternehmen dabei hilft, das volle Potenzial künstlicher Intelligenz zu nutzen.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" placeholder="Hero description" minRows={3} />
           </div>
         </div>
       </section>
@@ -61,7 +61,7 @@ const AboutUs = () => {
             <CardContent className="p-8">
               <div className="grid md:grid-cols-[auto_1fr] gap-8 items-center">
                 <Avatar className="h-48 w-48">
-                  <AvatarImage src={juliaProfile} alt="Julia Haitz, Gründerin und CEO von one-next, Expertin für AI Design Sprints und Innovation" />
+                  <AvatarImage src={juliaProfile} alt="Julia Haitz, Gründerin und CEO von one-next, Expertin für KI Design Sprints und Innovation" />
                   <AvatarFallback>JH</AvatarFallback>
                 </Avatar>
                 

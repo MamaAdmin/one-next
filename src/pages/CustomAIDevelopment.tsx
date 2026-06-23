@@ -26,13 +26,13 @@ const CustomAIDevelopment = () => {
   const structuredData = [
     createServiceSchema(
       "Individuelle KI-Entwicklung mit BMAD",
-      "Maßgeschneiderte AI-Lösungen von der Konzeption bis zur Umsetzung. Agile Entwicklung mit dem BMAD-Framework für schnelle, iterative Erfolge.",
+      "Maßgeschneiderte KI-Lösungen von der Konzeption bis zur Umsetzung. Strukturiert nach dem BMAD-Framework für klare, umsetzungsreife KI-Projekte.",
       "https://one-next.de/custom-ai-development"
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
       { name: "Services", url: "https://one-next.de/#services" },
-      { name: "Custom AI Development", url: "https://one-next.de/custom-ai-development" }
+      { name: "Individuelle KI-Entwicklung", url: "https://one-next.de/custom-ai-development" }
     ])
   ];
 
@@ -52,7 +52,7 @@ const CustomAIDevelopment = () => {
     {
       icon: GitBranch,
       title: "BMAD-Integration",
-      description: "Alle Ergebnisse aus Problem Framing & Design Sprint werden in das BMAD-Modell überführt. Damit entsteht ein vollständiger Projekt-Blueprint für die KI-Entwicklung.",
+      description: "Die Ergebnisse aus Problem Framing und Design Sprint überführen wir in einen strukturierten BMAD-Blueprint – einen vollständigen Bauplan für die KI-Entwicklung.",
       result: "Vollständiger Blueprint für externe Entwickler."
     }
   ];
@@ -105,9 +105,9 @@ const CustomAIDevelopment = () => {
   return (
     <>
       <SEO
-        title="Custom AI Development | Individuelle KI-Lösungen | one-next"
-        description="Maßgeschneiderte AI-Entwicklung mit dem BMAD-Framework. Von der Konzeption bis zur Umsetzung - agil, iterativ und business-fokussiert."
-        keywords="KI-Entwicklung, Custom AI, BMAD Framework, AI Consulting, Individuelle AI-Lösungen, Agile AI Development"
+        title="Individuelle KI-Entwicklung | KI-Lösungen mit BMAD | one-next"
+        description="Von der Idee zum umsetzungsreifen KI-Projekt: Mit dem BMAD-Ansatz bringt one-next Ihr Unternehmen mit maßgeschneiderten KI-Lösungen auf die nächste Stufe."
+        keywords="KI-Entwicklung, Individuelle KI-Entwicklung, BMAD Framework, KI-Beratung, KI-Lösungen, Blueprint"
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
@@ -133,11 +133,11 @@ const CustomAIDevelopment = () => {
             {/* Badge with Icon */}
             <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
               <Target className="w-5 h-5" />
-              <span className="font-semibold">Custom AI Development</span>
+              <span className="font-semibold">Individuelle KI-Entwicklung</span>
             </div>
             
             <InlineTextField
-              value={content.hero_title || "Individuelle KI-Entwicklung mit dem BMAD-Ansatz"}
+              value={content.hero_title || "Von der Idee zum umsetzungsreifen KI-Projekt"}
               onSave={(value) => updateContent("hero_title", value, "text")}
               isEditMode={isEditMode}
               as="h1"
@@ -145,7 +145,7 @@ const CustomAIDevelopment = () => {
             />
             
             <InlineTextArea
-              value={content.hero_description || "Nicht jedes Unternehmen verfügt über die Kapazitäten oder das Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Mit unserem BMAD-Ansatz schaffen wir eine strukturierte Brücke von der ersten Idee bis zur Übergabe an externe Entwicklerteams."}
+              value={content.hero_description || "Nicht jedes Unternehmen hat die Kapazität oder das interne Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Wir bringen Ihre Idee in eine klare, umsetzungsreife Form – von der ersten Problemdefinition bis zum vollständigen Blueprint, mit dem ein Entwicklungsteam direkt starten kann. Strukturiert nach dem BMAD-Framework."}
               onSave={(value) => updateContent("hero_description", value, "text")}
               isEditMode={isEditMode}
               className="text-xl text-white/90 leading-relaxed"
@@ -209,7 +209,7 @@ const CustomAIDevelopment = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               <InlineTextField
-                value={content.bmad_title || "✅ Was durch das BMAD-Modell schon fertig ist"}
+                value={content.bmad_title || "✅ Das ist in Ihrem BMAD-Blueprint bereits enthalten"}
                 onSave={(value) => updateContent("bmad_title", value, "text")}
                 isEditMode={isEditMode}
                 as="h2"

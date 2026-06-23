@@ -32,7 +32,7 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
               />
             </div>
             <InlineTextArea
-              value={content.company_description || 'Ihr vertrauenswürdiger Partner für AI-Entwicklung. Wir bringen Ihr Unternehmen mit maßgeschneiderter Machine Learning Software auf die nächste Stufe.'}
+              value={content.company_description || 'Ihr Partner für individuelle KI-Entwicklung. Wir bringen Ihre Idee strukturiert bis zur Umsetzungsreife – von der Problemdefinition bis zum fertigen Blueprint.'}
               onSave={(value) => updateContent('company_description', value)}
               isEditMode={isEditMode}
               className="text-background/80 mb-6 leading-relaxed"

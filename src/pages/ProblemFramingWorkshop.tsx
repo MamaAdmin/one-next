@@ -403,7 +403,7 @@ const ProblemFramingWorkshop = () => {
                       Fokus liegt auf <strong>Moderation, Dialog und individuellem Zuschnitt</strong> auf Ihre spezifische Situation.
                     </p>
                     <p className="text-muted-foreground">
-                      <strong className="text-foreground">AI Design Sprint:</strong> Arbeitet mit bewährten Templates, KI-gestützten Tools 
+                      <strong className="text-foreground">KI Design Sprint:</strong> Arbeitet mit bewährten Templates, KI-gestützten Tools 
                       und einem <strong>strukturierten 5-Tage-Prozess</strong> – perfekt, wenn die Challenge bereits klar ist.
                     </p>
                   </div>

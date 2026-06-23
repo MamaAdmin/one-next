@@ -79,7 +79,7 @@ const DesignSprintWorkshop = () => {
             <div className="relative">
               <img 
                 src={workshopImage} 
-                alt="AI Design Sprint Workshop mit Teilnehmern und Facilitator bei der Entwicklung eines Prototyps" 
+                alt="KI Design Sprint Workshop mit Teilnehmern und Facilitator bei der Entwicklung eines Prototyps" 
                 className="rounded-2xl shadow-2xl w-full h-auto"
               />
             </div>
@@ -102,7 +102,7 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-xl font-semibold">Ziel</h3>
                   <p className="text-muted-foreground">
-                    Von der <strong>Challenge zur umsetzbaren AI-Lösung</strong> in 2 Tagen – 
+                    Von der <strong>Challenge zur umsetzbaren KI-Lösung</strong> in 2 Tagen – 
                     mit validiertem Konzept, Machbarkeitsanalyse und klarem Implementierungsplan.
                   </p>
                 </CardContent>
@@ -260,7 +260,7 @@ const DesignSprintWorkshop = () => {
               Workshop-Agenda <span className="text-primary">(2 Tage intensiv)</span>
             </h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Strukturierter Prozess von der Challenge zur umsetzbaren AI-Lösung
+              Strukturierter Prozess von der Challenge zur umsetzbaren KI-Lösung
             </p>
 
             {/* Tag 1 */}
@@ -286,7 +286,7 @@ const DesignSprintWorkshop = () => {
               <div className="space-y-4 ml-18">
                 {[
                   { title: "Challenge-Mapping", time: "60'", desc: "Problem verstehen, Kontext klären, Zielgruppe definieren" },
-                  { title: "AI-Potenzial-Analyse", time: "90'", desc: "Wo kann AI wirklich Mehrwert schaffen? Use Cases identifizieren und bewerten" },
+                  { title: "KI-Potenzial-Analyse", time: "90'", desc: "Wo kann AI wirklich Mehrwert schaffen? Use Cases identifizieren und bewerten" },
                   { title: "Zieldefinition & Erfolgskriterien", time: "60'", desc: "Konkrete, messbare Ziele für den Sprint festlegen" },
                   { title: "Lösungs-Ideation", time: "120'", desc: "Brainstorming, Crazy 8s, erste Lösungsansätze entwickeln" }
                 ].map((step, index) => (
@@ -373,7 +373,7 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-lg font-semibold">Machbarkeitsanalyse</h3>
                   <p className="text-sm text-muted-foreground">
-                    Technische, wirtschaftliche und organisatorische Bewertung der AI-Potenziale
+                    Technische, wirtschaftliche und organisatorische Bewertung der KI-Potenziale
                   </p>
                 </CardContent>
               </Card>
@@ -406,12 +406,12 @@ const DesignSprintWorkshop = () => {
         </div>
       </section>
 
-      {/* Warum ein AI Design Sprint Workshop? */}
+      {/* Warum ein KI Design Sprint Workshop? */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">
-              Warum ein AI Design Sprint <span className="text-primary">Workshop?</span>
+              Warum ein KI Design Sprint <span className="text-primary">Workshop?</span>
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="border-border hover:border-primary/50 transition-all">
@@ -494,7 +494,7 @@ const DesignSprintWorkshop = () => {
                   <Target className="w-8 h-8 text-primary" />
                   <h3 className="text-lg font-semibold">AI Opportunity Matrix</h3>
                   <p className="text-sm text-muted-foreground">
-                    Systematische Bewertung von AI-Potenzialen nach Wert und Machbarkeit
+                    Systematische Bewertung von KI-Potenzialen nach Wert und Machbarkeit
                   </p>
                 </CardContent>
               </Card>
@@ -595,12 +595,12 @@ const DesignSprintWorkshop = () => {
                 <h2 className="text-4xl font-bold">
                   Bereit für Ihren{" "}
                   <span className="bg-gradient-primary bg-clip-text text-transparent">
-                    AI Design Sprint Workshop?
+                    KI Design Sprint Workshop?
                   </span>
                 </h2>
                 
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Lassen Sie uns gemeinsam Ihre AI-Potenziale systematisch erschließen
+                  Lassen Sie uns gemeinsam Ihre KI-Potenziale systematisch erschließen
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto pt-4">

@@ -23,27 +23,27 @@ const AIDesignSprint = () => {
     content,
     updateContent
   } = usePageContent('sprint-uebersicht');
-  const structuredData = [createServiceSchema("AI Design Sprint Workshop", "Identifizieren Sie AI-Potenziale und entwickeln Sie innovative Lösungen in einem strukturierten 2-Tage Workshop. Von der Challenge zum getesteten Prototyp.", "https://one-next.de/sprint-uebersicht"), createBreadcrumbSchema([{
+  const structuredData = [createServiceSchema("KI Design Sprint Workshop", "Identifizieren Sie KI-Potenziale und entwickeln Sie innovative Lösungen in einem strukturierten 2-Tage Workshop. Von der Challenge zum getesteten Prototyp.", "https://one-next.de/sprint-uebersicht"), createBreadcrumbSchema([{
     name: "Home",
     url: "https://one-next.de/"
   }, {
     name: "Services",
     url: "https://one-next.de/#services"
   }, {
-    name: "AI Design Sprint",
+    name: "KI Design Sprint",
     url: "https://one-next.de/sprint-uebersicht"
   }]), createFAQSchema([{
-    question: "Was ist ein AI Design Sprint?",
-    answer: "Ein AI Design Sprint ist ein strukturierter 2-Tage Workshop, in dem Sie systematisch AI-Potenziale identifizieren, Lösungsansätze entwickeln und einen ersten Prototyp testen."
+    question: "Was ist ein KI Design Sprint?",
+    answer: "Ein KI Design Sprint ist ein strukturierter 2-Tage Workshop, in dem Sie systematisch KI-Potenziale identifizieren, Lösungsansätze entwickeln und einen ersten Prototyp testen."
   }, {
-    question: "Für wen eignet sich der AI Design Sprint?",
-    answer: "Der Workshop richtet sich an Unternehmen, die AI-Potenziale entdecken, Innovation fördern und schnell validierte Lösungen entwickeln möchten."
+    question: "Für wen eignet sich der KI Design Sprint?",
+    answer: "Der Workshop richtet sich an Unternehmen, die KI-Potenziale entdecken, Innovation fördern und schnell validierte Lösungen entwickeln möchten."
   }, {
     question: "Was ist der Unterschied zwischen Workshop und Online Sprint?",
     answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
   }])];
   return <>
-      <SEO title="AI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie AI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="AI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
+      <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
       <div className="min-h-screen">
       <Navigation />
       
@@ -59,10 +59,10 @@ const AIDesignSprint = () => {
             {/* Badge with Icon */}
             <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
               <Target className="w-5 h-5" />
-              <span className="font-semibold">AI Design Sprint</span>
+              <span className="font-semibold">KI Design Sprint</span>
             </div>
             
-            <InlineTextField value={content.hero_title || 'AI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold text-white" placeholder="Titel des Hero-Bereichs" as="h1" />
+            <InlineTextField value={content.hero_title || 'KI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold text-white" placeholder="Titel des Hero-Bereichs" as="h1" />
             
             <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-white/90 leading-relaxed" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
             
@@ -74,15 +74,15 @@ const AIDesignSprint = () => {
         </div>
       </section>
 
-      {/* Was ist ein AI Design Sprint Workshop? */}
+      {/* Was ist ein KI Design Sprint Workshop? */}
       <section id="workshop-details" className="py-24 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-6">
               <h2 className="text-4xl font-bold">
-                <InlineTextField value={content.what_is_title || 'Der AI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
+                <InlineTextField value={content.what_is_title || 'Der KI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
               </h2>
-              <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, AI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
+              <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, KI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@ const AIDesignSprint = () => {
                     <h3 className="text-xl font-bold">Verstehen & Definieren</h3>
                   </div>
                   <p className="text-muted-foreground text-sm">
-                    Problem analysieren, AI-Potenziale identifizieren, Ziele definieren
+                    Problem analysieren, KI-Potenziale identifizieren, Ziele definieren
                   </p>
                 </CardContent>
               </Card>
@@ -184,7 +184,7 @@ const AIDesignSprint = () => {
               <CardContent className="p-6 space-y-3">
                 <div className="text-3xl mb-2">1</div>
                 <h3 className="text-lg font-bold">Machbarkeitsanalyse</h3>
-                <p className="text-muted-foreground text-sm">Bewertung der AI-Potenziale</p>
+                <p className="text-muted-foreground text-sm">Bewertung der KI-Potenziale</p>
               </CardContent>
             </Card>
 
@@ -211,7 +211,7 @@ const AIDesignSprint = () => {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Warum ein AI Design Sprint Workshop?</h2>
+            <h2 className="text-3xl font-bold mb-4">Warum ein KI Design Sprint Workshop?</h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -390,7 +390,7 @@ const AIDesignSprint = () => {
                 <h2 className="text-4xl font-bold">
                   Bereit für Ihren{" "}
                   <span className="bg-gradient-primary bg-clip-text text-transparent">
-                    AI Design Sprint?
+                    KI Design Sprint?
                   </span>
                 </h2>
                 

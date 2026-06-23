@@ -11,7 +11,7 @@ const Contact = () => {
     <>
       <SEO 
         title="Kontakt | One Next" 
-        description="Kontaktieren Sie uns für AI-Beratung und Innovation. Wir helfen Ihnen bei Ihren KI-Projekten." 
+        description="Kontaktieren Sie uns für KI-Beratung und Innovation. Wir helfen Ihnen bei Ihren KI-Projekten." 
         canonical="/kontakt" 
       />
       <Navigation />

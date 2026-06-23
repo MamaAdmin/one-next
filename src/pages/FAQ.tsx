@@ -93,8 +93,8 @@ const FAQ = () => {
     <>
       <SEO
         title="FAQ - Häufig gestellte Fragen | one-next"
-        description="Antworten auf alle Fragen zu AI Design Sprints, KI-Entwicklung, Workshops, Preisen und unseren Services. Erfahren Sie, wie one-next Ihr Unternehmen mit KI voranbringt."
-        keywords="FAQ, AI Design Sprint, KI Beratung, Workshops, Preise, KI-Entwicklung, one-next"
+        description="Antworten auf alle Fragen zu KI Design Sprints, KI-Entwicklung, Workshops, Preisen und unseren Services. Erfahren Sie, wie one-next Ihr Unternehmen mit KI voranbringt."
+        keywords="FAQ, KI Design Sprint, KI Beratung, Workshops, Preise, KI-Entwicklung, one-next"
         canonical="https://one-next.de/faq"
         structuredData={structuredData}
       />

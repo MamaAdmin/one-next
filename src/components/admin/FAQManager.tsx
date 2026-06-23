@@ -663,7 +663,7 @@ const FAQManager = () => {
                   });
                 }}
                 required
-                placeholder="z.B. AI Design Sprint"
+                placeholder="z.B. KI Design Sprint"
               />
             </div>
             

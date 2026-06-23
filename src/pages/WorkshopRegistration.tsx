@@ -18,7 +18,7 @@ const WorkshopRegistration = () => {
     <>
       <SEO
         title="Workshop Anfrage | one-next"
-        description="Starten Sie Ihre Workshop-Anfrage für AI Design Sprints und Problem-Framing-Workshops."
+        description="Starten Sie Ihre Workshop-Anfrage für KI Design Sprints und Problem-Framing-Workshops."
         canonical="https://one-next.de/workshop-registration"
         noindex={true}
         structuredData={createBreadcrumbSchema([
