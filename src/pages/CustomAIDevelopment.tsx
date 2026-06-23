@@ -209,7 +209,7 @@ const CustomAIDevelopment = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               <InlineTextField
-                value={content.bmad_title || "✅ Was durch das BMAD-Modell schon fertig ist"}
+                value={content.bmad_title || "✅ Das ist in Ihrem BMAD-Blueprint bereits enthalten"}
                 onSave={(value) => updateContent("bmad_title", value, "text")}
                 isEditMode={isEditMode}
                 as="h2"
