@@ -26,13 +26,13 @@ const CustomAIDevelopment = () => {
   const structuredData = [
     createServiceSchema(
       "Individuelle KI-Entwicklung mit BMAD",
-      "Maßgeschneiderte AI-Lösungen von der Konzeption bis zur Umsetzung. Agile Entwicklung mit dem BMAD-Framework für schnelle, iterative Erfolge.",
+      "Maßgeschneiderte KI-Lösungen von der Konzeption bis zur Umsetzung. Strukturiert nach dem BMAD-Framework für klare, umsetzungsreife KI-Projekte.",
       "https://one-next.de/custom-ai-development"
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
       { name: "Services", url: "https://one-next.de/#services" },
-      { name: "Custom AI Development", url: "https://one-next.de/custom-ai-development" }
+      { name: "Individuelle KI-Entwicklung", url: "https://one-next.de/custom-ai-development" }
     ])
   ];
 
