@@ -428,7 +428,7 @@ const AIConsultingServices = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden" style={{ backgroundColor: '#FFF0ED' }}>
+      <section className="py-24 relative overflow-hidden bg-accent-soft">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
