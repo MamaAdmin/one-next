@@ -2500,6 +2500,41 @@ export type Database = {
         Args: { course_id?: string; course_title: string }
         Returns: string
       }
+      get_bmad_invitation_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          email: string
+          expires_at: string
+          full_name: string
+          id: string
+          status: string
+        }[]
+      }
+      get_quiz_questions_for_participant: {
+        Args: { p_quiz_id: string }
+        Returns: {
+          id: string
+          options: Json
+          points: number
+          question_text: string
+          question_type: string
+          quiz_id: string
+          sort_order: number
+        }[]
+      }
+      grade_quiz_attempt: {
+        Args: {
+          p_answers: Json
+          p_attempt_id: string
+          p_quiz_id: string
+          p_time_spent_seconds: number
+        }
+        Returns: {
+          correct_answers: Json
+          is_passed: boolean
+          score: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
