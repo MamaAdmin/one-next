@@ -37,11 +37,7 @@ const BMADAcceptInvitation = () => {
       }
 
       const { data, error } = await supabase
-        .from("bmad_invitations")
-        .select("*")
-        .eq("token", token)
-        .eq("status", "pending")
-        .gt("expires_at", new Date().toISOString())
+        .rpc("get_bmad_invitation_by_token", { p_token: token })
         .maybeSingle();
 
       if (error || !data) {
