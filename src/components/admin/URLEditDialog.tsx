@@ -35,7 +35,7 @@ interface URLEditDialogProps {
 
 export const URLEditDialog = ({
   currentUrl,
-  itemId,
+  itemId: _itemId,
   open,
   onOpenChange,
   onSave,

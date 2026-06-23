@@ -84,7 +84,7 @@ export const ArtifactUpload = ({
       setTitle("");
       setDescription("");
       setSelectedFile(null);
-    } catch (error) {
+    } catch {
       toast({
         title: "Fehler",
         description: "Upload fehlgeschlagen",
@@ -100,7 +100,7 @@ export const ArtifactUpload = ({
         title: "Erfolg",
         description: "Artifact gelöscht",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Fehler",
         description: "Löschen fehlgeschlagen",

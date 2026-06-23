@@ -8,8 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get("session_id");
-  const registrationId = searchParams.get("registration_id");
   const type = searchParams.get("type"); // "sprint" or "kurs"
 
   return (

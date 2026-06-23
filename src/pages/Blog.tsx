@@ -8,7 +8,7 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
-import { useToast } from "@/hooks/use-toast";
+
 import { SEO } from "@/components/SEO";
 import { createBreadcrumbSchema } from "@/config/seoConfig";
 import { Clock } from "lucide-react";
@@ -32,7 +32,7 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const { isContentManager } = useContentManager();
-  const { toast } = useToast();
+  
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -52,35 +52,7 @@ const Blog = () => {
     fetchArticles();
   }, []);
 
-  const handleUpdateArticle = async (articleId: string, field: string, value: string) => {
-    try {
-      const { error } = await supabase
-        .from("articles")
-        .update({ [field]: value })
-        .eq("id", articleId);
 
-      if (error) throw error;
-
-      setArticles((prev) =>
-        prev.map((article) =>
-          article.id === articleId ? { ...article, [field]: value } : article
-        )
-      );
-
-      toast({
-        title: "Erfolg",
-        description: "Artikel erfolgreich aktualisiert",
-      });
-    } catch (error) {
-      console.error("Error updating article:", error);
-      toast({
-        title: "Fehler",
-        description: "Artikel konnte nicht aktualisiert werden",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
 
   const featuredArticle = articles[0];
   const secondaryArticles = articles.slice(1, 3);

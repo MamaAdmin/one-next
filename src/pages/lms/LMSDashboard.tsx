@@ -24,7 +24,7 @@ export default function LMSDashboard() {
   const { currentEnrollment, loading } = useLMSEnrollment();
   const { isBmadUser, isAdmin } = useUserRoles();
   const [streak, setStreak] = useState(0);
-  const [participantId, setParticipantId] = useState<string | null>(null);
+  const [, setParticipantId] = useState<string | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([
     { id: "first_phase", icon: "🎯", title: "Erste Phase!", description: "Phase 1 abgeschlossen", unlocked: false },
     { id: "artifact_10", icon: "📦", title: "10 Artifacts", description: "10 Artifacts hochgeladen", unlocked: false },

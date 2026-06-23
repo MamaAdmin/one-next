@@ -57,7 +57,7 @@ const LMSCustomerDetail = () => {
     try {
       await updateCustomer(formData);
       toast.success("Änderungen gespeichert");
-    } catch (error) {
+    } catch {
       // Error handled in hook
     } finally {
       setIsSaving(false);

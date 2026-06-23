@@ -24,7 +24,7 @@ export default function LMSPurchaseConfirmation() {
       }
 
       try {
-        const { data, error } = await supabase.functions.invoke('verify-course-purchase', {
+        const { error } = await supabase.functions.invoke('verify-course-purchase', {
           body: { sessionId, purchaseId }
         });
 

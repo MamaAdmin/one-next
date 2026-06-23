@@ -18,10 +18,6 @@ const CustomAIDevelopment = () => {
   const { isContentManager } = useContentManager();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const structuredData = [
     createServiceSchema(

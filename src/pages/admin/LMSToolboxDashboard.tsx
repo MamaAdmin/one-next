@@ -171,7 +171,7 @@ const SortableToolRow = ({ tool, categoryLabels, categoryColors, navigate, delet
 export default function LMSToolboxDashboard() {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdmin();
-  const { tools, loading, loadTools, deleteTool, updateToolsOrder } = useToolbox();
+  const { tools, deleteTool, updateToolsOrder } = useToolbox();
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<string>("manual");

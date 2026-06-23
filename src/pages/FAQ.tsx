@@ -133,7 +133,7 @@ const FAQ = () => {
                 <h2 className="text-2xl font-bold">Meist gelesene FAQs</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {mostViewedFAQs.map((faq, index) => {
+                {mostViewedFAQs.map((faq) => {
                   const category = categories.find((c) => c.id === faq.category_id);
                   return (
                     <Card key={faq.id} className="hover:shadow-lg transition-shadow">

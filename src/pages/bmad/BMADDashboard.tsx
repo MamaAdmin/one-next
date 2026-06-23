@@ -70,7 +70,7 @@ const BMADDashboard = () => {
     checkAuth();
   }, [navigate]);
 
-  const fetchSessions = async (userId: string) => {
+  const fetchSessions = async (_userId: string) => {
     const { data, error } = await supabase
       .from("bmad_sessions")
       .select("*")

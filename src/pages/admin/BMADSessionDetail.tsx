@@ -131,7 +131,7 @@ export default function BMADSessionDetail() {
   const queryClient = useQueryClient();
   const { session, isLoading: sessionLoading } = useBMADSession(sessionId!);
   const { artifacts, isLoading: artifactsLoading } = useBMADArtifacts(sessionId);
-  const { conversations, totalTokens } = useBMADConversations(sessionId!);
+  const { totalTokens } = useBMADConversations(sessionId!);
   const [runningPhase, setRunningPhase] = useState(false);
   const [progressingPhase, setProgressingPhase] = useState(false);
   const [selectedArtifact, setSelectedArtifact] = useState<any>(null);
@@ -209,7 +209,7 @@ export default function BMADSessionDetail() {
 
     setRunningPhase(true);
     try {
-      const { data, error } = await supabase.functions.invoke('bmad-run-phase', {
+      const { error } = await supabase.functions.invoke('bmad-run-phase', {
         body: {
           session_id: sessionId,
           agent_type: session.current_phase
@@ -271,20 +271,6 @@ export default function BMADSessionDetail() {
     }
   };
 
-  const handleApprove = async (artifactId: string, isApproved: boolean) => {
-    try {
-      const { error } = await supabase.functions.invoke('bmad-approve-artifact', {
-        body: { artifact_id: artifactId, is_approved: isApproved }
-      });
-
-      if (error) throw error;
-
-      toast.success(isApproved ? "Artifact genehmigt" : "Artifact abgelehnt");
-    } catch (error) {
-      console.error("Error approving artifact:", error);
-      toast.error("Fehler beim Genehmigen des Artifacts");
-    }
-  };
 
   const handleRunAllPhases = async () => {
     if (!sessionId) return;
