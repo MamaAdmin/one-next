@@ -64,6 +64,8 @@ export const WorkshopComparisonSection = () => {
                 </div>
               </div>
               
+              <p className="text-sm font-semibold mb-4">Preis auf Anfrage</p>
+              
               <div className="bg-muted/50 rounded-lg p-4 mb-6">
                 <p className="text-sm font-semibold flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
@@ -122,6 +124,8 @@ export const WorkshopComparisonSection = () => {
                   <p className="text-muted-foreground">KI-Tools in allen Phasen integriert</p>
                 </div>
               </div>
+              
+              <p className="text-sm font-semibold mb-4">Preis auf Anfrage</p>
               
               <div className="bg-primary/10 rounded-lg p-4 mb-6">
                 <p className="text-sm font-semibold flex items-center gap-2">
