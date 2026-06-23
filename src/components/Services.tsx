@@ -8,12 +8,12 @@ const Services = () => {
     icon: StarburstIcon,
     step: "Schritt 1/4 – Vom Workshop zum Entwurf",
     title: "Digitale Transformation mit AI starten",
-    description: "Identifizieren Sie AI-Chancen durch unsere AI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler Online Sprint. Challenge noch unklar? Unser Problem-Framing-Workshop bereitet Sie optimal vor."
+    description: "Identifizieren Sie KI-Chancen durch unsere KI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler Online Sprint. Challenge noch unklar? Unser Problem-Framing-Workshop bereitet Sie optimal vor."
   }, {
     icon: ArrowsOutIcon,
     step: "Schritt 2/4 – Vom Entwurf zur ersten Version",
     title: "Proof of AI Development",
-    description: "Entwickeln Sie vom AI Design Sprint zur ersten Implementierung. Wir entwickeln eine wettbewerbsfähige AI-Lösung, die Ihre Anforderungen erfüllt und Feedback sammelt. Die MVP-Version garantiert deutlich reduziertes Risiko."
+    description: "Entwickeln Sie vom KI Design Sprint zur ersten Implementierung. Wir entwickeln eine wettbewerbsfähige KI-Lösung, die Ihre Anforderungen erfüllt und Feedback sammelt. Die MVP-Version garantiert deutlich reduziertes Risiko."
   }, {
     icon: GridIcon,
     step: "Schritt 3/4 – Von Rohdaten zur Datenqualität",
@@ -22,8 +22,8 @@ const Services = () => {
   }, {
     icon: MessageIcon,
     step: "Schritt 4/4 – Vom ersten Entwurf zur Skalierung",
-    title: "AI Consulting Services",
-    description: "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt."
+    title: "KI Consulting Services",
+    description: "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt."
   }];
   return <section id="services" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4 md:px-6">

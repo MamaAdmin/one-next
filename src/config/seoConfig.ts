@@ -2,7 +2,7 @@ export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "one-next",
-  "description": "KI-Entwicklung und AI Design Sprints für innovative Unternehmen",
+  "description": "KI-Entwicklung und KI Design Sprints für innovative Unternehmen",
   "url": "https://one-next.de",
   "logo": "https://one-next.de/logo.png",
   "foundingDate": "2020",

@@ -13,7 +13,7 @@ const OnlineSprintLanding = () => {
     name: "Home",
     url: "https://one-next.de/"
   }, {
-    name: "AI Design Sprint",
+    name: "KI Design Sprint",
     url: "https://one-next.de/sprint-uebersicht"
   }, {
     name: "Online Sprint",
@@ -297,7 +297,7 @@ const OnlineSprintLanding = () => {
               </h2>
               
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Starten Sie noch heute und entdecken Sie AI-Potenziale für Ihr Unternehmen
+                Starten Sie noch heute und entdecken Sie KI-Potenziale für Ihr Unternehmen
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">

@@ -16,7 +16,7 @@ const AIDesignSprint = () => {
             <div className="text-center space-y-6 animate-fade-in">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
                 <Sparkles className="w-5 h-5" />
-                <span className="font-semibold">AI Design Sprint</span>
+                <span className="font-semibold">KI Design Sprint</span>
               </div>
               
               <h2 className="text-4xl lg:text-5xl font-bold">
@@ -28,7 +28,7 @@ const AIDesignSprint = () => {
               
               <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
                 Mit zwei Tagen intensiver Arbeit identifiziert Ihr Team zusammen mit unseren
-                AI-Ingenieuren und Design-Facilitatoren das Potenzial von AI-Lösungen, um neue
+                AI-Ingenieuren und Design-Facilitatoren das Potenzial von KI-Lösungen, um neue
                 Ideen und Visionen für Ihr Unternehmen zu schaffen.
               </p>
 
@@ -36,7 +36,7 @@ const AIDesignSprint = () => {
                 size="lg" 
                 className="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6 mt-6"
               >
-                Mehr über AI Design Sprint erfahren
+                Mehr über KI Design Sprint erfahren
               </Button>
             </div>
           </CardContent>

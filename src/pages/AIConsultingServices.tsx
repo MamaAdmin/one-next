@@ -20,23 +20,23 @@ const AIConsultingServices = () => {
   
   const structuredData = [
     createServiceSchema(
-      "AI Consulting Services",
-      "Strategische AI-Beratung für Unternehmen. Von der Potenzialanalyse bis zur Umsetzungsbegleitung - individuell auf Ihre Bedürfnisse zugeschnitten.",
+      "KI Consulting Services",
+      "Strategische KI-Beratung für Unternehmen. Von der Potenzialanalyse bis zur Umsetzungsbegleitung - individuell auf Ihre Bedürfnisse zugeschnitten.",
       "https://one-next.de/ai-consulting-services"
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
       { name: "Services", url: "https://one-next.de/#services" },
-      { name: "AI Consulting", url: "https://one-next.de/ai-consulting-services" }
+      { name: "KI Consulting", url: "https://one-next.de/ai-consulting-services" }
     ]),
     createFAQSchema([
       {
-        question: "Was umfasst AI Consulting?",
-        answer: "AI Consulting umfasst die strategische Beratung von Unternehmen bei der Identifikation, Bewertung und Umsetzung von AI-Potenzialen - von der ersten Analyse bis zur erfolgreichen Implementierung."
+        question: "Was umfasst KI Consulting?",
+        answer: "KI Consulting umfasst die strategische Beratung von Unternehmen bei der Identifikation, Bewertung und Umsetzung von KI-Potenzialen - von der ersten Analyse bis zur erfolgreichen Implementierung."
       },
       {
-        question: "Für welche Unternehmen eignet sich AI Consulting?",
-        answer: "AI Consulting eignet sich für Unternehmen jeder Größe, die KI-Technologien strategisch nutzen möchten, um Prozesse zu optimieren, neue Geschäftsmodelle zu entwickeln oder Wettbewerbsvorteile zu schaffen."
+        question: "Für welche Unternehmen eignet sich KI Consulting?",
+        answer: "KI Consulting eignet sich für Unternehmen jeder Größe, die KI-Technologien strategisch nutzen möchten, um Prozesse zu optimieren, neue Geschäftsmodelle zu entwickeln oder Wettbewerbsvorteile zu schaffen."
       }
     ])
   ];
@@ -44,9 +44,9 @@ const AIConsultingServices = () => {
   return (
     <>
       <SEO
-        title="AI Consulting Services | Strategische KI-Beratung | one-next"
-        description="Professionelle AI-Beratung für Ihr Unternehmen. Von der Potenzialanalyse über Strategieentwicklung bis zur Umsetzungsbegleitung. Individuell und praxisnah."
-        keywords="AI Consulting, KI-Beratung, AI Strategie, Künstliche Intelligenz Beratung, AI Transformation, Innovation Consulting"
+        title="KI Consulting Services | Strategische KI-Beratung | one-next"
+        description="Professionelle KI-Beratung für Ihr Unternehmen. Von der Potenzialanalyse über Strategieentwicklung bis zur Umsetzungsbegleitung. Individuell und praxisnah."
+        keywords="KI Consulting, KI-Beratung, AI Strategie, Künstliche Intelligenz Beratung, AI Transformation, Innovation Consulting"
         canonical="https://one-next.de/ai-consulting-services"
         structuredData={structuredData}
       />
@@ -64,7 +64,7 @@ const AIConsultingServices = () => {
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full">
               <SparklesIcon className="w-5 h-5" />
-              <span className="font-semibold">AI Consulting Services</span>
+              <span className="font-semibold">KI Consulting Services</span>
             </div>
             
             <InlineTextField
@@ -77,7 +77,7 @@ const AIConsultingServices = () => {
             />
             
             <InlineTextArea
-              value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische AI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
+              value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
               onSave={(value) => updateContent('hero_description', value)}
               isEditMode={isEditMode}
               className="text-xl text-primary-foreground/90 leading-relaxed"
@@ -96,19 +96,19 @@ const AIConsultingServices = () => {
         </div>
       </section>
 
-      {/* What is AI Consulting Section */}
+      {/* What is KI Consulting Section */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl lg:text-5xl font-bold text-center">
               Was ist{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                AI Consulting?
+                KI Consulting?
               </span>
             </h2>
             
             <p className="text-lg text-muted-foreground leading-relaxed">
-              AI Consulting ist mehr als nur Technologieberatung – es ist ein strategischer Ansatz zur 
+              KI Consulting ist mehr als nur Technologieberatung – es ist ein strategischer Ansatz zur 
               ganzheitlichen Transformation Ihres Unternehmens. Wir helfen Ihnen, künstliche Intelligenz 
               nicht als isolierte Technologie, sondern als integralen Bestandteil Ihrer Geschäftsstrategie 
               zu verstehen und einzusetzen.
@@ -123,7 +123,7 @@ const AIConsultingServices = () => {
 
             <p className="text-lg text-muted-foreground leading-relaxed">
               Unser Beratungsansatz kombiniert technisches Know-how mit tiefer Branchenkenntnis und 
-              betriebswirtschaftlichem Verständnis, um maßgeschneiderte AI-Lösungen zu entwickeln, die 
+              betriebswirtschaftlichem Verständnis, um maßgeschneiderte KI-Lösungen zu entwickeln, die 
               echten Business Value schaffen.
             </p>
           </div>
@@ -156,7 +156,7 @@ const AIConsultingServices = () => {
               <Card className="border-2 hover:border-primary/50 transition-colors">
                 <CardContent className="p-6 space-y-3">
                   <BrainIcon className="w-10 h-10 text-primary" />
-                  <h3 className="text-xl font-bold">AI-Potenziale identifizieren</h3>
+                  <h3 className="text-xl font-bold">KI-Potenziale identifizieren</h3>
                   <p className="text-muted-foreground">
                     Erkennung konkreter Use Cases und Bewertung ihrer technischen Machbarkeit und 
                     ihres ROI.
@@ -316,7 +316,7 @@ const AIConsultingServices = () => {
             </h2>
             
             <p className="text-lg text-muted-foreground leading-relaxed text-center">
-              Wir beraten Unternehmen in verschiedenen Branchen und entwickeln AI-Lösungen für vielfältige 
+              Wir beraten Unternehmen in verschiedenen Branchen und entwickeln KI-Lösungen für vielfältige 
               Anwendungsfälle:
             </p>
 
@@ -443,7 +443,7 @@ const AIConsultingServices = () => {
             <p className="text-xl text-muted-foreground leading-relaxed">
               Lassen Sie uns gemeinsam herausfinden, wie künstliche Intelligenz Ihr Unternehmen 
               transformieren kann. Vereinbaren Sie ein unverbindliches Erstgespräch mit unseren 
-              AI-Experten und erhalten Sie eine erste Einschätzung Ihrer AI-Potenziale.
+              AI-Experten und erhalten Sie eine erste Einschätzung Ihrer KI-Potenziale.
             </p>
             
             <CalendarBookingDialog

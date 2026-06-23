@@ -1,16 +1,16 @@
 # one-next
 
-> KI-Entwicklung, AI Design Sprints und Innovations-Workshops. Wir helfen Unternehmen, KI-Potenziale zu identifizieren, Prototypen in wenigen Tagen zu validieren und maßgeschneiderte KI-Lösungen produktiv zu nutzen.
+> KI-Entwicklung, KI Design Sprints und Innovations-Workshops. Wir helfen Unternehmen, KI-Potenziale zu identifizieren, Prototypen in wenigen Tagen zu validieren und maßgeschneiderte KI-Lösungen produktiv zu nutzen.
 
 ## Pages
 
 - [Startseite](/): Überblick über one-next, Leistungen und Sprint-Angebote.
-- [AI Design Sprint](/sprint-uebersicht): 2-tägiges Sprint-Format zur Validierung von KI-Use-Cases.
-- [Online Sprint](/sprint-uebersicht/online): Vollständig remote durchgeführter AI Design Sprint.
+- [KI Design Sprint](/sprint-uebersicht): 2-tägiges Sprint-Format zur Validierung von KI-Use-Cases.
+- [Online Sprint](/sprint-uebersicht/online): Vollständig remote durchgeführter KI Design Sprint.
 - [Problem Framing Workshop](/problem-framing-workshop): Workshop zur klaren Definition geschäftlicher Probleme vor einer KI-Initiative.
 - [Design Sprint Workshop](/design-sprint-workshop): Klassischer Design Sprint zur schnellen Lösungsentwicklung.
-- [Custom AI Development](/custom-ai-development): Individuelle Entwicklung von Machine-Learning- und KI-Produkten.
-- [AI Consulting](/ai-consulting-services): Beratung zu KI-Strategie, Use-Case-Identifikation und Roadmaps.
+- [Individuelle KI-Entwicklung](/custom-ai-development): Individuelle Entwicklung von Machine-Learning- und KI-Produkten.
+- [KI Consulting](/ai-consulting-services): Beratung zu KI-Strategie, Use-Case-Identifikation und Roadmaps.
 - [Data Quality Audit](/data-quality-audit): Analyse der Datenbasis als Grundlage für KI-Projekte.
 - [Über uns](/about-us): Team, Methodik und Mission von one-next.
 - [Kontakt](/kontakt): Kontaktmöglichkeiten und Terminbuchung.
