@@ -7,7 +7,7 @@ const Impressum = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="Impressum | One Next"
-        description="Impressum und rechtliche Informationen von One Next - Julia Haitz, Horgen, Schweiz"
+        description="Impressum und rechtliche Informationen von One Next - Julia Haitz, Hirzel, Schweiz"
       />
       <Navigation />
       
@@ -18,8 +18,8 @@ const Impressum = () => {
           <div>
             <h2 className="text-xl font-semibold text-foreground mb-2">Kontaktadresse</h2>
             <p>Julia Haitz</p>
-            <p>Rietwiesstrasse 111</p>
-            <p>8810 Horgen</p>
+            <p>Feldstrasse 2</p>
+            <p>8816 Hirzel</p>
             <p>Schweiz</p>
           </div>
 
