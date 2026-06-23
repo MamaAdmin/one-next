@@ -211,6 +211,7 @@ export const useQuizzes = (moduleId?: string) => {
     updateQuiz,
     deleteQuiz,
     loadQuestions,
+    loadQuestionsForAdmin,
     createQuestion,
     updateQuestion,
     deleteQuestion,
