@@ -133,6 +133,24 @@ export const useQuizzes = (moduleId?: string) => {
     }
   };
 
+  // Admin-only: direct table access (relies on "Admins can manage quiz questions" RLS policy).
+  const loadQuestionsForAdmin = async (quizId: string): Promise<QuizQuestion[]> => {
+    try {
+      const { data, error } = await supabase
+        .from("lms_quiz_questions")
+        .select("*")
+        .eq("quiz_id", quizId)
+        .order("sort_order", { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error("Error loading questions:", error);
+      toast.error("Fehler beim Laden der Fragen");
+      return [];
+    }
+  };
+
   const createQuestion = async (questionData: Omit<QuizQuestion, "id" | "created_at" | "updated_at">) => {
     try {
       const { data, error } = await supabase
