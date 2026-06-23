@@ -187,10 +187,6 @@ const BMADSessionDashboard = () => {
     return matchesStatus && matchesPhase && matchesSearch;
   });
 
-  const handleRowClick = (session: any) => {
-    setSelectedSession(session);
-    setDialogOpen(true);
-  };
 
   return (
     <div className="min-h-screen">

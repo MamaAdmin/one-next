@@ -193,7 +193,7 @@ const LMSModuleEditor = () => {
       if (resourcesJson?.trim()) {
         resources = JSON.parse(resourcesJson);
       }
-    } catch (e) {
+    } catch {
       toast({
         title: "Fehler",
         description: "Resources JSON ist ungültig",

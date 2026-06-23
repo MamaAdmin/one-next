@@ -48,7 +48,7 @@ const LMSCustomerDashboard = () => {
         phone: "",
         address: ""
       });
-    } catch (error) {
+    } catch {
       // Error already handled in hook
     }
   };
@@ -80,7 +80,7 @@ const LMSCustomerDashboard = () => {
         phone: "",
         address: ""
       });
-    } catch (error) {
+    } catch {
       // Error already handled in hook
     }
   };

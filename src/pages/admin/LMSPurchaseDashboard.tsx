@@ -17,7 +17,7 @@ import { Loader2, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function LMSPurchaseDashboard() {
-  const { purchases, loading, createPurchase, updatePurchase } = useCoursePurchase();
+  const { purchases, loading, createPurchase } = useCoursePurchase();
   const { customers } = useCustomer();
   const { courses } = useLMSCourse();
   

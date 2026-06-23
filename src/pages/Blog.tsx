@@ -52,14 +52,7 @@ const Blog = () => {
     fetchArticles();
   }, []);
 
-      toast({
-        title: "Fehler",
-        description: "Artikel konnte nicht aktualisiert werden",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
+
 
   const featuredArticle = articles[0];
   const secondaryArticles = articles.slice(1, 3);
