@@ -52,7 +52,7 @@ const CustomAIDevelopment = () => {
     {
       icon: GitBranch,
       title: "BMAD-Integration",
-      description: "Alle Ergebnisse aus Problem Framing & Design Sprint werden in das BMAD-Modell überführt. Damit entsteht ein vollständiger Projekt-Blueprint für die KI-Entwicklung.",
+      description: "Die Ergebnisse aus Problem Framing und Design Sprint überführen wir in einen strukturierten BMAD-Blueprint – einen vollständigen Bauplan für die KI-Entwicklung.",
       result: "Vollständiger Blueprint für externe Entwickler."
     }
   ];
