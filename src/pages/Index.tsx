@@ -25,17 +25,19 @@ const Index = () => {
       />
       <div className="min-h-screen">
         <Navigation />
-      <Hero isEditMode={isEditMode} />
-      <ValueCards isEditMode={isEditMode} />
-      <About isEditMode={isEditMode} />
-      <Services />
-      <Footer isEditMode={isEditMode} />
-      {isContentManager && !loading && (
-        <EditToggleButton
-          isEditMode={isEditMode}
-          onToggle={() => setIsEditMode(!isEditMode)}
-        />
-      )}
+        <main>
+          <Hero isEditMode={isEditMode} />
+          <ValueCards isEditMode={isEditMode} />
+          <About isEditMode={isEditMode} />
+          <Services />
+        </main>
+        <Footer isEditMode={isEditMode} />
+        {isContentManager && !loading && (
+          <EditToggleButton
+            isEditMode={isEditMode}
+            onToggle={() => setIsEditMode(!isEditMode)}
+          />
+        )}
       </div>
     </>
   );

@@ -1,51 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://one-next.de/</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://one-next.lovable.app/</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://one-next.de/sprint-uebersicht</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://one-next.lovable.app/sprint-uebersicht</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://one-next.de/custom-ai-development</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://one-next.lovable.app/sprint-uebersicht/online</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://one-next.de/ai-consulting-services</loc>
-    <lastmod>2025-01-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://one-next.de/about-us</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://one-next.lovable.app/problem-framing-workshop</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://one-next.de/design-sprint-workshop</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://one-next.lovable.app/design-sprint-workshop</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://one-next.de/blog</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://one-next.lovable.app/custom-ai-development</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/ai-consulting-services</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/data-quality-audit</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/about-us</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/kontakt</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/kurse</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://one-next.de/faq</loc>
-    <lastmod>2025-01-20</lastmod>
+    <loc>https://one-next.lovable.app/faq</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/impressum</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog/ki-strategien-mittelstand</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog/design-thinking-digital</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog/automatisierung-ai-agents</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog/prompt-engineering-best-practices</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog/innovation-workshops-gestalten</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://one-next.lovable.app/blog/zukunft-mensch-ki-zusammenarbeit</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

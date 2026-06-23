@@ -40,14 +40,14 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
               minRows={2}
             />
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="#" aria-label="one-next auf Twitter" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
+                <Twitter className="w-5 h-5" aria-hidden="true" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
-                <Linkedin className="w-5 h-5" />
+              <a href="#" aria-label="one-next auf LinkedIn" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
+                <Linkedin className="w-5 h-5" aria-hidden="true" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
-                <Github className="w-5 h-5" />
+              <a href="#" aria-label="one-next auf GitHub" className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors">
+                <Github className="w-5 h-5" aria-hidden="true" />
               </a>
             </div>
           </div>
