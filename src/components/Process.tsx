@@ -23,7 +23,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       title: "Sprint",
       duration: "2 Tage",
       description:
-        "Identifizieren Sie ein hochrelevantes Geschäftsproblem und arbeiten Sie mit unseren Experten zusammen, um eine AI-Lösung vorzuschlagen.",
+        "Identifizieren Sie ein hochrelevantes Geschäftsproblem und arbeiten Sie mit unseren Experten zusammen, um eine KI-Lösung vorzuschlagen.",
       color: "bg-secondary",
     },
     {
@@ -31,7 +31,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       title: "Development",
       duration: "4 – 12 Wochen",
       description:
-        "Entwickeln und implementieren Sie Ihre AI-Lösung mit unserem erfahrenen Team. Von der ersten Implementierung bis zur vollständigen Integration.",
+        "Entwickeln und implementieren Sie Ihre KI-Lösung mit unserem erfahrenen Team. Von der ersten Implementierung bis zur vollständigen Integration.",
       color: "bg-accent",
     },
     {
@@ -39,7 +39,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       title: "& Optimierung",
       duration: "Kontinuierlich",
       description:
-        "Skalieren Sie Ihre AI-Lösung und optimieren Sie kontinuierlich die Performance. Wir unterstützen Sie bei MLOps und Wartung.",
+        "Skalieren Sie Ihre KI-Lösung und optimieren Sie kontinuierlich die Performance. Wir unterstützen Sie bei MLOps und Wartung.",
       color: "bg-primary-glow",
     },
   ];
