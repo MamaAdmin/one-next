@@ -30,17 +30,17 @@ interface Module {
   course_id: string;
   category: CourseCategory;
   title: string;
-  description: string;
+  description: string | null;
   module_type: string;
-  duration_minutes: number;
+  duration_minutes: number | null;
   sort_order: number;
-  content_text?: string;
-  content_video_url?: string;
+  content_text?: string | null;
+  content_video_url?: string | null;
   resources?: Resource[];
   tags?: string[];
-  author?: string;
+  author?: string | null;
   prerequisites?: string[];
-  tool_recommendation?: string;
+  tool_recommendation?: string | null;
 }
 
 const LMSModuleEditor = () => {
@@ -130,7 +130,7 @@ const LMSModuleEditor = () => {
         title: data.title || "",
         category: data.category as CourseCategory,
         module_type: data.module_type,
-        duration_minutes: data.duration_minutes,
+        duration_minutes: data.duration_minutes ?? 0,
         tags: Array.isArray(data.tags) ? data.tags : [],
       });
 
@@ -478,7 +478,7 @@ const LMSModuleEditor = () => {
                     {/* Tab 2: Lektionen */}
                     <TabsContent value="lessons" className="space-y-6 max-h-[calc(100vh-28rem)] overflow-y-auto pr-2">
                       {moduleId ? (
-                        <LessonManager moduleId={moduleId} courseId={courseId} />
+                        <LessonManager moduleId={moduleId} courseId={courseId ?? ""} />
                       ) : (
                         <div className="text-center py-8 text-muted-foreground">
                           <p>Bitte speichere das Modul zuerst, um Lektionen hinzuzufügen.</p>
@@ -521,7 +521,7 @@ const LMSModuleEditor = () => {
                           name="content_video_url"
                           type="url"
                           placeholder="https://youtube.com/..."
-                          defaultValue={module?.content_video_url}
+                          defaultValue={module?.content_video_url ?? undefined}
                         />
                       </div>
                     </TabsContent>
@@ -532,7 +532,7 @@ const LMSModuleEditor = () => {
                         <ToolSelector
                           selectedTools={selectedToolIds}
                           onChange={handleToolChange}
-                          filterByCourseId={courseId}
+                          filterByCourseId={courseId ?? undefined}
                         />
                         <p className="text-xs text-muted-foreground mt-2">
                           💡 Tipp: Es werden nur Tools angezeigt, die diesem Kurs zugeordnet sind.
@@ -592,7 +592,7 @@ const LMSModuleEditor = () => {
 
                       <div>
                         <Label htmlFor="author">Autor / Trainer</Label>
-                        <Input id="author" name="author" placeholder="Name des Autors" defaultValue={module?.author} />
+                        <Input id="author" name="author" placeholder="Name des Autors" defaultValue={module?.author ?? undefined} />
                       </div>
 
                       <div>

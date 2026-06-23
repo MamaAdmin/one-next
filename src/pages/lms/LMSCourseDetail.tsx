@@ -147,7 +147,7 @@ export default function LMSCourseDetail() {
         <div className="mb-8">
           <CoursePreview
             course={courseData}
-            enrollment={currentEnrollment}
+            enrollment={currentEnrollment ?? undefined}
           />
         </div>
       )}
@@ -157,7 +157,7 @@ export default function LMSCourseDetail() {
         <h2 className="text-2xl font-bold mb-2">Kursmodule</h2>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">
-            {categoryLabels[currentEnrollment?.current_category] || "Verstehen"}
+            {(currentEnrollment?.current_category && categoryLabels[currentEnrollment.current_category]) || "Verstehen"}
           </span>
           <Progress value={currentEnrollment?.progress_percentage || 0} className="flex-1 max-w-xs" />
           <span className="text-sm font-medium">

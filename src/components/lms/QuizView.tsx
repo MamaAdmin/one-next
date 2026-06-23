@@ -90,11 +90,11 @@ export const QuizView = ({ moduleId, enrollmentId }: QuizViewProps) => {
         <QuizResults
           attempt={bestAttempt}
           questions={questions}
-          onRetake={canRetake(selectedQuiz.max_attempts) ? () => {
+          onRetake={canRetake(selectedQuiz.max_attempts ?? 0) ? () => {
             setShowResults(false);
             setShowQuiz(true);
           } : undefined}
-          canRetake={canRetake(selectedQuiz.max_attempts)}
+          canRetake={canRetake(selectedQuiz.max_attempts ?? 0)}
         />
       </div>
     );
@@ -114,7 +114,7 @@ export const QuizView = ({ moduleId, enrollmentId }: QuizViewProps) => {
             const quizAttempts = attempts.filter(a => a.quiz_id === quiz.id);
             const passed = quizAttempts.some(a => a.is_passed);
             const attemptCount = quizAttempts.length;
-            const canTakeQuiz = canRetake(quiz.max_attempts);
+            const canTakeQuiz = canRetake(quiz.max_attempts ?? 0);
             const hasQuestions = (questionCounts[quiz.id] || 0) > 0;
 
             return (

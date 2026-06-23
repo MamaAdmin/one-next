@@ -22,9 +22,9 @@ interface MediaFile {
   filename: string;
   file_path: string;
   file_type: string;
-  file_size: number;
-  width?: number;
-  height?: number;
+  file_size: number | null;
+  width?: number | null;
+  height?: number | null;
   created_at: string;
 }
 
@@ -62,7 +62,7 @@ const MediaManager = () => {
 
       // Compress image if it's an image
       let processedFile = file;
-      let dimensions = { width: undefined, height: undefined };
+      let dimensions: { width: number | undefined; height: number | undefined } = { width: undefined, height: undefined };
       
       if (file.type.startsWith("image/")) {
         const options = {
@@ -348,7 +348,7 @@ const MediaManager = () => {
                     />
                     {file.width && file.height && (
                       <p className="text-xs text-muted-foreground">
-                        {file.width} × {file.height} • {(file.file_size / 1024).toFixed(0)} KB
+                        {file.width} × {file.height} • {((file.file_size ?? 0) / 1024).toFixed(0)} KB
                       </p>
                     )}
                     <div className="flex gap-2">

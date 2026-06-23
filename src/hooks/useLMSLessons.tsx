@@ -9,10 +9,10 @@ interface Lesson {
   lesson_type: string;
   content_text: string | null;
   content_video_url: string | null;
-  duration_minutes: number;
+  duration_minutes: number | null;
   sort_order: number;
-  is_required: boolean;
-  is_locked: boolean;
+  is_required: boolean | null;
+  is_locked: boolean | null;
 }
 
 interface LessonProgress {
@@ -22,7 +22,7 @@ interface LessonProgress {
   is_completed: boolean;
   started_at: string | null;
   completed_at: string | null;
-  time_spent_minutes: number;
+  time_spent_minutes: number | null;
 }
 
 export const useLMSLessons = (moduleId: string, enrollmentId?: string) => {

@@ -15,13 +15,13 @@ interface Lesson {
   id?: string;
   module_id: string;
   title: string;
-  description: string;
+  description: string | null;
   lesson_type: string;
-  content_text: string;
-  content_video_url: string;
-  duration_minutes: number;
+  content_text: string | null;
+  content_video_url: string | null;
+  duration_minutes: number | null;
   sort_order: number;
-  is_required: boolean;
+  is_required: boolean | null;
 }
 
 const getLessonTypeLabel = (type: string): string => {
@@ -300,7 +300,7 @@ export const LessonManager = ({ moduleId, courseId }: { moduleId: string; course
                   <Label>Dauer (Min)</Label>
                   <Input
                     type="number"
-                    value={lesson.duration_minutes}
+                    value={lesson.duration_minutes ?? 0}
                     onChange={(e) => {
                       const updated = [...lessons];
                       updated[index].duration_minutes = parseInt(e.target.value) || 0;
@@ -327,7 +327,7 @@ export const LessonManager = ({ moduleId, courseId }: { moduleId: string; course
               <div>
                 <Label>Inhalt (Markdown)</Label>
                 <Textarea
-                  value={lesson.content_text}
+                  value={lesson.content_text ?? ""}
                   onChange={(e) => {
                     const updated = [...lessons];
                     updated[index].content_text = e.target.value;
@@ -343,7 +343,7 @@ export const LessonManager = ({ moduleId, courseId }: { moduleId: string; course
                   <Label>Video URL</Label>
                   <Input
                     type="url"
-                    value={lesson.content_video_url}
+                    value={lesson.content_video_url ?? ""}
                     onChange={(e) => {
                       const updated = [...lessons];
                       updated[index].content_video_url = e.target.value;

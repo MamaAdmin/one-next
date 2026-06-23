@@ -51,8 +51,8 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
         description: quiz.description || "",
         passing_score: quiz.passing_score,
         time_limit_minutes: quiz.time_limit_minutes,
-        max_attempts: quiz.max_attempts,
-        is_required: quiz.is_required,
+        max_attempts: quiz.max_attempts ?? 3,
+        is_required: quiz.is_required ?? false,
         sort_order: quiz.sort_order,
       });
       setCurrentQuizId(quiz.id);

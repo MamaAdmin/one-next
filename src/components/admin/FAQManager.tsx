@@ -410,9 +410,9 @@ const FAQManager = () => {
                           </TableCell>
                           <TableCell className="text-center">
                             <Switch
-                              checked={faq.is_published}
+                              checked={faq.is_published ?? false}
                               onCheckedChange={() =>
-                                handleTogglePublish(faq.id, faq.is_published)
+                                handleTogglePublish(faq.id, faq.is_published ?? false)
                               }
                             />
                           </TableCell>
@@ -509,11 +509,11 @@ const FAQManager = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           <Switch
-                            checked={category.is_active}
+                            checked={category.is_active ?? false}
                             onCheckedChange={() =>
                               handleToggleCategoryActive(
                                 category.id,
-                                category.is_active
+                                category.is_active ?? false
                               )
                             }
                           />

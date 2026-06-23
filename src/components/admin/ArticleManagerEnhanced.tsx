@@ -17,16 +17,16 @@ interface Article {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;
+  excerpt: string | null;
   content: string;
-  author: string;
-  status: string;
-  workflow_status: string;
-  seo_title?: string;
-  seo_description?: string;
-  seo_keywords?: string[];
-  og_image?: string;
-  canonical_url?: string;
+  author: string | null;
+  status: string | null;
+  workflow_status: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  seo_keywords?: string[] | null;
+  og_image?: string | null;
+  canonical_url?: string | null;
 }
 
 const statusLabels: Record<string, string> = {
@@ -114,10 +114,10 @@ const ArticleManagerEnhanced = () => {
     setFormData({
       title: article.title,
       slug: article.slug,
-      excerpt: article.excerpt,
+      excerpt: article.excerpt ?? "",
       content: article.content,
-      author: article.author,
-      status: article.status,
+      author: article.author ?? "",
+      status: article.status ?? "draft",
       seo_title: article.seo_title || "",
       seo_description: article.seo_description || "",
       seo_keywords: article.seo_keywords || [],
@@ -287,7 +287,7 @@ const ArticleManagerEnhanced = () => {
                     <h3 className="font-semibold">{article.title}</h3>
                     <p className="text-sm text-muted-foreground">{article.slug}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Status: {statusLabels[article.status] ?? article.status}
+                      Status: {statusLabels[article.status ?? "draft"] ?? article.status}
                     </p>
                   </div>
                   <div className="flex gap-2">

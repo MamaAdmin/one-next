@@ -154,7 +154,7 @@ const HMWClustering = () => {
       ...clusters.flatMap(c => c.questions)
     ];
     setUnassignedQuestions(allQuestions);
-    setClusters(clusters.map(c => ({ ...c, questions: [] })));
+    setClusters(clusters.map(c => ({ ...c, questions: [] as string[] })));
     toast({
       title: "Zurückgesetzt",
       description: "Alle Fragen wurden zu 'Nicht zugeordnet' verschoben.",

@@ -27,9 +27,9 @@ interface Redirect {
   id: string;
   from_path: string;
   to_path: string;
-  redirect_type: number;
-  is_active: boolean;
-  created_at: string;
+  redirect_type: number | null;
+  is_active: boolean | null;
+  created_at: string | null;
 }
 
 export const RedirectManager = () => {
@@ -202,7 +202,7 @@ export const RedirectManager = () => {
                 <TableCell>{redirect.redirect_type}</TableCell>
                 <TableCell>
                   <Switch
-                    checked={redirect.is_active}
+                    checked={redirect.is_active ?? false}
                     onCheckedChange={(checked) => toggleActive(redirect.id, checked)}
                   />
                 </TableCell>

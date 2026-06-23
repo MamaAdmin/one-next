@@ -20,14 +20,14 @@ interface Article {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;
-  author: string;
-  published_at: string;
-  featured_image?: string;
+  excerpt: string | null;
+  author: string | null;
+  published_at: string | null;
+  featured_image?: string | null;
   media?: {
     file_path: string;
     alt_text: string | null;
-  };
+  } | null;
 }
 
 const Blog = () => {
@@ -89,7 +89,8 @@ const Blog = () => {
   const secondaryArticles = articles.slice(1, 3);
   const sidebarArticles = articles.slice(3);
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "";
     return format(new Date(dateString), "d. MMM yyyy", { locale: de });
   };
 

@@ -29,7 +29,7 @@ export default function LMSCoursePreview() {
       const { data, error } = await supabase
         .from("lms_courses")
         .select("*")
-        .eq("id", courseId)
+        .eq("id", courseId ?? "")
         .maybeSingle();
 
       if (error) {
@@ -67,11 +67,11 @@ export default function LMSCoursePreview() {
       const { data: authorMeta } = await supabase
         .from("lms_courses_with_stats")
         .select("author_name, author_avatar")
-        .eq("id", courseId)
+        .eq("id", courseId ?? "")
         .maybeSingle();
 
       if (authorMeta) {
-        setCourse(prev => prev ? {
+        setCourse((prev: any) => prev ? {
           ...prev,
           author: { 
             full_name: authorMeta.author_name, 
@@ -84,7 +84,7 @@ export default function LMSCoursePreview() {
       const { data: modulesData, error: modulesError } = await supabase
         .from("lms_course_modules")
         .select("id, title, duration_minutes, phase_number, sort_order")
-        .eq("course_id", courseId)
+        .eq("course_id", courseId ?? "")
         .order("phase_number", { ascending: true })
         .order("sort_order", { ascending: true });
 
@@ -101,7 +101,7 @@ export default function LMSCoursePreview() {
         .select("id, title, thumbnail_url, price_chf, total_lessons, difficulty")
         .eq("course_type", data.course_type)
         .eq("is_active", true)
-        .neq("id", courseId)
+        .neq("id", courseId ?? "")
         .limit(4);
 
       if (relatedData) {

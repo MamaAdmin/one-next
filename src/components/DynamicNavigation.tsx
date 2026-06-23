@@ -43,7 +43,7 @@ const NavigationItemComponent = ({
     return (
       <a
         href={item.url}
-        target={item.target}
+        target={item.target ?? undefined}
         rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
         className={cn("flex items-center gap-2", itemClassName)}
       >

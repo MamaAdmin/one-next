@@ -23,16 +23,16 @@ interface Module {
   course_id: string;
   category: CourseCategory;
   title: string;
-  description: string;
+  description: string | null;
   module_type: string;
-  duration_minutes: number;
-  content_text?: string;
-  content_video_url?: string;
+  duration_minutes: number | null;
+  content_text?: string | null;
+  content_video_url?: string | null;
   resources?: { title: string; url: string }[];
   tags?: string[];
-  author?: string;
+  author?: string | null;
   prerequisites?: string[];
-  tool_recommendation?: string;
+  tool_recommendation?: string | null;
   module_tools?: Array<{
     tool: {
       id: string;
@@ -90,7 +90,7 @@ export default function LMSModulePreview() {
             tool:lms_tools(*)
           )
         `)
-        .eq("id", moduleId)
+        .eq("id", moduleId ?? "")
         .single();
 
       if (error) throw error;
@@ -204,13 +204,13 @@ export default function LMSModulePreview() {
           {/* Overview Tab */}
           <TabsContent value="overview">
             <ModuleContentPreview
-              contentText={module.content_text}
-              contentVideoUrl={module.content_video_url}
-              toolRecommendation={module.tool_recommendation}
+              contentText={module.content_text ?? undefined}
+              contentVideoUrl={module.content_video_url ?? undefined}
+              toolRecommendation={module.tool_recommendation ?? undefined}
               resources={module.resources}
               tools={tools}
               tags={module.tags}
-              author={module.author}
+              author={module.author ?? undefined}
               prerequisites={module.prerequisites}
             />
           </TabsContent>
@@ -312,7 +312,7 @@ export default function LMSModulePreview() {
                         </div>
                         <div className="text-right text-sm">
                           <div className="font-medium">{quiz.passing_score}% zum Bestehen</div>
-                          {quiz.max_attempts > 0 && (
+                          {(quiz.max_attempts ?? 0) > 0 && (
                             <div className="text-muted-foreground">
                               Max. {quiz.max_attempts} Versuch{quiz.max_attempts !== 1 ? "e" : ""}
                             </div>

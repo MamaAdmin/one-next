@@ -11,8 +11,8 @@ import { de } from "date-fns/locale";
 interface Comment {
   id: string;
   comment: string;
-  created_at: string;
-  user_id: string;
+  created_at: string | null;
+  user_id: string | null;
 }
 
 interface WorkflowCommentsProps {
@@ -115,7 +115,7 @@ export const WorkflowComments = ({
             {comments.map((comment) => (
               <div key={comment.id} className="text-sm">
                 <div className="font-medium">
-                  {format(new Date(comment.created_at), "PPp", { locale: de })}
+                  {comment.created_at ? format(new Date(comment.created_at), "PPp", { locale: de }) : ""}
                 </div>
                 <div className="text-muted-foreground mt-1">{comment.comment}</div>
               </div>

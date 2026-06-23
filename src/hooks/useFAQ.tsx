@@ -6,12 +6,12 @@ export interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category_id: string;
-  sort_order: number;
-  is_published: boolean;
-  view_count: number;
-  helpful_count: number;
-  not_helpful_count: number;
+  category_id: string | null;
+  sort_order: number | null;
+  is_published: boolean | null;
+  view_count: number | null;
+  helpful_count: number | null;
+  not_helpful_count: number | null;
 }
 
 export interface FAQCategory {
@@ -20,8 +20,8 @@ export interface FAQCategory {
   slug: string;
   description: string | null;
   icon: string | null;
-  sort_order: number;
-  is_active: boolean;
+  sort_order: number | null;
+  is_active: boolean | null;
 }
 
 export const useFAQ = (categoryId?: string) => {

@@ -34,7 +34,7 @@ export default function LMSPurchaseDashboard() {
     setFormData({
       ...formData,
       course_id: courseId,
-      price_chf: course ? course.price_chf * formData.licenses : 0,
+      price_chf: course ? (course.price_chf ?? 0) * formData.licenses : 0,
     });
   };
 
@@ -43,7 +43,7 @@ export default function LMSPurchaseDashboard() {
     setFormData({
       ...formData,
       licenses,
-      price_chf: course ? course.price_chf * licenses : 0,
+      price_chf: course ? (course.price_chf ?? 0) * licenses : 0,
     });
   };
 

@@ -259,7 +259,7 @@ export default function BMADSessionDetail() {
       const { error } = await supabase
         .from('bmad_sessions')
         .update({ current_phase: selectedPhase })
-        .eq('id', sessionId);
+        .eq('id', sessionId ?? '');
 
       if (error) throw error;
 
@@ -328,7 +328,7 @@ export default function BMADSessionDetail() {
       const { error } = await supabase
         .from("bmad_sessions")
         .update(updates)
-        .eq("id", sessionId);
+        .eq("id", sessionId ?? "");
       
       if (error) throw error;
     },
