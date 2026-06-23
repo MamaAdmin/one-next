@@ -118,7 +118,7 @@ const ProblemFramingWorkshop = () => {
                   <h3 className="text-xl font-semibold">Ziel</h3>
                   <p className="text-muted-foreground">
                     Eine <strong>klare, fokussierte und testbare</strong> Problemformulierung erstellen, 
-                    die als Grundlage für Ihren (AI) Design Sprint dient.
+                    die als Grundlage für Ihren (KI) Design Sprint dient.
                   </p>
                 </CardContent>
               </Card>
@@ -212,7 +212,7 @@ const ProblemFramingWorkshop = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold">Facilitator:in</p>
+                      <p className="font-semibold">Moderator:in</p>
                       <p className="text-sm text-muted-foreground">Moderiert, hält Timeboxes</p>
                     </div>
                   </div>
@@ -354,7 +354,7 @@ const ProblemFramingWorkshop = () => {
                   </h3>
                   <p className="text-muted-foreground mb-4">
                     Statt vorgefertigter Formulare setzen wir auf <strong>moderierte Diskussionen</strong>, 
-                    Whiteboards und <strong>kollaborative Denkprozesse</strong>. Der Facilitator passt 
+                    Whiteboards und <strong>kollaborative Denkprozesse</strong>. Der Moderator passt 
                     Methoden und Fragen dynamisch an den Flow und die Bedürfnisse des Teams an.
                   </p>
                   <div className="grid md:grid-cols-2 gap-4 mt-4">

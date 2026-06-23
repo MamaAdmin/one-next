@@ -28,7 +28,7 @@ const DesignSprintWorkshop = () => {
     <>
       <SEO
         title="Design Sprint Workshop | 2-Tage Intensiv-Workshop | one-next"
-        description="Strukturierter Design Sprint Workshop über 2 Tage. Von der Challenge zum getesteten Prototyp mit erfahrenen Facilitators."
+        description="Strukturierter Design Sprint Workshop über 2 Tage. Von der Challenge zum getesteten Prototyp mit erfahrenen Moderatoren."
         keywords="Design Sprint Workshop, Innovation Workshop, Prototyping, Design Thinking Workshop"
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
@@ -193,8 +193,8 @@ const DesignSprintWorkshop = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold">Facilitator (wir stellen)</p>
-                      <p className="text-sm text-muted-foreground">Expert-Moderation & KI-Tools</p>
+                      <p className="font-semibold">Moderator (wir stellen)</p>
+                      <p className="text-sm text-muted-foreground">Expertenmoderation & KI-Tools</p>
                     </div>
                   </div>
                 </div>

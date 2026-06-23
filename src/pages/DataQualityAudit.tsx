@@ -152,7 +152,7 @@ export default function DataQualityAuditPage() {
   const faqs = [
     {
       q: "Für wen ist ein Data Quality Audit geeignet?",
-      a: "Für Unternehmen, die Daten für Entscheidungen, Reporting, KI oder Analytics nutzen und Transparenz über ihre Datenqualität benötigen. Besonders wertvoll vor größeren AI/Analytics-Projekten oder bei wiederkehrenden Datenproblemen."
+      a: "Für Unternehmen, die Daten für Entscheidungen, Reporting, KI oder Analytics nutzen und Transparenz über ihre Datenqualität benötigen. Besonders wertvoll vor größeren KI/Analytics-Projekten oder bei wiederkehrenden Datenproblemen."
     },
     {
       q: "Wie lange dauert ein Audit?",
@@ -235,7 +235,7 @@ export default function DataQualityAuditPage() {
               <h3 className="font-semibold text-lg">Warum Data Quality?</h3>
               <p className="mt-2 text-muted-foreground text-sm">
                 Schlechte Datenqualität kostet Unternehmen durchschnittlich 15-25% ihres Umsatzes 
-                und führt zu Fehlinvestitionen in AI/Analytics. Ein systematisches Audit schafft 
+                und führt zu Fehlinvestitionen in KI/Analytics. Ein systematisches Audit schafft 
                 Transparenz und eine fundierte Grundlage für Verbesserungen.
               </p>
               <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
@@ -283,7 +283,7 @@ export default function DataQualityAuditPage() {
               <h3 className="font-semibold mb-3">Typische Trigger für ein Audit:</h3>
               <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
                 <li>Wiederkehrende Probleme mit Datenqualität</li>
-                <li>Vorbereitung auf AI/Analytics-Projekte</li>
+                <li>Vorbereitung auf KI/Analytics-Projekte</li>
                 <li>Compliance-Anforderungen (DSGVO, Audits)</li>
                 <li>Mangelndes Vertrauen in Daten/Reports</li>
                 <li>Fehlende Transparenz über Datenquellen</li>

@@ -12,7 +12,7 @@ const Services = () => {
   }, {
     icon: ArrowsOutIcon,
     step: "Schritt 2/4 – Vom Entwurf zur ersten Version",
-    title: "Proof of AI Development",
+    title: "Proof of KI Development",
     description: "Entwickeln Sie vom KI Design Sprint zur ersten Implementierung. Wir entwickeln eine wettbewerbsfähige KI-Lösung, die Ihre Anforderungen erfüllt und Feedback sammelt. Die MVP-Version garantiert deutlich reduziertes Risiko."
   }, {
     icon: GridIcon,
