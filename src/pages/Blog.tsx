@@ -8,7 +8,7 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
-import { useToast } from "@/hooks/use-toast";
+
 import { SEO } from "@/components/SEO";
 import { createBreadcrumbSchema } from "@/config/seoConfig";
 import { Clock } from "lucide-react";
@@ -32,7 +32,7 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const { isContentManager } = useContentManager();
-  const { toast } = useToast();
+  
 
   useEffect(() => {
     const fetchArticles = async () => {

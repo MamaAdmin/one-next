@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Share2, Globe, Mail, Link as LinkIcon, BarChart } from "lucide-react";
 import { UsersIcon, StarburstIcon, QuizIcon, LessonIcon } from "@/components/ui/custom-icons";
-import { format, addDays } from "date-fns";
+import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import DOMPurify from 'dompurify';
 import { CourseRating } from "./CourseRating";

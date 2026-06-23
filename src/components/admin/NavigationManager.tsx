@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, GripVertical, Plus, Edit2, Save, X, Eye, EyeOff } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+
 import { URLEditDialog } from "./URLEditDialog";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";

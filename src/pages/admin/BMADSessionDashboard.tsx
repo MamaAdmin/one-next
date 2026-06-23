@@ -131,7 +131,7 @@ const BMADSessionDashboard = () => {
   const queryClient = useQueryClient();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { sessions, isLoading } = useBMADSessions();
-  const [selectedSession, setSelectedSession] = useState<any>(null);
+  const [selectedSession] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
