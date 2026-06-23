@@ -6,8 +6,7 @@
       ]
     },
     "skipLibCheck": true,
-    "strict": true,
-    "noUnusedLocals": true
+    "strict": true
   },
   "files": [],
   "references": [
