@@ -96,9 +96,9 @@ const Blog = () => {
   return (
     <>
       <SEO
-        title="Blog | AI & Innovation Insights | one-next"
+        title="Blog | KI & Innovation Innovation Insights | one-next"
         description="Aktuelle Einblicke, Updates und Perspektiven rund um KI, Innovation und Technologie. Expertenwissen aus der Praxis von one-next."
-        keywords="AI Blog, KI Insights, Innovation Blog, Technologie News, AI Trends, Design Thinking"
+        keywords="KI Blog, KI Insights, Innovation Blog, Technologie News, KI Trends, Design Thinking"
         canonical="https://one-next.de/blog"
         structuredData={createBreadcrumbSchema([
           { name: "Home", url: "https://one-next.de/" },

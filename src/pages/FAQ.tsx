@@ -108,7 +108,7 @@ const FAQ = () => {
               Häufig gestellte Fragen
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Alles, was Sie über unsere AI-Services wissen müssen
+              Alles, was Sie über unsere KI-Services wissen müssen
             </p>
 
             {/* Search */}

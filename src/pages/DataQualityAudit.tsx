@@ -19,7 +19,7 @@ export default function DataQualityAuditPage() {
   const structuredData = [
     createServiceSchema(
       "Data Quality Audit",
-      "Professionelle Datenqualitäts-Auditierung für AI-Projekte. Systematische Bewertung Ihrer Daten nach Vollständigkeit, Konsistenz, Aktualität und Validität.",
+      "Professionelle Datenqualitäts-Auditierung für KI-Projekte. Systematische Bewertung Ihrer Daten nach Vollständigkeit, Konsistenz, Aktualität und Validität.",
       "https://one-next.de/data-quality-audit"
     ),
     createBreadcrumbSchema([
@@ -180,8 +180,8 @@ export default function DataQualityAuditPage() {
     <>
       <SEO
         title="Data Quality Audit | Datenqualität professionell prüfen | one-next"
-        description="Professionelles Data Quality Audit für AI-Projekte. Systematische Bewertung nach Vollständigkeit, Konsistenz, Aktualität und Validität."
-        keywords="Data Quality Audit, Datenqualität, Data Audit, AI Datenprüfung, Data Quality Assessment"
+        description="Professionelles Data Quality Audit für KI-Projekte. Systematische Bewertung nach Vollständigkeit, Konsistenz, Aktualität und Validität."
+        keywords="Data Quality Audit, Datenqualität, Data Audit, KI-Datenprüfung, Data Quality Assessment"
         canonical="https://one-next.de/data-quality-audit"
         structuredData={structuredData}
       />
@@ -252,8 +252,8 @@ export default function DataQualityAuditPage() {
                   <p className="text-muted-foreground">DSGVO/DSG-konform und audit-ready</p>
                 </div>
                 <div className="rounded-xl border border-border p-3">
-                  <span className="font-medium">AI-Ready ✓</span>
-                  <p className="text-muted-foreground">Fundament für erfolgreiche AI-Projekte</p>
+                  <span className="font-medium">KI-Ready ✓</span>
+                  <p className="text-muted-foreground">Fundament für erfolgreiche KI-Projekte</p>
                 </div>
               </div>
             </div>

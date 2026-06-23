@@ -75,7 +75,7 @@ const CustomAIDevelopment = () => {
     },
     {
       icon: Settings,
-      title: "AI Solution Design",
+      title: "KI Solution Design",
       description: "Vorstrukturierte Modell-Ideen (z. B. Klassifikation, Generative KI, Empfehlungssysteme) basierend auf den validierten Use Cases."
     },
     {

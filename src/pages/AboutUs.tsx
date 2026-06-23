@@ -33,7 +33,7 @@ const AboutUs = () => {
     url: "https://one-next.de/about-us"
   }])];
   return <>
-      <SEO title="Über one-next | Julia Haitz - KI AI & Innovation Expertin Innovation Expertin" description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für KI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact." keywords="Julia Haitz, one-next, KI-Expertin, Design Sprint, Innovation Consulting, KI-Beratung" canonical="https://one-next.de/about-us" ogType="profile" structuredData={structuredData} />
+      <SEO title="Über one-next | Julia Haitz - KI KI & Innovation Innovation Expertin Innovation Expertin" description="Lernen Sie Julia Haitz kennen - Gründerin von one-next. Expertin für KI Design Sprints, Innovation und KI-Entwicklung mit Leidenschaft für Business Impact." keywords="Julia Haitz, one-next, KI-Expertin, Design Sprint, Innovation Consulting, KI-Beratung" canonical="https://one-next.de/about-us" ogType="profile" structuredData={structuredData} />
       <div className="min-h-screen bg-gradient-subtle">
       <Navigation />
       

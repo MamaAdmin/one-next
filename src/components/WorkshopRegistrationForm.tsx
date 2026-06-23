@@ -178,10 +178,10 @@ Ziele: ${data.goals}
   const additionalServicesOptions = [
     { id: "ai-design-sprint", label: "KI Design Sprint" },
     { id: "problem-framing", label: "Problem-Framing Workshop" },
-    { id: "data-audit", label: "AI Datenaudit & Governance" },
+    { id: "data-audit", label: "KI Datenaudit & Governance" },
     { id: "custom-ai", label: "Individuelle KI-Entwicklung" },
     { id: "ai-consulting", label: "KI-Beratung & Strategie" },
-    { id: "ai-training", label: "AI Trainings & Enablement" },
+    { id: "ai-training", label: "KI Trainings & Enablement" },
   ];
 
   return (
