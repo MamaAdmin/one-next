@@ -87,7 +87,7 @@ const AIDesignSprint = () => {
 
             {/* Horizontaler Prozess-Flow: Vier Phasen des KI Design Sprint Workshops */}
             <div className="pt-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-2 items-stretch">
+              <div className="flex flex-col md:flex-row md:items-stretch gap-4 md:gap-2">
                 {[
                   {
                     icon: Target,
@@ -116,7 +116,7 @@ const AIDesignSprint = () => {
                 ].map((phase, idx, arr) => {
                   const Icon = phase.icon;
                   return (
-                    <div key={phase.step} className="relative flex md:contents">
+                    <div key={phase.step} className="flex md:flex-1 items-stretch gap-2">
                       <Card className="flex-1 border-border hover:border-primary/40 hover:shadow-hover transition-all">
                         <CardContent className="p-5 space-y-3 h-full flex flex-col">
                           <div className="flex items-center justify-between">
