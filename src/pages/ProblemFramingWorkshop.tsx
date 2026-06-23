@@ -34,7 +34,7 @@ const ProblemFramingWorkshop = () => {
       },
       {
         question: "Was ist das Ergebnis des Workshops?",
-        answer: "Eine klar definierte Challenge, priorisierte Zielgruppe und ein sprint-ready Setup für den anschließenden Design Sprint."
+        answer: "Eine klar definierte Challenge, priorisierte Zielgruppe und ein Design Sprint-ready Setup für den anschließenden Design Sprint."
       }
     ])
   ];
@@ -43,7 +43,7 @@ const ProblemFramingWorkshop = () => {
     <>
       <SEO
         title="Problem-Framing-Workshop | Challenge definieren | one-next"
-        description="1-2 Tage intensive Challenge-Klärung. Definieren Sie Ihre Herausforderung präzise und machen Sie Ihr Team sprint-ready für den Design Sprint."
+        description="1-2 Tage intensive Challenge-Klärung. Definieren Sie Ihre Herausforderung präzise und machen Sie Ihr Team Design Sprint-ready für den Design Sprint."
         keywords="Problem Framing, Challenge Definition, Workshop, Design Sprint Vorbereitung, Stakeholder Alignment"
         canonical="https://one-next.de/problem-framing-workshop"
         structuredData={structuredData}
@@ -68,7 +68,7 @@ const ProblemFramingWorkshop = () => {
               </h1>
               <p className="text-xl text-muted-foreground">
                 1–2 Tage intensive Klärung, um Ihre Challenge präzise zu definieren, 
-                die Zielgruppe zu priorisieren und sprint-ready zu machen – 
+                die Zielgruppe zu priorisieren und Design Sprint-ready zu machen – 
                 perfekt vorbereitet für den Design Sprint.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
