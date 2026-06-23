@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import ScrollToTop from "./components/ScrollToTop";
+import ScrollReveal from "./components/ScrollReveal";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
 import Article from "./pages/Article";
@@ -76,6 +77,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <ScrollReveal />
           <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/blog" element={<Blog />} />
