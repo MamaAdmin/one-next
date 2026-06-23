@@ -8,8 +8,8 @@ const Analysis = () => {
   return (
     <>
       <SEO 
-        title="AI-Analyse | One Next"
-        description="Professionelle AI-Analyse für Ihr Unternehmen. Wir evaluieren Ihre KI-Potenziale und entwickeln maßgeschneiderte Strategien."
+        title="KI-Analyse | One Next"
+        description="Professionelle KI-Analyse für Ihr Unternehmen. Wir evaluieren Ihre KI-Potenziale und entwickeln maßgeschneiderte Strategien."
         canonical="/analyse"
       />
       <Navigation />
@@ -18,7 +18,7 @@ const Analysis = () => {
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary/10">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-5xl font-bold mb-6">AI-Analyse</h1>
+              <h1 className="text-5xl font-bold mb-6">KI-Analyse</h1>
               <p className="text-xl text-muted-foreground mb-8">
                 Identifizieren Sie KI-Potenziale in Ihrem Unternehmen und entwickeln Sie eine datengetriebene Strategie für nachhaltigen Erfolg.
               </p>
@@ -117,7 +117,7 @@ const Analysis = () => {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-4">Bereit für Ihre AI-Analyse?</h2>
+              <h2 className="text-3xl font-bold mb-4">Bereit für Ihre KI-Analyse?</h2>
               <p className="text-xl text-muted-foreground mb-8">
                 Lassen Sie uns gemeinsam die KI-Potenziale in Ihrem Unternehmen entdecken.
               </p>

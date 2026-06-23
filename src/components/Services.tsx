@@ -7,7 +7,7 @@ const Services = () => {
   const services = [{
     icon: StarburstIcon,
     step: "Schritt 1/4 – Vom Workshop zum Entwurf",
-    title: "Digitale Transformation mit AI starten",
+    title: "Digitale Transformation mit KI starten",
     description: "Identifizieren Sie KI-Chancen durch unsere KI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler Online Sprint. Challenge noch unklar? Unser Problem-Framing-Workshop bereitet Sie optimal vor."
   }, {
     icon: ArrowsOutIcon,
@@ -23,7 +23,7 @@ const Services = () => {
     icon: MessageIcon,
     step: "Schritt 4/4 – Vom ersten Entwurf zur Skalierung",
     title: "KI Consulting Services",
-    description: "Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt."
+    description: "Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt."
   }];
   return <section id="services" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4 md:px-6">

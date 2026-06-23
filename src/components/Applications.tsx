@@ -15,7 +15,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
       icon: Cog,
       title: "Automatisierung und Kostenreduzierung",
       description:
-        "Erreichen Sie operative Effizienz durch AI-Technologie mit automatisierten Schritten und optimierten Prozessen. Produktivität, Zuverlässigkeit und Effizienz können durch Deep Learning-Techniken verbessert werden.",
+        "Erreichen Sie operative Effizienz durch KI-Technologie mit automatisierten Schritten und optimierten Prozessen. Produktivität, Zuverlässigkeit und Effizienz können durch Deep Learning-Techniken verbessert werden.",
     },
     {
       icon: TrendingUp,
@@ -33,7 +33,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
       icon: Users,
       title: "Kundenerlebnis auf Steroiden",
       description:
-        "Schaffen Sie natürliche Interaktionen mit Ihren Nutzern durch Natural Language Processing. Verbessern Sie die User Experience bei gleichzeitiger Kostenreduzierung mit AI-Automatisierung und Chatbots.",
+        "Schaffen Sie natürliche Interaktionen mit Ihren Nutzern durch Natural Language Processing. Verbessern Sie die User Experience bei gleichzeitiger Kostenreduzierung mit KI-Automatisierung und Chatbots.",
     },
     {
       icon: Target,
@@ -49,7 +49,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
         <div className="text-center space-y-4 mb-16 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold">
             <InlineTextField
-              value={content.title || 'Wo können wir AI für Sie einsetzen?'}
+              value={content.title || 'Wo können wir KI für Sie einsetzen?'}
               onSave={(value) => updateContent('title', value)}
               isEditMode={isEditMode}
               className="text-4xl lg:text-5xl font-bold"
@@ -58,7 +58,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
             />
           </h2>
           <InlineTextArea
-            value={content.description || 'Künstliche Intelligenz hat die digitale Transformation auf den Agenden der meisten CEOs ersetzt. Unternehmen, die sich für die Integration von AI-Technologie entscheiden, profitieren vom wahrhaft transformativen Potenzial der AI.'}
+            value={content.description || 'Künstliche Intelligenz hat die digitale Transformation auf den Agenden der meisten CEOs ersetzt. Unternehmen, die sich für die Integration von KI-Technologie entscheiden, profitieren vom wahrhaft transformativen Potenzial der KI.'}
             onSave={(value) => updateContent('description', value)}
             isEditMode={isEditMode}
             className="text-xl text-muted-foreground max-w-4xl mx-auto"

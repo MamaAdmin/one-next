@@ -115,7 +115,7 @@ export const WorkshopComparisonSection = () => {
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">Geleitet von AI-Experten & Facilitatoren</p>
+                  <p className="text-muted-foreground">Geleitet von KI-Experten und erfahrenen Moderatoren</p>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />

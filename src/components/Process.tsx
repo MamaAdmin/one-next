@@ -15,7 +15,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       title: "Briefing",
       duration: "2 Stunden",
       description:
-        "Erklären Sie Ihr Geschäft und teilen Sie Ihre Herausforderungen, um Einblicke in AI-Möglichkeiten und einen von unseren Experten entwickelten Ansatz zu erhalten.",
+        "Erklären Sie Ihr Geschäft und teilen Sie Ihre Herausforderungen, um Einblicke in KI-Möglichkeiten und einen von unseren Experten entwickelten Ansatz zu erhalten.",
       color: "bg-primary",
     },
     {
@@ -50,7 +50,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
         <div className="text-center space-y-4 mb-16 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold">
             <InlineTextField
-              value={content.title || 'Ein Entwicklungsprozess, der AI-Ergebnisse in Wochen liefert, nicht Jahren'}
+              value={content.title || 'Ein Entwicklungsprozess, der KI-Ergebnisse in Wochen liefert, nicht Jahren'}
               onSave={(value) => updateContent('title', value)}
               isEditMode={isEditMode}
               className="text-4xl lg:text-5xl font-bold"

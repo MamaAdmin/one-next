@@ -43,7 +43,7 @@ const AIDesignSprint = () => {
     answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
   }])];
   return <>
-      <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
+      <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, KI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
       <div className="min-h-screen">
       <Navigation />
       
@@ -114,7 +114,7 @@ const AIDesignSprint = () => {
                   <Calendar className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-bold">2 Tage intensiv</h3>
-                <p className="text-muted-foreground text-sm">Fokussierte AI-Konzeptentwicklung</p>
+                <p className="text-muted-foreground text-sm">Fokussierte KI-Konzeptentwicklung</p>
               </CardContent>
             </Card>
 
@@ -123,8 +123,8 @@ const AIDesignSprint = () => {
                 <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
                   <Target className="w-7 h-7 text-primary-foreground" />
                 </div>
-                <h3 className="text-lg font-bold">Expert-Team</h3>
-                <p className="text-muted-foreground text-sm">AI-Ingenieure & Facilitatoren</p>
+                <h3 className="text-lg font-bold">Expertenteam</h3>
+                <p className="text-muted-foreground text-sm">KI-Ingenieure und Moderation</p>
               </CardContent>
             </Card>
           </div>
@@ -248,7 +248,7 @@ const AIDesignSprint = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Wählen Sie Ihren Design Sprint Ansatz</h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Beide Formate führen zu AI-Innovation - wählen Sie den Ansatz, der am besten zu Ihrem Team passt
+              Drei Wege führen zu KI-Innovation – wählen Sie den Ansatz, der am besten zu Ihrem Team passt.
             </p>
           </div>
           
@@ -260,7 +260,7 @@ const AIDesignSprint = () => {
                   <Target className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop (Mit AI)</h3>
+                  <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop (mit KI)</h3>
                   <p className="text-sm text-muted-foreground">Ihre Challenge schärfen</p>
                 </div>
                 <ul className="space-y-3">
@@ -290,16 +290,15 @@ const AIDesignSprint = () => {
               </CardContent>
             </Card>
 
-            {/* Design Sprint Workshop (Mit AI) */}
+            {/* Design Sprint Workshop (mit KI) */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
                 <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
                   <Users className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop
-(Mit AI)</h3>
-                  <p className="text-sm text-muted-foreground">Intensiv, expert-geführt, maßgeschneidert</p>
+                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (mit KI)</h3>
+                  <p className="text-sm text-muted-foreground">Intensiv, expertengeführt, maßgeschneidert</p>
                 </div>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2 text-sm">
@@ -312,7 +311,7 @@ const AIDesignSprint = () => {
                   </li>
                   <li className="flex items-start gap-2 text-sm">
                     <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Geleitet von AI-Experten & Facilitatoren</span>
+                    <span>Geleitet von KI-Experten und erfahrenen Moderatoren</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
                     <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
@@ -330,14 +329,13 @@ const AIDesignSprint = () => {
 
             {/* Online Design Sprint */}
             <Card className="hover:shadow-hover transition-all relative">
-              <div className="absolute top-4 right-4 bg-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full">Comming soon</div>
+              <div className="absolute top-4 right-4 bg-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full">Coming soon</div>
               <CardContent className="p-8 space-y-6">
                 <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
                   <Laptop className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Online Design Sprint
-(Comming S</h3>
+                  <h3 className="text-xl font-bold mb-2">Online Design Sprint (Coming soon)</h3>
                   <p className="text-sm text-muted-foreground">Flexibel, strukturiert, selbstgeführt</p>
                 </div>
                 <ul className="space-y-3">
@@ -402,7 +400,7 @@ const AIDesignSprint = () => {
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Workshop buchen</h3>
                     <p className="text-muted-foreground text-sm">
-                      Facilitierter 2-Tage Workshop mit AI-Experten
+                      Facilitierter 2-Tage Workshop mit KI-Experten
                     </p>
                     <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
                       Kontakt aufnehmen
