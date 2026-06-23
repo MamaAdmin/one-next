@@ -4,14 +4,14 @@ import { useToast } from "@/hooks/use-toast";
 
 export interface NavigationItem {
   id: string;
-  menu_id: string;
+  menu_id: string | null;
   parent_id: string | null;
   label: string;
   url: string | null;
   icon: string | null;
   sort_order: number;
-  is_active: boolean;
-  target: string;
+  is_active: boolean | null;
+  target: string | null;
   children?: NavigationItem[];
 }
 
@@ -19,7 +19,7 @@ export interface NavigationMenu {
   id: string;
   name: string;
   label: string;
-  sort_order?: number;
+  sort_order?: number | null;
 }
 
 interface NavigationItemDB {

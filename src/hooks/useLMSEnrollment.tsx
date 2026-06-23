@@ -47,7 +47,7 @@ export const useLMSEnrollment = () => {
         if (error) throw error;
         
         setEnrollments(data || []);
-        const active = data?.find(e => e.status === "active");
+        const active = data?.find((e: { status: string }) => e.status === "active");
         setCurrentEnrollment(active || null);
 
       } catch (error) {

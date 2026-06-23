@@ -6,8 +6,8 @@ interface Redirect {
   id: string;
   from_path: string;
   to_path: string;
-  redirect_type: number;
-  is_active: boolean;
+  redirect_type: number | null;
+  is_active: boolean | null;
 }
 
 export const useRedirects = () => {

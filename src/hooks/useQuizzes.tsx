@@ -9,8 +9,8 @@ export interface Quiz {
   description: string | null;
   passing_score: number;
   time_limit_minutes: number | null;
-  max_attempts: number;
-  is_required: boolean;
+  max_attempts: number | null;
+  is_required: boolean | null;
   sort_order: number;
   created_at: string;
   updated_at: string;

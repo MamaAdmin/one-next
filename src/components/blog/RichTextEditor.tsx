@@ -22,10 +22,10 @@ const modules = {
     [{ header: [1, 2, 3, false] }],
     ["bold", "italic", "underline", "strike"],
     [{ list: "ordered" }, { list: "bullet" }],
-    [{ align: [] }],
+    [{ align: [] as string[] }],
     ["link", "image", "video"],
     ["blockquote", "code-block"],
-    [{ color: [] }, { background: [] }],
+    [{ color: [] as string[] }, { background: [] as string[] }],
     ["clean"],
   ],
 };

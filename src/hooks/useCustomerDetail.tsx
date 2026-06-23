@@ -156,6 +156,8 @@ export const useCustomerDetail = (customerId: string | undefined) => {
 
       // Create invitation
       const token = crypto.randomUUID();
+      const { data: { user: inviter } } = await supabase.auth.getUser();
+      if (!inviter) throw new Error("Nicht angemeldet");
       const { error: inviteError } = await supabase
         .from("user_invitations")
         .insert({
@@ -163,7 +165,7 @@ export const useCustomerDetail = (customerId: string | undefined) => {
           email,
           full_name: fullName,
           token,
-          invited_by: (await supabase.auth.getUser()).data.user?.id,
+          invited_by: inviter.id,
         });
 
       if (inviteError) throw inviteError;

@@ -20,13 +20,13 @@ interface Article {
   title: string;
   slug: string;
   content: string;
-  author: string;
-  published_at: string;
-  featured_image?: string;
+  author: string | null;
+  published_at: string | null;
+  featured_image?: string | null;
   media?: {
     file_path: string;
     alt_text: string | null;
-  };
+  } | null;
 }
 
 const Article = () => {
@@ -141,8 +141,8 @@ const Article = () => {
           createBlogPostingSchema(
             article.title,
             article.content.substring(0, 200).replace(/<[^>]+>/g, ''),
-            article.author,
-            article.published_at,
+            article.author ?? "",
+            article.published_at ?? "",
             `https://one-next.de/blog/${article.slug}`,
             article.media?.file_path
           ),
@@ -189,7 +189,7 @@ const Article = () => {
               <span>{article.author}</span>
             )}
             {" • "}
-            {format(new Date(article.published_at), "d. MMMM yyyy", { locale: de })}
+            {article.published_at ? format(new Date(article.published_at), "d. MMMM yyyy", { locale: de }) : ""}
           </div>
 
           {article.media?.file_path && (

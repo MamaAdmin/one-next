@@ -66,7 +66,7 @@ export default function LMSToolboxEditor() {
       const { data, error } = await supabase
         .from("lms_tools")
         .select("*")
-        .eq("id", toolId)
+        .eq("id", toolId ?? "")
         .single();
 
       if (error) throw error;

@@ -8,9 +8,9 @@ interface Version {
   content_id: string;
   version_number: number;
   content: any;
-  changed_by: string;
+  changed_by: string | null;
   change_summary: string | null;
-  created_at: string;
+  created_at: string | null;
 }
 
 export const useVersionHistory = (contentType: string, contentId: string) => {

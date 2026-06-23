@@ -79,7 +79,7 @@ export const useLMSModules = (courseId: string, enrollmentId?: string) => {
           if (progressError) throw progressError;
 
           const progressMap: Record<string, ModuleProgress> = {};
-          progressData?.forEach(p => {
+          progressData?.forEach((p: ModuleProgress) => {
             progressMap[p.module_id] = p;
           });
           setProgress(progressMap);

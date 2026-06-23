@@ -14,10 +14,10 @@ interface Article {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;
+  excerpt: string | null;
   content: string;
-  author: string;
-  status: string;
+  author: string | null;
+  status: string | null;
 }
 
 const quillModules = {
@@ -25,7 +25,7 @@ const quillModules = {
     [{ header: [1, 2, 3, false] }],
     ["bold", "italic", "underline", "strike"],
     [{ list: "ordered" }, { list: "bullet" }],
-    [{ align: [] }],
+    [{ align: [] as string[] }],
     ["link", "blockquote", "code-block"],
     ["clean"],
   ],
@@ -125,10 +125,10 @@ const ArticleManager = () => {
     setFormData({
       title: article.title,
       slug: article.slug,
-      excerpt: article.excerpt,
+      excerpt: article.excerpt ?? "",
       content: article.content,
-      author: article.author,
-      status: article.status,
+      author: article.author ?? "",
+      status: article.status ?? "draft",
     });
   };
 
@@ -267,7 +267,7 @@ const ArticleManager = () => {
                   <h3 className="font-semibold">{article.title}</h3>
                   <p className="text-sm text-muted-foreground">{article.slug}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Status: {statusLabels[article.status] ?? article.status}
+                    Status: {statusLabels[article.status ?? "draft"] ?? article.status}
                   </p>
                 </div>
                 <div className="flex gap-2">

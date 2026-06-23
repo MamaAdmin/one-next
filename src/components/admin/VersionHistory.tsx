@@ -114,7 +114,7 @@ export const VersionHistory = ({
                         Version {version.version_number}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {format(new Date(version.created_at), "PPp", { locale: de })}
+                        {version.created_at ? format(new Date(version.created_at), "PPp", { locale: de }) : ""}
                       </div>
                       {version.change_summary && (
                         <div className="text-sm mt-1">{version.change_summary}</div>

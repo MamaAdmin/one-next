@@ -84,11 +84,11 @@ const UserProfile = () => {
     progress: enrollment.progress_percentage || 0,
     isCompleted: !!enrollment.completed_at,
     enrollmentId: enrollment.id,
-    rating: undefined, // TODO: Load ratings
+    rating: undefined as number | undefined, // TODO: Load ratings
   }));
 
   const totalCourses = courses.length;
-  const completedCourses = courses.filter((c: any) => c.isCompleted).length;
+  const completedCourses = courses.filter((c) => c.isCompleted).length;
 
   return (
     <div className="min-h-screen flex flex-col">
