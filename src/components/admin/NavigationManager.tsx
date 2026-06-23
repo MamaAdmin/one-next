@@ -58,12 +58,6 @@ const SortableItem = ({
   };
   const hasEdits = editedItems[item.id] !== undefined;
 
-  // Render icon helper
-  const renderIcon = (iconName: string | null) => {
-    if (!iconName) return null;
-    const Icon = (LucideIcons as any)[iconName];
-    return Icon ? <Icon className="h-4 w-4" /> : null;
-  };
   return <>
       <div ref={setNodeRef} style={style} className={cn(
         "flex items-center gap-2 mb-2", 
@@ -138,7 +132,6 @@ const NavigationManager = () => {
   const {
     menus,
     items,
-    loading,
     updateItem,
     reorderItems,
     deleteItem,

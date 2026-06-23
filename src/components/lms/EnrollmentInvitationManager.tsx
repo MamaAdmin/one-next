@@ -24,7 +24,7 @@ interface EnrollmentInvitationManagerProps {
 
 export const EnrollmentInvitationManager = ({
   customerId,
-  purchaseId,
+  purchaseId: _purchaseId,
 }: EnrollmentInvitationManagerProps) => {
   const { invitations, loading, createInvitation } = useInvitations(customerId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);

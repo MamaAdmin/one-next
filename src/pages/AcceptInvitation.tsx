@@ -95,7 +95,7 @@ const AcceptInvitation = () => {
       await acceptInvitation(token, password);
       toast.success("Account erfolgreich erstellt!");
       navigate("/profile");
-    } catch (error) {
+    } catch {
       // Error handling is done in the hook
     } finally {
       setSubmitting(false);

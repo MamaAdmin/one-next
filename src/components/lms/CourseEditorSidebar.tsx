@@ -43,7 +43,7 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
 
       if (error) throw error;
       setCategories(data || []);
-    } catch (error: any) {
+    } catch {
       toast({
         title: "Fehler",
         description: "Kategorien konnten nicht geladen werden",

@@ -17,7 +17,7 @@ export const VotingBoard = ({
   items,
   maxVotes = 3,
 }: VotingBoardProps) => {
-  const { votes, castVote, getVoteCount, getMyVotes, loading } = useVoting(
+  const { castVote, getVoteCount, getMyVotes, loading } = useVoting(
     sessionId,
     participantId
   );

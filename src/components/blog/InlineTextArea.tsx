@@ -37,7 +37,7 @@ export const InlineTextArea = ({
         await onSave(decodeHtmlEntitiesDeep(localValue.trim()));
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 2000);
-      } catch (error) {
+      } catch {
         setLocalValue(value);
       } finally {
         setIsSaving(false);

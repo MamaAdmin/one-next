@@ -22,17 +22,6 @@ export interface NavigationMenu {
   sort_order?: number | null;
 }
 
-interface NavigationItemDB {
-  id: string;
-  menu_id: string;
-  parent_id: string | null;
-  label: string;
-  url: string | null;
-  icon: string | null;
-  target: string | null;
-  sort_order: number;
-  is_active: boolean;
-}
 
 export const useNavigation = (menuName?: string) => {
   const [menus, setMenus] = useState<NavigationMenu[]>([]);

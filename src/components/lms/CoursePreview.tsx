@@ -93,13 +93,6 @@ export function CoursePreview({
     'advanced': 'Experte',
     'all': 'Alle Schwierigkeitsgrade'
   };
-  const courseTypeLabels: Record<string, string> = {
-    'custom': 'Individuell',
-    'sprint': 'Sprint',
-    'workshop': 'Workshop',
-    'online': 'Online-Kurs',
-    'hybrid': 'Hybrid'
-  };
 
   // HTML sicher rendern
   const sanitizeHtml = (html: string) => {
@@ -153,7 +146,7 @@ export function CoursePreview({
       window.location.href = `/lms/courses/${course.id}`;
     }
   };
-  const completionDate = enrollment ? addDays(new Date(enrollment.enrolled_at), course.completion_deadline_days || 30) : null;
+  
   
   const completedLessons = enrollment ? Math.floor((enrollment.progress_percentage / 100) * (course.total_lessons || 0)) : 0;
   const totalLessons = course.total_lessons || 0;

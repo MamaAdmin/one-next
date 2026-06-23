@@ -52,7 +52,7 @@ const colorClasses = {
   }
 };
 function QuadrantCard({
-  id,
+  id: _id,
   title,
   color,
   icon,

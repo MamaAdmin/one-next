@@ -17,7 +17,7 @@ interface QuizTakingProps {
 }
 
 export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps) => {
-  const { startAttempt, saveAnswer, submitAttempt, currentAttempt } = useQuizAttempts(enrollmentId, quizId);
+  const { startAttempt, saveAnswer, currentAttempt } = useQuizAttempts(enrollmentId, quizId);
   const { loadQuestions, quizzes } = useQuizzes();
   
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -27,7 +27,7 @@ export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps
   const [startTime] = useState(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [quiz, setQuiz] = useState<any>(null);
+  const [, setQuiz] = useState<any>(null);
 
   useEffect(() => {
     const init = async () => {

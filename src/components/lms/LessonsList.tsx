@@ -84,7 +84,7 @@ export const LessonsList = ({
     try {
       await completeLesson(currentLesson.id);
       toast({ title: "Erfolg", description: "Lektion als abgeschlossen markiert" });
-    } catch (error) {
+    } catch {
       toast({ 
         title: "Fehler", 
         description: "Lektion konnte nicht abgeschlossen werden",

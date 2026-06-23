@@ -40,7 +40,7 @@ const categoryLabels: Record<string, string> = {
   retrospect: "Retrospektive",
 };
 
-export function ToolSelector({ selectedTools, onChange, filterByCourseId }: ToolSelectorProps) {
+export function ToolSelector({ selectedTools, onChange, filterByCourseId: _filterByCourseId }: ToolSelectorProps) {
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");

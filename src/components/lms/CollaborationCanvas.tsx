@@ -22,7 +22,7 @@ interface CollaborationCanvasProps {
 
 export const CollaborationCanvas = ({
   sessionId,
-  moduleId,
+  moduleId: _moduleId,
   onUpdate,
 }: CollaborationCanvasProps) => {
   const [notes, setNotes] = useState<StickyNote[]>([]);

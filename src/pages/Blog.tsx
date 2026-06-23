@@ -52,27 +52,6 @@ const Blog = () => {
     fetchArticles();
   }, []);
 
-  const handleUpdateArticle = async (articleId: string, field: string, value: string) => {
-    try {
-      const { error } = await supabase
-        .from("articles")
-        .update({ [field]: value })
-        .eq("id", articleId);
-
-      if (error) throw error;
-
-      setArticles((prev) =>
-        prev.map((article) =>
-          article.id === articleId ? { ...article, [field]: value } : article
-        )
-      );
-
-      toast({
-        title: "Erfolg",
-        description: "Artikel erfolgreich aktualisiert",
-      });
-    } catch (error) {
-      console.error("Error updating article:", error);
       toast({
         title: "Fehler",
         description: "Artikel konnte nicht aktualisiert werden",
