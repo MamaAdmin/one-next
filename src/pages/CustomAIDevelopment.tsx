@@ -105,9 +105,9 @@ const CustomAIDevelopment = () => {
   return (
     <>
       <SEO
-        title="Custom AI Development | Individuelle KI-Lösungen | one-next"
-        description="Maßgeschneiderte AI-Entwicklung mit dem BMAD-Framework. Von der Konzeption bis zur Umsetzung - agil, iterativ und business-fokussiert."
-        keywords="KI-Entwicklung, Custom AI, BMAD Framework, AI Consulting, Individuelle AI-Lösungen, Agile AI Development"
+        title="Individuelle KI-Entwicklung | KI-Lösungen mit BMAD | one-next"
+        description="Von der Idee zum umsetzungsreifen KI-Projekt: Mit dem BMAD-Ansatz bringt one-next Ihr Unternehmen mit maßgeschneiderten KI-Lösungen auf die nächste Stufe."
+        keywords="KI-Entwicklung, Individuelle KI-Entwicklung, BMAD Framework, KI-Beratung, KI-Lösungen, Blueprint"
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
