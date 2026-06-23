@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Users, Target, Laptop, Check } from "lucide-react";
+import { Calendar, Users, Target, Laptop, Check, Lightbulb, Sparkles, Rocket, ArrowRight } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
@@ -83,6 +83,63 @@ const AIDesignSprint = () => {
                 <InlineTextField value={content.what_is_title || 'Der KI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
               </h2>
               <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, KI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
+            </div>
+
+            {/* Horizontaler Prozess-Flow: Vier Phasen des KI Design Sprint Workshops */}
+            <div className="pt-8">
+              <div className="flex flex-col md:flex-row md:items-stretch gap-4 md:gap-2">
+                {[
+                  {
+                    icon: Target,
+                    step: "01",
+                    title: "Problem definieren",
+                    desc: "Challenge präzisieren, Zielgruppe und Kontext klären."
+                  },
+                  {
+                    icon: Lightbulb,
+                    step: "02",
+                    title: "Ideen entwickeln",
+                    desc: "Strukturierte Phasen von Ideenfindung bis Validierung – unterstützt durch KI-Tools."
+                  },
+                  {
+                    icon: Sparkles,
+                    step: "03",
+                    title: "Use-Cases identifizieren",
+                    desc: "Konkrete, umsetzbare KI-Anwendungsfälle priorisieren und schärfen."
+                  },
+                  {
+                    icon: Rocket,
+                    step: "04",
+                    title: "Konzept & Prototyp",
+                    desc: "Greifbare Lösung mit klaren nächsten Umsetzungsschritten."
+                  }
+                ].map((phase, idx, arr) => {
+                  const Icon = phase.icon;
+                  return (
+                    <div key={phase.step} className="flex md:flex-1 items-stretch gap-2">
+                      <Card className="flex-1 border-border hover:border-primary/40 hover:shadow-hover transition-all">
+                        <CardContent className="p-5 space-y-3 h-full flex flex-col">
+                          <div className="flex items-center justify-between">
+                            <div className="w-11 h-11 rounded-xl bg-gradient-primary flex items-center justify-center">
+                              <Icon className="w-5 h-5 text-primary-foreground" />
+                            </div>
+                            <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">
+                              {phase.step}
+                            </span>
+                          </div>
+                          <h3 className="text-base font-bold leading-snug">{phase.title}</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{phase.desc}</p>
+                        </CardContent>
+                      </Card>
+                      {idx < arr.length - 1 && (
+                        <div className="hidden md:flex items-center justify-center px-1 text-primary/60" aria-hidden="true">
+                          <ArrowRight className="w-5 h-5" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
