@@ -335,8 +335,7 @@ const AIDesignSprint = () => {
                   <Laptop className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Online Design Sprint
-(Comming S</h3>
+                  <h3 className="text-xl font-bold mb-2">Online Design Sprint (Coming soon)</h3>
                   <p className="text-sm text-muted-foreground">Flexibel, strukturiert, selbstgeführt</p>
                 </div>
                 <ul className="space-y-3">
