@@ -28,7 +28,7 @@ const DesignSprintWorkshop = () => {
     <>
       <SEO
         title="Design Sprint Workshop | 2-Tage Intensiv-Workshop | one-next"
-        description="Strukturierter Design Sprint Workshop über 2 Tage. Von der Challenge zum getesteten Prototyp mit erfahrenen Facilitators."
+        description="Strukturierter Design Sprint Workshop über 2 Tage. Von der Challenge zum getesteten Prototyp mit erfahrenen Moderatoren."
         keywords="Design Sprint Workshop, Innovation Workshop, Prototyping, Design Thinking Workshop"
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
@@ -79,7 +79,7 @@ const DesignSprintWorkshop = () => {
             <div className="relative">
               <img 
                 src={workshopImage} 
-                alt="KI Design Sprint Workshop mit Teilnehmern und Facilitator bei der Entwicklung eines Prototyps" 
+                alt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps" 
                 className="rounded-2xl shadow-2xl w-full h-auto"
               />
             </div>
@@ -193,8 +193,8 @@ const DesignSprintWorkshop = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold">Facilitator (wir stellen)</p>
-                      <p className="text-sm text-muted-foreground">Expert-Moderation & KI-Tools</p>
+                      <p className="font-semibold">Moderator (wir stellen)</p>
+                      <p className="text-sm text-muted-foreground">Expertenmoderation & KI-Tools</p>
                     </div>
                   </div>
                 </div>
@@ -419,7 +419,7 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Expert-geführt für maximale Qualität</h3>
+                  <h3 className="text-lg font-semibold">Expertengeführt für maximale Qualität</h3>
                   <p className="text-sm text-muted-foreground">
                     Erfahrene KI-Experten und Moderatoren begleiten Sie durch den gesamten Prozess 
                     und bringen Best Practices aus zahlreichen Projekten ein.

@@ -19,7 +19,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       color: "bg-primary",
     },
     {
-      phase: "AI Design",
+      phase: "KI Design",
       title: "Sprint",
       duration: "2 Tage",
       description:
@@ -27,7 +27,7 @@ const Process = ({ isEditMode = false }: ProcessProps) => {
       color: "bg-secondary",
     },
     {
-      phase: "Proof of AI",
+      phase: "Proof of KI",
       title: "Development",
       duration: "4 – 12 Wochen",
       description:
