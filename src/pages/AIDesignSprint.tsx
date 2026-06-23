@@ -43,7 +43,7 @@ const AIDesignSprint = () => {
     answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
   }])];
   return <>
-      <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, AI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
+      <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, KI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
       <div className="min-h-screen">
       <Navigation />
       

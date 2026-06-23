@@ -46,7 +46,7 @@ const AIConsultingServices = () => {
       <SEO
         title="KI Consulting Services | Strategische KI-Beratung | one-next"
         description="Professionelle KI-Beratung für Ihr Unternehmen. Von der Potenzialanalyse über Strategieentwicklung bis zur Umsetzungsbegleitung. Individuell und praxisnah."
-        keywords="KI Consulting, KI-Beratung, AI Strategie, Künstliche Intelligenz Beratung, AI Transformation, Innovation Consulting"
+        keywords="KI Consulting, KI-Beratung, KI Strategie, Künstliche Intelligenz Beratung, KI Transformation, Innovation Consulting"
         canonical="https://one-next.de/ai-consulting-services"
         structuredData={structuredData}
       />
@@ -77,7 +77,7 @@ const AIConsultingServices = () => {
             />
             
             <InlineTextArea
-              value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte AI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
+              value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
               onSave={(value) => updateContent('hero_description', value)}
               isEditMode={isEditMode}
               className="text-xl text-primary-foreground/90 leading-relaxed"
@@ -147,7 +147,7 @@ const AIConsultingServices = () => {
                   <TargetIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Geschäftsziele verstehen</h3>
                   <p className="text-muted-foreground">
-                    Wir analysieren Ihre strategischen Ziele und identifizieren, wo AI den größten 
+                    Wir analysieren Ihre strategischen Ziele und identifizieren, wo KI den größten 
                     Impact erzielen kann.
                   </p>
                 </CardContent>
@@ -180,7 +180,7 @@ const AIConsultingServices = () => {
                   <CpuIcon className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold">Technologie-Auswahl</h3>
                   <p className="text-muted-foreground">
-                    Empfehlung der optimalen AI-Technologien und -Plattformen für Ihre spezifischen 
+                    Empfehlung der optimalen KI-Technologien und -Plattformen für Ihre spezifischen 
                     Anforderungen.
                   </p>
                 </CardContent>
@@ -227,11 +227,11 @@ const AIConsultingServices = () => {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
                   <TargetIcon className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold">AI-Strategie-Entwicklung</h3>
+                <h3 className="text-2xl font-bold">KI-Strategie-Entwicklung</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Entwicklung einer umfassenden AI-Strategie, die mit Ihren Unternehmenszielen 
+                  Entwicklung einer umfassenden KI-Strategie, die mit Ihren Unternehmenszielen 
                   abgestimmt ist. Wir definieren Vision, Ziele und konkrete Maßnahmen für Ihre 
-                  AI-Transformation.
+                  KI-Transformation.
                 </p>
               </CardContent>
             </Card>
@@ -243,7 +243,7 @@ const AIConsultingServices = () => {
                 </div>
                 <h3 className="text-2xl font-bold">Machbarkeitsanalysen</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Detaillierte technische und wirtschaftliche Bewertung Ihrer AI-Ideen. Wir prüfen 
+                  Detaillierte technische und wirtschaftliche Bewertung Ihrer KI-Ideen. Wir prüfen 
                   Datenverfügbarkeit, technologische Reife und erwarteten ROI.
                 </p>
               </CardContent>
@@ -256,7 +256,7 @@ const AIConsultingServices = () => {
                 </div>
                 <h3 className="text-2xl font-bold">Technologie-Evaluierung</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Auswahl der optimalen AI-Technologien, Tools und Plattformen. Von Cloud-Infrastruktur 
+                  Auswahl der optimalen KI-Technologien, Tools und Plattformen. Von Cloud-Infrastruktur 
                   bis zu spezialisierten ML-Frameworks – wir finden die beste Lösung.
                 </p>
               </CardContent>
@@ -270,7 +270,7 @@ const AIConsultingServices = () => {
                 <h3 className="text-2xl font-bold">Implementierungs-Roadmaps</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Erstellung detaillierter Implementierungspläne mit Zeitlinien, Ressourcenplanung, 
-                  Budgetierung und Risk Management für erfolgreiche AI-Projekte.
+                  Budgetierung und Risk Management für erfolgreiche KI-Projekte.
                 </p>
               </CardContent>
             </Card>
@@ -283,7 +283,7 @@ const AIConsultingServices = () => {
                 <h3 className="text-2xl font-bold">Team-Training & Workshops</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Befähigung Ihrer Teams durch praxisnahe Trainings, Workshops und Knowledge Transfer. 
-                  Von AI-Grundlagen bis zu spezialisierten Themen.
+                  Von KI-Grundlagen bis zu spezialisierten Themen.
                 </p>
               </CardContent>
             </Card>
@@ -295,8 +295,8 @@ const AIConsultingServices = () => {
                 </div>
                 <h3 className="text-2xl font-bold">Ethik & Governance</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Entwicklung von AI-Governance-Frameworks, ethischen Richtlinien und Compliance-Strategien 
-                  für verantwortungsvollen AI-Einsatz.
+                  Entwicklung von KI-Governance-Frameworks, ethischen Richtlinien und Compliance-Strategien 
+                  für verantwortungsvollen KI-Einsatz.
                 </p>
               </CardContent>
             </Card>
@@ -397,7 +397,7 @@ const AIConsultingServices = () => {
                 <h3 className="text-xl font-bold">Ganzheitlicher Ansatz</h3>
                 <p className="text-muted-foreground">
                   Von Strategie über Technologie bis Change Management – wir decken alle Aspekte 
-                  Ihrer AI-Transformation ab.
+                  Ihrer KI-Transformation ab.
                 </p>
               </CardContent>
             </Card>

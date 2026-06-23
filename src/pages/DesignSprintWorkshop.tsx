@@ -180,7 +180,7 @@ const DesignSprintWorkshop = () => {
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="font-semibold">Tech Lead / KI-Expert</p>
-                      <p className="text-sm text-muted-foreground">Technische & AI-Machbarkeit</p>
+                      <p className="text-sm text-muted-foreground">Technische & KI-Machbarkeit</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -243,7 +243,7 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-lg font-semibold">Expertenteam</h3>
                   <p className="text-sm text-muted-foreground">
-                    KI-Ingenieure & erfahrene Facilitatoren begleiten Sie durch den Sprint
+                    KI-Ingenieure & erfahrene Moderatoren begleiten Sie durch den Sprint
                   </p>
                 </CardContent>
               </Card>
@@ -492,7 +492,7 @@ const DesignSprintWorkshop = () => {
               <Card className="border-border">
                 <CardContent className="p-6 space-y-3">
                   <Target className="w-8 h-8 text-primary" />
-                  <h3 className="text-lg font-semibold">AI Opportunity Matrix</h3>
+                  <h3 className="text-lg font-semibold">KI Opportunity Matrix</h3>
                   <p className="text-sm text-muted-foreground">
                     Systematische Bewertung von KI-Potenzialen nach Wert und Machbarkeit
                   </p>
