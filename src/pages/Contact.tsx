@@ -60,8 +60,8 @@ const Contact = () => {
                     <div>
                       <h3 className="font-medium mb-1">Adresse</h3>
                       <p className="text-muted-foreground">One Next</p>
-                      <p className="text-muted-foreground">Rietwiesstrasse 111</p>
-                      <p className="text-muted-foreground">8810 Horgen</p>
+                      <p className="text-muted-foreground">Feldstrasse 2</p>
+                      <p className="text-muted-foreground">8816 Hirzel</p>
                       <p className="text-muted-foreground">Schweiz</p>
                     </div>
                   </div>
