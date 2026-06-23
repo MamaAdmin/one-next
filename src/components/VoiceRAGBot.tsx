@@ -3,8 +3,8 @@ import { Mic, Square, Volume2, Loader2, CheckCircle2, AlertCircle } from 'lucide
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { checkVoiceRagWebhook, uploadVoiceRagAudio } from '@/services/voice-rag';
 
-const WEBHOOK_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/voice-rag`;
 const MAX_RECORDING_TIME = 90000; // 90 seconds
 
 type Status = 'idle' | 'recording' | 'processing' | 'playing' | 'success' | 'error';
@@ -44,28 +44,22 @@ export default function VoiceRAGBot() {
   }, []);
 
   const runDiagnostics = async () => {
-    console.log('🔍 Running diagnostics...');
-    
     // Test microphone access
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       setDiagnostics(prev => ({ ...prev, microphoneAccess: true }));
-      console.log('✅ Microphone access granted');
     } catch (error) {
       console.error('❌ Microphone access denied:', error);
     }
 
     // Test webhook reachability
     try {
-      const response = await fetch(WEBHOOK_URL, { method: 'HEAD' });
+      const response = await checkVoiceRagWebhook();
       setDiagnostics(prev => ({ ...prev, webhookReachable: response.ok }));
-      console.log(`${response.ok ? '✅' : '❌'} Webhook reachable:`, response.status);
     } catch (error) {
       setDiagnostics(prev => ({ ...prev, webhookReachable: false }));
       console.error('❌ Webhook unreachable:', error);
     }
-
-    console.log('📊 Diagnostics complete:', diagnostics);
   };
 
   const startRecording = async () => {
@@ -168,24 +162,14 @@ export default function VoiceRAGBot() {
         throw new Error('Leere Aufnahme - bitte erneut versuchen.');
       }
 
-      console.log('📤 Uploading audio:', audioBlob.size, 'bytes');
-
       // Send to webhook
-      const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.webm');
-      formData.append('language', 'de');
-
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await uploadVoiceRagAudio(audioBlob, 'de');
 
       if (!response.ok) {
         throw new Error(`Webhook error: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
-      console.log('📥 Received response:', result);
 
       // Extract transcript and response
       if (result.transcript) {

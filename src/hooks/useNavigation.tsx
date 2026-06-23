@@ -230,8 +230,7 @@ export const useNavigation = (menuName?: string) => {
           schema: 'public',
           table: 'navigation_items',
         },
-        (payload) => {
-          console.log('Navigation changed:', payload);
+        () => {
           fetchItems(menuName);
         }
       )
