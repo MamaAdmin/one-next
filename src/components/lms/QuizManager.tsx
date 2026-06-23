@@ -21,7 +21,7 @@ interface QuizManagerProps {
 }
 
 export const QuizManager = ({ moduleId }: QuizManagerProps) => {
-  const { quizzes, loading, deleteQuiz, loadQuestions } = useQuizzes(moduleId);
+  const { quizzes, loading, deleteQuiz, loadQuestionsForAdmin } = useQuizzes(moduleId);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -54,7 +54,7 @@ export const QuizManager = ({ moduleId }: QuizManagerProps) => {
     const loadAllQuestionCounts = async () => {
       const counts: Record<string, number> = {};
       for (const quiz of quizzes) {
-        const questions = await loadQuestions(quiz.id);
+        const questions = await loadQuestionsForAdmin(quiz.id);
         counts[quiz.id] = questions.length;
       }
       setQuestionCounts(counts);

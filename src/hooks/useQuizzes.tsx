@@ -121,6 +121,22 @@ export const useQuizzes = (moduleId?: string) => {
   const loadQuestions = async (quizId: string): Promise<QuizQuestion[]> => {
     try {
       const { data, error } = await supabase
+        .rpc("get_quiz_questions_for_participant", { p_quiz_id: quizId });
+
+      if (error) throw error;
+      // correct_answer is intentionally not returned by the RPC; grading is server-side.
+      return (data || []).map((q: any) => ({ ...q, correct_answer: null, explanation: null }));
+    } catch (error) {
+      console.error("Error loading questions:", error);
+      toast.error("Fehler beim Laden der Fragen");
+      return [];
+    }
+  };
+
+  // Admin-only: direct table access (relies on "Admins can manage quiz questions" RLS policy).
+  const loadQuestionsForAdmin = async (quizId: string): Promise<QuizQuestion[]> => {
+    try {
+      const { data, error } = await supabase
         .from("lms_quiz_questions")
         .select("*")
         .eq("quiz_id", quizId)
@@ -195,6 +211,7 @@ export const useQuizzes = (moduleId?: string) => {
     updateQuiz,
     deleteQuiz,
     loadQuestions,
+    loadQuestionsForAdmin,
     createQuestion,
     updateQuestion,
     deleteQuestion,

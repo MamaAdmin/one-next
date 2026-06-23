@@ -27,7 +27,7 @@ interface QuizEditorProps {
 }
 
 export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps) => {
-  const { createQuiz, updateQuiz, loadQuestions, deleteQuestion } = useQuizzes(moduleId);
+  const { createQuiz, updateQuiz, loadQuestionsForAdmin, deleteQuestion } = useQuizzes(moduleId);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -76,7 +76,7 @@ export const QuizEditor = ({ isOpen, onClose, quiz, moduleId }: QuizEditorProps)
 
   const loadQuizQuestions = async () => {
     if (!quiz) return;
-    const data = await loadQuestions(quiz.id);
+    const data = await loadQuestionsForAdmin(quiz.id);
     setQuestions(data);
   };
 

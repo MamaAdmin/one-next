@@ -94,52 +94,25 @@ export const QuizTaking = ({ quizId, enrollmentId, onComplete }: QuizTakingProps
     }
   };
 
-  const calculateScore = (): { score: number; isPassed: boolean } => {
-    let totalPoints = 0;
-    let earnedPoints = 0;
-
-    questions.forEach(q => {
-      totalPoints += q.points;
-      const userAnswer = answers[q.id];
-      
-      if (q.question_type === "multiple_choice" || q.question_type === "true_false") {
-        // Fix: Compare with first element of correct_answer array
-        const correctAnswer = Array.isArray(q.correct_answer) 
-          ? q.correct_answer[0] 
-          : q.correct_answer;
-        if (userAnswer === correctAnswer) {
-          earnedPoints += q.points;
-        }
-      } else if (q.question_type === "short_answer") {
-        // Simple case-insensitive exact match for auto-grading
-        const correctAnswer = Array.isArray(q.correct_answer) 
-          ? q.correct_answer[0] 
-          : q.correct_answer;
-        if (userAnswer?.toLowerCase().trim() === correctAnswer?.toLowerCase().trim()) {
-          earnedPoints += q.points;
-        }
-      }
-    });
-
-    const scorePercentage = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0;
-    const passingScore = quiz?.passing_score || 70;
-    return {
-      score: scorePercentage,
-      isPassed: scorePercentage >= passingScore
-    };
-  };
-
   const handleSubmit = async () => {
     if (!currentAttempt) return;
-    
+
     setIsSubmitting(true);
     try {
-      const { score, isPassed } = calculateScore();
       const timeSpentSeconds = Math.floor((Date.now() - startTime) / 1000);
-      
-      await submitAttempt(currentAttempt.id, score, isPassed, timeSpentSeconds);
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data, error } = await supabase.rpc("grade_quiz_attempt", {
+        p_attempt_id: currentAttempt.id,
+        p_quiz_id: quizId,
+        p_answers: answers,
+        p_time_spent_seconds: timeSpentSeconds,
+      });
+      if (error) throw error;
+      const result = Array.isArray(data) ? data[0] : data;
+      toast.success(result?.is_passed ? "Quiz bestanden!" : "Quiz nicht bestanden");
       onComplete();
     } catch (error) {
+      console.error(error);
       toast.error("Fehler beim Abschicken des Quiz");
     } finally {
       setIsSubmitting(false);
