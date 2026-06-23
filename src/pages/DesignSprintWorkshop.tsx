@@ -272,15 +272,6 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-2xl font-bold">Tag 1: Verstehen & Definieren</h3>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.open('https://gamma.app/docs/Design-Sprint-Workshop-Tag-1-5fegu8ugsh41wrl?mode=doc', '_blank')}
-                  className="flex items-center gap-2"
-                >
-                  <Calendar className="w-4 h-4" />
-                  Pick Agenda
-                </Button>
               </div>
               
               <div className="space-y-4 ml-18">
@@ -607,7 +598,7 @@ const DesignSprintWorkshop = () => {
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Workshop anfragen</h3>
                     <p className="text-muted-foreground text-sm">
-                      Facilitierter 2-Tage Workshop mit KI-Experten vor Ort oder remote
+                      Moderierter 2-Tage-Workshop mit KI-Experten vor Ort oder remote
                     </p>
                     <Link to="/workshop-registration">
                       <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">

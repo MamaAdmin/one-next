@@ -400,7 +400,7 @@ const AIDesignSprint = () => {
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Workshop buchen</h3>
                     <p className="text-muted-foreground text-sm">
-                      Facilitierter 2-Tage Workshop mit KI-Experten
+                      Moderierter 2-Tage-Workshop mit KI-Experten
                     </p>
                     <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
                       Kontakt aufnehmen
