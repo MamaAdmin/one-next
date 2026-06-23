@@ -80,7 +80,7 @@ const AIDesignSprint = () => {
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-6">
               <h2 className="text-4xl font-bold">
-                <InlineTextField value={content.what_is_title || 'Der KI Design Sprint Workshop'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
+                <InlineTextField value={content.what_is_title || 'Was ist ein KI Design Sprint Workshop?'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
               </h2>
               <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, KI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
             </div>
