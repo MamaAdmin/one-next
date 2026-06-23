@@ -121,13 +121,11 @@ export const useQuizzes = (moduleId?: string) => {
   const loadQuestions = async (quizId: string): Promise<QuizQuestion[]> => {
     try {
       const { data, error } = await supabase
-        .from("lms_quiz_questions")
-        .select("*")
-        .eq("quiz_id", quizId)
-        .order("sort_order", { ascending: true });
+        .rpc("get_quiz_questions_for_participant", { p_quiz_id: quizId });
 
       if (error) throw error;
-      return data || [];
+      // correct_answer is intentionally not returned by the RPC; grading is server-side.
+      return (data || []).map((q: any) => ({ ...q, correct_answer: null, explanation: null }));
     } catch (error) {
       console.error("Error loading questions:", error);
       toast.error("Fehler beim Laden der Fragen");
