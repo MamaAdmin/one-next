@@ -116,7 +116,7 @@ const AIConsultingServices = () => {
             
             <p className="text-lg text-muted-foreground leading-relaxed">
               Von der ersten Potenzialanalyse über die Strategieentwicklung bis zur Implementierungsplanung – 
-              unsere erfahrenen AI-Experten begleiten Sie auf dem gesamten Weg Ihrer AI-Journey. Wir 
+              unsere erfahrenen KI-Experten begleiten Sie auf dem gesamten Weg Ihrer KI-Journey. Wir 
               identifizieren nicht nur technologische Möglichkeiten, sondern bewerten auch deren 
               wirtschaftlichen Impact, organisatorische Anforderungen und ethische Implikationen.
             </p>
@@ -385,7 +385,7 @@ const AIConsultingServices = () => {
                 <BrainIcon className="w-10 h-10 text-primary" />
                 <h3 className="text-xl font-bold">Tiefe Expertise</h3>
                 <p className="text-muted-foreground">
-                  Erfahrene AI-Experten, Data Scientists und Branchenspezialisten mit nachweislicher 
+                  Erfahrene KI-Experten, Data Scientists und Branchenspezialisten mit nachweislicher 
                   Erfolgsbilanz.
                 </p>
               </CardContent>
@@ -437,13 +437,13 @@ const AIConsultingServices = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-4xl lg:text-5xl font-bold">
-              Starten Sie Ihre AI-Journey mit uns
+              Starten Sie Ihre KI-Journey mit uns
             </h2>
             
             <p className="text-xl text-muted-foreground leading-relaxed">
               Lassen Sie uns gemeinsam herausfinden, wie künstliche Intelligenz Ihr Unternehmen 
               transformieren kann. Vereinbaren Sie ein unverbindliches Erstgespräch mit unseren 
-              AI-Experten und erhalten Sie eine erste Einschätzung Ihrer KI-Potenziale.
+              KI-Experten und erhalten Sie eine erste Einschätzung Ihrer KI-Potenziale.
             </p>
             
             <CalendarBookingDialog

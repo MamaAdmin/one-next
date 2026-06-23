@@ -53,7 +53,7 @@ const DesignSprintWorkshop = () => {
               </h1>
               <p className="text-xl text-muted-foreground">
                 2–4 Tage intensiver Workshop vor Ort oder remote mit Ihrem Team. 
-                Geleitet von AI-Experten & Facilitatoren mit KI-Tools in allen Phasen: 
+                Geleitet von KI-Experten und erfahrenen Moderatoren mit KI-Tools in allen Phasen: 
                 Research, Ideenfindung, Prototyping, Testing.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
@@ -179,7 +179,7 @@ const DesignSprintWorkshop = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold">Tech Lead / AI-Expert</p>
+                      <p className="font-semibold">Tech Lead / KI-Expert</p>
                       <p className="text-sm text-muted-foreground">Technische & AI-Machbarkeit</p>
                     </div>
                   </div>
@@ -194,7 +194,7 @@ const DesignSprintWorkshop = () => {
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="font-semibold">Facilitator (wir stellen)</p>
-                      <p className="text-sm text-muted-foreground">Expert-Moderation & AI-Tools</p>
+                      <p className="text-sm text-muted-foreground">Expert-Moderation & KI-Tools</p>
                     </div>
                   </div>
                 </div>
@@ -231,7 +231,7 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-lg font-semibold">2 Tage intensiv</h3>
                   <p className="text-sm text-muted-foreground">
-                    Fokussierte AI-Konzeptentwicklung mit strukturiertem Sprint-Prozess
+                    Fokussierte KI-Konzeptentwicklung mit strukturiertem Sprint-Prozess
                   </p>
                 </CardContent>
               </Card>
@@ -241,9 +241,9 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Expert-Team</h3>
+                  <h3 className="text-lg font-semibold">Expertenteam</h3>
                   <p className="text-sm text-muted-foreground">
-                    AI-Ingenieure & erfahrene Facilitatoren begleiten Sie durch den Sprint
+                    KI-Ingenieure & erfahrene Facilitatoren begleiten Sie durch den Sprint
                   </p>
                 </CardContent>
               </Card>
@@ -286,7 +286,7 @@ const DesignSprintWorkshop = () => {
               <div className="space-y-4 ml-18">
                 {[
                   { title: "Challenge-Mapping", time: "60'", desc: "Problem verstehen, Kontext klären, Zielgruppe definieren" },
-                  { title: "KI-Potenzial-Analyse", time: "90'", desc: "Wo kann AI wirklich Mehrwert schaffen? Use Cases identifizieren und bewerten" },
+                  { title: "KI-Potenzial-Analyse", time: "90'", desc: "Wo kann KI wirklich Mehrwert schaffen? Use Cases identifizieren und bewerten" },
                   { title: "Zieldefinition & Erfolgskriterien", time: "60'", desc: "Konkrete, messbare Ziele für den Sprint festlegen" },
                   { title: "Lösungs-Ideation", time: "120'", desc: "Brainstorming, Crazy 8s, erste Lösungsansätze entwickeln" }
                 ].map((step, index) => (
@@ -319,7 +319,7 @@ const DesignSprintWorkshop = () => {
               <div className="space-y-4 ml-18">
                 {[
                   { title: "Konzept-Entwicklung", time: "90'", desc: "Lösungsansätze konkretisieren, Storyboard erstellen, Nutzerflüsse definieren" },
-                  { title: "Prototyping/Visualisierung", time: "120'", desc: "Click-Dummy oder AI-Mock-up erstellen mit AI-Tools (Figma, Lovable, etc.)" },
+                  { title: "Prototyping/Visualisierung", time: "120'", desc: "Click-Dummy oder KI-Mock-up erstellen mit KI-Tools (Figma, Lovable, etc.)" },
                   { title: "Machbarkeits-Check", time: "60'", desc: "Technische, wirtschaftliche und organisatorische Machbarkeit bewerten" },
                   { title: "Roadmap & Next Steps", time: "60'", desc: "Implementierungsplan mit Meilensteinen, Quick Wins und Ressourcen" }
                 ].map((step, index) => (
@@ -421,7 +421,7 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-lg font-semibold">Expert-geführt für maximale Qualität</h3>
                   <p className="text-sm text-muted-foreground">
-                    Erfahrene AI-Experten und Facilitatoren begleiten Sie durch den gesamten Prozess 
+                    Erfahrene KI-Experten und Moderatoren begleiten Sie durch den gesamten Prozess 
                     und bringen Best Practices aus zahlreichen Projekten ein.
                   </p>
                 </CardContent>
@@ -434,7 +434,7 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-lg font-semibold">Potenziale systematisch identifizieren</h3>
                   <p className="text-sm text-muted-foreground">
-                    Strukturierte Analyse und Bewertung von AI-Use-Cases, um wirklich wertvolle 
+                    Strukturierte Analyse und Bewertung von KI-Use-Cases, um wirklich wertvolle 
                     Anwendungsfälle zu erkennen und zu priorisieren.
                   </p>
                 </CardContent>
@@ -504,7 +504,7 @@ const DesignSprintWorkshop = () => {
                   <Rocket className="w-8 h-8 text-primary" />
                   <h3 className="text-lg font-semibold">Rapid Prototyping Tools</h3>
                   <p className="text-sm text-muted-foreground">
-                    Figma, Lovable, ChatGPT und weitere AI-Tools für schnelles Prototyping
+                    Figma, Lovable, ChatGPT und weitere KI-Tools für schnelles Prototyping
                   </p>
                 </CardContent>
               </Card>
@@ -607,7 +607,7 @@ const DesignSprintWorkshop = () => {
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Workshop anfragen</h3>
                     <p className="text-muted-foreground text-sm">
-                      Facilitierter 2-Tage Workshop mit AI-Experten vor Ort oder remote
+                      Facilitierter 2-Tage Workshop mit KI-Experten vor Ort oder remote
                     </p>
                     <Link to="/workshop-registration">
                       <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">

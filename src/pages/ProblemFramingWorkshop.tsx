@@ -339,7 +339,7 @@ const ProblemFramingWorkshop = () => {
               Arbeitsweise: <span className="text-primary">Ohne starre Vorlagen & Tools</span>
             </h2>
             <p className="text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
-              Im Gegensatz zum Design Sprint, der mit standardisierten Templates und AI-Tools arbeitet, 
+              Im Gegensatz zum Design Sprint, der mit standardisierten Templates und KI-Tools arbeitet, 
               ist der Problem-Framing-Workshop <strong>flexibel und situativ</strong>. 
               Wir nutzen bewährte Facilitationstechniken, die sich an Ihr Team und Ihre Challenge anpassen.
             </p>
@@ -399,7 +399,7 @@ const ProblemFramingWorkshop = () => {
                   </h3>
                   <div className="space-y-3 text-sm">
                     <p className="text-muted-foreground">
-                      <strong className="text-foreground">Problem-Framing-Workshop:</strong> Keine standardisierten Templates oder AI-Tools. 
+                      <strong className="text-foreground">Problem-Framing-Workshop:</strong> Keine standardisierten Templates oder KI-Tools. 
                       Fokus liegt auf <strong>Moderation, Dialog und individuellem Zuschnitt</strong> auf Ihre spezifische Situation.
                     </p>
                     <p className="text-muted-foreground">

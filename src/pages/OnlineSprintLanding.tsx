@@ -98,7 +98,7 @@ const OnlineSprintLanding = () => {
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge className="bg-accent text-accent-foreground border-none text-lg px-6 py-2">Comming Soon</Badge>
+            <Badge className="bg-accent text-accent-foreground border-none text-lg px-6 py-2">Coming soon</Badge>
             
             <h1 className="text-5xl lg:text-7xl font-bold">
               Online Design Sprint
@@ -254,7 +254,7 @@ const OnlineSprintLanding = () => {
               <AccordionItem value="difference">
                 <AccordionTrigger>Was ist der Unterschied zum facilitierten Workshop?</AccordionTrigger>
                 <AccordionContent>
-                  Der facilitierte Workshop ist ein intensiver 2-Tage-Workshop mit AI-Experten und Facilitatoren vor Ort oder remote. 
+                  Der facilitierte Workshop ist ein intensiver 2-Tage-Workshop mit KI-Experten und Moderatoren vor Ort oder remote. 
                   Der Online Sprint ist selbstgeführt über 6 Phasen mit digitalen Tools und flexibler Zeiteinteilung.
                 </AccordionContent>
               </AccordionItem>
