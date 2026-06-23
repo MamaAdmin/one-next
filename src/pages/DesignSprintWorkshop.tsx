@@ -79,7 +79,7 @@ const DesignSprintWorkshop = () => {
             <div className="relative">
               <img 
                 src={workshopImage} 
-                alt="KI Design Sprint Workshop mit Teilnehmern und Facilitator bei der Entwicklung eines Prototyps" 
+                alt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps" 
                 className="rounded-2xl shadow-2xl w-full h-auto"
               />
             </div>
@@ -419,7 +419,7 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Expert-geführt für maximale Qualität</h3>
+                  <h3 className="text-lg font-semibold">Expertengeführt für maximale Qualität</h3>
                   <p className="text-sm text-muted-foreground">
                     Erfahrene KI-Experten und Moderatoren begleiten Sie durch den gesamten Prozess 
                     und bringen Best Practices aus zahlreichen Projekten ein.
