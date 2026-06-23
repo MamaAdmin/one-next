@@ -271,7 +271,7 @@ export default function BMADSessionDetail() {
     }
   };
 
-  const handleApprove = async (_artifactId: string, _isApproved: boolean) => {
+  const handleApprove = async (artifactId: string, isApproved: boolean) => {
     try {
       const { error } = await supabase.functions.invoke('bmad-approve-artifact', {
         body: { artifact_id: artifactId, is_approved: isApproved }
