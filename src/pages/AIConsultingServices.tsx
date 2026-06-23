@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { SparklesIcon, TargetIcon, LightbulbIcon, TrendingUpIcon, UsersIcon, BuildingIcon, BrainIcon, ShieldIcon, RocketIcon, ChartIcon, CpuIcon, GraduationCapIcon, ScaleIcon } from "@/components/ui/custom-icons";
 import { usePageContent } from "@/hooks/usePageContent";

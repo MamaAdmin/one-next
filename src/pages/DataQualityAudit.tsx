@@ -1,11 +1,9 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
 import { usePageContent } from "@/hooks/usePageContent";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
-import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";

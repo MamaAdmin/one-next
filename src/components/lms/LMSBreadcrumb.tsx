@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { HomeIcon } from "@/components/ui/custom-icons";
+
 import { ChevronRight } from "lucide-react";
 
 interface BreadcrumbItemType {

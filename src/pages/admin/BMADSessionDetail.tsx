@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Play, Check, X, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home, Edit } from "lucide-react";
+import { ArrowLeft, Play, Check, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

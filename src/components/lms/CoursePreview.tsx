@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Share2, Globe, Mail, Link as LinkIcon, BarChart } from "lucide-react";
-import { UsersIcon, StarburstIcon, BookIcon, QuizIcon, LessonIcon } from "@/components/ui/custom-icons";
+import { UsersIcon, StarburstIcon, QuizIcon, LessonIcon } from "@/components/ui/custom-icons";
 import { format, addDays } from "date-fns";
 import { de } from "date-fns/locale";
 import DOMPurify from 'dompurify';

@@ -19,10 +19,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowUp, ArrowDown, Eye } from "lucide-react";
 import { 
-  BookIcon, 
-  LessonIcon, 
-  QuizIcon, 
-  TaskIcon,
   PlusIcon,
   DotsIcon
 } from "@/components/ui/custom-icons";
