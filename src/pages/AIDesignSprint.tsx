@@ -248,7 +248,7 @@ const AIDesignSprint = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Wählen Sie Ihren Design Sprint Ansatz</h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Beide Formate führen zu KI-Innovation - wählen Sie den Ansatz, der am besten zu Ihrem Team passt
+              Drei Wege führen zu KI-Innovation – wählen Sie den Ansatz, der am besten zu Ihrem Team passt.
             </p>
           </div>
           
