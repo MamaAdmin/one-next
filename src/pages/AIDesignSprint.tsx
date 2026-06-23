@@ -297,8 +297,7 @@ const AIDesignSprint = () => {
                   <Users className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop
-(mit KI)</h3>
+                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (mit KI)</h3>
                   <p className="text-sm text-muted-foreground">Intensiv, expertengeführt, maßgeschneidert</p>
                 </div>
                 <ul className="space-y-3">
