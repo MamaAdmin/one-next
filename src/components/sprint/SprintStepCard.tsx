@@ -16,6 +16,14 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
 import type { SprintRow, SprintStepData, SprintStepRow } from "@/features/sprint/types";
+import { MAP_LANES } from "@/features/sprint/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface SprintStepCardProps {
   sprint: SprintRow;
