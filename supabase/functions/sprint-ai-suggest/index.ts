@@ -15,7 +15,10 @@ const BodySchema = z.object({
   sprint_id: z.string().uuid(),
   step_key: z.string().min(1).max(10),
   context: z.record(z.unknown()).default({}),
+  step_frage: z.string().max(500).optional(),
+  step_arbeit: z.string().max(1500).optional(),
 });
+
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -50,7 +53,7 @@ Deno.serve(async (req) => {
     if (!parsed.success) {
       return json({ error: parsed.error.flatten().fieldErrors }, 400);
     }
-    const { sprint_id, step_key, context } = parsed.data;
+    const { sprint_id, step_key, context, step_frage, step_arbeit } = parsed.data;
 
     // RLS check by reading the sprint as the user; if user can't read it, 403
     const { data: sprint, error: sprintErr } = await supabase
@@ -63,14 +66,19 @@ Deno.serve(async (req) => {
 
     // Compose the prompt
     const isHmw = step_key === "1.4";
+    const isRisks = step_key === "1.3";
     const systemPrompt = [
       "Du bist Co-Moderator eines KI-gestützten Design Sprints (Methode nach Jake Knapp).",
       "Liefere kurze, pragmatische, voneinander unterscheidbare Vorschläge in deutscher Sprache.",
       "Antworte AUSSCHLIESSLICH als gültiges JSON, exakt im Format: {\"vorschlaege\": [\"...\", \"...\"]}.",
       "Keine Erklärtexte, keine Markdown-Codefences, keine zusätzlichen Felder.",
       "Erzeuge 5 bis 8 Vorschläge, je 1 Satz, prägnant.",
+      "WICHTIG: Beachte exakt die Frage und die Arbeitsanweisung des Schritts. Verwende den Kontext aus früheren Schritten nur als Hintergrund — kopiere keine Antworten aus früheren Schritten.",
       isHmw
-        ? "WICHTIG: Jeder Vorschlag MUSS eine HMW-Frage sein, exakt mit 'Wie können wir ' beginnen und mit '?' enden. Keine Aussagen, keine Aufzählungszeichen, kein anderer Satzanfang."
+        ? "Format-Regel: Jeder Vorschlag MUSS eine HMW-Frage sein, exakt mit 'Wie können wir ' beginnen und mit '?' enden. Keine Aussagen, keine Aufzählungszeichen, kein anderer Satzanfang."
+        : "",
+      isRisks
+        ? "Format-Regel: Jeder Vorschlag MUSS eine pessimistische Ja/Nein-Frage sein, die ein konkretes Risiko fürs Erreichen von Ziel/Metriken beschreibt. Beginne jeden Vorschlag mit 'Können wir ', 'Werden wir ', 'Werden ' oder 'Ist '. Ende mit '?'. Keine positiven Aussagen, keine Erfolgs-Statements, keine Metrik-Wiederholungen."
         : "",
     ].filter(Boolean).join(" ");
 
@@ -79,12 +87,15 @@ Deno.serve(async (req) => {
       `Problemstellung: ${sprint.problemstellung || "(keine angegeben)"}`,
       `Modus: ${sprint.modus}`,
       `Aktueller Schritt: ${step_key}`,
+      step_frage ? `Frage dieses Schritts: ${step_frage}` : "",
+      step_arbeit ? `Arbeitsanweisung dieses Schritts: ${step_arbeit}` : "",
       "",
-      "Bisherige Antworten aus früheren Schritten (relevanter Kontext):",
+      "Bisherige Antworten aus früheren Schritten (NUR als Kontext, NICHT erneut ausgeben):",
       JSON.stringify(context, null, 2),
       "",
-      `Bitte liefere passende Vorschläge für Schritt ${step_key}.`,
-    ].join("\n");
+      `Bitte liefere passende Vorschläge für Schritt ${step_key}, exakt zur Frage und Arbeitsanweisung passend.`,
+    ].filter(Boolean).join("\n");
+
 
     // Call Google Gemini API directly
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
