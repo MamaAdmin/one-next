@@ -81,7 +81,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     title: "1.3 Risiken",
     frage: "Was könnte uns davon abhalten, Ziel und Metriken zu erreichen?",
     arbeit:
-      "Werde pessimistisch. Wie könnten wir scheitern? Ja/Nein-Fragen (Beginn mit „Können wir.../Werden.../Ist...").",
+      "Werde pessimistisch. Wie könnten wir scheitern? Ja/Nein-Fragen (Beginn mit „Können wir.../Werden.../Ist...“).",
     abstimmung: "Stille Abstimmung, 4 Stimmen pro Person.",
     entscheidung: "Decider wählt die 2 kritischsten Risiken.",
     stimmenLimit: 4,
@@ -94,7 +94,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     title: "1.4 HMW — How Might We",
     frage: "Welche HMW-Fragen ergeben sich aus Ziel, Metriken und Risiken?",
     arbeit:
-      "Fragen, zuhören, notieren. 2–4 Experten je 15–30 Min. interviewen. HMW-Notizen machen (Probleme/Ideen als „Wie könnten wir...?"-Fragen). Solo-Modus: Die KI generiert HMW-Fragen statt Experteninterviews.",
+      "Fragen, zuhören, notieren. 2–4 Experten je 15–30 Min. interviewen. HMW-Notizen machen (Probleme/Ideen als „Wie könnten wir...?“-Fragen). Solo-Modus: Die KI generiert HMW-Fragen statt Experteninterviews.",
     abstimmung: "Stille Abstimmung, 5 Stimmen pro Person.",
     entscheidung: "Decider wählt die Top 3–7 HMWs.",
     stimmenLimit: 5,
@@ -240,7 +240,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     title: "2.5 Solution Sketch",
     frage: "Wie sieht deine detaillierte Lösung für den Zielmoment aus?",
     arbeit:
-      "Detaillierte Lösung für den Zielmoment zeichnen. Regeln: anonym, selbsterklärend, schwarz-weiß, „hässlich ist okay", Worte sind wichtig, vorerst geheim.",
+      "Detaillierte Lösung für den Zielmoment zeichnen. Regeln: anonym, selbsterklärend, schwarz-weiß, „hässlich ist okay“, Worte sind wichtig, vorerst geheim.",
     nutztDatenAus: ["1.8", "1.1", "1.2"],
     variant: "sketches",
   },
@@ -253,7 +253,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     title: "3.1 Decide",
     frage: "Welche Lösungen sollen wir prototypisieren und testen?",
     arbeit:
-      "(1) Heatmap – Punkte auf gemochte Stellen. (2) Speed-Review – 2–3 Min. pro Skizze, Cluster beschriften. (3) Straw Poll – still beste Lösung wählen + Begründung „Wir sollten X testen, weil...". (4) Decider wählt 1–3 Skizzen.",
+      "(1) Heatmap – Punkte auf gemochte Stellen. (2) Speed-Review – 2–3 Min. pro Skizze, Cluster beschriften. (3) Straw Poll – still beste Lösung wählen + Begründung „Wir sollten X testen, weil...“. (4) Decider wählt 1–3 Skizzen.",
     entscheidung: "Decider wählt die Gewinner-Skizze(n).",
     nutztDatenAus: ["2.5"],
     variant: "heatmap",
@@ -339,7 +339,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     title: "5.1 Scorecard",
     frage: "Wie bewerten wir die Tests?",
     arbeit:
-      "Mit 3+ Kunden testen, die zum Zielprofil (1.10) passen (optional 4–5). Pro Frage je Kunde bewerten: grün = ja, rot = nein, „vielleicht" vermeiden. Ablauf: (1) Ansehen & abstimmen, (2) schnelle Recaps + Decider, (3) Conclusions.",
+      "Mit 3+ Kunden testen, die zum Zielprofil (1.10) passen (optional 4–5). Pro Frage je Kunde bewerten: grün = ja, rot = nein, „vielleicht“ vermeiden. Ablauf: (1) Ansehen & abstimmen, (2) schnelle Recaps + Decider, (3) Conclusions.",
     nutztDatenAus: ["3.2", "1.3", "1.8", "1.11", "1.10"],
     variant: "scorecard",
   },
@@ -350,7 +350,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     title: "5.2 Entscheidung",
     frage: "Lasst es uns bauen – oder mehr lernen?",
     arbeit:
-      "„Lasst es uns bauen" ODER „Lasst uns mehr lernen" (→ neuer Sprint, der Ziel/Metriken/Risiken aus diesem Sprint vorbefüllt übernimmt).",
+      "„Lasst es uns bauen“ ODER „Lasst uns mehr lernen“ (→ neuer Sprint, der Ziel/Metriken/Risiken aus diesem Sprint vorbefüllt übernimmt).",
     nutztDatenAus: ["5.1"],
     variant: "choice",
   },
