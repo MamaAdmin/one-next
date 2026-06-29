@@ -41,7 +41,8 @@ export default function SprintStepCard({
   onPrev,
 }: SprintStepCardProps) {
   const initial = (stepRow?.data ?? {}) as SprintStepData;
-  const [antwort, setAntwort] = useState<string>(initial.antwort ?? "");
+  const [antworten, setAntworten] = useState<string[]>(toAntwortenArray(initial));
+  const [antwortInput, setAntwortInput] = useState("");
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
   const [eigene, setEigene] = useState<string[]>(initial.eigene ?? []);
   const [auswahl, setAuswahl] = useState<string[]>(initial.auswahl ?? []);
@@ -52,7 +53,8 @@ export default function SprintStepCard({
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as SprintStepData;
-    setAntwort(d.antwort ?? "");
+    setAntworten(toAntwortenArray(d));
+    setAntwortInput("");
     setVorschlaege(d.vorschlaege ?? []);
     setEigene(d.eigene ?? []);
     setAuswahl(d.auswahl ?? []);
