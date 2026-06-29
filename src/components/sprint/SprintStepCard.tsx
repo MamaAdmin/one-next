@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Plus, Loader2 } from "lucide-react";
+import { Sparkles, Plus, Loader2, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
@@ -41,7 +41,8 @@ export default function SprintStepCard({
   onPrev,
 }: SprintStepCardProps) {
   const initial = (stepRow?.data ?? {}) as SprintStepData;
-  const [antwort, setAntwort] = useState<string>(initial.antwort ?? "");
+  const [antworten, setAntworten] = useState<string[]>(toAntwortenArray(initial));
+  const [antwortInput, setAntwortInput] = useState("");
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
   const [eigene, setEigene] = useState<string[]>(initial.eigene ?? []);
   const [auswahl, setAuswahl] = useState<string[]>(initial.auswahl ?? []);
@@ -52,7 +53,8 @@ export default function SprintStepCard({
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as SprintStepData;
-    setAntwort(d.antwort ?? "");
+    setAntworten(toAntwortenArray(d));
+    setAntwortInput("");
     setVorschlaege(d.vorschlaege ?? []);
     setEigene(d.eigene ?? []);
     setAuswahl(d.auswahl ?? []);
@@ -98,8 +100,9 @@ export default function SprintStepCard({
         acc[e.key] = e.value;
         return acc;
       }, {});
-      if (antwort.trim()) {
-        ctx["eigene_antwort_in_diesem_schritt"] = antwort.trim();
+      const cleaned = antworten.map((a) => a.trim()).filter(Boolean);
+      if (cleaned.length > 0) {
+        ctx["eigene_antworten_in_diesem_schritt"] = cleaned;
       }
 
       const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
@@ -137,11 +140,26 @@ export default function SprintStepCard({
   async function persist(completed: boolean) {
     setSaving(true);
     try {
-      await onSave({ antwort, vorschlaege, eigene, auswahl, notes }, { completed });
+      await onSave({ antworten, vorschlaege, eigene, auswahl, notes }, { completed });
       if (completed && onNext) onNext();
     } finally {
       setSaving(false);
     }
+  }
+
+  function addAntwort() {
+    const v = antwortInput.trim();
+    if (!v) return;
+    setAntworten((prev) => (prev.includes(v) ? prev : [...prev, v]));
+    setAntwortInput("");
+  }
+
+  function removeAntwort(idx: number) {
+    setAntworten((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateAntwort(idx: number, value: string) {
+    setAntworten((prev) => prev.map((a, i) => (i === idx ? value : a)));
   }
 
   const allOptions = [...vorschlaege, ...eigene];
@@ -193,20 +211,69 @@ export default function SprintStepCard({
           ) : null}
         </div>
 
-        {/* 2b. Deine Antwort auf die Frage */}
-        <div className="space-y-3 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
+        {/* 2b. Deine Antworten auf die Frage */}
+        <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
           <div className="space-y-1">
-            <h3 className="font-semibold text-lg">Deine Antwort</h3>
+            <h3 className="font-semibold text-lg">Deine Antworten</h3>
             <p className="text-sm text-muted-foreground">{step.frage}</p>
+            <p className="text-xs text-muted-foreground">
+              Erfasse mehrere kurze Antworten — eine pro Sticky-Note.
+            </p>
           </div>
-          <Textarea
-            value={antwort}
-            onChange={(e) => setAntwort(e.target.value)}
-            placeholder="Schreibe hier direkt deine Antwort auf die Frage …"
-            rows={4}
-            className="bg-background"
-          />
+
+          {antworten.length > 0 ? (
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {antworten.map((a, idx) => (
+                <li
+                  key={idx}
+                  className="relative rounded-md border border-primary/30 bg-background p-3 shadow-sm"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {idx + 1}
+                    </Badge>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-6 w-6"
+                      onClick={() => removeAntwort(idx)}
+                      aria-label="Antwort entfernen"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                  <Textarea
+                    value={a}
+                    onChange={(e) => updateAntwort(idx, e.target.value)}
+                    rows={3}
+                    className="bg-background resize-none text-sm"
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <div className="flex gap-2">
+            <Input
+              value={antwortInput}
+              onChange={(e) => setAntwortInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addAntwort();
+                }
+              }}
+              placeholder="Antwort eingeben und Enter drücken …"
+              className="bg-background"
+            />
+            <Button type="button" onClick={addAntwort} variant="secondary">
+              <Plus className="w-4 h-4 mr-1" />
+              Hinzufügen
+            </Button>
+          </div>
         </div>
+
 
         {/* 3. KI-Vorschläge */}
 
@@ -378,8 +445,9 @@ function buildContextEntries(
     }
     const d = row.data as SprintStepData;
     const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
+    const antworten = toAntwortenArray(d);
     const value: Record<string, unknown> = {};
-    if (d.antwort && d.antwort.trim()) value.antwort = d.antwort.trim();
+    if (antworten.length > 0) value.antworten = antworten;
     if (chosen) value.auswahl = chosen;
     entries.push({
       key: ref,
@@ -396,12 +464,26 @@ function formatContextValue(v: unknown): string {
   if (v && typeof v === "object") {
     const obj = v as Record<string, unknown>;
     const parts: string[] = [];
-    if (typeof obj.antwort === "string") parts.push(`Antwort: ${obj.antwort}`);
+    if (Array.isArray(obj.antworten))
+      parts.push("Antworten:\n" + obj.antworten.map((x) => `• ${String(x)}`).join("\n"));
+    else if (typeof obj.antwort === "string")
+      parts.push(`Antwort: ${obj.antwort}`);
     if (Array.isArray(obj.auswahl))
       parts.push("Auswahl:\n" + obj.auswahl.map((x) => `• ${String(x)}`).join("\n"));
     return parts.length ? parts.join("\n") : JSON.stringify(v);
   }
   if (v == null) return "—";
   return String(v);
+}
+
+/** Normalisiert altes `antwort`-Feld und neues `antworten`-Array auf string[]. */
+function toAntwortenArray(d: SprintStepData): string[] {
+  if (Array.isArray(d.antworten)) {
+    return d.antworten.filter((x): x is string => typeof x === "string");
+  }
+  if (typeof d.antwort === "string" && d.antwort.trim()) {
+    return [d.antwort];
+  }
+  return [];
 }
 
