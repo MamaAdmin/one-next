@@ -98,6 +98,10 @@ export default function SprintStepCard({
         acc[e.key] = e.value;
         return acc;
       }, {});
+      if (antwort.trim()) {
+        ctx["eigene_antwort_in_diesem_schritt"] = antwort.trim();
+      }
+
       const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
         body: {
           sprint_id: sprint.id,
