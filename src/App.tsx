@@ -152,6 +152,10 @@ const App = () => (
           <Route path="/kurse/:slug" element={<KursDetail />} />
           <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />
           <Route path="/impressum" element={<Impressum />} />
+          {/* Online Design Sprint (auth required) */}
+          <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
+          <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
+          <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
