@@ -57,13 +57,18 @@ Deno.serve(async (req) => {
     if (!sprint) return json({ error: "Sprint not accessible" }, 403);
 
     // Compose the prompt
+    const isHmw = step_key === "1.4";
     const systemPrompt = [
       "Du bist Co-Moderator eines KI-gestützten Design Sprints (Methode nach Jake Knapp).",
       "Liefere kurze, pragmatische, voneinander unterscheidbare Vorschläge in deutscher Sprache.",
       "Antworte AUSSCHLIESSLICH als gültiges JSON, exakt im Format: {\"vorschlaege\": [\"...\", \"...\"]}.",
       "Keine Erklärtexte, keine Markdown-Codefences, keine zusätzlichen Felder.",
       "Erzeuge 5 bis 8 Vorschläge, je 1 Satz, prägnant.",
-    ].join(" ");
+      isHmw
+        ? "WICHTIG: Jeder Vorschlag MUSS eine HMW-Frage sein, exakt mit 'Wie können wir ' beginnen und mit '?' enden. Keine Aussagen, keine Aufzählungszeichen, kein anderer Satzanfang."
+        : "",
+    ].filter(Boolean).join(" ");
+
 
     const userPrompt = [
       `Sprint-Titel: ${sprint.titel}`,
@@ -114,6 +119,24 @@ Deno.serve(async (req) => {
     } catch {
       // ignore — fall through to empty
     }
+
+    if (isHmw) {
+      vorschlaege = vorschlaege
+        .map((v) => {
+          let s = v.replace(/^\s*(?:[-•*]|\d+[.)])\s+/, "").trim();
+          s = s.replace(/^["'„"»«]+|["'""»«]+$/g, "").trim();
+          if (!/^wie können wir\s/i.test(s)) {
+            s = "Wie können wir " + s.charAt(0).toLowerCase() + s.slice(1);
+          } else {
+            s = "Wie können wir " + s.slice("Wie können wir ".length);
+          }
+          s = s.replace(/[.!]+$/, "");
+          if (!s.endsWith("?")) s += "?";
+          return s.trim();
+        })
+        .filter((s) => s.length >= 18);
+    }
+
 
     return json({ vorschlaege }, 200);
   } catch (e) {
