@@ -57,8 +57,12 @@ export default function SprintStepCard({
     setNotes(d.notes ?? "");
   }, [stepRow?.id]);
 
-  const limit = step.stimmenLimit;
+  const isSolo = sprint.modus === "solo";
+  // Im Solo-Modus gibt es keine Abstimmung — Auswahl ist unbegrenzt.
+  // Im Team-Modus greift weiterhin das Stimmen-Limit (perspektivisch pro User).
+  const limit = isSolo ? undefined : step.stimmenLimit;
   const limitReached = !!limit && auswahl.length >= limit;
+
 
   const contextEntries = useMemo(
     () => buildContextEntries(step.nutztDatenAus, sprint, allSteps),
