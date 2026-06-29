@@ -1,47 +1,117 @@
 ## Ziel
 
-Nach dem letzten Schritt jedes Tages (1.11, 2.5, 3.6, 4.1, 5.4) wird automatisch ein **Tages-One-Pager** angezeigt, der die Ergebnisse des Tages zusammenfasst — mit Antworten je Schritt, finalen Auswahlen, eingebetteter Map (Tag 1) sowie einer KI-Zusammenfassung via Gemini. Der One Pager ist als In-App-Ansicht und als PDF-Download verfügbar.
+PDF-Output des Tages-One-Pagers wird auf **Server-Side Rendering** umgestellt und mit konsistentem Branding versehen.
 
-## Was gebaut wird
+## Architektur
 
-### 1. Neue Edge Function `sprint-day-summary`
-- Input: `{ sprintId, day }`
-- Lädt Sprint + alle `sprint_steps` des Tages
-- Ruft **Gemini 2.5 Flash** über Lovable AI Gateway (`google/gemini-2.5-flash`, `LOVABLE_API_KEY`) mit strukturiertem Kontext aller Schritte des Tages
-- Erzeugt eine prägnante Executive Summary (3–5 Sätze) + Bullet-Liste der Key Decisions
-- Persistiert das Ergebnis in `sprint_steps` unter step_key `summary.dayN` (data: `{ summary, keyDecisions, generatedAt }`), damit die Karte nicht bei jedem Öffnen neu generiert wird (Refresh-Button vorhanden)
+```text
+Client (SprintDaySummary)
+   │  "PDF herunterladen" Button
+   ▼
+supabase.functions.invoke('sprint-day-summary-pdf', { sprintId, day })
+   │
+   ▼
+Edge Function sprint-day-summary-pdf
+   ├─ Auth-Check (JWT) + Sprint-Member-Check via has_role/is_sprint_member
+   ├─ Lädt Sprint + alle sprint_steps des Tages
+   ├─ Holt summary.dayN (Gemini KI-Summary) — falls fehlt: ruft intern sprint-day-summary auf
+   ├─ Rendert HTML-Template (A4 mehrseitig, Brand-CSS)
+   └─ HTML → PDF via Browserless/PDFShift API
+   │
+   ▼
+Response: application/pdf (Stream)
+   │
+   ▼
+Client: triggert Download als "OneNext_Sprint_{titel}_Tag{N}.pdf"
+```
 
-### 2. Neue Komponente `SprintDaySummary.tsx`
-- Rendert pro Tag eine A4-orientierte One-Pager-Karte mit:
-  - Header: Sprint-Titel, Tag-Label, Datum
-  - **KI-Zusammenfassung** (Gemini)
-  - **Schritt-Blöcke**: pro Schritt die `frage`, finale `auswahl` (oder `antworten`), kompakt
-  - Für Tag 1: eingebettete **Map-Visual** (read-only Variante der `MapBoard`-Lanes)
-  - Footer mit Logo/Datum
-- Buttons: „Neu generieren", „PDF herunterladen"
+## Rendering-Engine
 
-### 3. PDF-Export
-- Library: `html2canvas` + `jspdf` (klein, client-side, kein Server nötig)
-- Greift die One-Pager-DOM-Node, rendert sie als A4-PDF
-- Dateiname: `OneNext_Sprint_<titel>_Tag<N>.pdf`
+**Server-side via Edge Function** mit externem HTML→PDF Service.
 
-### 4. Auto-Trigger in `SprintWorkspace.tsx`
-- Wenn der aktuell aktive Schritt der **letzte des Tages** ist (1.11/2.5/3.6/4.1/5.4) und `completed_at` gesetzt wurde, wird unterhalb der `SprintStepCard` automatisch `<SprintDaySummary day={N} />` eingeblendet.
-- Außerdem: in der Side-Nav pro Tag ein kleiner „Zusammenfassung"-Eintrag, damit jeder Tag auch nachträglich aufgerufen werden kann.
+Option für die Umsetzung: **PDFShift** (https://pdfshift.io) — einfache REST-API, ~50 free PDFs/Monat, sauberes CSS-Rendering inkl. Web Fonts, Header/Footer-Templates, Seitenzahlen.
 
-### Technische Details
+Alternative: **Browserless.io** (Puppeteer-as-a-Service). Beide brauchen einen API-Key, der via `add_secret` gesetzt wird (`PDFSHIFT_API_KEY`).
 
-- **Day → letzte Step-Map**: `{1: "1.11", 2: "2.5", 3: "3.6", 4: "4.1", 5: "5.4"}`
-- **Gemini-Prompt** (deutsch): rolle = Sprint-Coach, gibt prägnante Tagesbilanz, max 5 Sätze, dann 3–6 Bullet Key Decisions. Eingabe = JSON aus Step-Daten (Frage + Auswahl/Antworten/Notes).
-- **Persistenz-Trick**: wir nutzen die bestehende `sprint_steps`-Tabelle mit `step_key = "summary.1"` … `"summary.5"`. Kein DB-Migration nötig (step_key ist text, kein FK auf Step-Definitionen).
-- **Lovable AI**: `LOVABLE_API_KEY` ist bereits gesetzt.
-- **Map-Embed Tag 1**: zeigt die 6 Lanes aus `MAP_LANES` mit den Items aus `mapZuordnung` von Schritt 1.8 als kompakte Read-only-Boxen.
-- **Nur Frontend + 1 Edge Function** — keine DB-Schemaänderungen, keine neuen Tabellen.
+Warum nicht Deno-internes Puppeteer: Edge Functions haben kein persistentes Filesystem für Chromium-Binaries und Cold-Starts wären zu langsam. Externer Service ist der robuste Pfad.
 
-### Dateien
-- **Neu**: `supabase/functions/sprint-day-summary/index.ts`
-- **Neu**: `src/components/sprint/SprintDaySummary.tsx`
-- **Neu**: `src/components/sprint/MapBoardReadOnly.tsx` (kompakte Read-only-Map fürs One Pager)
-- **Edit**: `src/pages/sprint/SprintWorkspace.tsx` (Auto-Einblendung + Nav-Eintrag pro Tag)
-- **Edit**: `src/hooks/useSprint.tsx` (kleiner Hook `useDaySummary(sprintId, day)` zum Laden/Speichern der Summary-Row)
-- **Dependency**: `bun add jspdf html2canvas`
+## PDF-Layout (A4 Hochformat, mehrseitig)
+
+```text
+┌──────────────────────────────────────────────┐
+│ [Logo one-next]              [Tag N Badge]   │  ← Header (jede Seite)
+│ Sprint: {titel}              {Datum}         │
+├──────────────────────────────────────────────┤
+│                                              │
+│  EXECUTIVE SUMMARY (KI · Gemini)             │
+│  ─────────────────────────────────           │
+│  {3–5 Sätze Gemini Summary}                  │
+│                                              │
+│  KEY DECISIONS                               │
+│  • Entscheidung 1                            │
+│  • Entscheidung 2                            │
+│                                              │
+│  ──────────  SEITENUMBRUCH  ──────────       │
+│                                              │
+│  SCHRITTE & ANTWORTEN                        │
+│                                              │
+│  1.1 Schritt-Titel                           │
+│  Frage: …                                    │
+│  Auswahl: …                                  │
+│  Antworten:                                  │
+│    – Antwort A                               │
+│    – Antwort B                               │
+│  Notizen: …                                  │
+│                                              │
+│  1.2 …                                       │
+│                                              │
+│  ──────────  SEITENUMBRUCH  ──────────       │
+│                                              │
+│  MAP / VISUAL (nur Tag 1)                    │
+│  [Customer Journey Map als Lane-Grid]        │
+│                                              │
+├──────────────────────────────────────────────┤
+│ one-next.com · Generiert {Datum}   Seite x/y │  ← Footer (jede Seite)
+└──────────────────────────────────────────────┘
+```
+
+### Branding-Tokens im PDF-CSS
+- Primary-Farbe aus `index.css` (HSL) hart in das HTML-Template übernehmen (Edge Function kennt keine Tailwind-Theme-Tokens).
+- Font: `Inter` via Google Fonts `<link>` im Template-`<head>` (vom HTML→PDF-Service unterstützt).
+- Logo `one-next-logo-new.png`: aus Public-Bucket `company-logos` oder als statisches Base64 im Template (kein externer Fetch nötig).
+- Tag-Badge in Primary-Farbe rechts oben.
+- H1/H2 in Primary-Farbe, dünne Linien als Section-Separator.
+
+## Inhalte je Schritt
+
+Vollständig: `frage`, `auswahl`, `antworten[]`, `notes`, `completed_at`. Keine Schritte ausblenden. Map nur an Tag 1.
+
+## Änderungen
+
+### Neu
+- `supabase/functions/sprint-day-summary-pdf/index.ts`
+  - Validierung via Zod: `{ sprintId: uuid, day: 1..5 }`
+  - Auth: JWT prüfen, `is_sprint_member` Check
+  - Lädt `sprints` + `sprint_steps` (Tag N)
+  - Falls `summary.dayN` fehlt → ruft Gemini-Logik inline (oder fetcht `sprint-day-summary`) auf
+  - Baut HTML-String (A4-CSS mit `@page`, `@media print`, page-break-Regeln)
+  - POST an PDFShift-API mit `source` (HTML), `landscape: false`, `format: 'A4'`, `margin`, `header`/`footer` Templates
+  - Streamt PDF-Bytes zurück mit `Content-Type: application/pdf` + `Content-Disposition: attachment`
+
+### Edit
+- `src/components/sprint/SprintDaySummary.tsx`
+  - `downloadPdf()` ruft jetzt Edge Function statt html2canvas/jsPDF
+  - `supabase.functions.invoke('sprint-day-summary-pdf', { body: { sprintId, day } })`
+  - Response als Blob → `URL.createObjectURL` → `<a download>`-Trigger
+  - In-App-Ansicht bleibt unverändert (HTML-Vorschau wie bisher)
+- `package.json` / `bun.lock`: `html2canvas` und `jspdf` entfernen (nicht mehr nötig)
+
+### Secret
+- `PDFSHIFT_API_KEY` via `add_secret` anfordern (Schritt 1 vor Implementierung)
+
+## Offene Punkte vor Build
+
+1. **PDFShift-Account**: Du brauchst einen Account auf https://pdfshift.io (Free Tier reicht für Tests) und gibst den API-Key beim Build-Schritt frei. Falls du lieber Browserless/PDF.co nimmst, sag Bescheid — die Function-Struktur bleibt gleich, nur der API-Call ändert sich.
+2. **Logo-Quelle**: OK wenn ich das `one-next-logo-new.png` als Base64 ins Template einbette (keine externen Image-Fetches im PDF-Renderer, robuster)?
+
+Wenn beides klar ist, baue ich die Function + den Client-Switch in einem Rutsch.
