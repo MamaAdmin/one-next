@@ -56,6 +56,9 @@ export default function SprintStepCard({
   const [auswahl, setAuswahl] = useState<string[]>(initial.auswahl ?? []);
   const [eigenInput, setEigenInput] = useState("");
   const [notes, setNotes] = useState<string>(initial.notes ?? "");
+  const [mapZuordnung, setMapZuordnung] = useState<Record<string, string>>(
+    initial.mapZuordnung ?? {},
+  );
   const [aiLoading, setAiLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -67,6 +70,8 @@ export default function SprintStepCard({
     setEigene(d.eigene ?? []);
     setAuswahl(d.auswahl ?? []);
     setNotes(d.notes ?? "");
+    setMapZuordnung(d.mapZuordnung ?? {});
+  }, [stepRow?.id]);
   }, [stepRow?.id]);
 
 
