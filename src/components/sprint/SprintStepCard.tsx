@@ -72,7 +72,6 @@ export default function SprintStepCard({
     setNotes(d.notes ?? "");
     setMapZuordnung(d.mapZuordnung ?? {});
   }, [stepRow?.id]);
-  }, [stepRow?.id]);
 
 
   const isSolo = sprint.modus === "solo";
