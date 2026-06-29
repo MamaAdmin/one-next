@@ -29,6 +29,8 @@ export interface SprintStepRow {
  * Specialized variants (map, scorecard, etc.) layer additional keys on top.
  */
 export interface SprintStepData {
+  /** Direkte Antwort des Users auf die Frage des Schritts. */
+  antwort?: string;
   vorschlaege?: string[];
   eigene?: string[];
   auswahl?: string[];
@@ -36,3 +38,4 @@ export interface SprintStepData {
   // free-form for variant-specific payloads in later etappen
   [k: string]: unknown;
 }
+
