@@ -66,6 +66,11 @@ import Kurse from "./pages/Kurse";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
+import SprintDashboard from "./pages/sprint/SprintDashboard";
+import SprintNew from "./pages/sprint/SprintNew";
+import SprintWorkspace from "./pages/sprint/SprintWorkspace";
+import RequireAuth from "./components/sprint/RequireAuth";
+
 
 const queryClient = new QueryClient();
 
