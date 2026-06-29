@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot } from "lucide-react";
+import { CheckCircle2, Circle, Dot, FileText } from "lucide-react";
 import { useSprint, useSprintSteps, useSaveStep, useSetCurrentStep } from "@/hooks/useSprint";
 import {
   SPRINT_STEPS,
@@ -33,6 +33,7 @@ export default function SprintWorkspace() {
   const stepsQ = useSprintSteps(id);
   const saveStep = useSaveStep(id ?? "");
   const setCurrentStep = useSetCurrentStep(id ?? "");
+  const [summaryDay, setSummaryDay] = useState<number | null>(null);
 
   const sprint = sprintQ.data;
   const steps = stepsQ.data ?? [];
@@ -82,7 +83,12 @@ export default function SprintWorkspace() {
   }
 
   async function goTo(stepKey: string) {
+    setSummaryDay(null);
     await setCurrentStep.mutateAsync(stepKey);
+  }
+
+  function openSummary(day: number) {
+    setSummaryDay(day);
   }
 
   const nextKey = getNextStepKey(currentKey);
@@ -145,6 +151,31 @@ export default function SprintWorkspace() {
                           </li>
                         );
                       })}
+                      {DAY_LAST_STEP[d.day] ? (() => {
+                        const lastKey = DAY_LAST_STEP[d.day];
+                        const lastDone = !!steps.find((s) => s.step_key === lastKey)?.completed_at;
+                        const isCurrent = summaryDay === d.day;
+                        return (
+                          <li>
+                            <button
+                              type="button"
+                              disabled={!lastDone}
+                              onClick={() => openSummary(d.day)}
+                              className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors ${
+                                isCurrent
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : lastDone
+                                    ? "hover:bg-muted"
+                                    : "opacity-50 cursor-not-allowed"
+                              }`}
+                              title={lastDone ? "Tages-Zusammenfassung" : "Verfügbar nach Abschluss des letzten Schritts"}
+                            >
+                              <FileText className="w-4 h-4 mt-0.5 shrink-0" />
+                              <span>One Pager · Tag {d.day}</span>
+                            </button>
+                          </li>
+                        );
+                      })() : null}
                     </ul>
                   </div>
                 );
@@ -152,46 +183,54 @@ export default function SprintWorkspace() {
             </nav>
           </aside>
 
-          {/* Step card */}
+          {/* Step card or One Pager */}
           <div className="space-y-6">
-            {/* Note: Etappe 1 zeigt eine einheitliche Standard-Karte für alle Schritte.
-                Spezialansichten (Map, Crazy 8s, Scorecard etc.) folgen in Etappe 2/3. */}
-            {currentDef.variant && currentDef.variant !== "checkbox-list" && currentDef.variant !== "map" ? (
-              <Card className="border-dashed">
-                <CardContent className="p-6">
-                  <Badge variant="secondary" className="mb-2">
-                    Spezialansicht folgt
-                  </Badge>
-                  <p className="text-sm text-muted-foreground">
-                    Für diesen Schritt (Variante: <code>{currentDef.variant}</code>) ist eine
-                    eigene Ansicht geplant. Du kannst jetzt schon Antworten als Liste sammeln
-                    und im nächsten Build-Schritt wird die passende UI ergänzt.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : null}
-
-            <SprintStepCard
-              sprint={sprint}
-              step={currentDef}
-              stepRow={currentRow}
-              allSteps={steps}
-              totalIndex={totalIndex}
-              totalCount={SPRINT_STEPS.length}
-              onSave={handleSave}
-              onPrev={prevKey ? () => goTo(prevKey) : undefined}
-              onNext={nextKey ? () => goTo(nextKey) : undefined}
-            />
-
-            {/* Tages-One-Pager: erscheint automatisch beim letzten Schritt des Tages,
-                sobald dieser abgeschlossen wurde. */}
-            {DAY_LAST_STEP[currentDef.day] === currentKey && currentRow?.completed_at ? (
+            {summaryDay !== null ? (
               <SprintDaySummary
                 sprint={sprint}
-                day={currentDef.day}
+                day={summaryDay as 1 | 2 | 3 | 4 | 5}
                 allSteps={steps}
               />
-            ) : null}
+            ) : (
+              <>
+                {currentDef.variant && currentDef.variant !== "checkbox-list" && currentDef.variant !== "map" ? (
+                  <Card className="border-dashed">
+                    <CardContent className="p-6">
+                      <Badge variant="secondary" className="mb-2">
+                        Spezialansicht folgt
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        Für diesen Schritt (Variante: <code>{currentDef.variant}</code>) ist eine
+                        eigene Ansicht geplant. Du kannst jetzt schon Antworten als Liste sammeln
+                        und im nächsten Build-Schritt wird die passende UI ergänzt.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : null}
+
+                <SprintStepCard
+                  sprint={sprint}
+                  step={currentDef}
+                  stepRow={currentRow}
+                  allSteps={steps}
+                  totalIndex={totalIndex}
+                  totalCount={SPRINT_STEPS.length}
+                  onSave={handleSave}
+                  onPrev={prevKey ? () => goTo(prevKey) : undefined}
+                  onNext={nextKey ? () => goTo(nextKey) : undefined}
+                />
+
+                {/* Hinweis-Button: Wenn letzter Tagesschritt abgeschlossen → zum One Pager springen */}
+                {DAY_LAST_STEP[currentDef.day] === currentKey && currentRow?.completed_at ? (
+                  <div className="flex justify-end">
+                    <Button variant="outline" onClick={() => openSummary(currentDef.day)}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      One Pager · Tag {currentDef.day} öffnen
+                    </Button>
+                  </div>
+                ) : null}
+              </>
+            )}
           </div>
         </div>
       </main>
