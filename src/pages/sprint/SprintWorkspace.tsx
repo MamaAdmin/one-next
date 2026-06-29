@@ -147,7 +147,7 @@ export default function SprintWorkspace() {
           <div className="space-y-6">
             {/* Note: Etappe 1 zeigt eine einheitliche Standard-Karte für alle Schritte.
                 Spezialansichten (Map, Crazy 8s, Scorecard etc.) folgen in Etappe 2/3. */}
-            {currentDef.variant && currentDef.variant !== "checkbox-list" ? (
+            {currentDef.variant && currentDef.variant !== "checkbox-list" && currentDef.variant !== "map" ? (
               <Card className="border-dashed">
                 <CardContent className="p-6">
                   <Badge variant="secondary" className="mb-2">
