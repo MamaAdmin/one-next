@@ -144,7 +144,12 @@ export default function SprintStepCard({
             <span className="text-sm text-muted-foreground">
               {auswahl.length} / {limit} Stimmen
             </span>
+          ) : isSolo ? (
+            <span className="text-sm text-muted-foreground">
+              {auswahl.length} ausgewählt
+            </span>
           ) : null}
+
         </div>
 
         {/* 1. Frage */}
