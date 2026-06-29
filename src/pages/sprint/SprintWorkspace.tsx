@@ -182,6 +182,16 @@ export default function SprintWorkspace() {
               onPrev={prevKey ? () => goTo(prevKey) : undefined}
               onNext={nextKey ? () => goTo(nextKey) : undefined}
             />
+
+            {/* Tages-One-Pager: erscheint automatisch beim letzten Schritt des Tages,
+                sobald dieser abgeschlossen wurde. */}
+            {DAY_LAST_STEP[currentDef.day] === currentKey && currentRow?.completed_at ? (
+              <SprintDaySummary
+                sprint={sprint}
+                day={currentDef.day}
+                allSteps={steps}
+              />
+            ) : null}
           </div>
         </div>
       </main>
