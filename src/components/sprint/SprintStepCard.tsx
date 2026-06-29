@@ -152,7 +152,10 @@ export default function SprintStepCard({
   async function persist(completed: boolean) {
     setSaving(true);
     try {
-      await onSave({ antworten, vorschlaege, eigene, auswahl, notes }, { completed });
+      await onSave(
+        { antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung },
+        { completed },
+      );
       if (completed && onNext) onNext();
     } finally {
       setSaving(false);
