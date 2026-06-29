@@ -120,6 +120,24 @@ Deno.serve(async (req) => {
       // ignore — fall through to empty
     }
 
+    if (isHmw) {
+      vorschlaege = vorschlaege
+        .map((v) => {
+          let s = v.replace(/^\s*(?:[-•*]|\d+[.)])\s+/, "").trim();
+          s = s.replace(/^["'„"»«]+|["'""»«]+$/g, "").trim();
+          if (!/^wie können wir\s/i.test(s)) {
+            s = "Wie können wir " + s.charAt(0).toLowerCase() + s.slice(1);
+          } else {
+            s = "Wie können wir " + s.slice("Wie können wir ".length);
+          }
+          s = s.replace(/[.!]+$/, "");
+          if (!s.endsWith("?")) s += "?";
+          return s.trim();
+        })
+        .filter((s) => s.length >= 18);
+    }
+
+
     return json({ vorschlaege }, 200);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error";
