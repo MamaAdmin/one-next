@@ -33,6 +33,7 @@ export default function SprintWorkspace() {
   const stepsQ = useSprintSteps(id);
   const saveStep = useSaveStep(id ?? "");
   const setCurrentStep = useSetCurrentStep(id ?? "");
+  const [summaryDay, setSummaryDay] = useState<number | null>(null);
 
   const sprint = sprintQ.data;
   const steps = stepsQ.data ?? [];
