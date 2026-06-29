@@ -100,8 +100,9 @@ export default function SprintStepCard({
         acc[e.key] = e.value;
         return acc;
       }, {});
-      if (antwort.trim()) {
-        ctx["eigene_antwort_in_diesem_schritt"] = antwort.trim();
+      const cleaned = antworten.map((a) => a.trim()).filter(Boolean);
+      if (cleaned.length > 0) {
+        ctx["eigene_antworten_in_diesem_schritt"] = cleaned;
       }
 
       const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
@@ -139,11 +140,26 @@ export default function SprintStepCard({
   async function persist(completed: boolean) {
     setSaving(true);
     try {
-      await onSave({ antwort, vorschlaege, eigene, auswahl, notes }, { completed });
+      await onSave({ antworten, vorschlaege, eigene, auswahl, notes }, { completed });
       if (completed && onNext) onNext();
     } finally {
       setSaving(false);
     }
+  }
+
+  function addAntwort() {
+    const v = antwortInput.trim();
+    if (!v) return;
+    setAntworten((prev) => (prev.includes(v) ? prev : [...prev, v]));
+    setAntwortInput("");
+  }
+
+  function removeAntwort(idx: number) {
+    setAntworten((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateAntwort(idx: number, value: string) {
+    setAntworten((prev) => prev.map((a, i) => (i === idx ? value : a)));
   }
 
   const allOptions = [...vorschlaege, ...eigene];
