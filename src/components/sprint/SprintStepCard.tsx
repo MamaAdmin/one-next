@@ -520,3 +520,123 @@ function toAntwortenArray(d: SprintStepData): string[] {
   return [];
 }
 
+/* --------------------------------- MapBoard -------------------------------- */
+
+interface MapBoardProps {
+  items: string[];
+  assignments: Record<string, string>;
+  onAssign: (item: string, lane: string | null) => void;
+}
+
+function MapBoard({ items, assignments, onAssign }: MapBoardProps) {
+  const unassigned = items.filter((it) => !assignments[it]);
+  const byLane = (laneId: string) => items.filter((it) => assignments[it] === laneId);
+
+  return (
+    <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-muted/20 p-5">
+      <div className="space-y-1">
+        <h3 className="font-semibold text-lg">Map – Gesamtkarte</h3>
+        <p className="text-sm text-muted-foreground">
+          Ordne deine Antworten und KI-Vorschläge den Bereichen der Customer-Journey-Map zu.
+        </p>
+      </div>
+
+      {/* Pool */}
+      {unassigned.length > 0 ? (
+        <div className="rounded-md border bg-background p-3">
+          <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
+            Noch zuzuordnen ({unassigned.length})
+          </p>
+          <ul className="space-y-2">
+            {unassigned.map((it) => (
+              <li
+                key={it}
+                className="flex items-center gap-2 p-2 rounded-md bg-muted/40 text-sm"
+              >
+                <span className="flex-1">{it}</span>
+                <Select value="" onValueChange={(v) => onAssign(it, v)}>
+                  <SelectTrigger className="w-44 h-8">
+                    <SelectValue placeholder="Bereich wählen …" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MAP_LANES.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>
+                        {l.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {/* Lanes */}
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {MAP_LANES.map((lane) => {
+          const laneItems = byLane(lane.id);
+          return (
+            <div
+              key={lane.id}
+              className="rounded-lg border bg-background p-3 min-h-[140px] flex flex-col"
+            >
+              <div className="mb-2">
+                <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
+                  {lane.label}
+                </h4>
+                {lane.hint ? (
+                  <p className="text-[11px] text-muted-foreground/70">{lane.hint}</p>
+                ) : null}
+              </div>
+              <ul className="space-y-2 flex-1">
+                {laneItems.length === 0 ? (
+                  <li className="text-xs italic text-muted-foreground/60">
+                    Noch keine Einträge
+                  </li>
+                ) : (
+                  laneItems.map((it) => (
+                    <li
+                      key={it}
+                      className="rounded-md border border-yellow-300/60 bg-yellow-100/70 dark:bg-yellow-200/20 p-2 text-xs shadow-sm"
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="flex-1 leading-snug">{it}</span>
+                        <button
+                          type="button"
+                          onClick={() => onAssign(it, null)}
+                          className="text-muted-foreground hover:text-foreground"
+                          aria-label="Aus Bereich entfernen"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                      <div className="mt-1">
+                        <Select
+                          value={lane.id}
+                          onValueChange={(v) => onAssign(it, v)}
+                        >
+                          <SelectTrigger className="h-6 w-full text-[11px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {MAP_LANES.map((l) => (
+                              <SelectItem key={l.id} value={l.id}>
+                                {l.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
