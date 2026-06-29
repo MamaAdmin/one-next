@@ -15,7 +15,10 @@ const BodySchema = z.object({
   sprint_id: z.string().uuid(),
   step_key: z.string().min(1).max(10),
   context: z.record(z.unknown()).default({}),
+  step_frage: z.string().max(500).optional(),
+  step_arbeit: z.string().max(1500).optional(),
 });
+
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
