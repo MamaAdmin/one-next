@@ -378,12 +378,16 @@ function buildContextEntries(
     }
     const d = row.data as SprintStepData;
     const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
+    const value: Record<string, unknown> = {};
+    if (d.antwort && d.antwort.trim()) value.antwort = d.antwort.trim();
+    if (chosen) value.auswahl = chosen;
     entries.push({
       key: ref,
       label: `Schritt ${ref}`,
-      value: chosen ?? "(noch keine Auswahl)",
+      value: Object.keys(value).length > 0 ? value : "(noch keine Eingaben)",
     });
   }
+
   return entries;
 }
 
