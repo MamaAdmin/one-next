@@ -393,6 +393,15 @@ function buildContextEntries(
 
 function formatContextValue(v: unknown): string {
   if (Array.isArray(v)) return v.map((x) => `• ${String(x)}`).join("\n");
+  if (v && typeof v === "object") {
+    const obj = v as Record<string, unknown>;
+    const parts: string[] = [];
+    if (typeof obj.antwort === "string") parts.push(`Antwort: ${obj.antwort}`);
+    if (Array.isArray(obj.auswahl))
+      parts.push("Auswahl:\n" + obj.auswahl.map((x) => `• ${String(x)}`).join("\n"));
+    return parts.length ? parts.join("\n") : JSON.stringify(v);
+  }
   if (v == null) return "—";
   return String(v);
 }
+
