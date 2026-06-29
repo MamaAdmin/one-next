@@ -98,26 +98,21 @@ const OnlineSprintLanding = () => {
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge className="bg-accent text-accent-foreground border-none text-lg px-6 py-2">Coming soon</Badge>
-            
             <h1 className="text-5xl lg:text-7xl font-bold">
               Online Design Sprint
               <span className="block mt-4 bg-gradient-primary bg-clip-text text-transparent">zur Problemlösung</span>
             </h1>
-            
+
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Selbstgeführter, strukturierter Prozess für verteilte Teams - flexibel, digital, mit Schritt-für-Schritt Anleitung
+              Selbstgeführter, strukturierter Prozess für verteilte Teams – flexibel, digital, mit Schritt-für-Schritt-Anleitung.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center pt-6">
               <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-                <Link to="/workshop-registration">Jetzt starten</Link>
+                <Link to="/sprint">Jetzt starten</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
                 <Link to="/sprint-uebersicht">Workshop-Variante ansehen</Link>
-              </Button>
-              <Button size="lg" variant="ghost" className="text-lg px-8 py-6" asChild>
-                
               </Button>
             </div>
           </div>
@@ -302,7 +297,7 @@ const OnlineSprintLanding = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
-                  <Link to="/workshop-registration">Sprint starten</Link>
+                  <Link to="/sprint">Sprint starten</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   Angebot anfordern

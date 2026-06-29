@@ -66,6 +66,11 @@ import Kurse from "./pages/Kurse";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
+import SprintDashboard from "./pages/sprint/SprintDashboard";
+import SprintNew from "./pages/sprint/SprintNew";
+import SprintWorkspace from "./pages/sprint/SprintWorkspace";
+import RequireAuth from "./components/sprint/RequireAuth";
+
 
 const queryClient = new QueryClient();
 
@@ -147,6 +152,10 @@ const App = () => (
           <Route path="/kurse/:slug" element={<KursDetail />} />
           <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />
           <Route path="/impressum" element={<Impressum />} />
+          {/* Online Design Sprint (auth required) */}
+          <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
+          <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
+          <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

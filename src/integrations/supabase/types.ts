@@ -2340,6 +2340,121 @@ export type Database = {
         }
         Relationships: []
       }
+      sprint_members: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          rolle: string
+          sprint_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          rolle?: string
+          sprint_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          rolle?: string
+          sprint_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sprint_members_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sprint_steps: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          data: Json
+          id: string
+          sprint_id: string
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          sprint_id: string
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          sprint_id?: string
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sprint_steps_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sprints: {
+        Row: {
+          created_at: string
+          current_step: string
+          decider: string
+          id: string
+          modus: string
+          owner_id: string
+          problemstellung: string
+          sprint_leader: string
+          status: string
+          titel: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_step?: string
+          decider?: string
+          id?: string
+          modus?: string
+          owner_id: string
+          problemstellung?: string
+          sprint_leader?: string
+          status?: string
+          titel: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_step?: string
+          decider?: string
+          id?: string
+          modus?: string
+          owner_id?: string
+          problemstellung?: string
+          sprint_leader?: string
+          status?: string
+          titel?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string
@@ -2545,6 +2660,10 @@ export type Database = {
       increment_faq_view: { Args: { faq_id: string }; Returns: undefined }
       is_company_admin: {
         Args: { _customer_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_sprint_member: {
+        Args: { _sprint_id: string; _user_id: string }
         Returns: boolean
       }
       record_faq_vote: {
