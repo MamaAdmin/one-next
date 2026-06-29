@@ -188,7 +188,7 @@ export default function SprintWorkspace() {
             {summaryDay !== null ? (
               <SprintDaySummary
                 sprint={sprint}
-                day={summaryDay}
+                day={summaryDay as 1 | 2 | 3 | 4 | 5}
                 allSteps={steps}
               />
             ) : (
