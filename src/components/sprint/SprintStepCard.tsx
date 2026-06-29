@@ -86,6 +86,82 @@ export default function SprintStepCard({
     [step.nutztDatenAus, sprint, allSteps],
   );
 
+  // Seed für die Map-Variante (1.8): pro Lane Vorschläge aus früheren Schritten.
+  const mapSeed = useMemo<Record<string, string[]> | null>(() => {
+    if (step.variant !== "map") return null;
+    const byKey = new Map(allSteps.map((s) => [s.step_key, s.data as SprintStepData]));
+    const pick = (k: string): string[] => {
+      const d = byKey.get(k);
+      if (!d) return [];
+      const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
+      if (chosen) return chosen;
+      return toAntwortenArray(d);
+    };
+    return {
+      customers: pick("1.5"),
+      discovery: pick("1.6"),
+      core: pick("1.7"),
+      outcome: pick("1.1"),
+      target_risk: pick("1.3"),
+      other_actors: [],
+    };
+  }, [step.variant, allSteps]);
+
+  function applyMapSeed() {
+    if (!mapSeed) return 0;
+    let added = 0;
+    setEigene((prevEigene) => {
+      const nextEigene = [...prevEigene];
+      setMapZuordnung((prevZ) => {
+        const nextZ = { ...prevZ };
+        for (const [lane, list] of Object.entries(mapSeed)) {
+          for (const raw of list) {
+            const item = String(raw).trim();
+            if (!item) continue;
+            if (
+              !nextEigene.includes(item) &&
+              !vorschlaege.includes(item) &&
+              !antworten.includes(item)
+            ) {
+              nextEigene.push(item);
+            }
+            if (!nextZ[item]) {
+              nextZ[item] = lane;
+              added++;
+            }
+          }
+        }
+        return nextZ;
+      });
+      return nextEigene;
+    });
+    return added;
+  }
+
+  // Auto-Generierung beim ersten Öffnen des Map-Schritts, wenn noch nichts zugeordnet ist.
+  useEffect(() => {
+    if (step.variant !== "map") return;
+    if (Object.keys(mapZuordnung).length > 0) return;
+    if (!mapSeed) return;
+    const hasSeedItems = Object.values(mapSeed).some((arr) => arr.length > 0);
+    if (!hasSeedItems) return;
+    applyMapSeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step.variant, stepRow?.id]);
+
+  function addItemToLane(text: string, lane: string) {
+    const v = text.trim();
+    if (!v) return;
+    if (
+      !eigene.includes(v) &&
+      !vorschlaege.includes(v) &&
+      !antworten.includes(v)
+    ) {
+      setEigene((prev) => [...prev, v]);
+    }
+    setMapZuordnung((prev) => ({ ...prev, [v]: lane }));
+  }
+
   function toggleAuswahl(option: string) {
     setAuswahl((prev) => {
       if (prev.includes(option)) return prev.filter((x) => x !== option);
