@@ -29,7 +29,9 @@ export interface SprintStepRow {
  * Specialized variants (map, scorecard, etc.) layer additional keys on top.
  */
 export interface SprintStepData {
-  /** Direkte Antwort des Users auf die Frage des Schritts. */
+  /** Direkte Antworten des Users auf die Frage des Schritts (Sticky-Notes). */
+  antworten?: string[];
+  /** @deprecated alte Single-Antwort, wird beim Laden in `antworten` migriert. */
   antwort?: string;
   vorschlaege?: string[];
   eigene?: string[];
