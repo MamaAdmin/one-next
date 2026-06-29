@@ -10,12 +10,12 @@ const corsHeaders = {
 const DAY_VALID = new Set([1, 2, 3, 4, 5]);
 
 const MAP_LANES: { id: string; label: string }[] = [
-  { id: "actors", label: "Akteure" },
-  { id: "start", label: "Start" },
-  { id: "steps", label: "Schritte" },
-  { id: "end", label: "Ende" },
-  { id: "obstacles", label: "Hindernisse" },
-  { id: "opportunities", label: "Chancen" },
+  { id: "customers", label: "Kunden" },
+  { id: "other_actors", label: "Weitere Akteure" },
+  { id: "discovery", label: "Entdeckung" },
+  { id: "core", label: "Kern" },
+  { id: "outcome", label: "Ergebnis" },
+  { id: "target_risk", label: "Zielrisiko" },
 ];
 
 interface StepDef {
