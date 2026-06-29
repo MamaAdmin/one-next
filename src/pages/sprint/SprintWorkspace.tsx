@@ -83,7 +83,12 @@ export default function SprintWorkspace() {
   }
 
   async function goTo(stepKey: string) {
+    setSummaryDay(null);
     await setCurrentStep.mutateAsync(stepKey);
+  }
+
+  function openSummary(day: number) {
+    setSummaryDay(day);
   }
 
   const nextKey = getNextStepKey(currentKey);
