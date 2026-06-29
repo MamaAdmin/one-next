@@ -1,26 +1,25 @@
-# Plan: Vorschläge mit Gemini 3 Flash über Lovable AI Gateway
+# Plan: HMW-Vorschläge starten immer mit „Wie können wir …"
 
-## Ziel
-Die Edge Function `sprint-ai-suggest` ruft bereits das Lovable AI Gateway auf, aktuell mit `google/gemini-2.5-flash`. Umstellung auf **`google/gemini-3-flash-preview`** (der von Lovable empfohlene Default für Chat/Text). Die API ist über `LOVABLE_API_KEY` schon angebunden — kein neuer Secret nötig.
+## Problem
+Schritt **1.4 HMW — How Might We** generiert aktuell freie Vorschläge. Sie sollen als echte HMW-Fragen formuliert sein und mit „Wie können wir …" beginnen, mit Fragezeichen enden.
 
-## Scope (eng begrenzt)
-Genau **eine Zeile** in **einer Datei**:
+## Änderung (genau eine Datei)
 
-- `supabase/functions/sprint-ai-suggest/index.ts`
-  - `model: "google/gemini-2.5-flash"` → `model: "google/gemini-3-flash-preview"`
+`supabase/functions/sprint-ai-suggest/index.ts`
 
-Sonst nichts: Request-Shape (OpenAI-kompatibel über `ai.gateway.lovable.dev/v1/chat/completions`), Auth, RLS-Check, Response-Parsing zu `{ vorschlaege: string[] }`, Zod-Validierung und Client (`SprintStepCard.tsx`) bleiben unverändert.
+1. **Step-spezifische Zusatz-Anweisung** im `systemPrompt`: wenn `step_key === "1.4"`, eine zusätzliche Regel anhängen:
+   - „Jeder Vorschlag MUSS als HMW-Frage formuliert sein, exakt mit `Wie können wir ` beginnen und mit `?` enden. Keine Aussagen, keine Aufzählungen, kein anderer Satzanfang."
+2. **Server-seitige Normalisierung** in der Response-Verarbeitung (nur für `step_key === "1.4"`), damit auch Modell-Ausreißer korrekt ankommen:
+   - Trim, führende Bullet-/Nummerierungs-Präfixe entfernen (`- `, `• `, `1. `).
+   - Wenn nicht mit „Wie können wir " (case-insensitive) beginnend → Präfix voranstellen, ersten Buchstaben nach dem Präfix klein schreiben.
+   - Wenn nicht mit `?` endend → `?` anhängen (Punkt am Ende ggf. ersetzen).
+   - Leere/zu kurze Einträge (< 8 Zeichen Inhalt) verwerfen.
 
-## Nicht im Scope
-- Kein Wechsel zur Anthropic API / Claude
-- Keine Modell-Auswahl im UI
-- Keine neuen Secrets (`LOVABLE_API_KEY` ist gesetzt)
-- Keine Änderung an DB, Typen, anderen Edge Functions
+Kein Client-Code, keine DB, keine anderen Schritte betroffen. Response-Shape (`{ vorschlaege: string[] }`) bleibt identisch.
 
 ## Verifikation
-1. Edge Function neu deployen (`sprint-ai-suggest`)
-2. In `/sprint/:id` einen Schritt öffnen, „Vorschläge generieren" klicken
-3. Edge-Function-Logs prüfen: 200 vom Gateway, `model: google/gemini-3-flash-preview`
-4. Vorschläge erscheinen in der Liste
+1. In `/sprint/:id` Schritt **1.4** öffnen, „Vorschläge generieren" klicken.
+2. Alle Vorschläge beginnen mit „Wie können wir " und enden mit „?".
+3. Stichprobe in einem anderen Schritt (z. B. 1.1, 1.5): Vorschläge bleiben unverändert in ihrer freien Form.
 
-Soll ich das so umsetzen?
+Soll ich das umsetzen?
