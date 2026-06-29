@@ -41,6 +41,7 @@ export default function SprintStepCard({
   onPrev,
 }: SprintStepCardProps) {
   const initial = (stepRow?.data ?? {}) as SprintStepData;
+  const [antwort, setAntwort] = useState<string>(initial.antwort ?? "");
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
   const [eigene, setEigene] = useState<string[]>(initial.eigene ?? []);
   const [auswahl, setAuswahl] = useState<string[]>(initial.auswahl ?? []);
@@ -51,11 +52,13 @@ export default function SprintStepCard({
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as SprintStepData;
+    setAntwort(d.antwort ?? "");
     setVorschlaege(d.vorschlaege ?? []);
     setEigene(d.eigene ?? []);
     setAuswahl(d.auswahl ?? []);
     setNotes(d.notes ?? "");
   }, [stepRow?.id]);
+
 
   const isSolo = sprint.modus === "solo";
   // Im Solo-Modus gibt es keine Abstimmung — Auswahl ist unbegrenzt.
@@ -95,6 +98,10 @@ export default function SprintStepCard({
         acc[e.key] = e.value;
         return acc;
       }, {});
+      if (antwort.trim()) {
+        ctx["eigene_antwort_in_diesem_schritt"] = antwort.trim();
+      }
+
       const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
         body: {
           sprint_id: sprint.id,
@@ -130,7 +137,7 @@ export default function SprintStepCard({
   async function persist(completed: boolean) {
     setSaving(true);
     try {
-      await onSave({ vorschlaege, eigene, auswahl, notes }, { completed });
+      await onSave({ antwort, vorschlaege, eigene, auswahl, notes }, { completed });
       if (completed && onNext) onNext();
     } finally {
       setSaving(false);
@@ -186,7 +193,23 @@ export default function SprintStepCard({
           ) : null}
         </div>
 
+        {/* 2b. Deine Antwort auf die Frage */}
+        <div className="space-y-3 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
+          <div className="space-y-1">
+            <h3 className="font-semibold text-lg">Deine Antwort</h3>
+            <p className="text-sm text-muted-foreground">{step.frage}</p>
+          </div>
+          <Textarea
+            value={antwort}
+            onChange={(e) => setAntwort(e.target.value)}
+            placeholder="Schreibe hier direkt deine Antwort auf die Frage …"
+            rows={4}
+            className="bg-background"
+          />
+        </div>
+
         {/* 3. KI-Vorschläge */}
+
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
@@ -355,17 +378,30 @@ function buildContextEntries(
     }
     const d = row.data as SprintStepData;
     const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
+    const value: Record<string, unknown> = {};
+    if (d.antwort && d.antwort.trim()) value.antwort = d.antwort.trim();
+    if (chosen) value.auswahl = chosen;
     entries.push({
       key: ref,
       label: `Schritt ${ref}`,
-      value: chosen ?? "(noch keine Auswahl)",
+      value: Object.keys(value).length > 0 ? value : "(noch keine Eingaben)",
     });
   }
+
   return entries;
 }
 
 function formatContextValue(v: unknown): string {
   if (Array.isArray(v)) return v.map((x) => `• ${String(x)}`).join("\n");
+  if (v && typeof v === "object") {
+    const obj = v as Record<string, unknown>;
+    const parts: string[] = [];
+    if (typeof obj.antwort === "string") parts.push(`Antwort: ${obj.antwort}`);
+    if (Array.isArray(obj.auswahl))
+      parts.push("Auswahl:\n" + obj.auswahl.map((x) => `• ${String(x)}`).join("\n"));
+    return parts.length ? parts.join("\n") : JSON.stringify(v);
+  }
   if (v == null) return "—";
   return String(v);
 }
+
