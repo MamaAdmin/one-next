@@ -151,6 +151,31 @@ export default function SprintWorkspace() {
                           </li>
                         );
                       })}
+                      {DAY_LAST_STEP[d.day] ? (() => {
+                        const lastKey = DAY_LAST_STEP[d.day];
+                        const lastDone = !!steps.find((s) => s.step_key === lastKey)?.completed_at;
+                        const isCurrent = summaryDay === d.day;
+                        return (
+                          <li>
+                            <button
+                              type="button"
+                              disabled={!lastDone}
+                              onClick={() => openSummary(d.day)}
+                              className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors ${
+                                isCurrent
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : lastDone
+                                    ? "hover:bg-muted"
+                                    : "opacity-50 cursor-not-allowed"
+                              }`}
+                              title={lastDone ? "Tages-Zusammenfassung" : "Verfügbar nach Abschluss des letzten Schritts"}
+                            >
+                              <FileText className="w-4 h-4 mt-0.5 shrink-0" />
+                              <span>One Pager · Tag {d.day}</span>
+                            </button>
+                          </li>
+                        );
+                      })() : null}
                     </ul>
                   </div>
                 );
