@@ -189,7 +189,23 @@ export default function SprintStepCard({
           ) : null}
         </div>
 
+        {/* 2b. Deine Antwort auf die Frage */}
+        <div className="space-y-3 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
+          <div className="space-y-1">
+            <h3 className="font-semibold text-lg">Deine Antwort</h3>
+            <p className="text-sm text-muted-foreground">{step.frage}</p>
+          </div>
+          <Textarea
+            value={antwort}
+            onChange={(e) => setAntwort(e.target.value)}
+            placeholder="Schreibe hier direkt deine Antwort auf die Frage …"
+            rows={4}
+            className="bg-background"
+          />
+        </div>
+
         {/* 3. KI-Vorschläge */}
+
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
