@@ -1,65 +1,31 @@
-# Plan: Vorschläge direkt über Google Gemini API (eigener Key, Google-Abrechnung)
 
 ## Ziel
-Die Edge Function `sprint-ai-suggest` soll Gemini nicht mehr über das Lovable AI Gateway (Credit-Abrechnung) aufrufen, sondern **direkt gegen die Google Generative Language API** mit einem eigenen `GEMINI_API_KEY`. Damit läuft die Abrechnung über Google (AI-Studio-Tier bzw. das verknüpfte GCP-Billing-Projekt) statt über Lovable Credits.
 
-## Voraussetzung (User-Aktion)
-Der User legt im Google AI Studio einen API-Key an und speichert ihn als Secret `GEMINI_API_KEY`. Ich fordere ihn nach Plan-Bestätigung via `add_secret` an — vorher nicht.
+Das Slide-Original zeigt pro Person mehrere kurze Antworten (3 Sticky-Notes je Spalte). Aktuell hat unsere "Deine Antwort"-Box nur ein einzelnes Textarea. Wir bauen sie zu einer **Multi-Antwort-Komponente** um, damit der/die User wie im Original mehrere Antwort-Sticky-Notes erfassen kann. Bestehende shadcn-Komponenten werden wiederverwendet.
 
-## Änderungen (eine Datei)
+## Änderungen
 
-`supabase/functions/sprint-ai-suggest/index.ts`
+### 1. `src/features/sprint/types.ts`
+- Feld `antwort?: string` → `antworten?: string[]`
+- (Migration im Code: beim Laden alte `antwort` automatisch in `antworten: [antwort]` konvertieren, kein DB-Eingriff nötig, da `data` JSONB ist.)
 
-1. **Secret-Wechsel**
-   - `LOVABLE_API_KEY` entfernen.
-   - Neu: `GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY")`. Wenn fehlt → 500 mit klarer Fehlermeldung.
+### 2. `src/components/sprint/SprintStepCard.tsx`
+Die "Deine Antwort"-Box komplett ersetzen durch eine Sticky-Note-Liste:
 
-2. **Endpoint & Request-Shape (nativ Gemini, nicht OpenAI-kompatibel)**
-   - URL: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`
-   - Modell: `gemini-2.5-flash` (Standard für AI Studio; Gemini-3-Preview-IDs sind dort noch nicht öffentlich verfügbar — wenn du eine andere Modell-ID willst, sag Bescheid).
-   - Body:
-     ```json
-     {
-       "systemInstruction": { "parts": [{ "text": "<systemPrompt>" }] },
-       "contents": [{ "role": "user", "parts": [{ "text": "<userPrompt>" }] }],
-       "generationConfig": {
-         "responseMimeType": "application/json",
-         "responseSchema": {
-           "type": "object",
-           "properties": {
-             "vorschlaege": { "type": "array", "items": { "type": "string" } }
-           },
-           "required": ["vorschlaege"]
-         },
-         "temperature": 0.8
-       }
-     }
-     ```
-   - System-Prompt und HMW-Sonderregel (Schritt 1.4 → „Wie können wir …?") bleiben unverändert.
+- State: `const [antworten, setAntworten] = useState<string[]>(...)` mit Migration aus altem `antwort`-String.
+- Lokales Eingabefeld `antwortInput` + Button "Antwort hinzufügen".
+- Darstellung der gesetzten Antworten als Karten/Sticky-Notes (Card + Badge "Nr.", kleiner X-Button zum Entfernen, Edit per Klick optional über `Textarea`).
+- Wiederverwendete Komponenten: `Card`, `CardContent`, `Textarea`, `Input`, `Button`, `Badge`, Icon `Plus`, `X` (lucide).
+- Styling lehnt sich an Sticky-Note-Look an (abgerundet, dezent farbiger Hintergrund via Design-Tokens `bg-primary/5`, `border-primary/20`), kein Hardcoding von Farben.
+- `onSave` schreibt `antworten` statt `antwort`.
+- AI-Kontext: `ctx["eigene_antworten_in_diesem_schritt"] = antworten` (statt String).
+- `buildContextEntries` / `formatContextValue` behandeln `antworten: string[]` (Liste rendern).
 
-3. **Response-Parsing**
-   - JSON-Text aus `data.candidates[0].content.parts[0].text` ziehen, `JSON.parse`, `vorschlaege: string[]` extrahieren.
-   - HMW-Normalisierung (Präfix/Fragezeichen) bleibt wie aktuell.
+### 3. `supabase/functions/sprint-ai-suggest/index.ts`
+- Prompt-Hinweis kosmetisch anpassen: aus "die eigene Antwort des Users" → "die eigenen Antworten des Users (Liste)". Logik bleibt, da `context` generisch übergeben wird.
 
-4. **Fehler-Mapping**
-   - 401/403 von Google → 502 mit Hinweis „Gemini API key invalid or lacks permissions".
-   - 429 → 429 weiterreichen.
-   - Sonst → 500 mit redigierter Fehlermeldung.
+## Nicht-Ziele
 
-5. **Client/RLS unverändert**
-   - Auth-Check, Sprint-Lesetest, Zod-Validierung, Antwortformat `{ vorschlaege: string[] }` bleiben identisch.
-   - `SprintStepCard.tsx` wird nicht angefasst.
-
-## Verifikation
-1. Nach Speichern von `GEMINI_API_KEY` Edge Function deployen.
-2. In `/sprint/:id` einen Schritt öffnen → „Vorschläge generieren".
-3. Edge-Function-Logs prüfen: 200 von `generativelanguage.googleapis.com`, Vorschläge erscheinen.
-4. Schritt **1.4 (HMW)** testen: Alle Vorschläge beginnen mit „Wie können wir " und enden mit „?".
-5. Lovable Credits prüfen: keine neuen AI-Gateway-Calls mehr in den Gateway-Logs.
-
-## Nicht im Scope
-- Kein Modell-Picker im UI.
-- Keine Migration anderer Edge Functions (nur `sprint-ai-suggest`).
-- Kein Wechsel zurück zu Anthropic.
-
-**Frage vor Umsetzung:** Modell `gemini-2.5-flash` (stabil, AI Studio, günstig) okay — oder willst du explizit `gemini-2.5-pro` (teurer, stärker)?
+- Keine Änderung am DB-Schema (JSONB akzeptiert beide Formen, Migration läuft client-seitig beim Laden).
+- Keine Änderung an Voting/Auswahl-Logik (Solo vs. Team bleibt wie zuletzt vereinbart).
+- Keine neuen Abhängigkeiten.
