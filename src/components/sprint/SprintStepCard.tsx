@@ -211,20 +211,69 @@ export default function SprintStepCard({
           ) : null}
         </div>
 
-        {/* 2b. Deine Antwort auf die Frage */}
-        <div className="space-y-3 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
+        {/* 2b. Deine Antworten auf die Frage */}
+        <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
           <div className="space-y-1">
-            <h3 className="font-semibold text-lg">Deine Antwort</h3>
+            <h3 className="font-semibold text-lg">Deine Antworten</h3>
             <p className="text-sm text-muted-foreground">{step.frage}</p>
+            <p className="text-xs text-muted-foreground">
+              Erfasse mehrere kurze Antworten — eine pro Sticky-Note.
+            </p>
           </div>
-          <Textarea
-            value={antwort}
-            onChange={(e) => setAntwort(e.target.value)}
-            placeholder="Schreibe hier direkt deine Antwort auf die Frage …"
-            rows={4}
-            className="bg-background"
-          />
+
+          {antworten.length > 0 ? (
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {antworten.map((a, idx) => (
+                <li
+                  key={idx}
+                  className="relative rounded-md border border-primary/30 bg-background p-3 shadow-sm"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {idx + 1}
+                    </Badge>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-6 w-6"
+                      onClick={() => removeAntwort(idx)}
+                      aria-label="Antwort entfernen"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                  <Textarea
+                    value={a}
+                    onChange={(e) => updateAntwort(idx, e.target.value)}
+                    rows={3}
+                    className="bg-background resize-none text-sm"
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <div className="flex gap-2">
+            <Input
+              value={antwortInput}
+              onChange={(e) => setAntwortInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addAntwort();
+                }
+              }}
+              placeholder="Antwort eingeben und Enter drücken …"
+              className="bg-background"
+            />
+            <Button type="button" onClick={addAntwort} variant="secondary">
+              <Plus className="w-4 h-4 mr-1" />
+              Hinzufügen
+            </Button>
+          </div>
         </div>
+
 
         {/* 3. KI-Vorschläge */}
 
