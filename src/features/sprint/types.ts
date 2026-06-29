@@ -37,7 +37,19 @@ export interface SprintStepData {
   eigene?: string[];
   auswahl?: string[];
   notes?: string;
+  /** Map-Variante (1.8): Zuordnung Item-Text → Lane-ID. */
+  mapZuordnung?: Record<string, string>;
   // free-form for variant-specific payloads in later etappen
   [k: string]: unknown;
 }
+
+/** Lanes für die Map-Variante (Schritt 1.8). */
+export const MAP_LANES: Array<{ id: string; label: string; hint?: string }> = [
+  { id: "customers", label: "Kunden", hint: "Wichtigste Kundentypen" },
+  { id: "other_actors", label: "Weitere Akteure", hint: "Weitere beteiligte Personen/Rollen" },
+  { id: "discovery", label: "Entdeckung", hint: "Wie Kunden uns finden" },
+  { id: "core", label: "Kern", hint: "Kernerfahrung mit dem Produkt" },
+  { id: "outcome", label: "Ergebnis", hint: "Ereignis, das zeigt: wir sind auf Kurs" },
+  { id: "target_risk", label: "Zielrisiko", hint: "Das kritische Risiko auf der Karte" },
+];
 
