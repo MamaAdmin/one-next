@@ -93,12 +93,14 @@ export function useSaveStep(sprintId: string) {
       data: SprintStepData;
       completed?: boolean;
     }) => {
-      const payload = {
-        sprint_id: sprintId,
-        step_key: args.step_key,
-        data: args.data as unknown as Record<string, unknown>,
-        completed_at: args.completed ? new Date().toISOString() : null,
-      };
+      const payload = [
+        {
+          sprint_id: sprintId,
+          step_key: args.step_key,
+          data: args.data as unknown as Record<string, unknown>,
+          completed_at: args.completed ? new Date().toISOString() : null,
+        },
+      ];
       const { error } = await supabase
         .from(STEPS_TABLE)
         .upsert(payload, { onConflict: "sprint_id,step_key" });
