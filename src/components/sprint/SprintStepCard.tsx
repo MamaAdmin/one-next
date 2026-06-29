@@ -459,6 +459,18 @@ export default function SprintStepCard({
                 return next;
               })
             }
+            onAddToLane={addItemToLane}
+            onRegenerate={() => {
+              const n = applyMapSeed();
+              toast({
+                title: "Gesamtkarte aktualisiert",
+                description:
+                  n > 0
+                    ? `${n} neue Einträge aus früheren Schritten ergänzt.`
+                    : "Es gab nichts Neues aus den vorherigen Schritten zu ergänzen.",
+              });
+            }}
+            hasSeed={!!mapSeed && Object.values(mapSeed).some((a) => a.length > 0)}
           />
         ) : null}
 
