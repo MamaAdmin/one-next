@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot } from "lucide-react";
+import { CheckCircle2, Circle, Dot, FileText } from "lucide-react";
 import { useSprint, useSprintSteps, useSaveStep, useSetCurrentStep } from "@/hooks/useSprint";
 import {
   SPRINT_STEPS,
