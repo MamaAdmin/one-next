@@ -183,46 +183,54 @@ export default function SprintWorkspace() {
             </nav>
           </aside>
 
-          {/* Step card */}
+          {/* Step card or One Pager */}
           <div className="space-y-6">
-            {/* Note: Etappe 1 zeigt eine einheitliche Standard-Karte für alle Schritte.
-                Spezialansichten (Map, Crazy 8s, Scorecard etc.) folgen in Etappe 2/3. */}
-            {currentDef.variant && currentDef.variant !== "checkbox-list" && currentDef.variant !== "map" ? (
-              <Card className="border-dashed">
-                <CardContent className="p-6">
-                  <Badge variant="secondary" className="mb-2">
-                    Spezialansicht folgt
-                  </Badge>
-                  <p className="text-sm text-muted-foreground">
-                    Für diesen Schritt (Variante: <code>{currentDef.variant}</code>) ist eine
-                    eigene Ansicht geplant. Du kannst jetzt schon Antworten als Liste sammeln
-                    und im nächsten Build-Schritt wird die passende UI ergänzt.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : null}
-
-            <SprintStepCard
-              sprint={sprint}
-              step={currentDef}
-              stepRow={currentRow}
-              allSteps={steps}
-              totalIndex={totalIndex}
-              totalCount={SPRINT_STEPS.length}
-              onSave={handleSave}
-              onPrev={prevKey ? () => goTo(prevKey) : undefined}
-              onNext={nextKey ? () => goTo(nextKey) : undefined}
-            />
-
-            {/* Tages-One-Pager: erscheint automatisch beim letzten Schritt des Tages,
-                sobald dieser abgeschlossen wurde. */}
-            {DAY_LAST_STEP[currentDef.day] === currentKey && currentRow?.completed_at ? (
+            {summaryDay !== null ? (
               <SprintDaySummary
                 sprint={sprint}
-                day={currentDef.day}
+                day={summaryDay}
                 allSteps={steps}
               />
-            ) : null}
+            ) : (
+              <>
+                {currentDef.variant && currentDef.variant !== "checkbox-list" && currentDef.variant !== "map" ? (
+                  <Card className="border-dashed">
+                    <CardContent className="p-6">
+                      <Badge variant="secondary" className="mb-2">
+                        Spezialansicht folgt
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        Für diesen Schritt (Variante: <code>{currentDef.variant}</code>) ist eine
+                        eigene Ansicht geplant. Du kannst jetzt schon Antworten als Liste sammeln
+                        und im nächsten Build-Schritt wird die passende UI ergänzt.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : null}
+
+                <SprintStepCard
+                  sprint={sprint}
+                  step={currentDef}
+                  stepRow={currentRow}
+                  allSteps={steps}
+                  totalIndex={totalIndex}
+                  totalCount={SPRINT_STEPS.length}
+                  onSave={handleSave}
+                  onPrev={prevKey ? () => goTo(prevKey) : undefined}
+                  onNext={nextKey ? () => goTo(nextKey) : undefined}
+                />
+
+                {/* Hinweis-Button: Wenn letzter Tagesschritt abgeschlossen → zum One Pager springen */}
+                {DAY_LAST_STEP[currentDef.day] === currentKey && currentRow?.completed_at ? (
+                  <div className="flex justify-end">
+                    <Button variant="outline" onClick={() => openSummary(currentDef.day)}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      One Pager · Tag {currentDef.day} öffnen
+                    </Button>
+                  </div>
+                ) : null}
+              </>
+            )}
           </div>
         </div>
       </main>
