@@ -79,42 +79,47 @@ export default function SprintDaySummary({ sprint, day, allSteps }: Props) {
   }
 
   async function downloadPdf() {
-    if (!pageRef.current) return;
     setPdfLoading(true);
     try {
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import("html2canvas"),
-        import("jspdf"),
-      ]);
-      const canvas = await html2canvas(pageRef.current, {
-        scale: 2,
-        backgroundColor: "#ffffff",
-        useCORS: true,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const stepDefs = dayStepDefs.map((s) => ({
+        key: s.key,
+        title: s.title,
+        frage: s.frage,
+      }));
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("Nicht angemeldet");
 
-      if (imgHeight <= pageHeight) {
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      } else {
-        // multi-page
-        let remaining = imgHeight;
-        let position = 0;
-        while (remaining > 0) {
-          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-          remaining -= pageHeight;
-          if (remaining > 0) {
-            position -= pageHeight;
-            pdf.addPage();
-          }
-        }
+      const supabaseUrl = (supabase as unknown as { supabaseUrl: string }).supabaseUrl;
+      const resp = await fetch(`${supabaseUrl}/functions/v1/sprint-day-summary-pdf`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          sprintId: sprint.id,
+          day,
+          dayLabel,
+          stepDefs,
+        }),
+      });
+
+      if (!resp.ok) {
+        const errText = await resp.text();
+        throw new Error(errText || `HTTP ${resp.status}`);
       }
+
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
       const safeTitle = sprint.titel.replace(/[^a-z0-9\-_]+/gi, "_").slice(0, 40);
-      pdf.save(`OneNext_Sprint_${safeTitle}_Tag${day}.pdf`);
+      a.href = url;
+      a.download = `OneNext_Sprint_${safeTitle}_Tag${day}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "PDF-Export fehlgeschlagen";
       toast({ title: "PDF-Export fehlgeschlagen", description: msg, variant: "destructive" });
