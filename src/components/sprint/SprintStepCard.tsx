@@ -614,19 +614,46 @@ interface MapBoardProps {
   items: string[];
   assignments: Record<string, string>;
   onAssign: (item: string, lane: string | null) => void;
+  onAddToLane: (text: string, lane: string) => void;
+  onRegenerate: () => void;
+  hasSeed: boolean;
 }
 
-function MapBoard({ items, assignments, onAssign }: MapBoardProps) {
+function MapBoard({
+  items,
+  assignments,
+  onAssign,
+  onAddToLane,
+  onRegenerate,
+  hasSeed,
+}: MapBoardProps) {
+  const [laneInput, setLaneInput] = useState<Record<string, string>>({});
   const unassigned = items.filter((it) => !assignments[it]);
   const byLane = (laneId: string) => items.filter((it) => assignments[it] === laneId);
 
+  function submitLane(laneId: string) {
+    const v = (laneInput[laneId] ?? "").trim();
+    if (!v) return;
+    onAddToLane(v, laneId);
+    setLaneInput((prev) => ({ ...prev, [laneId]: "" }));
+  }
+
   return (
     <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-muted/20 p-5">
-      <div className="space-y-1">
-        <h3 className="font-semibold text-lg">Map – Gesamtkarte</h3>
-        <p className="text-sm text-muted-foreground">
-          Ordne deine Antworten und KI-Vorschläge den Bereichen der Customer-Journey-Map zu.
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="space-y-1">
+          <h3 className="font-semibold text-lg">Map – Gesamtkarte</h3>
+          <p className="text-sm text-muted-foreground">
+            Wir haben deine Gesamtkarte automatisch aus den vorherigen Schritten aufgebaut.
+            Fehlt etwas? Ergänze pro Bereich beliebig viele Einträge.
+          </p>
+        </div>
+        {hasSeed ? (
+          <Button type="button" variant="outline" size="sm" onClick={onRegenerate}>
+            <Sparkles className="w-4 h-4 mr-1" />
+            Aus Schritten neu erstellen
+          </Button>
+        ) : null}
       </div>
 
       {/* Pool */}
@@ -667,7 +694,7 @@ function MapBoard({ items, assignments, onAssign }: MapBoardProps) {
           return (
             <div
               key={lane.id}
-              className="rounded-lg border bg-background p-3 min-h-[140px] flex flex-col"
+              className="rounded-lg border bg-background p-3 min-h-[160px] flex flex-col"
             >
               <div className="mb-2">
                 <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
@@ -720,6 +747,34 @@ function MapBoard({ items, assignments, onAssign }: MapBoardProps) {
                   ))
                 )}
               </ul>
+
+              {/* Per-lane Hinzufügen */}
+              <div className="mt-2 flex gap-1">
+                <Input
+                  value={laneInput[lane.id] ?? ""}
+                  onChange={(e) =>
+                    setLaneInput((prev) => ({ ...prev, [lane.id]: e.target.value }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      submitLane(lane.id);
+                    }
+                  }}
+                  placeholder="Fehlt etwas? +"
+                  className="h-7 text-xs"
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 shrink-0"
+                  onClick={() => submitLane(lane.id)}
+                  aria-label={`Eintrag zu ${lane.label} hinzufügen`}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
           );
         })}
