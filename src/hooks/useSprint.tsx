@@ -101,9 +101,10 @@ export function useSaveStep(sprintId: string) {
           completed_at: args.completed ? new Date().toISOString() : null,
         },
       ];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await supabase
         .from(STEPS_TABLE)
-        .upsert(payload, { onConflict: "sprint_id,step_key" });
+        .upsert(payload as any, { onConflict: "sprint_id,step_key" });
       if (error) throw error;
     },
     onSuccess: () => {
