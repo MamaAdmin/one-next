@@ -166,11 +166,12 @@ export default function SprintStepCard({
             </span>{" "}
             {step.arbeit}
           </p>
-          {step.abstimmung ? (
+          {step.abstimmung && !isSolo ? (
             <p>
               <span className="font-semibold">Wie wird abgestimmt:</span> {step.abstimmung}
             </p>
           ) : null}
+
           {step.entscheidung ? (
             <p>
               <span className="font-semibold">Wer entscheidet:</span> {step.entscheidung}
