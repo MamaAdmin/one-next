@@ -41,6 +41,7 @@ export default function SprintStepCard({
   onPrev,
 }: SprintStepCardProps) {
   const initial = (stepRow?.data ?? {}) as SprintStepData;
+  const [antwort, setAntwort] = useState<string>(initial.antwort ?? "");
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
   const [eigene, setEigene] = useState<string[]>(initial.eigene ?? []);
   const [auswahl, setAuswahl] = useState<string[]>(initial.auswahl ?? []);
@@ -51,11 +52,13 @@ export default function SprintStepCard({
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as SprintStepData;
+    setAntwort(d.antwort ?? "");
     setVorschlaege(d.vorschlaege ?? []);
     setEigene(d.eigene ?? []);
     setAuswahl(d.auswahl ?? []);
     setNotes(d.notes ?? "");
   }, [stepRow?.id]);
+
 
   const isSolo = sprint.modus === "solo";
   // Im Solo-Modus gibt es keine Abstimmung — Auswahl ist unbegrenzt.
