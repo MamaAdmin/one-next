@@ -15,7 +15,16 @@ import {
   getPrevStepKey,
 } from "@/features/sprint/steps";
 import SprintStepCard from "@/components/sprint/SprintStepCard";
+import SprintDaySummary from "@/components/sprint/SprintDaySummary";
 import type { SprintStepData } from "@/features/sprint/types";
+
+const DAY_LAST_STEP: Record<number, string> = {
+  1: "1.11",
+  2: "2.5",
+  3: "3.6",
+  4: "4.1",
+  5: "5.4",
+};
 
 export default function SprintWorkspace() {
   const { id } = useParams<{ id: string }>();
@@ -173,6 +182,16 @@ export default function SprintWorkspace() {
               onPrev={prevKey ? () => goTo(prevKey) : undefined}
               onNext={nextKey ? () => goTo(nextKey) : undefined}
             />
+
+            {/* Tages-One-Pager: erscheint automatisch beim letzten Schritt des Tages,
+                sobald dieser abgeschlossen wurde. */}
+            {DAY_LAST_STEP[currentDef.day] === currentKey && currentRow?.completed_at ? (
+              <SprintDaySummary
+                sprint={sprint}
+                day={currentDef.day}
+                allSteps={steps}
+              />
+            ) : null}
           </div>
         </div>
       </main>
