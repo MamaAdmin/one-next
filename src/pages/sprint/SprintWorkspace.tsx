@@ -15,7 +15,16 @@ import {
   getPrevStepKey,
 } from "@/features/sprint/steps";
 import SprintStepCard from "@/components/sprint/SprintStepCard";
+import SprintDaySummary from "@/components/sprint/SprintDaySummary";
 import type { SprintStepData } from "@/features/sprint/types";
+
+const DAY_LAST_STEP: Record<number, string> = {
+  1: "1.11",
+  2: "2.5",
+  3: "3.6",
+  4: "4.1",
+  5: "5.4",
+};
 
 export default function SprintWorkspace() {
   const { id } = useParams<{ id: string }>();
