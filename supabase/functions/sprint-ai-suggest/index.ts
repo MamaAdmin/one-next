@@ -1,6 +1,6 @@
 // Edge Function: sprint-ai-suggest
 // Returns AI-generated suggestions for a sprint step as strict JSON.
-// Auth: validates JWT in code (verify_jwt is project-wide false on this stack).
+// Calls Google Gemini API directly — billing runs through the user's Google AI Studio / GCP project.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://esm.sh/zod@3.23.8";
@@ -19,7 +19,8 @@ const BodySchema = z.object({
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+const GEMINI_MODEL = "gemini-2.5-flash";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -27,6 +28,10 @@ Deno.serve(async (req) => {
   }
 
   try {
+    if (!GEMINI_API_KEY) {
+      return json({ error: "GEMINI_API_KEY is not configured" }, 500);
+    }
+
     // Auth: ensure caller is signed in
     const authHeader = req.headers.get("Authorization") ?? "";
     if (!authHeader.startsWith("Bearer ")) {
@@ -69,7 +74,6 @@ Deno.serve(async (req) => {
         : "",
     ].filter(Boolean).join(" ");
 
-
     const userPrompt = [
       `Sprint-Titel: ${sprint.titel}`,
       `Problemstellung: ${sprint.problemstellung || "(keine angegeben)"}`,
@@ -82,33 +86,46 @@ Deno.serve(async (req) => {
       `Bitte liefere passende Vorschläge für Schritt ${step_key}.`,
     ].join("\n");
 
-    // Call Lovable AI Gateway
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Call Google Gemini API directly
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+    const aiResp = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              vorschlaege: { type: "ARRAY", items: { type: "STRING" } },
+            },
+            required: ["vorschlaege"],
+          },
+          temperature: 0.8,
+        },
       }),
     });
 
     if (!aiResp.ok) {
       const t = await aiResp.text();
-      return json({ error: `AI gateway: ${aiResp.status} ${t}` }, 502);
+      if (aiResp.status === 401 || aiResp.status === 403) {
+        return json({ error: "Gemini API key invalid or lacks permissions" }, 502);
+      }
+      if (aiResp.status === 429) {
+        return json({ error: "Gemini rate limit exceeded" }, 429);
+      }
+      return json({ error: `Gemini API: ${aiResp.status} ${t}` }, 502);
     }
 
     const aiJson = await aiResp.json();
-    const raw: string = aiJson?.choices?.[0]?.message?.content ?? "{}";
+    const raw: string =
+      aiJson?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
     let vorschlaege: string[] = [];
     try {
-      const parsedOut = JSON.parse(raw);
+      const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+      const parsedOut = JSON.parse(cleaned);
       if (Array.isArray(parsedOut?.vorschlaege)) {
         vorschlaege = parsedOut.vorschlaege
           .filter((v: unknown) => typeof v === "string")
@@ -136,7 +153,6 @@ Deno.serve(async (req) => {
         })
         .filter((s) => s.length >= 18);
     }
-
 
     return json({ vorschlaege }, 200);
   } catch (e) {
