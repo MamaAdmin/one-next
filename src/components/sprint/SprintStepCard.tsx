@@ -96,8 +96,15 @@ export default function SprintStepCard({
         return acc;
       }, {});
       const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
-        body: { sprint_id: sprint.id, step_key: step.key, context: ctx },
+        body: {
+          sprint_id: sprint.id,
+          step_key: step.key,
+          context: ctx,
+          step_frage: step.frage,
+          step_arbeit: step.arbeit,
+        },
       });
+
       if (error) throw error;
       const arr = Array.isArray((data as any)?.vorschlaege)
         ? ((data as any).vorschlaege as string[])
