@@ -445,8 +445,9 @@ function buildContextEntries(
     }
     const d = row.data as SprintStepData;
     const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
+    const antworten = toAntwortenArray(d);
     const value: Record<string, unknown> = {};
-    if (d.antwort && d.antwort.trim()) value.antwort = d.antwort.trim();
+    if (antworten.length > 0) value.antworten = antworten;
     if (chosen) value.auswahl = chosen;
     entries.push({
       key: ref,
@@ -463,12 +464,26 @@ function formatContextValue(v: unknown): string {
   if (v && typeof v === "object") {
     const obj = v as Record<string, unknown>;
     const parts: string[] = [];
-    if (typeof obj.antwort === "string") parts.push(`Antwort: ${obj.antwort}`);
+    if (Array.isArray(obj.antworten))
+      parts.push("Antworten:\n" + obj.antworten.map((x) => `• ${String(x)}`).join("\n"));
+    else if (typeof obj.antwort === "string")
+      parts.push(`Antwort: ${obj.antwort}`);
     if (Array.isArray(obj.auswahl))
       parts.push("Auswahl:\n" + obj.auswahl.map((x) => `• ${String(x)}`).join("\n"));
     return parts.length ? parts.join("\n") : JSON.stringify(v);
   }
   if (v == null) return "—";
   return String(v);
+}
+
+/** Normalisiert altes `antwort`-Feld und neues `antworten`-Array auf string[]. */
+function toAntwortenArray(d: SprintStepData): string[] {
+  if (Array.isArray(d.antworten)) {
+    return d.antworten.filter((x): x is string => typeof x === "string");
+  }
+  if (typeof d.antwort === "string" && d.antwort.trim()) {
+    return [d.antwort];
+  }
+  return [];
 }
 
