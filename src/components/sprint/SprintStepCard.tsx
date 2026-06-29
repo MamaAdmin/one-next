@@ -368,6 +368,24 @@ export default function SprintStepCard({
           </div>
         </div>
 
+        {/* 4b. Map-Board (nur für Variante "map") */}
+        {step.variant === "map" ? (
+          <MapBoard
+            items={Array.from(new Set([...antworten, ...vorschlaege, ...eigene])).filter(
+              (x) => x.trim().length > 0,
+            )}
+            assignments={mapZuordnung}
+            onAssign={(item, lane) =>
+              setMapZuordnung((prev) => {
+                const next = { ...prev };
+                if (!lane) delete next[item];
+                else next[item] = lane;
+                return next;
+              })
+            }
+          />
+        ) : null}
+
         {/* Notizen */}
         <div className="space-y-2">
           <h3 className="font-semibold text-lg">Notizen (optional)</h3>
