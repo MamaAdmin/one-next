@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Plus, Loader2, X } from "lucide-react";
+import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
