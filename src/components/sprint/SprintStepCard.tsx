@@ -400,25 +400,12 @@ export default function SprintStepCard({
             Gedächtnis aufschreiben, was hängen geblieben ist. */}
 
 
-        {/* 3. KI-Vorschläge */}
+        {/* 3. KI-Marktrecherche & Ranking */}
         {step.variant !== "notes" ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
+            <h3 className="font-semibold text-lg">KI-Marktrecherche & Ranking</h3>
             <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleGenerate}
-                disabled={aiLoading}
-              >
-                {aiLoading ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Sparkles className="w-4 h-4 mr-2" />
-                )}
-                {vorschlaege.length === 0 ? "Vorschläge generieren" : "Mehr Vorschläge"}
-              </Button>
               {isSolo && allOptions.length >= 2 ? (
                 <Button
                   size="sm"
@@ -431,7 +418,7 @@ export default function SprintStepCard({
                   ) : (
                     <Trophy className="w-4 h-4 mr-2" />
                   )}
-                  KI-Ranking & Marktrecherche
+                  Marktrecherche & Top 3
                 </Button>
               ) : null}
             </div>
