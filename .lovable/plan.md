@@ -1,41 +1,17 @@
-
 ## Ziel
-Die Seite `/sprint-uebersicht` (`src/pages/AIDesignSprint.tsx`) so umbauen, dass Besucher sofort die drei Angebote sehen und entscheiden können. Der „Coming soon"-Hinweis beim Online Design Sprint wird entfernt, da er fast fertig ist; stattdessen werden Solo- und Team-Modus benannt.
 
-## Neue Seitenstruktur (Reihenfolge von oben nach unten)
+`https://one-next.com` zusätzlich zur bereits verifizierten `https://one-next.lovable.app/` als eigene Property in Google Search Console einrichten — beide laufen parallel, keine Änderungen an Canonicals/OG-Tags.
 
-1. **Hero** (unverändert, editierbarer Titel + Beschreibung, CTA)
-2. **NEU: „Wählen Sie Ihren Design Sprint Ansatz"** – die drei Produktkarten direkt nach dem Hero
-   - Problem-Framing-Workshop (mit KI) → Link zu `/problem-framing-workshop`
-   - Design Sprint Workshop (mit KI) → Link zu `/design-sprint-workshop`
-   - Online Design Sprint → Link zu `/sprint-uebersicht/online`, Button aktiv
-3. „Was ist ein KI Design Sprint Workshop?" (4-Phasen-Flow) – bleibt
-4. „Was können Sie erwarten?" – bleibt
-5. Workshop-Agenda (Tag 1 / Tag 2) – bleibt
-6. „Was Sie am Ende haben" – bleibt
-7. „Warum ein KI Design Sprint Workshop?" – bleibt
-8. CTA-Section (Dual Option) – bleibt
+## Schritte
 
-Der bisherige Produkt-Block weiter unten wird entfernt (verschoben nach oben), damit keine Dopplung entsteht.
+1. **Verifizierungs-Token anfordern** für `https://one-next.com/` über die Search Console Site Verification API (METHOD=META).
+2. **Meta-Tag in `index.html`** ergänzen — zusätzlich zum bestehenden Tag für lovable.app. Google erkennt mehrere `google-site-verification`-Tags parallel; das bestehende Tag bleibt unverändert.
+3. **Publish** des Projekts, damit das neue Meta-Tag live auf `one-next.com` ausgeliefert wird (Custom Domain serviert denselben Build).
+4. **Verify-Call** an Google: bestätigt Ownership.
+5. **Site hinzufügen** zur Property-Liste via `PUT /webmasters/v3/sites/https%3A%2F%2Fone-next.com%2F`.
+6. **Sitemap einreichen**: `https://one-next.com/sitemap.xml`.
 
-## Änderungen an der Produktkarte „Online Design Sprint"
+## Hinweise
 
-- „Coming soon"-Badge oben rechts entfernen.
-- Titel von „Online Design Sprint (Coming soon)" → „Online Design Sprint".
-- Subline: „Flexibel, strukturiert – im Solo- oder Team-Modus".
-- Bullet-Liste ergänzen/ersetzen mit:
-  - Strukturierter, selbstgeführter Prozess
-  - **Solo-Modus**: Allein durchlaufen, alle Entscheidungen liegen beim Teilnehmer
-  - **Team-Modus**: Gemeinsam mit verteiltem Team, Voting & Decider-Rolle
-  - Flexibel pausieren & fortsetzen
-  - Optionaler Experten-Input
-- Button wieder funktional: „Sprint entdecken" → `<Link to="/sprint-uebersicht/online">` (statt leerem `<Button asChild>`).
-
-## Technische Details
-
-- Datei: `src/pages/AIDesignSprint.tsx`
-- Bestehender Block „Wählen Sie Ihren Design Sprint Ansatz" (aktuell Zeilen ~302–430) wird direkt unter den Hero (nach Zeile 75) verschoben.
-- Einleitungstext des Blocks bleibt: „Drei Wege führen zu KI-Innovation – wählen Sie den Ansatz, der am besten zu Ihrem Team passt."
-- Hintergrund-Wechsel anpassen, damit Sektions-Farben weiterhin abwechseln (Hero schwarz → Produkte `bg-background` → Phasen `bg-muted/30` etc.).
-- Keine Änderungen an Routing, Daten, oder anderen Seiten.
-- Edit-Mode (`InlineTextField`/`InlineTextArea`) bleibt unverändert.
+- `public/sitemap.xml` und alle Canonicals bleiben auf `https://one-next.lovable.app` (wie aktuell). Falls .com später die primäre Domain werden soll, ist das ein separater Schritt.
+- Verifizierung schlägt fehl, falls one-next.com nicht auf das aktuelle Lovable-Deployment zeigt — DNS muss aktiv sein.
