@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, FileText } from "lucide-react";
+import { CheckCircle2, Circle, Dot, FileText, Pencil } from "lucide-react";
 import { useSprint, useSprintSteps, useSaveStep, useSetCurrentStep } from "@/hooks/useSprint";
 import {
   SPRINT_STEPS,
@@ -16,7 +16,9 @@ import {
 } from "@/features/sprint/steps";
 import SprintStepCard from "@/components/sprint/SprintStepCard";
 import SprintDaySummary from "@/components/sprint/SprintDaySummary";
+import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import type { SprintStepData } from "@/features/sprint/types";
+
 
 const DAY_LAST_STEP: Record<number, string> = {
   1: "1.11",
@@ -34,6 +36,8 @@ export default function SprintWorkspace() {
   const saveStep = useSaveStep(id ?? "");
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+
 
   const sprint = sprintQ.data;
   const steps = stepsQ.data ?? [];
@@ -109,11 +113,31 @@ export default function SprintWorkspace() {
               ← Übersicht
             </Link>
             <div>
-              <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 shrink-0"
+                  onClick={() => setEditOpen(true)}
+                  title="Sprint-Grundlagen bearbeiten"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
+              </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Modus: {sprint.modus === "solo" ? "Solo" : "Team"}
               </p>
+              <button
+                type="button"
+                onClick={() => setEditOpen(true)}
+                className="mt-2 text-xs text-primary hover:underline"
+              >
+                Titel & Problemstellung bearbeiten
+              </button>
             </div>
+
 
             <nav className="space-y-4">
               {DAYS.map((d) => {
@@ -235,7 +259,10 @@ export default function SprintWorkspace() {
         </div>
       </main>
 
+      <SprintBasicsEditDialog sprint={sprint} open={editOpen} onOpenChange={setEditOpen} />
+
       <Footer />
     </div>
+
   );
 }
