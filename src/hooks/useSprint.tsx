@@ -128,3 +128,29 @@ export function useSetCurrentStep(sprintId: string) {
     },
   });
 }
+
+export interface UpdateSprintInput {
+  titel?: string;
+  problemstellung?: string;
+  decider?: string;
+  sprint_leader?: string;
+  modus?: "solo" | "team";
+}
+
+export function useUpdateSprint(sprintId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: UpdateSprintInput) => {
+      const { error } = await supabase
+        .from(SPRINTS_TABLE)
+        .update(input)
+        .eq("id", sprintId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["sprints", sprintId] });
+      qc.invalidateQueries({ queryKey: ["sprints", "mine"] });
+    },
+  });
+}
+
