@@ -492,7 +492,7 @@ export default function SprintStepCard({
         </div>
 
         {/* 5. Kontext-Panel */}
-        {contextEntries.length > 0 ? (
+        {contextEntries.length > 0 && step.variant !== "notes" ? (
           <Accordion type="single" collapsible className="border rounded-lg">
             <AccordionItem value="ctx" className="border-none">
               <AccordionTrigger className="px-4">
