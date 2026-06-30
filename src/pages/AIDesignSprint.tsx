@@ -212,7 +212,21 @@ const AIDesignSprint = () => {
               <h2 className="text-4xl font-bold">
                 <InlineTextField value={content.what_is_title || 'Was ist ein KI Design Sprint Workshop?'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
               </h2>
-              <InlineTextArea value={content.what_is_description || 'Ein intensiver 2-Tage-Workshop, der Ihrem Team hilft, KI-Potenziale zu identifizieren und zu nutzen.'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
+              <div className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto space-y-6">
+                <p>
+                  <InlineTextArea value={content.what_is_description || 'Ein KI Design Sprint Workshop ist ein intensiver, praxisorientierter Prozess über 2–3 Tage, in dem Ihr Team, das Potenzial gezielt für Ihr Unternehmen erschließt.\n\n'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
+                </p>
+                <ul className="text-left space-y-4 max-w-2xl mx-auto">
+                  <li className="flex items-start gap-3">
+                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <span>Begleitet von erfahrenen Moderatoren durchläuft Ihr Team klar strukturierte Phasen – von der Problemdefinition über die Ideenfindung bis zur Validierung erster Lösungen. Moderne KI-Tools beschleunigen dabei Analyse, Ideenfindung und Prototyping.\n\n</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <span>Das Ziel: in wenigen Tagen konkrete, umsetzbare KI-Anwendungsfälle identifizieren und als Prototyp oder Proof of Concept greifbar machen.\n\n</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* Horizontaler Prozess-Flow: Vier Phasen des KI Design Sprint Workshops */}
