@@ -1,14 +1,22 @@
-## Status
+## Ziel
+Ownership für `https://one-next.com/` in der Google Search Console per Meta-Tag verifizieren.
 
-Der Verifikations-Meta-Tag für `one-next.com` wurde bereits in `index.html` ergänzt (Zeile 9, Token `sDDWv0uUReZsEKAlTmT48vZ4FYrfFOaTr-FR51elPh8`) — parallel zum bestehenden Tag für `one-next.lovable.app`.
+## Ausgangslage
+- Das Meta-Tag für `one-next.com` (Token `sDDWv0uUReZsEKAlTmT48vZ4FYrfFOaTr-FR51elPh8`) ist bereits in `index.html` eingefügt.
+- Der Live-Check auf `https://one-next.com/` zeigt aktuell aber nur das alte Tag für `one-next.lovable.app`. Das neue Tag ist noch nicht deployed.
+- Ohne live ausgeliefertes Tag schlägt die Verifizierung mit `failedToFindMetaTag` fehl.
 
-## Schritte zur Fertigstellung
+## Schritte
 
-1. **Live-Check**: `curl https://one-next.com/` und bestätigen, dass beide `google-site-verification`-Tags im ausgelieferten HTML stehen.
-2. **Ownership verifizieren** über die Search Console Site Verification API mit METHOD=META für `https://one-next.com/`.
-3. **Site zur Property-Liste hinzufügen** via `PUT /webmasters/v3/sites/https%3A%2F%2Fone-next.com%2F`.
-4. **Sitemap einreichen**: `https://one-next.com/sitemap.xml`.
+1. **Projekt publishen** (durch dich per Klick auf „Update" im Publish-Dialog erforderlich, Frontend-Änderungen gehen sonst nicht live).
+2. **Live-Check** nach dem Publish:
+   ```
+   curl -s https://one-next.com/ | grep google-site-verification
+   ```
+   Erwartung: beide Tags (`...lovable.app` und `one-next.com`) sind sichtbar.
+3. **Google Site Verification API aufrufen** (METHOD=META) für `https://one-next.com/`. Bei Erfolg: HTTP 200.
+4. **Site zur Search Console hinzufügen** via `PUT /webmasters/v3/sites/https%3A%2F%2Fone-next.com%2F`, damit die Property in der Konsole erscheint.
+5. **Sitemap einreichen**: `https://one-next.com/sitemap.xml`.
 
 ## Hinweis
-
-Falls der Live-Check zeigt, dass das Tag noch nicht ausgeliefert wird, muss das Projekt zuerst gepublished werden. In dem Fall stoppe ich und bitte dich zu publishen, bevor ich die Verifizierung durchführe.
+Schritt 1 muss von dir durchgeführt werden – ich kann im Plan-Modus nicht publishen. Sag mir Bescheid, sobald du veröffentlicht hast, dann führe ich Schritte 2–5 aus.
