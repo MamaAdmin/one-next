@@ -1,44 +1,41 @@
+
 ## Ziel
+Die Seite `/sprint-uebersicht` (`src/pages/AIDesignSprint.tsx`) so umbauen, dass Besucher sofort die drei Angebote sehen und entscheiden können. Der „Coming soon"-Hinweis beim Online Design Sprint wird entfernt, da er fast fertig ist; stattdessen werden Solo- und Team-Modus benannt.
 
-Die KI-Marktrecherche & Ranking-Voreinstellung soll sich strikt am `stimmenLimit` des jeweiligen Schritts orientieren – also genauso viele Top-Optionen vorauswählen, wie Stimmen pro Person erlaubt sind. Der Team-Modus (Multiplikation Stimmen × Teilnehmer) folgt in einer späteren Etappe und ist hier nicht Teil des Scopes.
+## Neue Seitenstruktur (Reihenfolge von oben nach unten)
 
-## Änderungen in `src/components/sprint/SprintStepCard.tsx`
+1. **Hero** (unverändert, editierbarer Titel + Beschreibung, CTA)
+2. **NEU: „Wählen Sie Ihren Design Sprint Ansatz"** – die drei Produktkarten direkt nach dem Hero
+   - Problem-Framing-Workshop (mit KI) → Link zu `/problem-framing-workshop`
+   - Design Sprint Workshop (mit KI) → Link zu `/design-sprint-workshop`
+   - Online Design Sprint → Link zu `/sprint-uebersicht/online`, Button aktiv
+3. „Was ist ein KI Design Sprint Workshop?" (4-Phasen-Flow) – bleibt
+4. „Was können Sie erwarten?" – bleibt
+5. Workshop-Agenda (Tag 1 / Tag 2) – bleibt
+6. „Was Sie am Ende haben" – bleibt
+7. „Warum ein KI Design Sprint Workshop?" – bleibt
+8. CTA-Section (Dual Option) – bleibt
 
-1. **Top-N am `stimmenLimit` ausrichten (statt am bisherigen Min(limit, 3))**
-   In `handleRank` aktuell:
-   ```ts
-   .slice(0, Math.min(limit ?? 3, 3))
-   ```
-   Neu:
-   ```ts
-   const topN = step.stimmenLimit ?? 3;
-   …
-   .slice(0, topN)
-   ```
-   - Bei `stimmenLimit = 1` → Top 1
-   - Bei `stimmenLimit = 2` → Top 2
-   - Bei `stimmenLimit = 5` (z. B. 1.4 HMW, 5.3 Hot Takes) → Top 5
-   - Fallback `3`, falls ein Schritt kein Limit definiert hat.
+Der bisherige Produkt-Block weiter unten wird entfernt (verschoben nach oben), damit keine Dopplung entsteht.
 
-2. **Toast-Text dynamisch**
-   `"Top N wurde vorausgewählt"` nutzt denselben `topN`-Wert.
+## Änderungen an der Produktkarte „Online Design Sprint"
 
-3. **Button-Label anpassen**
-   Statt `Top {Math.min(limit ?? 3, 3)}`:
-   ```tsx
-   Top {step.stimmenLimit ?? 3}
-   ```
-   So sieht der User vor dem Klick, wie viele Optionen markiert werden.
+- „Coming soon"-Badge oben rechts entfernen.
+- Titel von „Online Design Sprint (Coming soon)" → „Online Design Sprint".
+- Subline: „Flexibel, strukturiert – im Solo- oder Team-Modus".
+- Bullet-Liste ergänzen/ersetzen mit:
+  - Strukturierter, selbstgeführter Prozess
+  - **Solo-Modus**: Allein durchlaufen, alle Entscheidungen liegen beim Teilnehmer
+  - **Team-Modus**: Gemeinsam mit verteiltem Team, Voting & Decider-Rolle
+  - Flexibel pausieren & fortsetzen
+  - Optionaler Experten-Input
+- Button wieder funktional: „Sprint entdecken" → `<Link to="/sprint-uebersicht/online">` (statt leerem `<Button asChild>`).
 
-4. **Hinweis für späteren Team-Modus**
-   Kein Code – nur als Kommentar im Code festhalten:
-   ```ts
-   // TODO Team-Modus: effektives Limit = stimmenLimit * Teilnehmer
-   ```
-   damit die spätere Etappe die Stelle leicht findet.
+## Technische Details
 
-## Keine sonstigen Änderungen
-
-- `stimmenLimit` in `src/features/sprint/steps.ts` bleibt unverändert (Single Source of Truth).
-- Die Checkbox-Sperre (`limitReached`) und der Zähler `{auswahl.length} / {limit} Stimmen` bleiben unverändert – sie nutzen bereits `step.stimmenLimit`.
-- Edge Function `sprint-ai-rank` unverändert (liefert weiterhin ein vollständiges Ranking; das Frontend entscheidet, wie viele Top-Einträge vorausgewählt werden).
+- Datei: `src/pages/AIDesignSprint.tsx`
+- Bestehender Block „Wählen Sie Ihren Design Sprint Ansatz" (aktuell Zeilen ~302–430) wird direkt unter den Hero (nach Zeile 75) verschoben.
+- Einleitungstext des Blocks bleibt: „Drei Wege führen zu KI-Innovation – wählen Sie den Ansatz, der am besten zu Ihrem Team passt."
+- Hintergrund-Wechsel anpassen, damit Sektions-Farben weiterhin abwechseln (Hero schwarz → Produkte `bg-background` → Phasen `bg-muted/30` etc.).
+- Keine Änderungen an Routing, Daten, oder anderen Seiten.
+- Edit-Mode (`InlineTextField`/`InlineTextArea`) bleibt unverändert.
