@@ -200,7 +200,7 @@ export default function SprintStepCard({
   }
 
   async function handleRank() {
-    const opts = [...vorschlaege, ...eigene];
+    const opts = Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean)));
     if (opts.length < 2) {
       toast({
         title: "Zu wenige Optionen",
