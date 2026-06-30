@@ -365,10 +365,9 @@ export default function SprintStepCard({
           </div>
         </div>
 
-        {/* Tag-1 One-Pager Recap (nur für Notes-Variante 2.2) */}
-        {step.variant === "notes" ? (
-          <OnePagerRecap entries={contextEntries} allSteps={allSteps} />
-        ) : null}
+        {/* Notes-Variante: bewusst KEIN Recap, KEINE KI — der User soll aus dem
+            Gedächtnis aufschreiben, was hängen geblieben ist. */}
+
 
         {/* 3. KI-Vorschläge */}
         {step.variant !== "notes" ? (
@@ -493,7 +492,7 @@ export default function SprintStepCard({
         </div>
 
         {/* 5. Kontext-Panel */}
-        {contextEntries.length > 0 ? (
+        {contextEntries.length > 0 && step.variant !== "notes" ? (
           <Accordion type="single" collapsible className="border rounded-lg">
             <AccordionItem value="ctx" className="border-none">
               <AccordionTrigger className="px-4">
