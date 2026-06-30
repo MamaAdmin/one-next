@@ -312,6 +312,21 @@ export default function SprintStepCard({
   }
 
   const allOptions = [...vorschlaege, ...eigene];
+  const rankByOption = useMemo(() => {
+    const m = new Map<string, { rang: number; begruendung: string }>();
+    aiRank?.ranking?.forEach((r) => {
+      m.set(r.option, { rang: r.rang, begruendung: r.begruendung ?? "" });
+    });
+    return m;
+  }, [aiRank]);
+  const sortedOptions = useMemo(() => {
+    if (rankByOption.size === 0) return allOptions;
+    return [...allOptions].sort((a, b) => {
+      const ra = rankByOption.get(a)?.rang ?? 999;
+      const rb = rankByOption.get(b)?.rang ?? 999;
+      return ra - rb;
+    });
+  }, [allOptions, rankByOption]);
 
   return (
     <Card className="border-none shadow-xl">
