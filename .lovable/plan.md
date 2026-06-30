@@ -1,17 +1,14 @@
-## Ziel
+## Status
 
-Das Favicon in den Google-Suchergebnissen durch ein eigenes one-next-Icon ersetzen (statt des aktuellen Lovable-Default-Icons).
+Der Verifikations-Meta-Tag für `one-next.com` wurde bereits in `index.html` ergänzt (Zeile 9, Token `sDDWv0uUReZsEKAlTmT48vZ4FYrfFOaTr-FR51elPh8`) — parallel zum bestehenden Tag für `one-next.lovable.app`.
 
-## Schritte
+## Schritte zur Fertigstellung
 
-1. **Quadratisches Favicon erzeugen**: Mit `imagegen--edit_image` aus dem bestehenden Logo (`https://storage.googleapis.com/.../one-next-logo-new.png`) ein zentriertes, quadratisches PNG (512×512) auf transparentem Hintergrund erstellen und unter `public/favicon.png` ablegen.
-2. **Alte Default-Datei entfernen**: `public/placeholder.svg` bleibt unberührt, aber falls noch ein `public/favicon.ico` (Vite-Default) existiert, wird sie gelöscht — sonst überschreibt sie das neue Favicon.
-3. **`index.html` anpassen**:
-   - Bestehende `<link rel="icon" ...>`-Zeile auf `/favicon.png` umstellen.
-   - Zusätzlich `<link rel="apple-touch-icon" href="/favicon.png">` ergänzen.
-4. **Publish**: Damit das neue Favicon live auf one-next.com und one-next.lovable.app ausgeliefert wird.
+1. **Live-Check**: `curl https://one-next.com/` und bestätigen, dass beide `google-site-verification`-Tags im ausgelieferten HTML stehen.
+2. **Ownership verifizieren** über die Search Console Site Verification API mit METHOD=META für `https://one-next.com/`.
+3. **Site zur Property-Liste hinzufügen** via `PUT /webmasters/v3/sites/https%3A%2F%2Fone-next.com%2F`.
+4. **Sitemap einreichen**: `https://one-next.com/sitemap.xml`.
 
-## Hinweise
+## Hinweis
 
-- Google aktualisiert Favicons in den Suchergebnissen erst beim nächsten Crawl der Startseite — das kann **mehrere Tage bis Wochen** dauern. Nach dem Publish kann in der Google Search Console eine erneute Indexierung der Startseite angefordert werden, um den Prozess zu beschleunigen.
-- Voraussetzungen laut Google: Favicon muss unter einer stabilen URL erreichbar sein, mindestens 48×48 px, quadratisch, und vom selben Host geliefert werden wie die Seite. All das wird mit Schritt 1–3 erfüllt.
+Falls der Live-Check zeigt, dass das Tag noch nicht ausgeliefert wird, muss das Projekt zuerst gepublished werden. In dem Fall stoppe ich und bitte dich zu publishen, bevor ich die Verifizierung durchführe.
