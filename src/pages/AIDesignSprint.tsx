@@ -62,9 +62,9 @@ const AIDesignSprint = () => {
               <span className="font-semibold">KI Design Sprint</span>
             </div>
             
-            <InlineTextField value={content.hero_title || 'KI Design Sprint'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold text-white" placeholder="Titel des Hero-Bereichs" as="h1" />
+            <InlineTextField value={content.hero_title || 'Von der Vision zum Prototyp – im Design Sprint erleben'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold text-white" placeholder="Titel des Hero-Bereichs" as="h1" />
             
-            <InlineTextArea value={content.hero_description || 'Wählen Sie den passenden Ansatz für Ihr Team - intensiver 2-Tage Workshop oder flexibler Step by Step online Sprint'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-white/90 leading-relaxed" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
+            <InlineTextArea value={content.hero_description || 'In Stunden oder zwei bis drei intensiven Tagen zeigt der Design Sprint man den Prozess beschleunigen – von der Ideenfindung bis zum getesteten Prototyp.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-white/90 leading-relaxed" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
             
             {/* CTA Button */}
             <div className="mt-6">
