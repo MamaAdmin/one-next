@@ -77,9 +77,8 @@ export default function SprintStepCard({
 
 
   const isSolo = sprint.modus === "solo";
-  // Im Solo-Modus gibt es keine Abstimmung — Auswahl ist unbegrenzt.
-  // Im Team-Modus greift weiterhin das Stimmen-Limit (perspektivisch pro User).
-  const limit = isSolo ? undefined : step.stimmenLimit;
+  // Stimmen-Limit aus der Sprint-Definition gilt in Solo- und Team-Modus gleichermaßen.
+  const limit = step.stimmenLimit;
   const limitReached = !!limit && auswahl.length >= limit;
 
 
@@ -235,15 +234,16 @@ export default function SprintStepCard({
         return;
       }
       setAiRank(result);
-      const top3 = result.ranking
+      const topN = Math.min(limit ?? 3, 3);
+      const top = result.ranking
         .slice()
         .sort((a, b) => a.rang - b.rang)
-        .slice(0, 3)
+        .slice(0, topN)
         .map((r) => r.option);
-      setAuswahl(top3);
+      setAuswahl(top);
       toast({
         title: "Ranking & Recherche fertig",
-        description: "Top 3 wurden vorausgewählt — du kannst manuell anpassen.",
+        description: `Top ${topN} ${topN === 1 ? "wurde" : "wurden"} vorausgewählt — du kannst manuell anpassen.`,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
@@ -326,6 +326,12 @@ export default function SprintStepCard({
           {step.abstimmung && !isSolo ? (
             <p>
               <span className="font-semibold">Wie wird abgestimmt:</span> {step.abstimmung}
+            </p>
+          ) : null}
+          {typeof step.stimmenLimit === "number" ? (
+            <p>
+              <span className="font-semibold">Max. Stimmen:</span>{" "}
+              {step.stimmenLimit} {step.stimmenLimit === 1 ? "Stimme" : "Stimmen"}
             </p>
           ) : null}
 
@@ -421,7 +427,7 @@ export default function SprintStepCard({
                   ) : (
                     <Trophy className="w-4 h-4 mr-2" />
                   )}
-                  Marktrecherche & Top 3
+                  Marktrecherche & Top {Math.min(limit ?? 3, 3)}
                 </Button>
               ) : null}
             </div>
