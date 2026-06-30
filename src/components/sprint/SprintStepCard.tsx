@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Plus, Loader2, X } from "lucide-react";
+import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
@@ -60,6 +60,8 @@ export default function SprintStepCard({
     initial.mapZuordnung ?? {},
   );
   const [aiLoading, setAiLoading] = useState(false);
+  const [rankLoading, setRankLoading] = useState(false);
+  const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -71,6 +73,7 @@ export default function SprintStepCard({
     setAuswahl(d.auswahl ?? []);
     setNotes(d.notes ?? "");
     setMapZuordnung(d.mapZuordnung ?? {});
+    setAiRank(d.aiRank);
   }, [stepRow?.id]);
 
 
@@ -229,7 +232,7 @@ export default function SprintStepCard({
     setSaving(true);
     try {
       await onSave(
-        { antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung },
+        { antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank },
         { completed },
       );
       if (completed && onNext) onNext();
@@ -237,6 +240,61 @@ export default function SprintStepCard({
       setSaving(false);
     }
   }
+
+  async function handleRank() {
+    const opts = [...vorschlaege, ...eigene];
+    if (opts.length < 2) {
+      toast({
+        title: "Zu wenige Optionen",
+        description: "Mindestens 2 Vorschläge nötig für ein Ranking.",
+      });
+      return;
+    }
+    setRankLoading(true);
+    try {
+      const ctx = contextEntries.reduce<Record<string, unknown>>((acc, e) => {
+        acc[e.key] = e.value;
+        return acc;
+      }, {});
+      const { data, error } = await supabase.functions.invoke("sprint-ai-rank", {
+        body: {
+          sprint_id: sprint.id,
+          step_key: step.key,
+          step_frage: step.frage,
+          step_arbeit: step.arbeit,
+          options: opts,
+          context: ctx,
+        },
+      });
+      if (error) throw error;
+      const result = data as SprintStepData["aiRank"];
+      if (!result || !Array.isArray(result.ranking) || result.ranking.length === 0) {
+        toast({
+          title: "Ranking fehlgeschlagen",
+          description: "Keine verwertbare Antwort erhalten.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setAiRank(result);
+      const top3 = result.ranking
+        .slice()
+        .sort((a, b) => a.rang - b.rang)
+        .slice(0, 3)
+        .map((r) => r.option);
+      setAuswahl(top3);
+      toast({
+        title: "Ranking & Recherche fertig",
+        description: "Top 3 wurden vorausgewählt — du kannst manuell anpassen.",
+      });
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "Ranking fehlgeschlagen", description: msg, variant: "destructive" });
+    } finally {
+      setRankLoading(false);
+    }
+  }
+
 
   function addAntwort() {
     const v = antwortInput.trim();
@@ -254,6 +312,21 @@ export default function SprintStepCard({
   }
 
   const allOptions = [...vorschlaege, ...eigene];
+  const rankByOption = useMemo(() => {
+    const m = new Map<string, { rang: number; begruendung: string }>();
+    aiRank?.ranking?.forEach((r) => {
+      m.set(r.option, { rang: r.rang, begruendung: r.begruendung ?? "" });
+    });
+    return m;
+  }, [aiRank]);
+  const sortedOptions = useMemo(() => {
+    if (rankByOption.size === 0) return allOptions;
+    return [...allOptions].sort((a, b) => {
+      const ra = rankByOption.get(a)?.rang ?? 999;
+      const rb = rankByOption.get(b)?.rang ?? 999;
+      return ra - rb;
+    });
+  }, [allOptions, rankByOption]);
 
   return (
     <Card className="border-none shadow-xl">
@@ -372,22 +445,73 @@ export default function SprintStepCard({
         {/* 3. KI-Vorschläge */}
         {step.variant !== "notes" ? (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleGenerate}
-              disabled={aiLoading}
-            >
-              {aiLoading ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <Sparkles className="w-4 h-4 mr-2" />
-              )}
-              {vorschlaege.length === 0 ? "Vorschläge generieren" : "Mehr Vorschläge"}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleGenerate}
+                disabled={aiLoading}
+              >
+                {aiLoading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4 mr-2" />
+                )}
+                {vorschlaege.length === 0 ? "Vorschläge generieren" : "Mehr Vorschläge"}
+              </Button>
+              {isSolo && allOptions.length >= 2 ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleRank}
+                  disabled={rankLoading}
+                >
+                  {rankLoading ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Trophy className="w-4 h-4 mr-2" />
+                  )}
+                  KI-Ranking & Marktrecherche
+                </Button>
+              ) : null}
+            </div>
           </div>
+
+          {aiRank && (aiRank.marktrecherche || (aiRank.quellen?.length ?? 0) > 0) ? (
+            <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Sparkles className="w-4 h-4 text-primary" />
+                Marktrecherche
+              </div>
+              {aiRank.marktrecherche ? (
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                  {aiRank.marktrecherche}
+                </p>
+              ) : null}
+              {aiRank.quellen && aiRank.quellen.length > 0 ? (
+                <div className="space-y-1">
+                  <div className="text-xs font-medium text-muted-foreground">Quellen</div>
+                  <ul className="space-y-1">
+                    {aiRank.quellen.map((q, i) => (
+                      <li key={i} className="text-xs">
+                        <a
+                          href={q.uri}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline inline-flex items-center gap-1"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          {q.title || q.uri}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
           {allOptions.length === 0 ? (
             <p className="text-sm text-muted-foreground italic">
@@ -395,9 +519,10 @@ export default function SprintStepCard({
             </p>
           ) : (
             <ul className="space-y-2">
-              {allOptions.map((opt) => {
+              {sortedOptions.map((opt) => {
                 const checked = auswahl.includes(opt);
                 const disabled = !checked && limitReached;
+                const rankInfo = rankByOption.get(opt);
                 return (
                   <li
                     key={opt}
@@ -410,6 +535,15 @@ export default function SprintStepCard({
                       onCheckedChange={() => toggleAuswahl(opt)}
                       className="mt-1"
                     />
+                    {rankInfo ? (
+                      <Badge
+                        variant={rankInfo.rang <= 3 ? "default" : "secondary"}
+                        className="mt-0.5 shrink-0"
+                        title={rankInfo.begruendung || undefined}
+                      >
+                        #{rankInfo.rang}
+                      </Badge>
+                    ) : null}
                     <label
                       htmlFor={`${step.key}-${opt}`}
                       className={`text-sm leading-relaxed cursor-pointer flex-1 ${
@@ -417,6 +551,11 @@ export default function SprintStepCard({
                       }`}
                     >
                       {opt}
+                      {rankInfo?.begruendung ? (
+                        <span className="block text-xs text-muted-foreground mt-1">
+                          {rankInfo.begruendung}
+                        </span>
+                      ) : null}
                     </label>
                     {!checked ? (
                       <Button

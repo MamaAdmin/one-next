@@ -39,6 +39,12 @@ export interface SprintStepData {
   notes?: string;
   /** Map-Variante (1.8): Zuordnung Item-Text → Lane-ID. */
   mapZuordnung?: Record<string, string>;
+  /** KI-Ranking + Marktrecherche (Solo-Modus). */
+  aiRank?: {
+    marktrecherche: string;
+    quellen: { title: string; uri: string }[];
+    ranking: { option: string; rang: number; begruendung: string }[];
+  };
   // free-form for variant-specific payloads in later etappen
   [k: string]: unknown;
 }
