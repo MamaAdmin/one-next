@@ -418,6 +418,21 @@ export default function SprintStepCard({
                     >
                       {opt}
                     </label>
+                    {!checked ? (
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6 shrink-0"
+                        onClick={() => {
+                          setVorschlaege((prev) => prev.filter((x) => x !== opt));
+                          setEigene((prev) => prev.filter((x) => x !== opt));
+                        }}
+                        aria-label="Vorschlag entfernen"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    ) : null}
                   </li>
                 );
               })}
