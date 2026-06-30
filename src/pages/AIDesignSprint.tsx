@@ -385,7 +385,7 @@ const AIDesignSprint = () => {
               <CardContent className="p-6 space-y-3">
                 <div className="text-3xl mb-2">1</div>
                 <h3 className="text-lg font-bold">Machbarkeitsanalyse</h3>
-                <p className="text-muted-foreground text-sm">Bewertung der KI-Potenziale</p>
+                <p className="text-muted-foreground text-sm">Bewertung der Potenziale</p>
               </CardContent>
             </Card>
 
