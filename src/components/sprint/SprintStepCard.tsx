@@ -429,7 +429,7 @@ export default function SprintStepCard({
                   ) : (
                     <Trophy className="w-4 h-4 mr-2" />
                   )}
-                  Marktrecherche & Top {Math.min(limit ?? 3, 3)}
+                  Marktrecherche & Top {step.stimmenLimit ?? 3}
                 </Button>
               ) : null}
             </div>
