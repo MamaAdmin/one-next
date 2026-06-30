@@ -1,43 +1,44 @@
 ## Ziel
 
-Die ursprünglichen Stimmen-Limits aus der Sprint-Definition (`stimmenLimit`) sollen auch im **Solo-Modus** gelten — z. B. bei Schritt 2.5 (Skizzen-Crit) nur 2 Stimmen, bei 2.7 nur 1 Stimme usw. Zusätzlich wird die **maximale Stimmenanzahl** sichtbar in den Anweisungsblock aufgenommen.
+Die KI-Marktrecherche & Ranking-Voreinstellung soll sich strikt am `stimmenLimit` des jeweiligen Schritts orientieren – also genauso viele Top-Optionen vorauswählen, wie Stimmen pro Person erlaubt sind. Der Team-Modus (Multiplikation Stimmen × Teilnehmer) folgt in einer späteren Etappe und ist hier nicht Teil des Scopes.
 
 ## Änderungen in `src/components/sprint/SprintStepCard.tsx`
 
-1. **Limit auch im Solo-Modus aktivieren**
-   - Heute:
-     ```ts
-     const limit = isSolo ? undefined : step.stimmenLimit;
-     ```
-   - Neu:
-     ```ts
-     const limit = step.stimmenLimit;
-     ```
-   Damit greift `limitReached` und das Deaktivieren weiterer Checkboxen sowohl im Solo- als auch im Team-Modus.
-
-2. **Top-3-Voreinstellung respektiert das Limit**
-   In `handleRank` werden aktuell hart die Top 3 gesetzt:
-   ```ts
-   .slice(0, 3)
-   ```
-   Wird ersetzt durch:
+1. **Top-N am `stimmenLimit` ausrichten (statt am bisherigen Min(limit, 3))**
+   In `handleRank` aktuell:
    ```ts
    .slice(0, Math.min(limit ?? 3, 3))
    ```
-   So werden bei `stimmenLimit = 1` nur Top 1, bei `stimmenLimit = 2` nur Top 2 vorausgewählt. Toast-Text wird entsprechend dynamisch („Top N vorausgewählt").
-
-3. **Stimmen-Anzahl in der Anweisungs-Box anzeigen**
-   Im Block „Allein arbeiten / Zusammen arbeiten" wird unter `arbeit` eine zusätzliche Zeile gerendert, wenn `step.stimmenLimit` gesetzt ist:
+   Neu:
+   ```ts
+   const topN = step.stimmenLimit ?? 3;
+   …
+   .slice(0, topN)
    ```
-   Max. Stimmen: {step.stimmenLimit} {step.stimmenLimit === 1 ? "Stimme" : "Stimmen"}
-   ```
-   Bisher wurde diese Info nur über `step.abstimmung` ausgegeben — und das nur im Team-Modus. Neue Anzeige läuft modus-unabhängig.
+   - Bei `stimmenLimit = 1` → Top 1
+   - Bei `stimmenLimit = 2` → Top 2
+   - Bei `stimmenLimit = 5` (z. B. 1.4 HMW, 5.3 Hot Takes) → Top 5
+   - Fallback `3`, falls ein Schritt kein Limit definiert hat.
 
-4. **Zähler-Anzeige im Header**
-   Der bestehende Zähler `{auswahl.length} / {limit} Stimmen` greift dann automatisch auch im Solo-Modus, da `limit` jetzt gesetzt ist. Der Solo-Fallback `{auswahl.length} ausgewählt` bleibt nur, wenn der Schritt **kein** `stimmenLimit` definiert hat (z. B. Notizen/Map).
+2. **Toast-Text dynamisch**
+   `"Top N wurde vorausgewählt"` nutzt denselben `topN`-Wert.
+
+3. **Button-Label anpassen**
+   Statt `Top {Math.min(limit ?? 3, 3)}`:
+   ```tsx
+   Top {step.stimmenLimit ?? 3}
+   ```
+   So sieht der User vor dem Klick, wie viele Optionen markiert werden.
+
+4. **Hinweis für späteren Team-Modus**
+   Kein Code – nur als Kommentar im Code festhalten:
+   ```ts
+   // TODO Team-Modus: effektives Limit = stimmenLimit * Teilnehmer
+   ```
+   damit die spätere Etappe die Stelle leicht findet.
 
 ## Keine sonstigen Änderungen
 
-- `src/features/sprint/steps.ts` bleibt unangetastet — die `stimmenLimit`-Werte sind bereits korrekt definiert.
-- Keine DB-Migration nötig.
-- Edge Functions unverändert.
+- `stimmenLimit` in `src/features/sprint/steps.ts` bleibt unverändert (Single Source of Truth).
+- Die Checkbox-Sperre (`limitReached`) und der Zähler `{auswahl.length} / {limit} Stimmen` bleiben unverändert – sie nutzen bereits `step.stimmenLimit`.
+- Edge Function `sprint-ai-rank` unverändert (liefert weiterhin ein vollständiges Ranking; das Frontend entscheidet, wie viele Top-Einträge vorausgewählt werden).
