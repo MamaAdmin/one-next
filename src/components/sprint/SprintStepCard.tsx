@@ -474,6 +474,16 @@ export default function SprintStepCard({
             </div>
           ) : null}
 
+          {typeof step.stimmenLimit === "number" ? (
+            <div className="rounded-md border border-accent/40 bg-accent-soft/60 px-3 py-2 text-xs text-foreground/80">
+              Du kannst <span className="font-semibold">{step.stimmenLimit}</span>{" "}
+              {step.stimmenLimit === 1 ? "Option" : "Optionen"} auswählen
+              {" "}({auswahl.length}/{step.stimmenLimit} markiert).
+            </div>
+          ) : null}
+
+
+
           {allOptions.length === 0 ? (
             <p className="text-sm text-muted-foreground italic">
               Noch keine Einträge. Erfasse oben deine Antworten — anschließend kannst du sie per Marktrecherche ranken lassen.
