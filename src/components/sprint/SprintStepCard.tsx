@@ -59,7 +59,6 @@ export default function SprintStepCard({
   const [mapZuordnung, setMapZuordnung] = useState<Record<string, string>>(
     initial.mapZuordnung ?? {},
   );
-  const [aiLoading, setAiLoading] = useState(false);
   const [rankLoading, setRankLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
@@ -184,49 +183,8 @@ export default function SprintStepCard({
     setEigenInput("");
   }
 
-  async function handleGenerate() {
-    setAiLoading(true);
-    try {
-      const ctx = contextEntries.reduce<Record<string, unknown>>((acc, e) => {
-        acc[e.key] = e.value;
-        return acc;
-      }, {});
-      const cleaned = antworten.map((a) => a.trim()).filter(Boolean);
-      if (cleaned.length > 0) {
-        ctx["eigene_antworten_in_diesem_schritt"] = cleaned;
-      }
+  // KI-Vorschläge entfernt — nur noch Marktrecherche/Ranking.
 
-      const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
-        body: {
-          sprint_id: sprint.id,
-          step_key: step.key,
-          context: ctx,
-          step_frage: step.frage,
-          step_arbeit: step.arbeit,
-        },
-      });
-
-      if (error) throw error;
-      const arr = Array.isArray((data as any)?.vorschlaege)
-        ? ((data as any).vorschlaege as string[])
-        : [];
-      if (arr.length === 0) {
-        toast({
-          title: "Keine Vorschläge",
-          description: "Die KI hat keine Vorschläge geliefert. Versuche es erneut.",
-        });
-      }
-      // merge: keep existing + add new (unique)
-      const set = new Set(vorschlaege);
-      arr.forEach((v) => set.add(v));
-      setVorschlaege(Array.from(set));
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
-      toast({ title: "Vorschläge fehlgeschlagen", description: msg, variant: "destructive" });
-    } finally {
-      setAiLoading(false);
-    }
-  }
 
   async function persist(completed: boolean) {
     setSaving(true);
@@ -242,7 +200,7 @@ export default function SprintStepCard({
   }
 
   async function handleRank() {
-    const opts = [...vorschlaege, ...eigene];
+    const opts = Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean)));
     if (opts.length < 2) {
       toast({
         title: "Zu wenige Optionen",
@@ -311,7 +269,10 @@ export default function SprintStepCard({
     setAntworten((prev) => prev.map((a, i) => (i === idx ? value : a)));
   }
 
-  const allOptions = [...vorschlaege, ...eigene];
+  const allOptions = useMemo(
+    () => Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean))),
+    [antworten, vorschlaege, eigene],
+  );
   const rankByOption = useMemo(() => {
     const m = new Map<string, { rang: number; begruendung: string }>();
     aiRank?.ranking?.forEach((r) => {
@@ -442,25 +403,12 @@ export default function SprintStepCard({
             Gedächtnis aufschreiben, was hängen geblieben ist. */}
 
 
-        {/* 3. KI-Vorschläge */}
+        {/* 3. KI-Marktrecherche & Ranking */}
         {step.variant !== "notes" ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
+            <h3 className="font-semibold text-lg">KI-Marktrecherche & Ranking</h3>
             <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleGenerate}
-                disabled={aiLoading}
-              >
-                {aiLoading ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Sparkles className="w-4 h-4 mr-2" />
-                )}
-                {vorschlaege.length === 0 ? "Vorschläge generieren" : "Mehr Vorschläge"}
-              </Button>
               {isSolo && allOptions.length >= 2 ? (
                 <Button
                   size="sm"
@@ -473,7 +421,7 @@ export default function SprintStepCard({
                   ) : (
                     <Trophy className="w-4 h-4 mr-2" />
                   )}
-                  KI-Ranking & Marktrecherche
+                  Marktrecherche & Top 3
                 </Button>
               ) : null}
             </div>
@@ -515,7 +463,7 @@ export default function SprintStepCard({
 
           {allOptions.length === 0 ? (
             <p className="text-sm text-muted-foreground italic">
-              Noch keine Einträge. Klicke „Vorschläge generieren" oder ergänze eigene Antworten unten.
+              Noch keine Einträge. Erfasse oben deine Antworten — anschließend kannst du sie per Marktrecherche ranken lassen.
             </p>
           ) : (
             <ul className="space-y-2">
