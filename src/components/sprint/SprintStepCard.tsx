@@ -365,9 +365,13 @@ export default function SprintStepCard({
           </div>
         </div>
 
+        {/* Tag-1 One-Pager Recap (nur für Notes-Variante 2.2) */}
+        {step.variant === "notes" ? (
+          <OnePagerRecap entries={contextEntries} allSteps={allSteps} />
+        ) : null}
 
         {/* 3. KI-Vorschläge */}
-
+        {step.variant !== "notes" ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
@@ -421,8 +425,10 @@ export default function SprintStepCard({
             </ul>
           )}
         </div>
+        ) : null}
 
         {/* 4. Eigene Antwort */}
+        {step.variant !== "notes" ? (
         <div className="space-y-3">
           <h3 className="font-semibold text-lg">Eigene Antwort hinzufügen</h3>
           <div className="flex gap-2">
@@ -443,6 +449,7 @@ export default function SprintStepCard({
             </Button>
           </div>
         </div>
+        ) : null}
 
         {/* 4b. Map-Board (nur für Variante "map") */}
         {step.variant === "map" ? (
@@ -608,7 +615,110 @@ function toAntwortenArray(d: SprintStepData): string[] {
   return [];
 }
 
+/* ------------------------- One-Pager Recap (Tag 1) ------------------------ */
+
+interface OnePagerRecapProps {
+  entries: ContextEntry[];
+  allSteps: SprintStepRow[];
+}
+
+const RECAP_LABELS: Record<string, string> = {
+  "1.1": "Ziel",
+  "1.2": "Metriken",
+  "1.3": "Risiken",
+  "1.4": "HMW-Fragen",
+  "1.5": "Kunden",
+  "1.6": "Discovery",
+  "1.7": "Core",
+  "1.8": "Map · Zielrisiko & Kernteile",
+  "2.1": "Lightning Demos",
+};
+
+function OnePagerRecap({ entries, allSteps }: OnePagerRecapProps) {
+  const byKey = new Map(allSteps.map((s) => [s.step_key, s.data as SprintStepData] as const));
+
+  const items = entries
+    .filter((e) => !e.key.startsWith("sprint."))
+    .map((e) => {
+      const d = byKey.get(e.key);
+      const chosen = d?.auswahl && d.auswahl.length > 0 ? d.auswahl : [];
+      const ans = d ? toAntwortenArray(d) : [];
+      const list = chosen.length > 0 ? chosen : ans;
+      const mapZ =
+        e.key === "1.8" && d?.mapZuordnung && typeof d.mapZuordnung === "object"
+          ? (d.mapZuordnung as Record<string, string>)
+          : null;
+      return {
+        key: e.key,
+        label: RECAP_LABELS[e.key] ?? `Schritt ${e.key}`,
+        list,
+        mapZ,
+      };
+    });
+
+  const hasAny = items.some((i) => i.list.length > 0 || (i.mapZ && Object.keys(i.mapZ).length > 0));
+
+  return (
+    <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-muted/20 p-5">
+      <div className="space-y-1">
+        <h3 className="font-semibold text-lg">Tag 1 · One Pager</h3>
+        <p className="text-sm text-muted-foreground">
+          Frische dein Gedächtnis auf: Ziel, Metrik, Zielrisiko, Lieblings-HMWs, Lightning Demos und Kernteile der Map.
+        </p>
+      </div>
+
+      {!hasAny ? (
+        <p className="text-sm italic text-muted-foreground">
+          Noch keine Ergebnisse aus Tag 1 vorhanden.
+        </p>
+      ) : (
+        <div className="grid gap-3 md:grid-cols-2">
+          {items.map((it) => (
+            <div key={it.key} className="rounded-lg border bg-background p-3">
+              <h4 className="font-semibold text-xs uppercase tracking-wide text-primary mb-2">
+                {it.label}
+              </h4>
+              {it.list.length === 0 && !it.mapZ ? (
+                <p className="text-xs italic text-muted-foreground/60">—</p>
+              ) : (
+                <>
+                  {it.list.length > 0 ? (
+                    <ul className="space-y-1 text-sm list-disc pl-4">
+                      {it.list.map((x, i) => (
+                        <li key={i}>{x}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {it.mapZ ? (
+                    <ul className="mt-2 space-y-1 text-xs">
+                      {MAP_LANES.map((lane) => {
+                        const laneItems = Object.entries(it.mapZ!)
+                          .filter(([, l]) => l === lane.id)
+                          .map(([item]) => item);
+                        if (laneItems.length === 0) return null;
+                        return (
+                          <li key={lane.id}>
+                            <span className="font-semibold">{lane.label}:</span>{" "}
+                            <span className="text-muted-foreground">
+                              {laneItems.join(" · ")}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* --------------------------------- MapBoard -------------------------------- */
+
 
 interface MapBoardProps {
   items: string[];
