@@ -73,6 +73,7 @@ export default function SprintStepCard({
     setAuswahl(d.auswahl ?? []);
     setNotes(d.notes ?? "");
     setMapZuordnung(d.mapZuordnung ?? {});
+    setAiRank(d.aiRank);
   }, [stepRow?.id]);
 
 
