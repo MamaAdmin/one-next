@@ -303,7 +303,7 @@ export default function SprintStepCard({
         </div>
 
         {/* 2b. Deine Antworten auf die Frage */}
-        <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
+        <div className="space-y-4 rounded-lg border-2 border-accent/40 bg-accent-soft p-5">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg">Deine Antworten</h3>
             <p className="text-sm text-muted-foreground">{step.frage}</p>
