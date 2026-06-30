@@ -114,9 +114,10 @@ const UserProfile = () => {
           />
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="profile">Profil</TabsTrigger>
               <TabsTrigger value="courses">Meine Kurse</TabsTrigger>
+              <TabsTrigger value="sprints">Meine Sprints</TabsTrigger>
               <TabsTrigger value="purchases">Käufe</TabsTrigger>
             </TabsList>
             
