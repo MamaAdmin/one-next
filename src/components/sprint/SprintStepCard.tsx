@@ -580,29 +580,6 @@ export default function SprintStepCard({
         </div>
         ) : null}
 
-        {/* 4. Eigene Antwort */}
-        {step.variant !== "notes" ? (
-        <div className="space-y-3">
-          <h3 className="font-semibold text-lg">Eigene Antwort hinzufügen</h3>
-          <div className="flex gap-2">
-            <Input
-              value={eigenInput}
-              onChange={(e) => setEigenInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addEigen();
-                }
-              }}
-              placeholder="Eigene Antwort eingeben …"
-            />
-            <Button type="button" onClick={addEigen} variant="secondary">
-              <Plus className="w-4 h-4 mr-1" />
-              Hinzufügen
-            </Button>
-          </div>
-        </div>
-        ) : null}
 
         {/* 4b. Map-Board (nur für Variante "map") */}
         {step.variant === "map" ? (
