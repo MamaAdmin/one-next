@@ -183,49 +183,8 @@ export default function SprintStepCard({
     setEigenInput("");
   }
 
-  async function handleGenerate() {
-    setAiLoading(true);
-    try {
-      const ctx = contextEntries.reduce<Record<string, unknown>>((acc, e) => {
-        acc[e.key] = e.value;
-        return acc;
-      }, {});
-      const cleaned = antworten.map((a) => a.trim()).filter(Boolean);
-      if (cleaned.length > 0) {
-        ctx["eigene_antworten_in_diesem_schritt"] = cleaned;
-      }
+  // KI-Vorschläge entfernt — nur noch Marktrecherche/Ranking.
 
-      const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
-        body: {
-          sprint_id: sprint.id,
-          step_key: step.key,
-          context: ctx,
-          step_frage: step.frage,
-          step_arbeit: step.arbeit,
-        },
-      });
-
-      if (error) throw error;
-      const arr = Array.isArray((data as any)?.vorschlaege)
-        ? ((data as any).vorschlaege as string[])
-        : [];
-      if (arr.length === 0) {
-        toast({
-          title: "Keine Vorschläge",
-          description: "Die KI hat keine Vorschläge geliefert. Versuche es erneut.",
-        });
-      }
-      // merge: keep existing + add new (unique)
-      const set = new Set(vorschlaege);
-      arr.forEach((v) => set.add(v));
-      setVorschlaege(Array.from(set));
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
-      toast({ title: "Vorschläge fehlgeschlagen", description: msg, variant: "destructive" });
-    } finally {
-      setAiLoading(false);
-    }
-  }
 
   async function persist(completed: boolean) {
     setSaving(true);
