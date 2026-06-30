@@ -234,15 +234,16 @@ export default function SprintStepCard({
         return;
       }
       setAiRank(result);
-      const top3 = result.ranking
+      const topN = Math.min(limit ?? 3, 3);
+      const top = result.ranking
         .slice()
         .sort((a, b) => a.rang - b.rang)
-        .slice(0, 3)
+        .slice(0, topN)
         .map((r) => r.option);
-      setAuswahl(top3);
+      setAuswahl(top);
       toast({
         title: "Ranking & Recherche fertig",
-        description: "Top 3 wurden vorausgewählt — du kannst manuell anpassen.",
+        description: `Top ${topN} ${topN === 1 ? "wurde" : "wurden"} vorausgewählt — du kannst manuell anpassen.`,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
