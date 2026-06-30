@@ -60,6 +60,8 @@ export default function SprintStepCard({
     initial.mapZuordnung ?? {},
   );
   const [aiLoading, setAiLoading] = useState(false);
+  const [rankLoading, setRankLoading] = useState(false);
+  const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
