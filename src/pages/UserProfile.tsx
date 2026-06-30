@@ -200,6 +200,68 @@ const UserProfile = () => {
               </Card>
             </TabsContent>
 
+            <TabsContent value="sprints">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Meine Sprints</CardTitle>
+                  <CardDescription>
+                    Deine laufenden und abgeschlossenen Design Sprints
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {sprintsLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                    </div>
+                  ) : !sprints || sprints.length === 0 ? (
+                    <div className="text-center py-8 space-y-4">
+                      <Sparkles className="w-10 h-10 mx-auto text-primary" />
+                      <p className="text-muted-foreground">
+                        Du hast noch keinen Sprint angelegt.
+                      </p>
+                      <Button asChild className="bg-gradient-primary hover:opacity-90">
+                        <Link to="/sprint/neu">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Neuen Sprint starten
+                        </Link>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {sprints.map((s) => {
+                        const step = getStepDef(s.current_step);
+                        return (
+                          <Link key={s.id} to={`/sprint/${s.id}`} className="block">
+                            <Card className="h-full hover:shadow-hover transition-shadow">
+                              <CardContent className="p-5 space-y-2">
+                                <div className="flex items-start justify-between gap-2">
+                                  <h3 className="font-semibold leading-tight">{s.titel}</h3>
+                                  <Badge variant={s.status === "active" ? "default" : "secondary"}>
+                                    {s.status === "active"
+                                      ? "Aktiv"
+                                      : s.status === "done"
+                                      ? "Fertig"
+                                      : "Archiv"}
+                                  </Badge>
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {step ? (
+                                    <>Schritt: <span className="text-foreground font-medium">{step.title}</span></>
+                                  ) : (
+                                    <>Schritt {s.current_step}</>
+                                  )}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="purchases">
               <PurchaseHistory />
             </TabsContent>
