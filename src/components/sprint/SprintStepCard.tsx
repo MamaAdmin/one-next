@@ -269,7 +269,10 @@ export default function SprintStepCard({
     setAntworten((prev) => prev.map((a, i) => (i === idx ? value : a)));
   }
 
-  const allOptions = [...vorschlaege, ...eigene];
+  const allOptions = useMemo(
+    () => Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean))),
+    [antworten, vorschlaege, eigene],
+  );
   const rankByOption = useMemo(() => {
     const m = new Map<string, { rang: number; begruendung: string }>();
     aiRank?.ranking?.forEach((r) => {
