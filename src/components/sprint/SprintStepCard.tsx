@@ -463,7 +463,7 @@ export default function SprintStepCard({
 
           {allOptions.length === 0 ? (
             <p className="text-sm text-muted-foreground italic">
-              Noch keine Einträge. Klicke „Vorschläge generieren" oder ergänze eigene Antworten unten.
+              Noch keine Einträge. Erfasse oben deine Antworten — anschließend kannst du sie per Marktrecherche ranken lassen.
             </p>
           ) : (
             <ul className="space-y-2">
