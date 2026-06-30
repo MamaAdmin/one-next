@@ -328,6 +328,12 @@ export default function SprintStepCard({
               <span className="font-semibold">Wie wird abgestimmt:</span> {step.abstimmung}
             </p>
           ) : null}
+          {typeof step.stimmenLimit === "number" ? (
+            <p>
+              <span className="font-semibold">Max. Stimmen:</span>{" "}
+              {step.stimmenLimit} {step.stimmenLimit === 1 ? "Stimme" : "Stimmen"}
+            </p>
+          ) : null}
 
           {step.entscheidung ? (
             <p>
