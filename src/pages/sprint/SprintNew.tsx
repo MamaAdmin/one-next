@@ -130,15 +130,24 @@ export default function SprintNew() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="decider">Decider</Label>
-                  <Input
-                    id="decider"
-                    value={decider}
-                    onChange={(e) => setDecider(e.target.value)}
-                    placeholder="Wer entscheidet?"
-                  />
-                </div>
+                {modus === "solo" ? (
+                  <div className="space-y-2 md:col-span-2 rounded-lg border bg-muted/40 p-4 text-sm">
+                    <p>
+                      <span className="font-semibold">Decider:</span> Du – im Solo-Modus
+                      entscheidest du selbst, deine Auswahl gilt.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor="decider">Decider</Label>
+                    <Input
+                      id="decider"
+                      value={decider}
+                      onChange={(e) => setDecider(e.target.value)}
+                      placeholder="Wer entscheidet?"
+                    />
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="leader">Sprint Leader</Label>
                   <Input
@@ -149,6 +158,7 @@ export default function SprintNew() {
                   />
                 </div>
               </div>
+
 
               <div className="flex justify-end gap-3 pt-2">
                 <Button type="button" variant="ghost" asChild>
