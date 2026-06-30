@@ -113,11 +113,31 @@ export default function SprintWorkspace() {
               ← Übersicht
             </Link>
             <div>
-              <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 shrink-0"
+                  onClick={() => setEditOpen(true)}
+                  title="Sprint-Grundlagen bearbeiten"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
+              </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Modus: {sprint.modus === "solo" ? "Solo" : "Team"}
               </p>
+              <button
+                type="button"
+                onClick={() => setEditOpen(true)}
+                className="mt-2 text-xs text-primary hover:underline"
+              >
+                Titel & Problemstellung bearbeiten
+              </button>
             </div>
+
 
             <nav className="space-y-4">
               {DAYS.map((d) => {
