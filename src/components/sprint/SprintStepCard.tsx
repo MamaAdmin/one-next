@@ -317,7 +317,7 @@ export default function SprintStepCard({
               {antworten.map((a, idx) => (
                 <li
                   key={idx}
-                  className="relative rounded-md border border-primary/30 bg-background p-3 shadow-sm"
+                  className="relative rounded-md border border-accent/50 bg-accent/30 p-3 shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="secondary" className="text-xs">
