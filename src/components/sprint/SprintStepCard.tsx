@@ -232,7 +232,7 @@ export default function SprintStepCard({
     setSaving(true);
     try {
       await onSave(
-        { antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung },
+        { antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank },
         { completed },
       );
       if (completed && onNext) onNext();
@@ -240,6 +240,61 @@ export default function SprintStepCard({
       setSaving(false);
     }
   }
+
+  async function handleRank() {
+    const opts = [...vorschlaege, ...eigene];
+    if (opts.length < 2) {
+      toast({
+        title: "Zu wenige Optionen",
+        description: "Mindestens 2 Vorschläge nötig für ein Ranking.",
+      });
+      return;
+    }
+    setRankLoading(true);
+    try {
+      const ctx = contextEntries.reduce<Record<string, unknown>>((acc, e) => {
+        acc[e.key] = e.value;
+        return acc;
+      }, {});
+      const { data, error } = await supabase.functions.invoke("sprint-ai-rank", {
+        body: {
+          sprint_id: sprint.id,
+          step_key: step.key,
+          step_frage: step.frage,
+          step_arbeit: step.arbeit,
+          options: opts,
+          context: ctx,
+        },
+      });
+      if (error) throw error;
+      const result = data as SprintStepData["aiRank"];
+      if (!result || !Array.isArray(result.ranking) || result.ranking.length === 0) {
+        toast({
+          title: "Ranking fehlgeschlagen",
+          description: "Keine verwertbare Antwort erhalten.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setAiRank(result);
+      const top3 = result.ranking
+        .slice()
+        .sort((a, b) => a.rang - b.rang)
+        .slice(0, 3)
+        .map((r) => r.option);
+      setAuswahl(top3);
+      toast({
+        title: "Ranking & Recherche fertig",
+        description: "Top 3 wurden vorausgewählt — du kannst manuell anpassen.",
+      });
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "Ranking fehlgeschlagen", description: msg, variant: "destructive" });
+    } finally {
+      setRankLoading(false);
+    }
+  }
+
 
   function addAntwort() {
     const v = antwortInput.trim();
