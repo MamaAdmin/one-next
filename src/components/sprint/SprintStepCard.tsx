@@ -621,18 +621,33 @@ export default function SprintStepCard({
           <Button variant="ghost" onClick={onPrev} disabled={!onPrev || saving}>
             Zurück
           </Button>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => persist(false)} disabled={saving}>
-              {saving ? "Speichert …" : "Zwischenspeichern"}
-            </Button>
-            <Button
-              className="bg-gradient-primary hover:opacity-90"
-              onClick={() => persist(true)}
-              disabled={saving}
-            >
-              {saving ? "Speichert …" : onNext ? "Weiter" : "Sprint abschließen"}
-            </Button>
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => persist(false)} disabled={saving}>
+                {saving ? "Speichert …" : "Zwischenspeichern"}
+              </Button>
+              <Button
+                className="bg-gradient-primary hover:opacity-90"
+                onClick={() => persist(true)}
+                disabled={
+                  saving ||
+                  (typeof step.stimmenLimit === "number" &&
+                    auswahl.length !== step.stimmenLimit)
+                }
+              >
+                {saving ? "Speichert …" : onNext ? "Weiter" : "Sprint abschließen"}
+              </Button>
+            </div>
+            {typeof step.stimmenLimit === "number" &&
+            auswahl.length !== step.stimmenLimit ? (
+              <p className="text-xs text-muted-foreground">
+                Bitte genau {step.stimmenLimit}{" "}
+                {step.stimmenLimit === 1 ? "Option" : "Optionen"} auswählen, um
+                weiterzugehen ({auswahl.length}/{step.stimmenLimit}).
+              </p>
+            ) : null}
           </div>
+
         </div>
       </CardContent>
     </Card>
