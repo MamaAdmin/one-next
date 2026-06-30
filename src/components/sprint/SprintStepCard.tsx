@@ -234,7 +234,8 @@ export default function SprintStepCard({
         return;
       }
       setAiRank(result);
-      const topN = Math.min(limit ?? 3, 3);
+      // TODO Team-Modus: effektives Limit = stimmenLimit * Teilnehmer
+      const topN = step.stimmenLimit ?? 3;
       const top = result.ranking
         .slice()
         .sort((a, b) => a.rang - b.rang)
@@ -245,6 +246,7 @@ export default function SprintStepCard({
         title: "Ranking & Recherche fertig",
         description: `Top ${topN} ${topN === 1 ? "wurde" : "wurden"} vorausgewählt — du kannst manuell anpassen.`,
       });
+
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
       toast({ title: "Ranking fehlgeschlagen", description: msg, variant: "destructive" });
