@@ -214,16 +214,16 @@ const AIDesignSprint = () => {
               </h2>
               <div className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto space-y-6">
                 <p>
-                  <InlineTextArea value={content.what_is_description || 'Ein KI Design Sprint Workshop ist ein intensiver, praxisorientierter Prozess über 2–3 Tage, in dem Ihr Team, das Potenzial gezielt für Ihr Unternehmen erschließt.\n\n'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
+                  <InlineTextArea value={content.what_is_description || 'Ein KI Design Sprint Workshop ist ein intensiver, praxisorientierter Prozess in dem Ihr Team das Potenzial gezielt für Ihr Unternehmen erschließt.\n\n'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
                 </p>
                 <ul className="text-left space-y-4 max-w-2xl mx-auto">
                   <li className="flex items-start gap-3">
                     <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <span>Begleitet von erfahrenen Moderatoren durchläuft Ihr Team klar strukturierte Phasen – von der Problemdefinition über die Ideenfindung bis zur Validierung erster Lösungen. Moderne KI-Tools beschleunigen dabei Analyse, Ideenfindung und Prototyping.\n\n</span>
+                    <span>Begleitet von erfahrenen Moderatoren mit KI-Expertise durchläuft Ihr Team klar strukturierte Phasen – von der Problemdefinition über die Ideenfindung bis zur Validierung erster Lösungen. Moderne KI-Tools beschleunigen dabei Analyse, Ideenfindung und Prototyping.</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <span>Das Ziel: in wenigen Tagen konkrete, umsetzbare KI-Anwendungsfälle identifizieren und als Prototyp oder Proof of Concept greifbar machen.\n\n</span>
+                    <span>Das Ziel: in wenigen Tagen konkrete, umsetzbare KI-Anwendungsfälle identifizieren und als Prototyp oder Proof of Concept greifbar machen.</span>
                   </li>
                 </ul>
               </div>
