@@ -12,12 +12,15 @@ import { CourseList } from "@/components/profile/CourseList";
 import { ProfileStats } from "@/components/profile/ProfileStats";
 import { PurchaseHistory } from "@/components/profile/PurchaseHistory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { useCourseRatings } from "@/hooks/useCourseRatings";
+import { useMySprints } from "@/hooks/useSprint";
+import { getStepDef } from "@/features/sprint/steps";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { Loader2, Plus, Sparkles } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 
 const UserProfile = () => {
   const navigate = useNavigate();
