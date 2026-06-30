@@ -1,68 +1,43 @@
 ## Ziel
 
-Im **Solo-Modus** bekommt jede Vorschlagsliste (Standard-Variante „checkbox-list") einen zusätzlichen KI-Button **„Ranking & Marktrecherche"**. Gemini liefert:
-1. Eine kurze **Marktrecherche** zum Thema (2–4 Sätze) über **Google-Suche-Grounding** mit Quellenlinks.
-2. Ein **Ranking** der bestehenden Vorschläge (1 = beste) inkl. Kurzbegründung.
-3. Die **Top 3** werden automatisch vorausgewählt.
+Die ursprünglichen Stimmen-Limits aus der Sprint-Definition (`stimmenLimit`) sollen auch im **Solo-Modus** gelten — z. B. bei Schritt 2.5 (Skizzen-Crit) nur 2 Stimmen, bei 2.7 nur 1 Stimme usw. Zusätzlich wird die **maximale Stimmenanzahl** sichtbar in den Anweisungsblock aufgenommen.
 
-## Backend: neue Edge Function `sprint-ai-rank`
+## Änderungen in `src/components/sprint/SprintStepCard.tsx`
 
-`supabase/functions/sprint-ai-rank/index.ts`
+1. **Limit auch im Solo-Modus aktivieren**
+   - Heute:
+     ```ts
+     const limit = isSolo ? undefined : step.stimmenLimit;
+     ```
+   - Neu:
+     ```ts
+     const limit = step.stimmenLimit;
+     ```
+   Damit greift `limitReached` und das Deaktivieren weiterer Checkboxen sowohl im Solo- als auch im Team-Modus.
 
-- Auth wie bestehend (`sprint-ai-suggest`): Bearer-Token, RLS-Check über Sprint-Read.
-- Body (Zod):
-  - `sprint_id` (uuid), `step_key`, `step_frage`, `step_arbeit`
-  - `options: string[]` (Vorschläge + Eigene, mind. 2)
-  - `context` (frühere Schritte als Hintergrund)
-- Gemini-Call: Modell `gemini-2.5-flash` direkt über `GEMINI_API_KEY` (wie bestehend).
-- Aktiviert **Google-Suche-Grounding** über `tools: [{ google_search: {} }]`.
-- System-Prompt: Ranking + Marktrecherche-Auftrag, JSON-Output erzwingen.
-- Response-Schema:
-  ```json
-  {
-    "marktrecherche": "2-4 Sätze deutscher Fließtext",
-    "quellen": [{"title": "...", "uri": "https://..."}],
-    "ranking": [{"option": "exakter Vorschlag", "rang": 1, "begruendung": "1 Satz"}]
-  }
-  ```
-- `quellen` werden aus `groundingMetadata.groundingChunks[].web` extrahiert (kommt automatisch von der Search-Tool-Antwort).
-- Fehlerbehandlung & CORS analog zur Suggest-Function.
+2. **Top-3-Voreinstellung respektiert das Limit**
+   In `handleRank` werden aktuell hart die Top 3 gesetzt:
+   ```ts
+   .slice(0, 3)
+   ```
+   Wird ersetzt durch:
+   ```ts
+   .slice(0, Math.min(limit ?? 3, 3))
+   ```
+   So werden bei `stimmenLimit = 1` nur Top 1, bei `stimmenLimit = 2` nur Top 2 vorausgewählt. Toast-Text wird entsprechend dynamisch („Top N vorausgewählt").
 
-## Frontend: `src/components/sprint/SprintStepCard.tsx`
+3. **Stimmen-Anzahl in der Anweisungs-Box anzeigen**
+   Im Block „Allein arbeiten / Zusammen arbeiten" wird unter `arbeit` eine zusätzliche Zeile gerendert, wenn `step.stimmenLimit` gesetzt ist:
+   ```
+   Max. Stimmen: {step.stimmenLimit} {step.stimmenLimit === 1 ? "Stimme" : "Stimmen"}
+   ```
+   Bisher wurde diese Info nur über `step.abstimmung` ausgegeben — und das nur im Team-Modus. Neue Anzeige läuft modus-unabhängig.
 
-Direkt unter der KI-Vorschläge-Liste (nur wenn `isSolo && step.variant !== "notes"` und mindestens 2 Optionen vorhanden):
+4. **Zähler-Anzeige im Header**
+   Der bestehende Zähler `{auswahl.length} / {limit} Stimmen` greift dann automatisch auch im Solo-Modus, da `limit` jetzt gesetzt ist. Der Solo-Fallback `{auswahl.length} ausgewählt` bleibt nur, wenn der Schritt **kein** `stimmenLimit` definiert hat (z. B. Notizen/Map).
 
-- Neuer Button **„KI-Ranking & Marktrecherche"** neben/unter „Mehr Vorschläge".
-- Lokaler State: `rankResult` (`{ marktrecherche, quellen, rankingMap: Record<option, {rang, begruendung}> }`), `rankLoading`.
-- On click:
-  1. `supabase.functions.invoke("sprint-ai-rank", { body: { sprint_id, step_key, step_frage, step_arbeit, context, options: allOptions } })`
-  2. Bei Erfolg: Ergebnis in State legen + **Top 3 in `auswahl` setzen** (per `setAuswahl(top3)` — überschreibt bestehende Auswahl, mit Toast-Hinweis "Top 3 vorausgewählt — du kannst manuell anpassen").
-- Anzeige:
-  - **Marktrecherche-Card** (kleine Box mit `bg-muted/40`, Sparkles-Icon, Markdown-Text + Quellenliste als externe Links `target="_blank" rel="noopener"`).
-  - Pro Vorschlag in der Checkbox-Liste: Wenn Rang vorhanden, kleines Rang-Badge (z. B. „#1") + Tooltip/Caption mit Begründung.
-  - Optional: Die Liste wird nach Rang sortiert dargestellt (nur Anzeige-Reihenfolge, State bleibt).
-- Persistenz: `rankResult` wird im `data`-JSON als `aiRank` mitgespeichert, damit es nach Reload erhalten bleibt (Erweiterung von `SprintStepData`).
+## Keine sonstigen Änderungen
 
-## Typ-Erweiterung
-
-`src/features/sprint/types.ts`: Optional `aiRank` zu `SprintStepData` hinzufügen:
-```ts
-aiRank?: {
-  marktrecherche: string;
-  quellen: { title: string; uri: string }[];
-  ranking: { option: string; rang: number; begruendung: string }[];
-};
-```
-Wird in `persist()` mit übergeben (kompatibel zu allen bestehenden Speicher-Pfaden).
-
-## Sichtbarkeit
-
-- Nur **Solo-Modus**.
-- Nur Standard-Variante (`step.variant` undefined oder explizit „checkbox-list" — d. h. dort, wo `allOptions` als Checkbox-Liste angezeigt wird).
-- Nicht in `notes`, `map`, `flow-3-steps`, `crazy8s`, `sketches` etc.
-
-## Hinweise
-
-- Google-Search-Grounding ist bei `gemini-2.5-flash` über die `tools`-Property aktiv; `responseSchema` und `tools` zusammen sind unterstützt.
-- Top 3 ersetzt bestehende Auswahl bewusst (User-Wunsch). Toast informiert.
-- Keine DB-Migration nötig — Daten liegen in `sprint_steps.data` (JSONB).
+- `src/features/sprint/steps.ts` bleibt unangetastet — die `stimmenLimit`-Werte sind bereits korrekt definiert.
+- Keine DB-Migration nötig.
+- Edge Functions unverändert.
