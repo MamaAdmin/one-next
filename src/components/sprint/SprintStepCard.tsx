@@ -822,7 +822,7 @@ function MapBoard({
                   laneItems.map((it) => (
                     <li
                       key={it}
-                      className="rounded-md border border-yellow-300/60 bg-yellow-100/70 dark:bg-yellow-200/20 p-2 text-xs shadow-sm"
+                      className="rounded-md border border-accent/50 bg-accent/40 p-2 text-xs shadow-sm"
                     >
                       <div className="flex items-start gap-2">
                         <span className="flex-1 leading-snug">{it}</span>
