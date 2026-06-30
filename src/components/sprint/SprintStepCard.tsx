@@ -77,9 +77,8 @@ export default function SprintStepCard({
 
 
   const isSolo = sprint.modus === "solo";
-  // Im Solo-Modus gibt es keine Abstimmung — Auswahl ist unbegrenzt.
-  // Im Team-Modus greift weiterhin das Stimmen-Limit (perspektivisch pro User).
-  const limit = isSolo ? undefined : step.stimmenLimit;
+  // Stimmen-Limit aus der Sprint-Definition gilt in Solo- und Team-Modus gleichermaßen.
+  const limit = step.stimmenLimit;
   const limitReached = !!limit && auswahl.length >= limit;
 
 
