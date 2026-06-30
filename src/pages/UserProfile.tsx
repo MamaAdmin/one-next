@@ -27,6 +27,7 @@ const UserProfile = () => {
   const [searchParams] = useSearchParams();
   const { profile, participant, loading: profileLoading, updateProfile, uploadAvatar, updateParticipantPhone } = useUserProfile();
   const { enrollments, loading: enrollmentsLoading } = useLMSEnrollment();
+  const { data: sprints, isLoading: sprintsLoading } = useMySprints();
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [updating, setUpdating] = useState(false);
