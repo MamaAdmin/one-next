@@ -303,7 +303,7 @@ export default function SprintStepCard({
         </div>
 
         {/* 2b. Deine Antworten auf die Frage */}
-        <div className="space-y-4 rounded-lg border-2 border-primary/20 bg-primary/5 p-5">
+        <div className="space-y-4 rounded-lg border-2 border-accent/40 bg-accent-soft p-5">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg">Deine Antworten</h3>
             <p className="text-sm text-muted-foreground">{step.frage}</p>
@@ -317,7 +317,7 @@ export default function SprintStepCard({
               {antworten.map((a, idx) => (
                 <li
                   key={idx}
-                  className="relative rounded-md border border-primary/30 bg-background p-3 shadow-sm"
+                  className="relative rounded-md border border-accent/50 bg-accent/30 p-3 shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="secondary" className="text-xs">
@@ -822,7 +822,7 @@ function MapBoard({
                   laneItems.map((it) => (
                     <li
                       key={it}
-                      className="rounded-md border border-yellow-300/60 bg-yellow-100/70 dark:bg-yellow-200/20 p-2 text-xs shadow-sm"
+                      className="rounded-md border border-accent/50 bg-accent/40 p-2 text-xs shadow-sm"
                     >
                       <div className="flex items-start gap-2">
                         <span className="flex-1 leading-snug">{it}</span>
