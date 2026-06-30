@@ -365,9 +365,13 @@ export default function SprintStepCard({
           </div>
         </div>
 
+        {/* Tag-1 One-Pager Recap (nur für Notes-Variante 2.2) */}
+        {step.variant === "notes" ? (
+          <OnePagerRecap entries={contextEntries} allSteps={allSteps} />
+        ) : null}
 
         {/* 3. KI-Vorschläge */}
-
+        {step.variant !== "notes" ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg">KI-Vorschläge</h3>
@@ -421,8 +425,10 @@ export default function SprintStepCard({
             </ul>
           )}
         </div>
+        ) : null}
 
         {/* 4. Eigene Antwort */}
+        {step.variant !== "notes" ? (
         <div className="space-y-3">
           <h3 className="font-semibold text-lg">Eigene Antwort hinzufügen</h3>
           <div className="flex gap-2">
@@ -443,6 +449,7 @@ export default function SprintStepCard({
             </Button>
           </div>
         </div>
+        ) : null}
 
         {/* 4b. Map-Board (nur für Variante "map") */}
         {step.variant === "map" ? (
