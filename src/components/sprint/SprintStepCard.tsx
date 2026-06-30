@@ -337,11 +337,16 @@ export default function SprintStepCard({
             </p>
           ) : null}
 
-          {step.entscheidung ? (
+          {isSolo ? (
+            <p>
+              <span className="font-semibold">Wer entscheidet:</span> Du – deine Auswahl gilt.
+            </p>
+          ) : step.entscheidung ? (
             <p>
               <span className="font-semibold">Wer entscheidet:</span> {step.entscheidung}
             </p>
           ) : null}
+
         </div>
 
         {/* 2b. Deine Antworten auf die Frage */}
