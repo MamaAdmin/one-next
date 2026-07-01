@@ -548,7 +548,7 @@ function VariantContextList({
         onChange={(v) => patch({ nichtZiele: v })}
         placeholder="z. B. Neues CI/CD-System aufsetzen"
       />
-      <CanvasSection title="Business-Past (optional) – Was wurde früher schon versucht?">
+      <CanvasSection title="Geschäftliche Vergangenheit (optional) – Was wurde früher schon versucht?">
         <PastAttemptsEditor
           items={data.frueherVersucht ?? []}
           onChange={(v) => patch({ frueherVersucht: v })}
