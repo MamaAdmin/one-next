@@ -16,6 +16,7 @@ import { RedirectManager } from "@/components/admin/RedirectManager";
 import { PageTemplateManager } from "@/components/admin/PageTemplateManager";
 import BMADInvitationManager from "@/components/admin/BMADInvitationManager";
 import UserRoleManager from "@/components/admin/UserRoleManager";
+import SprintAdminManager from "@/components/admin/SprintAdminManager";
 import { 
   BMADSessionIcon, 
   BMADArtifactIcon, 
@@ -83,10 +84,11 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
               <TabsTrigger value="bmad">BMAD</TabsTrigger>
+              <TabsTrigger value="sprints">Sprints</TabsTrigger>
               <TabsTrigger value="users">Benutzer</TabsTrigger>
             </TabsList>
 
@@ -248,6 +250,20 @@ const AdminDashboard = () => {
                     </Link>
                   </div>
                   <BMADInvitationManager />
+                </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="sprints">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Design Sprint Statistiken</CardTitle>
+                  <CardDescription>
+                    Übersicht aller Design Sprints: wer sie erstellt hat, Status, Fortschritt und Abschluss.
+                  </CardDescription>
+                </CardHeader>
+                <div className="p-6">
+                  <SprintAdminManager />
                 </div>
               </Card>
             </TabsContent>
