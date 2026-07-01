@@ -39,10 +39,10 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "2",
     index: 2,
-    title: "2. Present, Past & Future",
+    title: "2. Gegenwart, Vergangenheit & Zukunft",
     frage: "Wo stehen wir heute, was ist bereits passiert – und was erwartet uns, wenn wir NICHTS tun?",
     arbeit:
-      "Present (Warum jetzt?), Past (bisher Versuchtes / Erfahrungen) und Future (Default Future + Wettbewerb, Trends, Chancen) sichtbar machen.",
+      "Gegenwart (Warum jetzt?), Vergangenheit (bisher Versuchtes / Erfahrungen) und Zukunft (Standard-Zukunft + Wettbewerb, Trends, Chancen) sichtbar machen.",
     timeboxMin: 15,
     variant: "two-fields",
     nutztDatenAus: ["1"],

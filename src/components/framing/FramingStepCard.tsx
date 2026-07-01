@@ -295,13 +295,13 @@ function applySuggestion(
       data.nichtZiele = pushUnique(data.nichtZiele, text);
       return;
     case "two-fields": {
-      const m = text.match(/^\[(Present|Past|Future|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
+      const m = text.match(/^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
       const bucket = m ? m[1].toLowerCase() : "future";
       const value = m ? m[2].trim() : text;
-      if (bucket === "present") {
+      if (bucket === "present" || bucket === "gegenwart") {
         const cur = data.warumJetzt ?? "";
         data.warumJetzt = cur ? `${cur}\n• ${value}` : `• ${value}`;
-      } else if (bucket === "past") {
+      } else if (bucket === "past" || bucket === "vergangenheit") {
         data.frueherVersucht = [
           ...(data.frueherVersucht ?? []),
           { text: value, ergebnis: "didnt-work" },
@@ -548,7 +548,7 @@ function VariantContextList({
         onChange={(v) => patch({ nichtZiele: v })}
         placeholder="z. B. Neues CI/CD-System aufsetzen"
       />
-      <CanvasSection title="Business-Past (optional) – Was wurde früher schon versucht?">
+      <CanvasSection title="Geschäftliche Vergangenheit (optional) – Was wurde früher schon versucht?">
         <PastAttemptsEditor
           items={data.frueherVersucht ?? []}
           onChange={(v) => patch({ frueherVersucht: v })}
@@ -568,7 +568,7 @@ function VariantTwoFields({
 }) {
   return (
     <div className="space-y-6">
-      <CanvasSection title="Present – Warum jetzt?">
+      <CanvasSection title="Gegenwart – Warum jetzt?">
         <Textarea
           rows={4}
           value={data.warumJetzt ?? ""}
@@ -577,7 +577,7 @@ function VariantTwoFields({
         />
       </CanvasSection>
 
-      <CanvasSection title="Past – Was wurde bisher versucht?">
+      <CanvasSection title="Vergangenheit – Was wurde bisher versucht?">
         <PastAttemptsEditor
           items={data.frueherVersucht ?? []}
           onChange={(v) => patch({ frueherVersucht: v })}
@@ -585,7 +585,7 @@ function VariantTwoFields({
         />
       </CanvasSection>
 
-      <CanvasSection title="Future – Default Future (was passiert ohne Handeln?)">
+      <CanvasSection title="Zukunft – Standard-Zukunft (was passiert ohne Handeln?)">
         <Textarea
           rows={4}
           value={data.defaultFuture ?? ""}
@@ -594,7 +594,7 @@ function VariantTwoFields({
         />
       </CanvasSection>
 
-      <CanvasSection title="Business-Future – Wettbewerb, Trends, Chancen">
+      <CanvasSection title="Geschäftliche Zukunft – Wettbewerb, Trends, Chancen">
         <div className="space-y-4">
           <ListEditor
             label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
