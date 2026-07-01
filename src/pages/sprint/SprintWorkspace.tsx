@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, FileText, Pencil } from "lucide-react";
+import { CheckCircle2, Circle, Dot, FileText, Pencil, Share2 } from "lucide-react";
 import { useSprint, useSprintSteps, useSaveStep, useSetCurrentStep } from "@/hooks/useSprint";
 import {
   SPRINT_STEPS,
@@ -17,6 +17,7 @@ import {
 import SprintStepCard from "@/components/sprint/SprintStepCard";
 import SprintDaySummary from "@/components/sprint/SprintDaySummary";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
+import ShareSprintDialog from "@/components/sprint/ShareSprintDialog";
 import type { SprintStepData } from "@/features/sprint/types";
 
 
@@ -37,6 +38,7 @@ export default function SprintWorkspace() {
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
 
   const sprint = sprintQ.data;
