@@ -401,7 +401,17 @@ function StepVariant({
         />
       );
     case "success-constraints":
-      return <VariantSuccess data={data} patch={patch} />;
+      return (
+        <VariantSuccess
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "scope-questions":
       return <VariantScope data={data} patch={patch} />;
     case "nuf":
