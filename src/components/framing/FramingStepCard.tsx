@@ -260,6 +260,8 @@ function StepVariant({
       return <VariantSailboat data={data} patch={patch} />;
     case "five-whys":
       return <VariantFiveWhys data={data} patch={patch} />;
+    case "cynefin":
+      return <VariantCynefin data={data} patch={patch} />;
     case "assumptions":
       return <VariantAssumptions data={data} patch={patch} />;
     case "success-constraints":
