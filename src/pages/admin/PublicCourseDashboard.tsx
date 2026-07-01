@@ -21,15 +21,17 @@ import { Loader2, Plus, Trash2, Calendar, Users, Video, Edit, BookOpen, ArrowUp,
 export default function PublicCourseDashboard() {
   const { courses, loading, createCourse, updateCourse, deleteCourse } = usePublicCourses();
   const [searchParams] = useSearchParams();
-  const preselectedId = searchParams.get("course");
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(preselectedId);
+  const preselected = searchParams.get("course");
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const { dates, addDate, deleteDate } = useCourseDates(selectedCourseId);
   const { registrations } = useCourseRegistrations(selectedCourseId || undefined);
   const { modules, addModule, updateModule, deleteModule } = usePublicCourseModules(selectedCourseId);
 
   useEffect(() => {
-    if (preselectedId) setSelectedCourseId(preselectedId);
-  }, [preselectedId]);
+    if (!preselected || courses.length === 0) return;
+    const match = courses.find((c) => c.id === preselected || c.slug === preselected);
+    if (match) setSelectedCourseId(match.id);
+  }, [preselected, courses]);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDateOpen, setIsDateOpen] = useState(false);
