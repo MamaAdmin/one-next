@@ -295,8 +295,28 @@ function applySuggestion(
       data.nichtZiele = pushUnique(data.nichtZiele, text);
       return;
     case "two-fields": {
-      const existing = data.defaultFuture ?? "";
-      data.defaultFuture = existing ? `${existing}\n• ${text}` : `• ${text}`;
+      const m = text.match(/^\[(Present|Past|Future|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
+      const bucket = m ? m[1].toLowerCase() : "future";
+      const value = m ? m[2].trim() : text;
+      if (bucket === "present") {
+        const cur = data.warumJetzt ?? "";
+        data.warumJetzt = cur ? `${cur}\n• ${value}` : `• ${value}`;
+      } else if (bucket === "past") {
+        data.frueherVersucht = [
+          ...(data.frueherVersucht ?? []),
+          { text: value, ergebnis: "didnt-work" },
+        ];
+      } else if (bucket === "wettbewerb") {
+        data.wettbewerber = pushUnique(data.wettbewerber, value);
+      } else if (bucket === "trends") {
+        data.trends = pushUnique(data.trends, value);
+      } else if (bucket === "chancen") {
+        data.chancen = pushUnique(data.chancen, value);
+      } else {
+        // future / default future
+        const cur = data.defaultFuture ?? "";
+        data.defaultFuture = cur ? `${cur}\n• ${value}` : `• ${value}`;
+      }
       return;
     }
     case "stakeholder":
@@ -547,29 +567,37 @@ function VariantTwoFields({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Warum jetzt?</Label>
-          <Textarea
-            rows={5}
-            value={data.warumJetzt ?? ""}
-            onChange={(e) => patch({ warumJetzt: e.target.value })}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Default Future – was passiert ohne Handeln?</Label>
-          <Textarea
-            rows={5}
-            value={data.defaultFuture ?? ""}
-            onChange={(e) => patch({ defaultFuture: e.target.value })}
-          />
-        </div>
-      </div>
-      <CanvasSection title="Business-Future (optional) – Wettbewerb, Trends, Chancen">
+    <div className="space-y-6">
+      <CanvasSection title="Present – Warum jetzt?">
+        <Textarea
+          rows={4}
+          value={data.warumJetzt ?? ""}
+          onChange={(e) => patch({ warumJetzt: e.target.value })}
+          placeholder="Was macht das Thema gerade jetzt dringlich?"
+        />
+      </CanvasSection>
+
+      <CanvasSection title="Past – Was wurde bisher versucht?">
+        <PastAttemptsEditor
+          items={data.frueherVersucht ?? []}
+          onChange={(v) => patch({ frueherVersucht: v })}
+          placeholder="z. B. Interne Schulung im Q2/2024"
+        />
+      </CanvasSection>
+
+      <CanvasSection title="Future – Default Future (was passiert ohne Handeln?)">
+        <Textarea
+          rows={4}
+          value={data.defaultFuture ?? ""}
+          onChange={(e) => patch({ defaultFuture: e.target.value })}
+          placeholder="Realistisches Bild der Zukunft, wenn wir nichts tun …"
+        />
+      </CanvasSection>
+
+      <CanvasSection title="Business-Future – Wettbewerb, Trends, Chancen">
         <div className="space-y-4">
           <ListEditor
-            label="Was machen Wettbewerber / Vergleichbare?"
+            label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
             items={data.wettbewerber ?? []}
             onChange={(v) => patch({ wettbewerber: v })}
           />

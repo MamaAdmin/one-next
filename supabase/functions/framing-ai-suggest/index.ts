@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const STEP_META: Record<string, { title: string; task: string }> = {
   "1": { title: "Kick-off & Zielbild", task: "Schlage typische Nicht-Ziele / Abgrenzungen zum Kontext vor." },
-  "2": { title: "Warum jetzt? & Default Future", task: "Schlage mögliche Konsequenzen des Nichthandelns vor (Default Future)." },
+  "2": { title: "Present, Past & Future", task: "Schlage Punkte zu allen fünf Kategorien vor: Present (warum jetzt / aktuelle Dringlichkeit), Past (was wurde früher versucht / Erfahrungen), Future (Default Future – was passiert ohne Handeln), Wettbewerb (was machen Vergleichbare), Trends (für/gegen die Idee) und Chancen (Opportunities). Gib mindestens 1–2 Punkte je Kategorie. Prefixe JEDES Item mit einem der Tags: '[Present]', '[Past]', '[Future]', '[Wettbewerb]', '[Trends]', '[Chancen]'." },
   "3": { title: "Stakeholder & Zielgruppe", task: "Schlage plausible Stakeholder / Zielgruppen zum Kontext vor." },
   "4": { title: "Smart Sailboat", task: "Schlage Einträge für Wind (Treiber), Anker (Hindernisse), Hafen (Ziel), Eisberg (Risiken) vor. Gib eine gemischte Liste, jeweils prefixed mit '[Wind]', '[Anker]', '[Hafen]', '[Eisberg]'." },
   "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor (nur Text, keine Cynefin-Einordnung – die passiert im nächsten Schritt automatisch)." },
