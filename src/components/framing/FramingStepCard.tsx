@@ -167,7 +167,7 @@ export default function FramingStepCard({
         />
 
         {vorschlaege.length > 0 && step.variant !== "two-fields" ? (
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4" /> KI-Vorschläge
@@ -201,7 +201,7 @@ export default function FramingStepCard({
               {vorschlaege.map((v, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2 rounded-md border bg-background px-3 py-2 text-sm"
+                  className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-3 py-2 text-sm text-accent-foreground"
                 >
                   <span className="flex-1">{v}</span>
                   <Button
