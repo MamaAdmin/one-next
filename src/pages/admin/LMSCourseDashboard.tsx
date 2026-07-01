@@ -315,6 +315,14 @@ export default function LMSCourseDashboard() {
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        <Badge
+                          variant={(course as any).is_public ? "default" : "outline"}
+                          className={(course as any).is_public ? "bg-primary hover:bg-primary/90" : ""}
+                        >
+                          {(course as any).is_public ? "Public" : "Nicht public"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm">
@@ -333,6 +341,19 @@ export default function LMSCourseDashboard() {
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
                               Module verwalten
+                            </DropdownMenuItem>
+                            {(course as any).is_public && (course as any).public_course_id && (
+                              <DropdownMenuItem onClick={() => navigate(`/admin/kurse?course=${(course as any).public_course_id}`)}>
+                                Termine &amp; Anmeldungen
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                              onClick={async () => {
+                                await updateCourse(course.id, { is_public: !(course as any).is_public } as any);
+                                reload();
+                              }}
+                            >
+                              {(course as any).is_public ? "Als Nicht public setzen" : "Als Public setzen"}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={async () => {
