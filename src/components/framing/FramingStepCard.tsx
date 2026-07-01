@@ -91,7 +91,7 @@ export default function FramingStepCard({
         <div className="flex items-start justify-between gap-4">
           <div>
             <Badge variant="secondary" className="mb-2">
-              Timebox {step.timeboxMin} Min · Schritt {step.index} von 10
+              Timebox {step.timeboxMin} Min · Schritt {step.index} von {FRAMING_STEPS.length}
             </Badge>
             <h2 className="text-2xl font-bold">{step.title}</h2>
             <p className="text-muted-foreground mt-1">{step.frage}</p>
