@@ -647,41 +647,79 @@ function PastAttemptsEditor({
 function VariantContextList({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
+  const inline = (bucket: SuggestionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (key: "kiKontext" | "kiNichtZiele", index: number) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
+  };
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>Kontext / Ausgangslage</Label>
-        <Textarea
-          rows={4}
-          value={data.kontext ?? ""}
-          onChange={(e) => patch({ kontext: e.target.value })}
-          placeholder="Kurz beschreiben, worum es geht …"
+    <div className="space-y-6">
+      <CanvasSection title="Kontext / Ausgangslage">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={4}
+            value={data.kontext ?? ""}
+            onChange={(e) => patch({ kontext: e.target.value })}
+            placeholder="Kurz beschreiben, worum es geht …"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiKontext ?? []}
+          onRemove={(i) => removeKi("kiKontext", i)}
         />
-      </div>
-      <ListEditor
-        label="Kein Sprint-Ziel (Abgrenzung) – Eigene Anmerkungen"
-        items={data.nichtZiele ?? []}
-        onChange={(v) => patch({ nichtZiele: v })}
-        placeholder="z. B. Neues CI/CD-System aufsetzen"
-      />
-      <AcceptedKiList
-        items={data.kiNichtZiele ?? []}
-        onRemove={(i) =>
-          patch({
-            kiNichtZiele: (data.kiNichtZiele ?? []).filter((_, j) => j !== i),
-          })
-        }
-      />
+        {inline("kontext")}
+      </CanvasSection>
+
+      <CanvasSection title="Kein Sprint-Ziel – Abgrenzung">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.nichtZiele ?? []}
+          onChange={(v) => patch({ nichtZiele: v })}
+          placeholder="z. B. Neues CI/CD-System aufsetzen"
+        />
+        <AcceptedKiList
+          items={data.kiNichtZiele ?? []}
+          onRemove={(i) => removeKi("kiNichtZiele", i)}
+        />
+        {inline("nichtziel")}
+      </CanvasSection>
+
       <CanvasSection title="Geschäftliche Vergangenheit (optional) – Was wurde früher schon versucht?">
-        <PastAttemptsEditor
-          items={data.frueherVersucht ?? []}
-          onChange={(v) => patch({ frueherVersucht: v })}
-          placeholder="z. B. Interne Schulung im Q2/2024"
-        />
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <PastAttemptsEditor
+            items={data.frueherVersucht ?? []}
+            onChange={(v) => patch({ frueherVersucht: v })}
+            placeholder="z. B. Interne Schulung im Q2/2024"
+          />
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Hier zählen eure eigenen Erfahrungen – bitte selbst eintragen.
+        </p>
       </CanvasSection>
     </div>
   );
