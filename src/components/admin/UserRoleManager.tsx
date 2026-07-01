@@ -32,6 +32,7 @@ interface UserWithRoles {
 const AVAILABLE_ROLES: { value: AppRole; label: string; description: string }[] = [
   { value: "admin", label: "Admin", description: "Vollzugriff auf alle Funktionen über das Admin-Dashboard" },
   { value: "content_manager", label: "Content Manager", description: "Blog-Artikel, FAQs und Inhalte verwalten" },
+  { value: "sprint_user", label: "Sprint User", description: "Kann Design Sprints und Problem Framing durchführen" },
   { value: "bmad_user", label: "BMAD User", description: "Zugriff nur auf das BMAD Portal" },
   { value: "user", label: "Kurs-Teilnehmer", description: "Zugriff nur auf die eigenen Kurse" },
 ];

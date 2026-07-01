@@ -4,16 +4,18 @@ import { supabase } from "@/integrations/supabase/client";
 export const useUserRoles = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isBmadUser, setIsBmadUser] = useState(false);
+  const [isSprintUser, setIsSprintUser] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkRoles = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        
+
         if (!user) {
           setIsAdmin(false);
           setIsBmadUser(false);
+          setIsSprintUser(false);
           setLoading(false);
           return;
         }
@@ -27,15 +29,18 @@ export const useUserRoles = () => {
           console.error("Error checking roles:", error);
           setIsAdmin(false);
           setIsBmadUser(false);
+          setIsSprintUser(false);
         } else {
           const roles = data?.map(r => r.role) || [];
           setIsAdmin(roles.includes("admin"));
           setIsBmadUser(roles.includes("bmad_user"));
+          setIsSprintUser(roles.includes("sprint_user"));
         }
       } catch (error) {
         console.error("Error in checkRoles:", error);
         setIsAdmin(false);
         setIsBmadUser(false);
+        setIsSprintUser(false);
       } finally {
         setLoading(false);
       }
@@ -50,5 +55,5 @@ export const useUserRoles = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  return { isAdmin, isBmadUser, loading };
+  return { isAdmin, isBmadUser, isSprintUser, loading };
 };
