@@ -9,6 +9,7 @@ import { Pencil, Plus, Sparkles, Compass } from "lucide-react";
 import { useMySprints } from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
 import { getStepDef } from "@/features/sprint/steps";
+import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import type { SprintRow } from "@/features/sprint/types";
@@ -73,7 +74,7 @@ export default function SprintDashboard() {
                             {f.titel_arbeitstitel || "Ohne Titel"}
                           </h3>
                           <Badge variant="secondary">
-                            Schritt {f.current_step} / 10
+                            Schritt {f.current_step} / {FRAMING_STEPS.length}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">

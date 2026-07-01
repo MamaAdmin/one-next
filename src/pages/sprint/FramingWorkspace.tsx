@@ -13,7 +13,7 @@ import {
   useSaveFramingStep,
   useSetFramingCurrentStep,
 } from "@/hooks/useFraming";
-import { FRAMING_STEPS, FRAMING_TOTAL_MIN, getFramingStep } from "@/features/framing/steps";
+import { FRAMING_STEPS, FRAMING_TOTAL_MIN, getFramingStepByIndex } from "@/features/framing/steps";
 import FramingStepCard from "@/components/framing/FramingStepCard";
 import FramingCompletionPanel from "@/components/framing/FramingCompletionPanel";
 import type { FramingStepData } from "@/features/framing/types";
@@ -31,7 +31,7 @@ export default function FramingWorkspace() {
   const steps = stepsQ.data ?? [];
 
   const currentIndex = session?.current_step ?? 1;
-  const currentDef = getFramingStep(String(currentIndex)) ?? FRAMING_STEPS[0];
+  const currentDef = getFramingStepByIndex(currentIndex) ?? FRAMING_STEPS[0];
   const currentRow = steps.find((s) => s.step_key === currentDef.key);
 
   // Timer
@@ -63,7 +63,7 @@ export default function FramingWorkspace() {
   }
 
   async function handleNext() {
-    if (currentDef.index === 10) {
+    if (currentDef.index === FRAMING_STEPS.length) {
       setShowCompletion(true);
       return;
     }
@@ -122,7 +122,7 @@ export default function FramingWorkspace() {
                 {session.titel_arbeitstitel || "Ohne Titel"}
               </h1>
               <p className="text-sm text-muted-foreground">
-                Schritt {currentDef.index} von 10 · gesamte Timebox ~{Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h
+                Schritt {currentDef.index} von {FRAMING_STEPS.length} · gesamte Timebox ~{Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h
               </p>
             </div>
             {!showCompletion ? (
@@ -223,8 +223,8 @@ export default function FramingWorkspace() {
                         Kontext aus vorherigen Schritten
                       </div>
                       <ul className="text-sm space-y-1">
-                        {currentDef.nutztDatenAus.map((k) => {
-                          const def = getFramingStep(k);
+                        {currentDef.nutztDatenAus.map((k: string) => {
+                          const def = FRAMING_STEPS.find((s) => s.key === k);
                           const row = steps.find((s) => s.step_key === k);
                           const done = !!row?.completed_at;
                           return (
