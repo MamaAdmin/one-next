@@ -221,20 +221,22 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => loadSuggestions()}
-            disabled={suggest.isPending}
-          >
-            {suggest.isPending ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              <Sparkles className="w-4 h-4 mr-2" />
-            )}
-            KI-Vorschläge
-          </Button>
+          {step.variant !== "two-fields" ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => loadSuggestions()}
+              disabled={suggest.isPending}
+            >
+              {suggest.isPending ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4 mr-2" />
+              )}
+              KI-Vorschläge
+            </Button>
+          ) : null}
 
           <div className="flex-1" />
 
