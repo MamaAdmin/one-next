@@ -157,7 +157,7 @@ Deno.serve(async (req) => {
     const cynefinTag: Record<string, string> = {
       komplex: "[Komplex]", kompliziert: "[Kompliziert]", chaotisch: "[Chaotisch]", einfach: "[Einfach]",
     };
-    if (step_key === "6" && field && CYNEFIN_BUCKETS[field]) {
+    if (step_key === "5b" && field && CYNEFIN_BUCKETS[field]) {
       meta = {
         title: meta.title,
         task: `Schlage GENAU 3 adressierbare Ursachen vor, die in die Cynefin-Domäne ${CYNEFIN_BUCKETS[field]} passen. Keine anderen Domänen. Prefixe JEDES Item mit '${cynefinTag[field]}'.`,
