@@ -356,7 +356,17 @@ function StepVariant({
         />
       );
     case "five-whys":
-      return <VariantFiveWhys data={data} patch={patch} />;
+      return (
+        <VariantFiveWhys
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "cynefin":
       return <VariantCynefin data={data} patch={patch} />;
     case "assumptions":
