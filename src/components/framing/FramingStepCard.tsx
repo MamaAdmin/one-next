@@ -737,6 +737,42 @@ function InlineSuggestions({
   );
 }
 
+function AcceptedKiList({
+  items,
+  onRemove,
+}: {
+  items: string[];
+  onRemove: (i: number) => void;
+}) {
+  if (items.length === 0) return null;
+  return (
+    <div className="mt-2 space-y-1.5">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-accent-foreground/80">
+        <Sparkles className="w-3.5 h-3.5" /> Übernommene KI-Vorschläge
+      </div>
+      <ul className="space-y-1.5">
+        {items.map((v, i) => (
+          <li
+            key={i}
+            className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-accent-foreground"
+          >
+            <span className="flex-1 whitespace-pre-wrap">{v}</span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => onRemove(i)}
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function VariantTwoFields({
   data,
   patch,
