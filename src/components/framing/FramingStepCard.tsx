@@ -1664,6 +1664,9 @@ function VariantCynefin({
                     </div>
                   ) : null}
                 </div>
+                <div className="mt-3">
+                  {inline(q.key as CynefinBucket)}
+                </div>
               </div>
             );
           })}
