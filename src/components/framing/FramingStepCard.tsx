@@ -597,7 +597,10 @@ function VariantFiveWhys({
         ))}
       </div>
       <div className="space-y-2">
-        <Label>Ursachen einordnen (Cynefin + adressierbar?)</Label>
+        <Label>Adressierbare Ursachen</Label>
+        <p className="text-xs text-muted-foreground">
+          Nur Ursachen sammeln – die Cynefin-Einordnung erfolgt automatisch im nächsten Schritt.
+        </p>
         <div className="flex gap-2">
           <Input
             value={ursacheInput}
@@ -623,7 +626,7 @@ function VariantFiveWhys({
           </Button>
         </div>
         {ursachen.map((u, i) => (
-          <div key={i} className="grid grid-cols-[1fr_180px_140px_auto] gap-2 items-center">
+          <div key={i} className="flex items-center gap-2">
             <Input
               value={u.text}
               onChange={(e) => {
@@ -632,35 +635,6 @@ function VariantFiveWhys({
                 patch({ ursachen: next });
               }}
             />
-            <Select
-              value={u.cynefin}
-              onValueChange={(v) => {
-                const next = [...ursachen];
-                next[i] = { ...u, cynefin: v as Cynefin };
-                patch({ ursachen: next });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="einfach">einfach</SelectItem>
-                <SelectItem value="kompliziert">kompliziert</SelectItem>
-                <SelectItem value="komplex">komplex</SelectItem>
-                <SelectItem value="chaotisch">chaotisch</SelectItem>
-              </SelectContent>
-            </Select>
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox
-                checked={u.adressierbar}
-                onCheckedChange={(v) => {
-                  const next = [...ursachen];
-                  next[i] = { ...u, adressierbar: !!v };
-                  patch({ ursachen: next });
-                }}
-              />
-              adressierbar
-            </label>
             <Button
               size="icon"
               variant="ghost"
@@ -674,6 +648,84 @@ function VariantFiveWhys({
     </div>
   );
 }
+
+function VariantCynefin({
+  data,
+  patch,
+}: {
+  data: FramingStepData;
+  patch: (p: Partial<FramingStepData>) => void;
+}) {
+  const ursachen = data.ursachen ?? [];
+  if (ursachen.length === 0) {
+    return (
+      <div className="rounded-md border border-dashed p-6 text-sm text-muted-foreground">
+        Keine Ursachen aus Schritt 5 vorhanden. Gehe zurück zu <strong>Root Cause (5 Whys)</strong>,
+        um Ursachen zu erfassen – sie werden hier automatisch übernommen.
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">
+        Automatisch aus Schritt 5 übernommen. Klassifiziere jede Ursache nach Cynefin
+        (einfach / kompliziert / komplex / chaotisch) und markiere, ob sie im Sprint adressierbar ist.
+      </p>
+      {ursachen.map((u, i) => (
+        <div
+          key={i}
+          className="grid grid-cols-[1fr_180px_140px_auto] gap-2 items-center rounded-md border p-2"
+        >
+          <Input
+            value={u.text}
+            onChange={(e) => {
+              const next = [...ursachen];
+              next[i] = { ...u, text: e.target.value };
+              patch({ ursachen: next });
+            }}
+          />
+          <Select
+            value={u.cynefin}
+            onValueChange={(v) => {
+              const next = [...ursachen];
+              next[i] = { ...u, cynefin: v as Cynefin };
+              patch({ ursachen: next });
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="einfach">einfach</SelectItem>
+              <SelectItem value="kompliziert">kompliziert</SelectItem>
+              <SelectItem value="komplex">komplex</SelectItem>
+              <SelectItem value="chaotisch">chaotisch</SelectItem>
+            </SelectContent>
+          </Select>
+          <label className="flex items-center gap-2 text-sm">
+            <Checkbox
+              checked={u.adressierbar}
+              onCheckedChange={(v) => {
+                const next = [...ursachen];
+                next[i] = { ...u, adressierbar: !!v };
+                patch({ ursachen: next });
+              }}
+            />
+            adressierbar
+          </label>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
+          >
+            <X className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 function VariantAssumptions({
   data,
