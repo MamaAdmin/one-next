@@ -656,7 +656,8 @@ function InlineSuggestions({
 }) {
   const matches = suggestions
     .map((v, i) => ({ v, i }))
-    .filter(({ v }) => bucketOfTwoFieldsSuggestion(v) === bucket);
+    .filter(({ v }) => bucketOfTwoFieldsSuggestion(v) === bucket)
+    .slice(0, 3);
   if (matches.length === 0) return null;
   return (
     <div className="mt-2 rounded-md border border-dashed bg-muted/30 p-2 space-y-1.5">

@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const STEP_META: Record<string, { title: string; task: string }> = {
   "1": { title: "Kick-off & Zielbild", task: "Schlage typische Nicht-Ziele / Abgrenzungen zum Kontext vor." },
-  "2": { title: "Gegenwart, Vergangenheit & Zukunft", task: "Schlage Punkte zu allen sechs Kategorien vor: Gegenwart (warum jetzt / aktuelle Dringlichkeit), Vergangenheit (was wurde früher versucht / Erfahrungen), Zukunft (Standard-Zukunft – was passiert ohne Handeln), Wettbewerb (was machen Vergleichbare), Trends (für/gegen die Idee) und Chancen (Opportunities). Gib mindestens 1–2 Punkte je Kategorie. Prefixe JEDES Item mit einem der Tags: '[Gegenwart]', '[Vergangenheit]', '[Zukunft]', '[Wettbewerb]', '[Trends]', '[Chancen]'." },
+  "2": { title: "Gegenwart, Vergangenheit & Zukunft", task: "Schlage Punkte zu allen sechs Kategorien vor: Gegenwart (warum jetzt / aktuelle Dringlichkeit), Vergangenheit (was wurde früher versucht / Erfahrungen), Zukunft (Standard-Zukunft – was passiert ohne Handeln), Wettbewerb (was machen Vergleichbare), Trends (für/gegen die Idee) und Chancen (Opportunities). Gib GENAU 3 Punkte je Kategorie (insgesamt 18 Items). Prefixe JEDES Item mit einem der Tags: '[Gegenwart]', '[Vergangenheit]', '[Zukunft]', '[Wettbewerb]', '[Trends]', '[Chancen]'." },
   "3": { title: "Stakeholder & Zielgruppe", task: "Schlage plausible Stakeholder / Zielgruppen zum Kontext vor." },
   "4": { title: "Smart Sailboat", task: "Schlage Einträge für Wind (Treiber), Anker (Hindernisse), Hafen (Ziel), Eisberg (Risiken) vor. Gib eine gemischte Liste, jeweils prefixed mit '[Wind]', '[Anker]', '[Hafen]', '[Eisberg]'." },
   "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor (nur Text, keine Cynefin-Einordnung – die passiert im nächsten Schritt automatisch)." },
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
           {
             role: "system",
             content:
-              "Du bist ein erfahrener Problem-Framing-Facilitator (Pre-Sprint-Workshop). Antworte AUSSCHLIESSLICH als JSON im Format {\"vorschlaege\": string[]}. 5–8 kurze, konkrete Punkte auf Deutsch. Keine Erklärungen außerhalb des JSON.",
+              "Du bist ein erfahrener Problem-Framing-Facilitator (Pre-Sprint-Workshop). Antworte AUSSCHLIESSLICH als JSON im Format {\"vorschlaege\": string[]}. Kurze, konkrete Punkte auf Deutsch. Falls die Aufgabe eine Anzahl je Kategorie vorgibt, halte dich exakt daran; ansonsten 5–8 Punkte. Keine Erklärungen außerhalb des JSON.",
           },
           {
             role: "user",
@@ -103,7 +103,7 @@ Deno.serve(async (req) => {
       parsed = {};
     }
     const vorschlaege = Array.isArray(parsed.vorschlaege)
-      ? parsed.vorschlaege.filter((x): x is string => typeof x === "string").slice(0, 12)
+      ? parsed.vorschlaege.filter((x): x is string => typeof x === "string").slice(0, 24)
       : [];
 
     return json({ vorschlaege });
