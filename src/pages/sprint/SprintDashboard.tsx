@@ -59,6 +59,44 @@ export default function SprintDashboard() {
             </div>
           </div>
 
+          <section className="mb-10 grid md:grid-cols-2 gap-4">
+            <Card className="border-l-4 border-l-primary">
+              <CardContent className="p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Compass className="w-5 h-5 text-primary" />
+                  <h2 className="font-semibold">Starte mit Problem Framing (3–4 h)</h2>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Wenn dein Problem noch <strong>unscharf</strong> ist: Zielgruppe, Kontext oder
+                  Erfolgskriterien sind unklar, es gibt viele Meinungen und keine gemeinsame
+                  Sicht. Das Framing schärft in 3–4 Stunden Ausgangslage, Stakeholder,
+                  Zielbild und leitet daraus eine konkrete Sprint-Frage ab.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Typisch: „Wir wissen, dass etwas nicht rund läuft, aber nicht genau was."
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="border-l-4 border-l-accent">
+              <CardContent className="p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-accent" />
+                  <h2 className="font-semibold">Starte mit Design Sprint (4–5 Tage)</h2>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Wenn du eine <strong>klare Sprint-Frage</strong> und definierte Zielgruppe
+                  hast. Der Sprint führt dich durch Map, Sketch, Decide, Prototype und Test –
+                  bis zu einem getesteten Prototyp mit echtem Nutzerfeedback.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Typisch: „Wir wissen, was wir lösen wollen – jetzt brauchen wir eine Lösung."
+                </p>
+              </CardContent>
+            </Card>
+          </section>
+
+
+
           {activeFramings.length > 0 ? (
             <section className="mb-10">
               <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
