@@ -103,17 +103,70 @@ export default function FramingStepCard({
 
         {vorschlaege.length > 0 ? (
           <div className="rounded-lg border bg-muted/30 p-4">
-            <div className="text-sm font-semibold mb-2 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" /> KI-Vorschläge
+            <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4" /> KI-Vorschläge
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    const next = { ...data };
+                    vorschlaege.forEach((v) => applySuggestion(step.variant, v, next));
+                    setData(next);
+                    setVorschlaege([]);
+                    toast({ title: "Alle Vorschläge übernommen" });
+                  }}
+                >
+                  Alle übernehmen
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setVorschlaege([])}
+                >
+                  Verwerfen
+                </Button>
+              </div>
             </div>
-            <ul className="space-y-1">
+            <ul className="space-y-1.5">
               {vorschlaege.map((v, i) => (
-                <li key={i} className="text-sm">• {v}</li>
+                <li
+                  key={i}
+                  className="flex items-start gap-2 rounded-md border bg-background px-3 py-2 text-sm"
+                >
+                  <span className="flex-1">{v}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7"
+                    onClick={() => {
+                      const next = { ...data };
+                      applySuggestion(step.variant, v, next);
+                      setData(next);
+                      setVorschlaege((prev) => prev.filter((_, j) => j !== i));
+                    }}
+                  >
+                    <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={() =>
+                      setVorschlaege((prev) => prev.filter((_, j) => j !== i))
+                    }
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </Button>
+                </li>
               ))}
             </ul>
-            <p className="text-xs text-muted-foreground mt-2">
-              Übernimm passende Punkte in deine Antwort oberhalb.
-            </p>
           </div>
         ) : null}
 
@@ -189,7 +242,93 @@ function StepVariant({
   }
 }
 
+/* ---------- suggestion adoption ---------- */
+
+function applySuggestion(
+  variant: FramingStepDef["variant"],
+  raw: string,
+  data: FramingStepData,
+): void {
+  const text = raw.trim();
+  if (!text) return;
+  const pushUnique = (arr: string[] | undefined, v: string): string[] => {
+    const list = arr ?? [];
+    return list.includes(v) ? list : [...list, v];
+  };
+
+  switch (variant) {
+    case "context-list":
+      data.nichtZiele = pushUnique(data.nichtZiele, text);
+      return;
+    case "two-fields": {
+      const existing = data.defaultFuture ?? "";
+      data.defaultFuture = existing ? `${existing}\n• ${text}` : `• ${text}`;
+      return;
+    }
+    case "stakeholder":
+      data.stakeholder = pushUnique(data.stakeholder, text);
+      return;
+    case "sailboat": {
+      const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
+      const m = text.match(/^\[(Wind|Anker|Hafen|Eisberg)\]\s*(.+)$/i);
+      if (m) {
+        const bucket = m[1].toLowerCase();
+        const value = m[2].trim();
+        if (bucket === "wind") sb.wind = pushUnique(sb.wind, value);
+        else if (bucket === "anker") sb.anker = pushUnique(sb.anker, value);
+        else if (bucket === "hafen")
+          sb.hafen = sb.hafen ? `${sb.hafen}\n${value}` : value;
+        else if (bucket === "eisberg") sb.eisberg = pushUnique(sb.eisberg, value);
+      } else {
+        sb.wind = pushUnique(sb.wind, text);
+      }
+      data.sailboat = sb;
+      return;
+    }
+    case "five-whys": {
+      const whys = data.fiveWhys ?? ["", "", "", "", ""];
+      const idx = whys.findIndex((w) => !w.trim());
+      if (idx >= 0) {
+        const next = [...whys];
+        next[idx] = text;
+        data.fiveWhys = next;
+      } else {
+        data.ursachen = [
+          ...(data.ursachen ?? []),
+          { text, cynefin: "kompliziert", adressierbar: true },
+        ];
+      }
+      return;
+    }
+    case "assumptions":
+      data.annahmen = [
+        ...(data.annahmen ?? []),
+        { text, unsicherheit: 3, einfluss: 3 },
+      ];
+      return;
+    case "success-constraints":
+      data.constraints = pushUnique(data.constraints, text);
+      return;
+    case "scope-questions":
+      data.sprintFragen = pushUnique(data.sprintFragen, text);
+      return;
+    case "nuf":
+      data.nufBewertungen = [
+        ...(data.nufBewertungen ?? []),
+        { text, neuheit: 3, nutzen: 3, machbarkeit: 3 },
+      ];
+      return;
+    case "next-steps":
+      data.preSprintTodos = [
+        ...(data.preSprintTodos ?? []),
+        { text, wer: "", wann: "" },
+      ];
+      return;
+  }
+}
+
 /* ---------- shared list editor ---------- */
+
 
 function ListEditor({
   label,
