@@ -1,4 +1,5 @@
 export type FramingVariant =
+  | "intro" // 0 – Erklärung / How-To vor Schritt 1
   | "context-list" // 1
   | "two-fields" // 2
   | "stakeholder" // 3
@@ -10,6 +11,7 @@ export type FramingVariant =
   | "scope-questions" // 8
   | "nuf" // 9
   | "next-steps"; // 10
+
 
 export interface FramingStepDef {
   key: string;
@@ -26,6 +28,17 @@ export interface FramingStepDef {
 // Navigation verwendet. Nach Schritt 5 wurde `5b` (Cynefin) eingeschoben.
 export const FRAMING_STEPS: FramingStepDef[] = [
   {
+    key: "intro",
+    index: 0,
+    title: "So arbeitest du hier",
+    frage: "Wie funktionieren Eigene Anmerkungen, KI-Vorschläge und Recherche?",
+    arbeit:
+      "Kurze Einführung in die Arbeitsweise: eigene Gedanken, KI-Vorschläge im Tool und optionale Recherche mit externen KI-Tools.",
+    timeboxMin: 0,
+    variant: "intro",
+    nutztDatenAus: [],
+  },
+  {
     key: "1",
     index: 1,
     title: "1. Kick-off & Zielbild",
@@ -36,6 +49,7 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     variant: "context-list",
     nutztDatenAus: [],
   },
+
   {
     key: "2",
     index: 2,

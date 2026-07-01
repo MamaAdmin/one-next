@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag } from "lucide-react";
+import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info } from "lucide-react";
 import {
   useFramingSession,
   useFramingSteps,
@@ -50,8 +50,10 @@ export default function FramingWorkspace() {
     return () => clearInterval(t);
   }, [running]);
 
-  const completedCount = steps.filter((s) => !!s.completed_at).length;
-  const progressPct = (completedCount / FRAMING_STEPS.length) * 100;
+  const realSteps = FRAMING_STEPS.filter((s) => s.variant !== "intro");
+  const completedCount = steps.filter((s) => !!s.completed_at && s.step_key !== "intro").length;
+  const progressPct = (completedCount / realSteps.length) * 100;
+
 
   async function handleSave(data: FramingStepData, opts?: { completed?: boolean }) {
     await saveStep.mutateAsync({ step_key: currentDef.key, data, completed: opts?.completed });
@@ -63,12 +65,13 @@ export default function FramingWorkspace() {
   }
 
   async function handleNext() {
-    if (currentDef.index === FRAMING_STEPS.length) {
+    if (currentDef.index === realSteps.length) {
       setShowCompletion(true);
       return;
     }
     await goTo(currentDef.index + 1);
   }
+
 
   async function handlePrev() {
     if (currentDef.index === 1) return;
@@ -122,10 +125,12 @@ export default function FramingWorkspace() {
                 {session.titel_arbeitstitel || "Ohne Titel"}
               </h1>
               <p className="text-sm text-muted-foreground">
-                Schritt {currentDef.index} von {FRAMING_STEPS.length} · gesamte Timebox ~{Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h
+                {currentDef.variant === "intro"
+                  ? `Einführung · gesamte Timebox ~${Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h`
+                  : `Schritt ${currentDef.index} von ${realSteps.length} · gesamte Timebox ~${Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h`}
               </p>
             </div>
-            {!showCompletion ? (
+            {!showCompletion && currentDef.timeboxMin > 0 ? (
               <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 bg-background ${timeboxOver ? "border-destructive text-destructive" : ""}`}>
                 <Timer className="w-4 h-4" />
                 <span className="font-mono text-lg tabular-nums">{mm}:{ss}</span>
@@ -144,6 +149,7 @@ export default function FramingWorkspace() {
                 </Button>
               </div>
             ) : null}
+
           </div>
           <div className="mt-3">
             <Progress value={progressPct} />
@@ -157,6 +163,7 @@ export default function FramingWorkspace() {
                 const row = steps.find((s) => s.step_key === def.key);
                 const done = !!row?.completed_at;
                 const isCurrent = def.key === currentDef.key && !showCompletion;
+                const isIntro = def.variant === "intro";
                 return (
                   <button
                     key={def.key}
@@ -168,7 +175,9 @@ export default function FramingWorkspace() {
                         : "hover:bg-muted"
                     }`}
                   >
-                    {done ? (
+                    {isIntro ? (
+                      <Info className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                    ) : done ? (
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
                     ) : isCurrent ? (
                       <Dot className="w-4 h-4 mt-0.5 shrink-0" />
@@ -176,14 +185,19 @@ export default function FramingWorkspace() {
                       <Circle className="w-4 h-4 mt-0.5 text-muted-foreground/40 shrink-0" />
                     )}
                     <span>
-                      <span className="text-xs text-muted-foreground block">
-                        {def.timeboxMin}′
-                      </span>
+                      {isIntro ? (
+                        <span className="text-xs text-muted-foreground block">Einführung</span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground block">
+                          {def.timeboxMin}′
+                        </span>
+                      )}
                       {def.title}
                     </span>
                   </button>
                 );
               })}
+
               <button
                 type="button"
                 onClick={() => setShowCompletion(true)}
