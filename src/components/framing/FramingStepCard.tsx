@@ -244,7 +244,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" ? (
             <Button
               type="button"
               variant="outline"
@@ -368,7 +368,17 @@ function StepVariant({
         />
       );
     case "cynefin":
-      return <VariantCynefin data={data} patch={patch} />;
+      return (
+        <VariantCynefin
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "assumptions":
       return <VariantAssumptions data={data} patch={patch} />;
     case "success-constraints":
@@ -463,12 +473,20 @@ function applySuggestion(
       }
       return;
     }
-    case "cynefin":
+    case "cynefin": {
+      const m = text.match(/^\[(Komplex|Complex|Kompliziert|Complicated|Chaotisch|Chaotic|Einfach|Klar|Clear|Simple)\]\s*(.+)$/i);
+      const tag = m ? m[1].toLowerCase() : "kompliziert";
+      const value = m ? m[2].trim() : text;
+      let cyn: Cynefin = "kompliziert";
+      if (tag === "komplex" || tag === "complex") cyn = "komplex";
+      else if (tag === "chaotisch" || tag === "chaotic") cyn = "chaotisch";
+      else if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") cyn = "einfach";
       data.ursachen = [
         ...(data.ursachen ?? []),
-        { text, cynefin: "kompliziert", adressierbar: true },
+        { text: value, cynefin: cyn, adressierbar: true },
       ];
       return;
+    }
     case "assumptions":
       data.annahmen = [
         ...(data.annahmen ?? []),
@@ -751,7 +769,9 @@ type SailboatBucket = "wind" | "anker" | "hafen" | "eisberg";
 
 type FiveWhysBucket = "why" | "ursache";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket;
+type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
@@ -783,6 +803,10 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "eisberg" || tag === "iceberg") return "eisberg";
   if (tag === "why" || tag === "warum") return "why";
   if (tag === "ursache" || tag === "cause") return "ursache";
+  if (tag === "komplex" || tag === "complex") return "komplex";
+  if (tag === "kompliziert" || tag === "complicated") return "kompliziert";
+  if (tag === "chaotisch" || tag === "chaotic") return "chaotisch";
+  if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") return "einfach";
   return null;
 }
 
@@ -1392,11 +1416,31 @@ function VariantFiveWhys({
 function VariantCynefin({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const ursachen = data.ursachen ?? [];
+  const inline = (bucket: CynefinBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverKey, setDragOverKey] = useState<Cynefin | null>(null);
   const [justDroppedKey, setJustDroppedKey] = useState<Cynefin | null>(null);
@@ -1619,6 +1663,9 @@ function VariantCynefin({
                       Hier ablegen
                     </div>
                   ) : null}
+                </div>
+                <div className="mt-3">
+                  {inline(q.key as CynefinBucket)}
                 </div>
               </div>
             );
