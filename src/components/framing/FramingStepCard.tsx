@@ -508,12 +508,22 @@ function applySuggestion(
       ];
       return;
     }
-    case "assumptions":
+    case "assumptions": {
+      const m = text.match(/^\[(Kritisch|Unsicher|Einflussreich|Gering)\]\s*(.+)$/i);
+      const tag = m ? m[1].toLowerCase() : "";
+      const value = m ? m[2].trim() : text;
+      let unsicherheit = 3;
+      let einfluss = 3;
+      if (tag === "kritisch") { unsicherheit = 5; einfluss = 5; }
+      else if (tag === "unsicher") { unsicherheit = 5; einfluss = 2; }
+      else if (tag === "einflussreich") { unsicherheit = 2; einfluss = 5; }
+      else if (tag === "gering") { unsicherheit = 2; einfluss = 2; }
       data.annahmen = [
         ...(data.annahmen ?? []),
-        { text, unsicherheit: 3, einfluss: 3 },
+        { text: value, unsicherheit, einfluss },
       ];
       return;
+    }
     case "success-constraints":
       data.constraints = pushUnique(data.constraints, text);
       return;
