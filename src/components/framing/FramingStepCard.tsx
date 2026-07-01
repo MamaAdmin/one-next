@@ -433,20 +433,13 @@ function applySuggestion(
       return;
     }
     case "sailboat": {
-      const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
       const m = text.match(/^\[(Wind|Anker|Hafen|Eisberg)\]\s*(.+)$/i);
-      if (m) {
-        const bucket = m[1].toLowerCase();
-        const value = m[2].trim();
-        if (bucket === "wind") sb.wind = pushUnique(sb.wind, value);
-        else if (bucket === "anker") sb.anker = pushUnique(sb.anker, value);
-        else if (bucket === "hafen")
-          sb.hafen = sb.hafen ? `${sb.hafen}\n${value}` : value;
-        else if (bucket === "eisberg") sb.eisberg = pushUnique(sb.eisberg, value);
-      } else {
-        sb.wind = pushUnique(sb.wind, text);
-      }
-      data.sailboat = sb;
+      const bucket = m ? m[1].toLowerCase() : "wind";
+      const value = m ? m[2].trim() : text;
+      if (bucket === "wind") data.kiWind = pushUnique(data.kiWind, value);
+      else if (bucket === "anker") data.kiAnker = pushUnique(data.kiAnker, value);
+      else if (bucket === "hafen") data.kiHafen = pushUnique(data.kiHafen, value);
+      else if (bucket === "eisberg") data.kiEisberg = pushUnique(data.kiEisberg, value);
       return;
     }
     case "five-whys": {
@@ -1199,6 +1192,13 @@ function VariantSailboat({
       pending={pendingBucket === bucket}
     />
   );
+  const removeKi = (
+    key: "kiWind" | "kiAnker" | "kiHafen" | "kiEisberg",
+    index: number,
+  ) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
+  };
   return (
     <div className="space-y-6">
       <div className="flex justify-center">
@@ -1210,6 +1210,10 @@ function VariantSailboat({
           items={sb.wind}
           onChange={(v) => set({ wind: v })}
         />
+        <AcceptedKiList
+          items={data.kiWind ?? []}
+          onRemove={(i) => removeKi("kiWind", i)}
+        />
         {inline("wind")}
       </CanvasSection>
       <CanvasSection title="Anker – Hindernisse">
@@ -1217,6 +1221,10 @@ function VariantSailboat({
           label="Eigene Anmerkungen"
           items={sb.anker}
           onChange={(v) => set({ anker: v })}
+        />
+        <AcceptedKiList
+          items={data.kiAnker ?? []}
+          onRemove={(i) => removeKi("kiAnker", i)}
         />
         {inline("anker")}
       </CanvasSection>
@@ -1227,6 +1235,10 @@ function VariantSailboat({
           onChange={(v) => set({ hafen: v.join("\n") })}
           placeholder="Wohin wollen wir?"
         />
+        <AcceptedKiList
+          items={data.kiHafen ?? []}
+          onRemove={(i) => removeKi("kiHafen", i)}
+        />
         {inline("hafen")}
       </CanvasSection>
       <CanvasSection title="Eisberg – Risiken">
@@ -1234,6 +1246,10 @@ function VariantSailboat({
           label="Eigene Anmerkungen"
           items={sb.eisberg}
           onChange={(v) => set({ eisberg: v })}
+        />
+        <AcceptedKiList
+          items={data.kiEisberg ?? []}
+          onRemove={(i) => removeKi("kiEisberg", i)}
         />
         {inline("eisberg")}
       </CanvasSection>

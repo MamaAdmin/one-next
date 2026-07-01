@@ -66,6 +66,11 @@ export interface FramingStepData {
     hafen: string;
     eisberg: string[];
   };
+  // Step 4 – Übernommene KI-Vorschläge (getrennt von User-Eingaben)
+  kiWind?: string[];
+  kiAnker?: string[];
+  kiHafen?: string[];
+  kiEisberg?: string[];
   // Step 5
   fiveWhys?: string[];
   ursachen?: Array<{ text: string; cynefin: Cynefin; adressierbar: boolean }>;
