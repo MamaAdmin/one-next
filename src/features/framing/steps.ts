@@ -3,7 +3,8 @@ export type FramingVariant =
   | "two-fields" // 2
   | "stakeholder" // 3
   | "sailboat" // 4
-  | "five-whys" // 5
+  | "five-whys" // 5  – Root Cause (5 Whys + Ursachen sammeln)
+  | "cynefin" // 5b – Cynefin-Klassifikation (auto-generiert aus 5)
   | "assumptions" // 6
   | "success-constraints" // 7
   | "scope-questions" // 8
@@ -12,7 +13,7 @@ export type FramingVariant =
 
 export interface FramingStepDef {
   key: string;
-  index: number; // 1..10
+  index: number; // 1..N (Navigation-Cursor)
   title: string;
   frage: string;
   arbeit: string;
@@ -21,6 +22,8 @@ export interface FramingStepDef {
   nutztDatenAus: string[];
 }
 
+// Hinweis: `key` bleibt stabil (Datenmigration-freundlich), `index` wird für die
+// Navigation verwendet. Nach Schritt 5 wurde `5b` (Cynefin) eingeschoben.
 export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "1",
@@ -67,27 +70,39 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "5",
     index: 5,
-    title: "5. Root Cause & Cynefin",
-    frage: "5 Whys – welche Ursachen sind adressierbar?",
-    arbeit: "Ursachenkette vertiefen und jede Ursache nach Cynefin einordnen.",
-    timeboxMin: 20,
+    title: "5. Root Cause (5 Whys)",
+    frage: "Was steckt wirklich dahinter? – 5 Whys",
+    arbeit:
+      "Ursachenkette mit 5 Whys vertiefen und die relevanten Ursachen als Liste festhalten. Die Cynefin-Einordnung passiert automatisch im nächsten Schritt.",
+    timeboxMin: 15,
     variant: "five-whys",
     nutztDatenAus: ["1", "2", "3", "4"],
   },
   {
-    key: "6",
+    key: "5b",
     index: 6,
-    title: "6. Annahmen & Risiken",
+    title: "6. Cynefin-Einordnung",
+    frage: "Welche Ursachen sind einfach, kompliziert, komplex oder chaotisch – und adressierbar?",
+    arbeit:
+      "Die Ursachen aus Schritt 5 werden automatisch übernommen. Klassifikation und Adressierbarkeit bei Bedarf anpassen.",
+    timeboxMin: 15,
+    variant: "cynefin",
+    nutztDatenAus: ["5"],
+  },
+  {
+    key: "6",
+    index: 7,
+    title: "7. Annahmen & Risiken",
     frage: "Welche Annahmen sind hoch-unsicher UND hoch-wirksam?",
     arbeit: "Annahmen sammeln und in 2×2-Matrix nach Unsicherheit × Einfluss einordnen.",
     timeboxMin: 20,
     variant: "assumptions",
-    nutztDatenAus: ["1", "2", "3", "4", "5"],
+    nutztDatenAus: ["1", "2", "3", "4", "5", "5b"],
   },
   {
     key: "7",
-    index: 7,
-    title: "7. Erfolg & Constraints",
+    index: 8,
+    title: "8. Erfolg & Constraints",
     frage: "Woran messen wir Erfolg in 5 Tagen – was ist gesetzt?",
     arbeit: "Messbares 5-Tages-Ergebnis definieren und harte Randbedingungen festhalten.",
     timeboxMin: 20,
@@ -96,18 +111,18 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   },
   {
     key: "8",
-    index: 8,
-    title: "8. Scope-Cut & Sprint-Fragen",
+    index: 9,
+    title: "9. Scope-Cut & Sprint-Fragen",
     frage: "Was gehört rein, was raus – welche Entscheidungsfragen klärt der Sprint?",
     arbeit: "In/Out of Scope trennen und Sprint-Fragen als 'Können wir …?' formulieren.",
     timeboxMin: 25,
     variant: "scope-questions",
-    nutztDatenAus: ["5", "6", "7"],
+    nutztDatenAus: ["5", "5b", "6", "7"],
   },
   {
     key: "9",
-    index: 9,
-    title: "9. Priorisierung (NUF)",
+    index: 10,
+    title: "10. Priorisierung (NUF)",
     frage: "Welche Challenge ist Neu, Nützlich und Machbar?",
     arbeit: "Sprint-Fragen nach Neuheit, Nutzen, Machbarkeit bewerten und Top-1 wählen.",
     timeboxMin: 15,
@@ -116,13 +131,13 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   },
   {
     key: "10",
-    index: 10,
-    title: "10. Entscheidung & Next Steps",
+    index: 11,
+    title: "11. Entscheidung & Next Steps",
     frage: "Sprint-Go? Was muss vorher passieren?",
     arbeit: "Sprint-Go bestätigen und Pre-Sprint-To-dos festhalten.",
     timeboxMin: 15,
     variant: "next-steps",
-    nutztDatenAus: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    nutztDatenAus: ["1", "2", "3", "4", "5", "5b", "6", "7", "8", "9"],
   },
 ];
 
@@ -130,4 +145,9 @@ export function getFramingStep(key: string): FramingStepDef | undefined {
   return FRAMING_STEPS.find((s) => s.key === key);
 }
 
+export function getFramingStepByIndex(index: number): FramingStepDef | undefined {
+  return FRAMING_STEPS.find((s) => s.index === index);
+}
+
 export const FRAMING_TOTAL_MIN = FRAMING_STEPS.reduce((a, s) => a + s.timeboxMin, 0);
+export const FRAMING_STEP_COUNT = FRAMING_STEPS.length;
