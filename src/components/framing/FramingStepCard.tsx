@@ -481,23 +481,44 @@ function VariantTwoFields({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <Label>Warum jetzt?</Label>
-        <Textarea
-          rows={5}
-          value={data.warumJetzt ?? ""}
-          onChange={(e) => patch({ warumJetzt: e.target.value })}
-        />
+    <div className="space-y-4">
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Warum jetzt?</Label>
+          <Textarea
+            rows={5}
+            value={data.warumJetzt ?? ""}
+            onChange={(e) => patch({ warumJetzt: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Default Future – was passiert ohne Handeln?</Label>
+          <Textarea
+            rows={5}
+            value={data.defaultFuture ?? ""}
+            onChange={(e) => patch({ defaultFuture: e.target.value })}
+          />
+        </div>
       </div>
-      <div className="space-y-2">
-        <Label>Default Future – was passiert ohne Handeln?</Label>
-        <Textarea
-          rows={5}
-          value={data.defaultFuture ?? ""}
-          onChange={(e) => patch({ defaultFuture: e.target.value })}
-        />
-      </div>
+      <CanvasSection title="Business-Future (optional) – Wettbewerb, Trends, Chancen">
+        <div className="space-y-4">
+          <ListEditor
+            label="Was machen Wettbewerber / Vergleichbare?"
+            items={data.wettbewerber ?? []}
+            onChange={(v) => patch({ wettbewerber: v })}
+          />
+          <ListEditor
+            label="Trends – für / gegen die Idee"
+            items={data.trends ?? []}
+            onChange={(v) => patch({ trends: v })}
+          />
+          <ListEditor
+            label="Chancen – wo liegen Opportunities?"
+            items={data.chancen ?? []}
+            onChange={(v) => patch({ chancen: v })}
+          />
+        </div>
+      </CanvasSection>
     </div>
   );
 }
