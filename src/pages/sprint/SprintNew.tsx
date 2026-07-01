@@ -281,6 +281,7 @@ export default function SprintNew() {
             </form>
           </CardContent>
         </Card>
+        ) : null}
       </main>
 
       <Footer />
