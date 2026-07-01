@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
 import { supabase } from "@/integrations/supabase/client";
-import { CoursePreview } from "@/components/lms/CoursePreview";
+import { PublicCourseView } from "@/components/course/PublicCourseView";
 import { LessonsList } from "@/components/lms/LessonsList";
 import { QuizView } from "@/components/lms/QuizView";
 import { categoryLabels } from "@/lib/categoryMappings";
@@ -141,18 +141,33 @@ export default function LMSCourseDetail() {
         </Link>
       </div>
 
-      {/* Kursvorschau */}
+      {/* Kursvorschau im Public-Layout */}
       {courseData && (
-        <div className="mb-8">
-          <CoursePreview
-            course={courseData}
-            enrollment={currentEnrollment ?? undefined}
+        <div className="mb-8 -mx-4">
+          <PublicCourseView
+            course={{
+              title: courseData.title,
+              description: courseData.description,
+              description_html: courseData.description_html || courseData.description,
+              price_chf: courseData.price_chf,
+              thumbnail_url: courseData.thumbnail_url,
+              featured_image: courseData.featured_image,
+              youtube_url: courseData.youtube_url,
+            }}
+            primaryCta={{ label: "Zum Lernbereich ↓", onClick: () => {
+              document.getElementById("lms-modules")?.scrollIntoView({ behavior: "smooth" });
+            }}}
+            secondaryCta={{ label: "Alle Kurse", href: "/lms" }}
+            showQuote={false}
+            ctaSectionEyebrow="Lernen"
+            ctaSectionTitle="Bereit weiterzumachen?"
+            ctaSectionSubtitle="Setzen Sie Ihren Lernfortschritt fort und schließen Sie den Kurs ab."
           />
         </div>
       )}
 
       {/* Modulnavigation */}
-      <div className="mb-6">
+      <div id="lms-modules" className="mb-6 scroll-mt-32">
         <h2 className="text-2xl font-bold mb-2">Kursmodule</h2>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">
