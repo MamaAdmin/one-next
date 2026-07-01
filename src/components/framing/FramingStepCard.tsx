@@ -547,29 +547,37 @@ function VariantTwoFields({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Warum jetzt?</Label>
-          <Textarea
-            rows={5}
-            value={data.warumJetzt ?? ""}
-            onChange={(e) => patch({ warumJetzt: e.target.value })}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Default Future – was passiert ohne Handeln?</Label>
-          <Textarea
-            rows={5}
-            value={data.defaultFuture ?? ""}
-            onChange={(e) => patch({ defaultFuture: e.target.value })}
-          />
-        </div>
-      </div>
-      <CanvasSection title="Business-Future (optional) – Wettbewerb, Trends, Chancen">
+    <div className="space-y-6">
+      <CanvasSection title="Present – Warum jetzt?">
+        <Textarea
+          rows={4}
+          value={data.warumJetzt ?? ""}
+          onChange={(e) => patch({ warumJetzt: e.target.value })}
+          placeholder="Was macht das Thema gerade jetzt dringlich?"
+        />
+      </CanvasSection>
+
+      <CanvasSection title="Past – Was wurde bisher versucht?">
+        <PastAttemptsEditor
+          items={data.frueherVersucht ?? []}
+          onChange={(v) => patch({ frueherVersucht: v })}
+          placeholder="z. B. Interne Schulung im Q2/2024"
+        />
+      </CanvasSection>
+
+      <CanvasSection title="Future – Default Future (was passiert ohne Handeln?)">
+        <Textarea
+          rows={4}
+          value={data.defaultFuture ?? ""}
+          onChange={(e) => patch({ defaultFuture: e.target.value })}
+          placeholder="Realistisches Bild der Zukunft, wenn wir nichts tun …"
+        />
+      </CanvasSection>
+
+      <CanvasSection title="Business-Future – Wettbewerb, Trends, Chancen">
         <div className="space-y-4">
           <ListEditor
-            label="Was machen Wettbewerber / Vergleichbare?"
+            label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
             items={data.wettbewerber ?? []}
             onChange={(v) => patch({ wettbewerber: v })}
           />
