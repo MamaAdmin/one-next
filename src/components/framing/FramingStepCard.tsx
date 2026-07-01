@@ -261,16 +261,30 @@ function StepVariant({
   step,
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
 }: {
   step: FramingStepDef;
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
 }) {
   switch (step.variant) {
     case "context-list":
       return <VariantContextList data={data} patch={patch} />;
     case "two-fields":
-      return <VariantTwoFields data={data} patch={patch} />;
+      return (
+        <VariantTwoFields
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+        />
+      );
     case "stakeholder":
       return <VariantStakeholder data={data} patch={patch} />;
     case "sailboat":
