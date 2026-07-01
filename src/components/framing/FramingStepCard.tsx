@@ -738,7 +738,9 @@ type StakeholderBucket = "stakeholder" | "geparkt" | "heute" | "paingain";
 
 type KickoffBucket = "kontext" | "nichtziel";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket;
+type SailboatBucket = "wind" | "anker" | "hafen" | "eisberg";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
