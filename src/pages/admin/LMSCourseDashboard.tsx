@@ -48,6 +48,8 @@ export default function LMSCourseDashboard() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedCourses, setSelectedCourses] = useState<Set<string>>(new Set());
 
+  const [filterPublic, setFilterPublic] = useState<string>("all");
+
   const filteredAndSortedCourses = useMemo(() => {
     let result = courses.filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,7 +58,10 @@ export default function LMSCourseDashboard() {
       const matchesStatus = filterStatus === "all" ||
         (filterStatus === "published" && course.visibility === "public") ||
         (filterStatus === "draft" && course.visibility === "draft");
-      return matchesSearch && matchesCategory && matchesStatus;
+      const matchesPublic = filterPublic === "all" ||
+        (filterPublic === "public" && (course as any).is_public === true) ||
+        (filterPublic === "private" && !(course as any).is_public);
+      return matchesSearch && matchesCategory && matchesStatus && matchesPublic;
     });
 
     result.sort((a, b) => {
@@ -72,7 +77,7 @@ export default function LMSCourseDashboard() {
     });
 
     return result;
-  }, [courses, searchQuery, filterCategory, filterStatus, sortBy, sortOrder]);
+  }, [courses, searchQuery, filterCategory, filterStatus, filterPublic, sortBy, sortOrder]);
 
   const toggleSort = (column: "title" | "date") => {
     if (sortBy === column) {
@@ -174,6 +179,16 @@ export default function LMSCourseDashboard() {
                       <SelectItem value="draft">Entwurf</SelectItem>
                     </SelectContent>
                   </Select>
+                  <Select value={filterPublic} onValueChange={setFilterPublic}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Sichtbarkeit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Alle Kurse</SelectItem>
+                      <SelectItem value="public">Public</SelectItem>
+                      <SelectItem value="private">Nicht public</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button variant="outline" size="icon">
                     <DownloadIcon className="h-4 w-4" />
                   </Button>
@@ -221,6 +236,7 @@ export default function LMSCourseDashboard() {
                       </div>
                     </TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Sichtbarkeit</TableHead>
                     <TableHead>Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -299,6 +315,14 @@ export default function LMSCourseDashboard() {
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        <Badge
+                          variant={(course as any).is_public ? "default" : "outline"}
+                          className={(course as any).is_public ? "bg-primary hover:bg-primary/90" : ""}
+                        >
+                          {(course as any).is_public ? "Public" : "Nicht public"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm">
@@ -317,6 +341,19 @@ export default function LMSCourseDashboard() {
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => navigate(`/admin/lms/modules?course=${course.id}`)}>
                               Module verwalten
+                            </DropdownMenuItem>
+                            {(course as any).is_public && (course as any).public_course_id && (
+                              <DropdownMenuItem onClick={() => navigate(`/admin/kurse?course=${(course as any).public_course_id}`)}>
+                                Termine &amp; Anmeldungen
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                              onClick={async () => {
+                                await updateCourse(course.id, { is_public: !(course as any).is_public } as any);
+                                reload();
+                              }}
+                            >
+                              {(course as any).is_public ? "Als Nicht public setzen" : "Als Public setzen"}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={async () => {

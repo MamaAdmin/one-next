@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { usePublicCourses, useCourseDates, useCourseRegistrations, PublicCourse } from "@/hooks/usePublicCourses";
 import { usePublicCourseModules, PublicCourseModule } from "@/hooks/usePublicCourseModules";
 import Navigation from "@/components/Navigation";
@@ -19,10 +20,16 @@ import { Loader2, Plus, Trash2, Calendar, Users, Video, Edit, BookOpen, ArrowUp,
 
 export default function PublicCourseDashboard() {
   const { courses, loading, createCourse, updateCourse, deleteCourse } = usePublicCourses();
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const preselectedId = searchParams.get("course");
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(preselectedId);
   const { dates, addDate, deleteDate } = useCourseDates(selectedCourseId);
   const { registrations } = useCourseRegistrations(selectedCourseId || undefined);
   const { modules, addModule, updateModule, deleteModule } = usePublicCourseModules(selectedCourseId);
+
+  useEffect(() => {
+    if (preselectedId) setSelectedCourseId(preselectedId);
+  }, [preselectedId]);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDateOpen, setIsDateOpen] = useState(false);
@@ -145,6 +152,11 @@ export default function PublicCourseDashboard() {
       <Navigation />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-32 flex-1 space-y-8">
+        <div className="rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
+          Hinweis: Kurs-Grunddaten (Titel, Beschreibung, Preis, Sichtbarkeit) werden jetzt in der{" "}
+          <a href="/admin/lms/courses" className="underline text-primary">LMS Kursverwaltung</a>{" "}
+          gepflegt. Hier verwalten Sie ausschließlich Termine, Module und Anmeldungen für Public Kurse.
+        </div>
         {/* Kurse */}
         <Card>
           <CardHeader>

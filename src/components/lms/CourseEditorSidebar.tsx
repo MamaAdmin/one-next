@@ -505,13 +505,16 @@ export const CourseEditorSidebar = ({ formData, onChange }: CourseEditorSidebarP
                 </SelectContent>
               </Select>
               <div className="flex items-center justify-between">
-                <Label htmlFor="public">Öffentlicher Kurs</Label>
+                <Label htmlFor="public">Öffentlicher Kurs (Public)</Label>
                 <Switch
                   id="public"
-                  checked={formData.options.public_course}
-                  onCheckedChange={(value) => onChange("options", { ...formData.options, public_course: value })}
+                  checked={formData.is_public}
+                  onCheckedChange={(value) => onChange("is_public", value)}
                 />
               </div>
+              <p className="text-xs text-muted-foreground">
+                Als "Public" markiert erscheint der Kurs im öffentlichen Kursangebot (Termine &amp; Anmeldungen).
+              </p>
             </TabsContent>
             <TabsContent value="enroll" className="space-y-3 mt-3">
               <div className="flex items-center justify-between">

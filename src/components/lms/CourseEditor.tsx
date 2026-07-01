@@ -36,6 +36,8 @@ export interface CourseFormData {
   categories: string[];
   tags: string[];
   author_id: string | null;
+  is_public: boolean;
+  public_course_id: string | null;
   options: {
     public_course: boolean;
     manual_enrollment: boolean;
@@ -61,6 +63,8 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
     categories: [],
     tags: [],
     author_id: null,
+    is_public: false,
+    public_course_id: null,
     options: { public_course: true, manual_enrollment: false, content_drip: [] },
   });
 
@@ -113,6 +117,8 @@ export const CourseEditor = ({ courseId, onSave }: CourseEditorProps) => {
         categories: (data.categories as string[]) || [],
         tags: (data.tags as string[]) || [],
         author_id: data.author_id || null,
+        is_public: (data as any).is_public ?? false,
+        public_course_id: (data as any).public_course_id ?? null,
         options: (data.options as any) || { public_course: true, manual_enrollment: false, content_drip: [] },
       });
     } catch (error: any) {
