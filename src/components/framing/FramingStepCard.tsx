@@ -92,19 +92,32 @@ export default function FramingStepCard({
   }
 
   async function loadSuggestions(field?: string) {
+    setPendingBucket(field ?? "__all__");
     try {
       const res = await suggest.mutateAsync({
         session_id: sessionId,
         step_key: step.key,
         field,
       });
-      setVorschlaege(res.vorschlaege ?? []);
+      const incoming = res.vorschlaege ?? [];
+      if (step.variant === "two-fields" && field) {
+        // Replace only this bucket's suggestions, keep others
+        const bucket = field.toLowerCase();
+        setVorschlaege((prev) => [
+          ...prev.filter((v) => bucketOfTwoFieldsSuggestion(v) !== bucket),
+          ...incoming,
+        ]);
+      } else {
+        setVorschlaege(incoming);
+      }
     } catch (e) {
       toast({
         title: "KI-Vorschläge fehlgeschlagen",
         description: e instanceof Error ? e.message : "Unbekannter Fehler",
         variant: "destructive",
       });
+    } finally {
+      setPendingBucket(null);
     }
   }
 
