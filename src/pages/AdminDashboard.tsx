@@ -84,10 +84,11 @@ const AdminDashboard = () => {
           </Card>
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
               <TabsTrigger value="bmad">BMAD</TabsTrigger>
+              <TabsTrigger value="sprints">Sprints</TabsTrigger>
               <TabsTrigger value="users">Benutzer</TabsTrigger>
             </TabsList>
 
