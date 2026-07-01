@@ -412,6 +412,61 @@ const UserRoleManager = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Neuen Benutzer einladen</DialogTitle>
+            <DialogDescription>
+              Der Nutzer erhält eine E-Mail mit einem Link zum Setzen seines Passworts.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="invite-name">Voller Name</Label>
+              <Input
+                id="invite-name"
+                value={inviteName}
+                onChange={(e) => setInviteName(e.target.value)}
+                placeholder="Max Mustermann"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="invite-email">E-Mail</Label>
+              <Input
+                id="invite-email"
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="name@beispiel.de"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="invite-role">Rolle</Label>
+              <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as AppRole)}>
+                <SelectTrigger id="invite-role">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {AVAILABLE_ROLES.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setInviteOpen(false)} disabled={inviting}>
+              Abbrechen
+            </Button>
+            <Button onClick={handleInvite} disabled={inviting}>
+              {inviting ? "Wird versendet…" : "Einladung senden"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
