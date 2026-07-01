@@ -2526,6 +2526,47 @@ export type Database = {
         }
         Relationships: []
       }
+      sprint_invitations: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          revoked: boolean
+          role: string
+          sprint_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          id?: string
+          revoked?: boolean
+          role: string
+          sprint_id: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          revoked?: boolean
+          role?: string
+          sprint_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sprint_invitations_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sprint_members: {
         Row: {
           created_at: string
@@ -2833,6 +2874,10 @@ export type Database = {
         Returns: undefined
       }
       calculate_streak: { Args: { p_participant_id: string }; Returns: number }
+      can_edit_sprint: {
+        Args: { _sprint_id: string; _user_id: string }
+        Returns: boolean
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -2918,6 +2963,7 @@ export type Database = {
         Args: { faq_id: string; is_helpful: boolean }
         Returns: undefined
       }
+      redeem_sprint_invitation: { Args: { p_token: string }; Returns: string }
     }
     Enums: {
       app_role:
