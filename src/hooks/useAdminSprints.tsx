@@ -104,9 +104,9 @@ export function useAdminSprintDetail(id: string | undefined) {
         rolle: string;
       }>;
 
-      const profileIds = [
+      const profileIds: string[] = [
         (sprint as unknown as SprintRow).owner_id,
-        ...memberList.map((m) => m.user_id),
+        ...memberList.map((m) => m.user_id).filter((u): u is string => !!u),
       ];
       const profiles = await fetchProfiles(profileIds);
       const s = sprint as unknown as SprintRow;
@@ -120,7 +120,7 @@ export function useAdminSprintDetail(id: string | undefined) {
         steps: (steps ?? []) as unknown as SprintStepRow[],
         members: memberList.map((m) => ({
           ...m,
-          profile: profiles[m.user_id] ?? null,
+          profile: m.user_id ? profiles[m.user_id] ?? null : null,
         })),
       };
     },
