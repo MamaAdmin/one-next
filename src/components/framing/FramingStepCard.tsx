@@ -295,7 +295,7 @@ function applySuggestion(
       data.nichtZiele = pushUnique(data.nichtZiele, text);
       return;
     case "two-fields": {
-      const m = text.match(/^\[(Present|Past|Future|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
+      const m = text.match(/^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
       const bucket = m ? m[1].toLowerCase() : "future";
       const value = m ? m[2].trim() : text;
       if (bucket === "present") {
