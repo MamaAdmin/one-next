@@ -1,14 +1,33 @@
 ## Ziel
-Die aufklappbaren Topic-Abschnitte (CanvasSection) sollen deutlicher als klickbar erkennbar sein: eigenes Icon, akzentuierte Farbe und Hover-Feedback.
+Klare Trennung zwischen Eigenem und KI. Der Text der KI wandert nie ins User-Feld, sondern in eine getrennte KI-Liste unter dem User-Feld.
 
-## Änderung in `src/components/framing/CanvasSection.tsx`
+## Datenmodell (`src/features/framing/types.ts`)
 
-- Chevron-Icon (`ChevronRight` aus `lucide-react`) links vor dem Titel; rotiert per `group-open:rotate-90` beim Öffnen.
-- Text "öffnen" / "schließen" rechts erhalten, aber in der Primärfarbe (`text-primary`) mit `font-medium` statt gedämpftem Grau — klare visuelle Handlungsaufforderung.
-- Header selbst: `hover:bg-muted/60` und `text-foreground` statt `text-muted-foreground`, damit der ganze Balken erkennbar klickbar wirkt.
-- Border wird beim Öffnen dezent zur Primärfarbe (`group-open:border-primary/40`), damit klar ist, welcher Abschnitt aktiv ist.
-- Icon und Text-Label per Flex sauber ausrichten, Padding leicht erhöhen für bessere Klickfläche.
+Zusätzliche Arrays für persistente KI-Übernahmen im Two-Fields-Schritt:
+- `kiWarumJetzt?: string[]`
+- `kiDefaultFuture?: string[]`
+- `kiWettbewerber?: string[]`
+- `kiTrends?: string[]`
+- `kiChancen?: string[]`
+
+`warumJetzt` und `defaultFuture` bleiben unverändert (User-Text bzw. User-Liste).
+
+## UI in `src/components/framing/FramingStepCard.tsx` – Two-Fields-Schritt
+
+Pro Bucket (Gegenwart, Zukunft, Wettbewerb, Trends, Chancen) drei klar getrennte Bereiche in dieser Reihenfolge:
+
+1. **Eigene Anmerkungen** – bestehendes Textarea bzw. ListEditor, Label auf „Eigene Anmerkungen" vereinheitlicht.
+2. **Übernommene KI-Vorschläge** – neue Liste im Accent-Look (`border-accent/60 bg-accent-soft text-accent-foreground`) mit X-Button zum Entfernen. Nur sichtbar, wenn Items vorhanden. Zeigt Inhalte aus dem passenden `ki*`-Array.
+3. **KI-Vorschläge** – bestehender Bereich mit KI-Button + Kartenliste. „Übernehmen" pusht den Text in das passende `ki*`-Array (statt in `warumJetzt`/`wettbewerber`/…) und entfernt die Karte aus dem Vorschlagsstack.
+
+Vergangenheit bleibt ohne KI wie bisher.
+
+## `applySuggestion` (two-fields)
+
+Statt in User-Felder zu schreiben, nach Bucket in das jeweilige `ki*`-Array pushen. `pushUnique` bleibt bestehen. Keine Änderung an anderen Varianten.
 
 ## Nicht Teil dieser Änderung
-- Kein Umbau der KI-Vorschläge, der Feldinhalte oder anderer Schritte.
-- Keine Änderung an CanvasSection-Aufrufern — API bleibt identisch (`title`, `children`).
+
+- Backend / Edge-Function unverändert.
+- Andere Schritte (`context-list`, `stakeholder`, `sailboat`, `five-whys`, `cynefin`, `assumptions`, `success-constraints`, `scope-questions`, `nuf`, `next-steps`) bleiben unverändert.
+- Challenge-Statement-Generator liest die neuen `ki*`-Felder nicht automatisch – falls die KI-Punkte dort einfließen sollen, klären wir das in einem eigenen Schritt.

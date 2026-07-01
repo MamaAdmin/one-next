@@ -357,27 +357,19 @@ function applySuggestion(
       const bucket = m ? m[1].toLowerCase() : "future";
       const value = m ? m[2].trim() : text;
       if (bucket === "present" || bucket === "gegenwart") {
-        const cur = data.warumJetzt ?? "";
-        data.warumJetzt = cur ? `${cur}\n• ${value}` : `• ${value}`;
+        data.kiWarumJetzt = pushUnique(data.kiWarumJetzt, value);
       } else if (bucket === "past" || bucket === "vergangenheit") {
-        data.frueherVersucht = [
-          ...(data.frueherVersucht ?? []),
-          { text: value, ergebnis: "didnt-work" },
-        ];
+        // Vergangenheit hat keine KI-Übernahme (User-only)
+        return;
       } else if (bucket === "wettbewerb") {
-        data.wettbewerber = pushUnique(data.wettbewerber, value);
+        data.kiWettbewerber = pushUnique(data.kiWettbewerber, value);
       } else if (bucket === "trends") {
-        data.trends = pushUnique(data.trends, value);
+        data.kiTrends = pushUnique(data.kiTrends, value);
       } else if (bucket === "chancen") {
-        data.chancen = pushUnique(data.chancen, value);
+        data.kiChancen = pushUnique(data.kiChancen, value);
       } else {
-        // future / default future → array
-        const current = Array.isArray(data.defaultFuture)
-          ? data.defaultFuture
-          : data.defaultFuture
-            ? [data.defaultFuture]
-            : [];
-        data.defaultFuture = pushUnique(current, value);
+        // future / default future
+        data.kiDefaultFuture = pushUnique(data.kiDefaultFuture, value);
       }
       return;
     }
@@ -745,6 +737,42 @@ function InlineSuggestions({
   );
 }
 
+function AcceptedKiList({
+  items,
+  onRemove,
+}: {
+  items: string[];
+  onRemove: (i: number) => void;
+}) {
+  if (items.length === 0) return null;
+  return (
+    <div className="mt-2 space-y-1.5">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-accent-foreground/80">
+        <Sparkles className="w-3.5 h-3.5" /> Übernommene KI-Vorschläge
+      </div>
+      <ul className="space-y-1.5">
+        {items.map((v, i) => (
+          <li
+            key={i}
+            className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-accent-foreground"
+          >
+            <span className="flex-1 whitespace-pre-wrap">{v}</span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => onRemove(i)}
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function VariantTwoFields({
   data,
   patch,
@@ -772,24 +800,41 @@ function VariantTwoFields({
       pending={pendingBucket === bucket}
     />
   );
+  const removeKi = (
+    key: "kiWarumJetzt" | "kiDefaultFuture" | "kiWettbewerber" | "kiTrends" | "kiChancen",
+    index: number,
+  ) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
+  };
   return (
     <div className="space-y-6">
       <CanvasSection title="Gegenwart – Warum jetzt?">
-        <Textarea
-          rows={4}
-          value={data.warumJetzt ?? ""}
-          onChange={(e) => patch({ warumJetzt: e.target.value })}
-          placeholder="Was macht das Thema gerade jetzt dringlich?"
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={4}
+            value={data.warumJetzt ?? ""}
+            onChange={(e) => patch({ warumJetzt: e.target.value })}
+            placeholder="Was macht das Thema gerade jetzt dringlich?"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiWarumJetzt ?? []}
+          onRemove={(i) => removeKi("kiWarumJetzt", i)}
         />
         {inline("gegenwart")}
       </CanvasSection>
 
       <CanvasSection title="Vergangenheit – Was wurde bisher versucht?">
-        <PastAttemptsEditor
-          items={data.frueherVersucht ?? []}
-          onChange={(v) => patch({ frueherVersucht: v })}
-          placeholder="z. B. Interne Schulung im Q2/2024"
-        />
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <PastAttemptsEditor
+            items={data.frueherVersucht ?? []}
+            onChange={(v) => patch({ frueherVersucht: v })}
+            placeholder="z. B. Interne Schulung im Q2/2024"
+          />
+        </div>
         <p className="mt-2 text-xs text-muted-foreground">
           Hier zählen deine eigenen Erfahrungen – bitte selbst eintragen.
         </p>
@@ -797,7 +842,7 @@ function VariantTwoFields({
 
       <CanvasSection title="Zukunft – Standard-Zukunft (was passiert ohne Handeln?)">
         <ListEditor
-          label="Standard-Zukunft – realistisches Bild, wenn wir nichts tun"
+          label="Eigene Anmerkungen"
           items={
             Array.isArray(data.defaultFuture)
               ? data.defaultFuture
@@ -810,6 +855,10 @@ function VariantTwoFields({
           rows={3}
           placeholder="z. B. Marktanteil sinkt weiter, Team verliert Motivation …"
         />
+        <AcceptedKiList
+          items={data.kiDefaultFuture ?? []}
+          onRemove={(i) => removeKi("kiDefaultFuture", i)}
+        />
         {inline("zukunft")}
       </CanvasSection>
 
@@ -817,34 +866,46 @@ function VariantTwoFields({
         <div className="space-y-4">
           <div>
             <ListEditor
-              label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
+              label="Eigene Anmerkungen – Wettbewerb"
               items={data.wettbewerber ?? []}
               onChange={(v) => patch({ wettbewerber: v })}
               multiline
               rows={3}
               placeholder="z. B. Anbieter X setzt seit 2024 auf …"
             />
+            <AcceptedKiList
+              items={data.kiWettbewerber ?? []}
+              onRemove={(i) => removeKi("kiWettbewerber", i)}
+            />
             {inline("wettbewerb")}
           </div>
           <div>
             <ListEditor
-              label="Trends – für / gegen die Idee"
+              label="Eigene Anmerkungen – Trends"
               items={data.trends ?? []}
               onChange={(v) => patch({ trends: v })}
               multiline
               rows={3}
               placeholder="z. B. Regulatorik, Marktbewegung, Technologie …"
             />
+            <AcceptedKiList
+              items={data.kiTrends ?? []}
+              onRemove={(i) => removeKi("kiTrends", i)}
+            />
             {inline("trends")}
           </div>
           <div>
             <ListEditor
-              label="Chancen – wo liegen Opportunities?"
+              label="Eigene Anmerkungen – Chancen"
               items={data.chancen ?? []}
               onChange={(v) => patch({ chancen: v })}
               multiline
               rows={3}
               placeholder="z. B. Neue Zielgruppe, Partnerschaft, Kanal …"
+            />
+            <AcceptedKiList
+              items={data.kiChancen ?? []}
+              onRemove={(i) => removeKi("kiChancen", i)}
             />
             {inline("chancen")}
           </div>
