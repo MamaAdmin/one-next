@@ -50,8 +50,10 @@ export default function FramingWorkspace() {
     return () => clearInterval(t);
   }, [running]);
 
-  const completedCount = steps.filter((s) => !!s.completed_at).length;
-  const progressPct = (completedCount / FRAMING_STEPS.length) * 100;
+  const realSteps = FRAMING_STEPS.filter((s) => s.variant !== "intro");
+  const completedCount = steps.filter((s) => !!s.completed_at && s.step_key !== "intro").length;
+  const progressPct = (completedCount / realSteps.length) * 100;
+
 
   async function handleSave(data: FramingStepData, opts?: { completed?: boolean }) {
     await saveStep.mutateAsync({ step_key: currentDef.key, data, completed: opts?.completed });
