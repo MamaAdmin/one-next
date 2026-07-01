@@ -123,6 +123,14 @@ export default function SprintDashboard() {
 
         <Footer />
       </div>
+
+      {editing ? (
+        <SprintBasicsEditDialog
+          sprint={editing}
+          open={!!editing}
+          onOpenChange={(o) => !o && setEditing(null)}
+        />
+      ) : null}
     </>
   );
 }
