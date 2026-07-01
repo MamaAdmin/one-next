@@ -1,13 +1,16 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Sparkles } from "lucide-react";
+import { Pencil, Plus, Sparkles } from "lucide-react";
 import { useMySprints } from "@/hooks/useSprint";
 import { getStepDef } from "@/features/sprint/steps";
 import { SEO } from "@/components/SEO";
+import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
+import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
