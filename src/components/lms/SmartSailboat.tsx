@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Wind, Ship, Anchor, Mountain, X, Download, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
 
 interface SailboatData {
   wind: string[];
@@ -241,7 +242,7 @@ ${sailboatData.eisberg.length > 0 ? sailboatData.eisberg.map(item => `- ${item}`
         </CardHeader>
         <CardContent>
           <div className="flex justify-center">
-            
+            <SailboatIllustration className="w-full max-w-2xl h-auto rounded-2xl border bg-gradient-hero shadow-card" />
           </div>
         </CardContent>
       </Card>
