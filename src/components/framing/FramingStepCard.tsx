@@ -131,14 +131,21 @@ export default function FramingStepCard({
     }
   }
 
+  if (step.variant === "intro") {
+    return <IntroSlide onNext={onNext} />;
+  }
+
+  const realStepCount = FRAMING_STEPS.filter((s) => s.variant !== "intro").length;
+
   return (
     <Card className="border-none shadow-xl">
       <CardContent className="p-6 lg:p-8 space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <Badge variant="secondary" className="mb-2">
-              Timebox {step.timeboxMin} Min · Schritt {step.index} von {FRAMING_STEPS.length}
+              Timebox {step.timeboxMin} Min · Schritt {step.index} von {realStepCount}
             </Badge>
+
             <h2 className="text-2xl font-bold">{step.title}</h2>
             <p className="text-muted-foreground mt-1">{step.frage}</p>
             <p className="text-xs text-muted-foreground mt-2">{step.arbeit}</p>
