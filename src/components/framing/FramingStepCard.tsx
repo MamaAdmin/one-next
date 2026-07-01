@@ -812,7 +812,7 @@ function InlineSuggestions({
         type="button"
         variant="outline"
         size="sm"
-        className="h-8 border-accent bg-accent-soft text-accent-foreground hover:bg-accent hover:text-accent-foreground"
+        className="h-8 !border-accent !bg-accent-soft !text-accent-foreground hover:!bg-accent hover:!text-accent-foreground"
         onClick={onLoadSuggestions}
         disabled={pending}
       >
