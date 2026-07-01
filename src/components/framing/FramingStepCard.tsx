@@ -295,8 +295,28 @@ function applySuggestion(
       data.nichtZiele = pushUnique(data.nichtZiele, text);
       return;
     case "two-fields": {
-      const existing = data.defaultFuture ?? "";
-      data.defaultFuture = existing ? `${existing}\n• ${text}` : `• ${text}`;
+      const m = text.match(/^\[(Present|Past|Future|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
+      const bucket = m ? m[1].toLowerCase() : "future";
+      const value = m ? m[2].trim() : text;
+      if (bucket === "present") {
+        const cur = data.warumJetzt ?? "";
+        data.warumJetzt = cur ? `${cur}\n• ${value}` : `• ${value}`;
+      } else if (bucket === "past") {
+        data.frueherVersucht = [
+          ...(data.frueherVersucht ?? []),
+          { text: value, ergebnis: "didnt-work" },
+        ];
+      } else if (bucket === "wettbewerb") {
+        data.wettbewerber = pushUnique(data.wettbewerber, value);
+      } else if (bucket === "trends") {
+        data.trends = pushUnique(data.trends, value);
+      } else if (bucket === "chancen") {
+        data.chancen = pushUnique(data.chancen, value);
+      } else {
+        // future / default future
+        const cur = data.defaultFuture ?? "";
+        data.defaultFuture = cur ? `${cur}\n• ${value}` : `• ${value}`;
+      }
       return;
     }
     case "stakeholder":
