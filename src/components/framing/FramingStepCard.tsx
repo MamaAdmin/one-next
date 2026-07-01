@@ -1816,7 +1816,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
           <div className="font-semibold mb-2">Farbcode auf einen Blick</div>
           <div className="grid sm:grid-cols-2 gap-3 text-sm">
             <div className="rounded-md border bg-background p-3">
-              <div className="font-medium mb-1">Neutrale UI-Farbe</div>
+              <div className="font-medium mb-1">Neutrale Farbe</div>
               <div className="text-muted-foreground">Eigene Anmerkungen und User-Eingaben.</div>
             </div>
             <div className="rounded-md border border-accent/60 bg-accent-soft p-3 text-accent-foreground">
