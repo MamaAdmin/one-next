@@ -15,7 +15,9 @@ import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
+  const { data: framingSessions } = useMyFramingSessions();
   const [editing, setEditing] = useState<SprintRow | null>(null);
+  const activeFramings = (framingSessions ?? []).filter((f) => f.status === "active");
 
   return (
     <>
