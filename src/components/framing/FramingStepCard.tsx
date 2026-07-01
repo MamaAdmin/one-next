@@ -395,41 +395,62 @@ function ListEditor({
   items,
   onChange,
   placeholder,
+  multiline = false,
+  rows = 3,
 }: {
   label: string;
   items: string[];
   onChange: (next: string[]) => void;
   placeholder?: string;
+  multiline?: boolean;
+  rows?: number;
 }) {
   const [input, setInput] = useState("");
+  const commit = () => {
+    if (input.trim()) {
+      onChange([...items, input.trim()]);
+      setInput("");
+    }
+  };
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <div className="flex gap-2">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={placeholder}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && input.trim()) {
-              e.preventDefault();
-              onChange([...items, input.trim()]);
-              setInput("");
-            }
-          }}
-        />
+      <div className={multiline ? "flex flex-col gap-2" : "flex gap-2"}>
+        {multiline ? (
+          <Textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={placeholder}
+            rows={rows}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && input.trim()) {
+                e.preventDefault();
+                commit();
+              }
+            }}
+          />
+        ) : (
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={placeholder}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && input.trim()) {
+                e.preventDefault();
+                commit();
+              }
+            }}
+          />
+        )}
         <Button
           type="button"
           variant="outline"
-          size="icon"
-          onClick={() => {
-            if (input.trim()) {
-              onChange([...items, input.trim()]);
-              setInput("");
-            }
-          }}
+          size={multiline ? "sm" : "icon"}
+          className={multiline ? "self-end" : ""}
+          onClick={commit}
         >
           <Plus className="w-4 h-4" />
+          {multiline ? <span className="ml-1">Hinzufügen</span> : null}
         </Button>
       </div>
       {items.length > 0 ? (
@@ -437,14 +458,14 @@ function ListEditor({
           {items.map((it, i) => (
             <li
               key={i}
-              className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-1.5 text-sm"
+              className={`flex ${multiline ? "items-start" : "items-center"} justify-between gap-2 rounded-md border bg-background px-3 py-1.5 text-sm`}
             >
-              <span className="flex-1">{it}</span>
+              <span className="flex-1 whitespace-pre-wrap">{it}</span>
               <Button
                 type="button"
                 size="icon"
                 variant="ghost"
-                className="h-6 w-6"
+                className="h-6 w-6 shrink-0"
                 onClick={() => onChange(items.filter((_, j) => j !== i))}
               >
                 <X className="w-3.5 h-3.5" />
@@ -600,16 +621,25 @@ function VariantTwoFields({
             label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
             items={data.wettbewerber ?? []}
             onChange={(v) => patch({ wettbewerber: v })}
+            multiline
+            rows={3}
+            placeholder="z. B. Anbieter X setzt seit 2024 auf …"
           />
           <ListEditor
             label="Trends – für / gegen die Idee"
             items={data.trends ?? []}
             onChange={(v) => patch({ trends: v })}
+            multiline
+            rows={3}
+            placeholder="z. B. Regulatorik, Marktbewegung, Technologie …"
           />
           <ListEditor
             label="Chancen – wo liegen Opportunities?"
             items={data.chancen ?? []}
             onChange={(v) => patch({ chancen: v })}
+            multiline
+            rows={3}
+            placeholder="z. B. Neue Zielgruppe, Partnerschaft, Kanal …"
           />
         </div>
       </CanvasSection>
