@@ -477,6 +477,8 @@ function applySuggestion(
       if (bucket === "ursache" || bucket === "cause") {
         data.kiUrsachen = pushUnique(data.kiUrsachen, value);
       } else {
+        const total = (data.fiveWhys?.length ?? 0) + (data.kiFiveWhys?.length ?? 0);
+        if (total >= 5) return;
         data.kiFiveWhys = pushUnique(data.kiFiveWhys, value);
       }
       return;
@@ -532,6 +534,7 @@ function ListEditor({
   placeholder,
   multiline = false,
   rows = 3,
+  maxItems,
 }: {
   label: string;
   items: string[];
@@ -539,9 +542,12 @@ function ListEditor({
   placeholder?: string;
   multiline?: boolean;
   rows?: number;
+  maxItems?: number;
 }) {
   const [input, setInput] = useState("");
+  const isFull = typeof maxItems === "number" && items.length >= maxItems;
   const commit = () => {
+    if (isFull) return;
     if (input.trim()) {
       onChange([...items, input.trim()]);
       setInput("");
@@ -550,44 +556,51 @@ function ListEditor({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <div className={multiline ? "flex flex-col gap-2" : "flex gap-2"}>
-        {multiline ? (
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={placeholder}
-            rows={rows}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && input.trim()) {
-                e.preventDefault();
-                commit();
-              }
-            }}
-          />
-        ) : (
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={placeholder}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && input.trim()) {
-                e.preventDefault();
-                commit();
-              }
-            }}
-          />
-        )}
-        <Button
-          type="button"
-          variant="outline"
-          size={multiline ? "sm" : "icon"}
-          className={multiline ? "self-end" : ""}
-          onClick={commit}
-        >
-          <Plus className="w-4 h-4" />
-          {multiline ? <span className="ml-1">Hinzufügen</span> : null}
-        </Button>
-      </div>
+      {isFull ? null : (
+        <div className={multiline ? "flex flex-col gap-2" : "flex gap-2"}>
+          {multiline ? (
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={placeholder}
+              rows={rows}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && input.trim()) {
+                  e.preventDefault();
+                  commit();
+                }
+              }}
+            />
+          ) : (
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={placeholder}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && input.trim()) {
+                  e.preventDefault();
+                  commit();
+                }
+              }}
+            />
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            size={multiline ? "sm" : "icon"}
+            className={multiline ? "self-end" : ""}
+            onClick={commit}
+          >
+            <Plus className="w-4 h-4" />
+            {multiline ? <span className="ml-1">Hinzufügen</span> : null}
+          </Button>
+        </div>
+      )}
+      {typeof maxItems === "number" ? (
+        <p className="text-xs text-muted-foreground">
+          {items.length} / {maxItems}
+        </p>
+      ) : null}
       {items.length > 0 ? (
         <ul className="space-y-1">
           {items.map((it, i) => (
@@ -1349,16 +1362,17 @@ function VariantFiveWhys({
         <ListEditor
           label="Eigene Anmerkungen"
           items={whys}
-          onChange={(v) => patch({ fiveWhys: v })}
+          onChange={(v) => patch({ fiveWhys: v.slice(0, Math.max(0, 5 - (data.kiFiveWhys ?? []).length)) })}
           multiline
           rows={2}
           placeholder="z. B. Warum …? Weil …"
+          maxItems={Math.max(0, 5 - (data.kiFiveWhys ?? []).length)}
         />
         <AcceptedKiList
           items={data.kiFiveWhys ?? []}
           onRemove={(i) => removeKi("kiFiveWhys", i)}
         />
-        {inline("why")}
+        {whys.length + (data.kiFiveWhys ?? []).length < 5 ? inline("why") : null}
       </CanvasSection>
 
       <CanvasSection title="Adressierbare Ursachen">
