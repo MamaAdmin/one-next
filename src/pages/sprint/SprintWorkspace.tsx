@@ -117,16 +117,28 @@ export default function SprintWorkspace() {
             <div>
               <div className="flex items-start justify-between gap-2">
                 <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7 shrink-0"
-                  onClick={() => setEditOpen(true)}
-                  title="Sprint-Grundlagen bearbeiten"
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                </Button>
+                <div className="flex items-center gap-0.5 shrink-0">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7"
+                    onClick={() => setShareOpen(true)}
+                    title="Sprint teilen"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7"
+                    onClick={() => setEditOpen(true)}
+                    title="Sprint-Grundlagen bearbeiten"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Modus: {sprint.modus === "solo" ? "Solo" : "Team"}
