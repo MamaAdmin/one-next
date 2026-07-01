@@ -1686,6 +1686,16 @@ function VariantCynefin({
                     </div>
                   ) : null}
                 </div>
+                <QuadrantAddInput
+                  onAdd={(text) =>
+                    patch({
+                      ursachen: [
+                        ...ursachen,
+                        { text, cynefin: q.key, adressierbar: true },
+                      ],
+                    })
+                  }
+                />
                 <div className="mt-3">
                   {inline(q.key as CynefinBucket)}
                 </div>
