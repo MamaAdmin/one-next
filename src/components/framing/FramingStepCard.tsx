@@ -1360,16 +1360,17 @@ function VariantFiveWhys({
         <ListEditor
           label="Eigene Anmerkungen"
           items={whys}
-          onChange={(v) => patch({ fiveWhys: v })}
+          onChange={(v) => patch({ fiveWhys: v.slice(0, Math.max(0, 5 - (data.kiFiveWhys ?? []).length)) })}
           multiline
           rows={2}
           placeholder="z. B. Warum …? Weil …"
+          maxItems={Math.max(0, 5 - (data.kiFiveWhys ?? []).length)}
         />
         <AcceptedKiList
           items={data.kiFiveWhys ?? []}
           onRemove={(i) => removeKi("kiFiveWhys", i)}
         />
-        {inline("why")}
+        {whys.length + (data.kiFiveWhys ?? []).length < 5 ? inline("why") : null}
       </CanvasSection>
 
       <CanvasSection title="Adressierbare Ursachen">
