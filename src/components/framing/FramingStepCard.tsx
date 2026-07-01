@@ -298,10 +298,10 @@ function applySuggestion(
       const m = text.match(/^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
       const bucket = m ? m[1].toLowerCase() : "future";
       const value = m ? m[2].trim() : text;
-      if (bucket === "present") {
+      if (bucket === "present" || bucket === "gegenwart") {
         const cur = data.warumJetzt ?? "";
         data.warumJetzt = cur ? `${cur}\n• ${value}` : `• ${value}`;
-      } else if (bucket === "past") {
+      } else if (bucket === "past" || bucket === "vergangenheit") {
         data.frueherVersucht = [
           ...(data.frueherVersucht ?? []),
           { text: value, ergebnis: "didnt-work" },
