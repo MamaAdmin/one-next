@@ -14,7 +14,7 @@ const STEP_META: Record<string, { title: string; task: string }> = {
   "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor (nur Text, keine Cynefin-Einordnung – die passiert im nächsten Schritt automatisch)." },
   "5b": { title: "Cynefin-Einordnung", task: "Schlage für die Ursachen aus Schritt 5 plausible Cynefin-Kategorien (einfach/kompliziert/komplex/chaotisch) inkl. kurzer Begründung vor. Format je Item: 'Ursache — [Kategorie]: Begründung'." },
   "6": { title: "Annahmen & Risiken", task: "Schlage kritische Annahmen zum Framing vor, verteilt auf 4 Quadranten der 2×2-Matrix (Unsicherheit × Einfluss): Kritisch (hoch/hoch), Einflussreich (niedrige Unsicherheit / hoher Einfluss), Unsicher (hohe Unsicherheit / niedriger Einfluss), Gering (niedrig/niedrig). Gib GENAU 3 Punkte je Quadrant (insgesamt 12 Items). Prefixe JEDES Item mit '[Kritisch]', '[Einflussreich]', '[Unsicher]' oder '[Gering]'." },
-  "7": { title: "Erfolg & Constraints", task: "Schlage messbare Erfolgskriterien (5 Tage) und typische Constraints vor." },
+  "7": { title: "Erfolg & Constraints", task: "Schlage Punkte zu zwei Kategorien vor: Erfolg (messbare Erfolgskriterien, in 5 Tagen prüfbar – z. B. Zahlen, Signale, Nutzertests) und Constraint (harte Randbedingungen, die gesetzt sind – z. B. Budget, Technik, Zeit, Recht/Compliance, Team). Gib GENAU 3 Punkte je Kategorie (insgesamt 6 Items) auf Deutsch. Prefixe JEDES Item mit '[Erfolg]' oder '[Constraint]'." },
   "8": { title: "Scope-Cut & Sprint-Fragen", task: "Schlage In-/Out-of-Scope-Punkte und Decision Questions ('Können wir …?') vor." },
   "9": { title: "Priorisierung (NUF)", task: "Schlage je Sprint-Frage eine erste NUF-Einschätzung vor (Neuheit/Nutzen/Machbarkeit)." },
   "10": { title: "Entscheidung & Next Steps", task: "Schlage Standard-Pre-Sprint-To-dos vor (Decider, ≥5 Testnutzer:innen, Datenzugang, Constraints)." },
@@ -176,6 +176,17 @@ Deno.serve(async (req) => {
       meta = {
         title: meta.title,
         task: `Schlage GENAU 3 Annahmen NUR für den Quadranten ${ASSUMPTION_BUCKETS[field]} vor. Keine anderen Quadranten. Prefixe JEDES Item mit '${assumptionTag[field]}'.`,
+      };
+    }
+    const SUCCESS_BUCKETS: Record<string, string> = {
+      erfolg: "Erfolg (messbare Erfolgskriterien, in 5 Tagen prüfbar – z. B. konkrete Zahlen, Signale, Nutzertests)",
+      constraint: "Constraint (harte Randbedingungen, die gesetzt sind – z. B. Budget, Technik, Zeit, Recht/Compliance, Team)",
+    };
+    const successTag: Record<string, string> = { erfolg: "[Erfolg]", constraint: "[Constraint]" };
+    if (step_key === "7" && field && SUCCESS_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SUCCESS_BUCKETS[field]} vor. Keine anderen Kategorien. Antworte auf Deutsch. Prefixe JEDES Item mit '${successTag[field]}'.`,
       };
     }
     const key = Deno.env.get("LOVABLE_API_KEY");

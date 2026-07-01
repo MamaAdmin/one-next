@@ -183,7 +183,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
@@ -253,7 +253,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" ? (
             <Button
               type="button"
               variant="outline"
@@ -401,7 +401,17 @@ function StepVariant({
         />
       );
     case "success-constraints":
-      return <VariantSuccess data={data} patch={patch} />;
+      return (
+        <VariantSuccess
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "scope-questions":
       return <VariantScope data={data} patch={patch} />;
     case "nuf":
@@ -524,9 +534,17 @@ function applySuggestion(
       ];
       return;
     }
-    case "success-constraints":
-      data.constraints = pushUnique(data.constraints, text);
+    case "success-constraints": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "erfolg") {
+        const current = (data.erfolgsmessung ?? "").trim();
+        data.erfolgsmessung = current ? `${current}\n• ${value}` : `• ${value}`;
+      } else {
+        data.constraints = pushUnique(data.constraints, value);
+      }
       return;
+    }
     case "scope-questions":
       data.sprintFragen = pushUnique(data.sprintFragen, text);
       return;
@@ -814,8 +832,9 @@ type FiveWhysBucket = "why" | "ursache";
 type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
 
 type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
+type SuccessBucket = "erfolg" | "constraint";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket;
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket | SuccessBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
@@ -855,6 +874,8 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "unsicher" || tag === "uncertain") return "unsicher";
   if (tag === "einflussreich" || tag === "impactful" || tag === "high-impact") return "einflussreich";
   if (tag === "gering" || tag === "low") return "gering";
+  if (tag === "erfolg" || tag === "success" || tag === "kpi" || tag === "metrik") return "erfolg";
+  if (tag === "constraint" || tag === "constraints" || tag === "rahmen") return "constraint";
   return null;
 }
 
@@ -1957,10 +1978,30 @@ function clamp(n: number) {
 function VariantSuccess({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
+  const inline = (bucket: SuccessBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
   return (
     <div className="space-y-6">
       <CanvasSection title="Erfolgsmessung – messbar in 5 Tagen">
@@ -1972,6 +2013,7 @@ function VariantSuccess({
             onChange={(e) => patch({ erfolgsmessung: e.target.value })}
           />
         </div>
+        {inline("erfolg")}
       </CanvasSection>
       <CanvasSection title="Constraints – was ist gesetzt?">
         <ListEditor
@@ -1979,6 +2021,7 @@ function VariantSuccess({
           items={data.constraints ?? []}
           onChange={(v) => patch({ constraints: v })}
         />
+        {inline("constraint")}
       </CanvasSection>
     </div>
   );
