@@ -2799,20 +2799,32 @@ export type Database = {
           id: string | null
           includes_certificate: boolean | null
           is_active: boolean | null
+          is_public: boolean | null
           language: string | null
           module_count: number | null
           prerequisites: string | null
           price_chf: number | null
+          public_course_id: string | null
           rating: number | null
           rating_count: number | null
           skill_level: string | null
+          slug: string | null
           thumbnail_url: string | null
           title: string | null
           total_lessons: number | null
           total_quizzes: number | null
           updated_at: string | null
+          visibility: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lms_courses_public_course_id_fkey"
+            columns: ["public_course_id"]
+            isOneToOne: false
+            referencedRelation: "public_courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
