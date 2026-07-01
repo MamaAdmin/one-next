@@ -131,7 +131,23 @@ export default function FramingStepCard({
           </div>
         </div>
 
-        <StepVariant step={step} data={data} patch={patch} />
+        <StepVariant
+          step={step}
+          data={data}
+          patch={patch}
+          suggestions={vorschlaege}
+          onAcceptSuggestion={(i) => {
+            const v = vorschlaege[i];
+            if (v == null) return;
+            const next = { ...data };
+            applySuggestion(step.variant, v, next);
+            setData(next);
+            setVorschlaege((prev) => prev.filter((_, j) => j !== i));
+          }}
+          onDismissSuggestion={(i) =>
+            setVorschlaege((prev) => prev.filter((_, j) => j !== i))
+          }
+        />
 
         {vorschlaege.length > 0 ? (
           <div className="rounded-lg border bg-muted/30 p-4">
