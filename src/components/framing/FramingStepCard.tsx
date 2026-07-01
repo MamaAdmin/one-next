@@ -851,6 +851,10 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "kompliziert" || tag === "complicated") return "kompliziert";
   if (tag === "chaotisch" || tag === "chaotic") return "chaotisch";
   if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") return "einfach";
+  if (tag === "kritisch" || tag === "critical") return "kritisch";
+  if (tag === "unsicher" || tag === "uncertain") return "unsicher";
+  if (tag === "einflussreich" || tag === "impactful" || tag === "high-impact") return "einflussreich";
+  if (tag === "gering" || tag === "low") return "gering";
   return null;
 }
 
