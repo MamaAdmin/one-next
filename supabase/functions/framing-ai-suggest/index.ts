@@ -76,6 +76,15 @@ Deno.serve(async (req) => {
       paingain: "[PainGain]",
     };
 
+    const KICKOFF_BUCKETS: Record<string, string> = {
+      kontext: "Kontext (Ausgangslage, aktuelle Situation, warum das Thema jetzt aufkommt)",
+      nichtziel: "NichtZiel (typische Abgrenzungen – was NICHT Sprint-Ziel sein sollte)",
+    };
+    const kickoffTag: Record<string, string> = {
+      kontext: "[Kontext]",
+      nichtziel: "[NichtZiel]",
+    };
+
     // Read session + prior steps (RLS scoped to owner)
     const { data: session, error: sErr } = await supabase
       .from("framing_sessions")
