@@ -307,7 +307,17 @@ function StepVariant({
 }) {
   switch (step.variant) {
     case "context-list":
-      return <VariantContextList data={data} patch={patch} />;
+      return (
+        <VariantContextList
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "two-fields":
       return (
         <VariantTwoFields
