@@ -46,3 +46,6 @@ project_id = "ookvxyctxmtcxowcwnij"
 
 [functions.admin-invite-user]
 verify_jwt = true
+
+[functions.verify-course-registration]
+verify_jwt = false
