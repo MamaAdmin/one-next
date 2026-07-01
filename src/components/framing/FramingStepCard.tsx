@@ -618,10 +618,18 @@ function VariantContextList({
         />
       </div>
       <ListEditor
-        label="Kein Sprint-Ziel (Abgrenzung)"
+        label="Kein Sprint-Ziel (Abgrenzung) – Eigene Anmerkungen"
         items={data.nichtZiele ?? []}
         onChange={(v) => patch({ nichtZiele: v })}
         placeholder="z. B. Neues CI/CD-System aufsetzen"
+      />
+      <AcceptedKiList
+        items={data.kiNichtZiele ?? []}
+        onRemove={(i) =>
+          patch({
+            kiNichtZiele: (data.kiNichtZiele ?? []).filter((_, j) => j !== i),
+          })
+        }
       />
       <CanvasSection title="Geschäftliche Vergangenheit (optional) – Was wurde früher schon versucht?">
         <PastAttemptsEditor
