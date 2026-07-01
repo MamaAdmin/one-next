@@ -621,16 +621,25 @@ function VariantTwoFields({
             label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
             items={data.wettbewerber ?? []}
             onChange={(v) => patch({ wettbewerber: v })}
+            multiline
+            rows={3}
+            placeholder="z. B. Anbieter X setzt seit 2024 auf …"
           />
           <ListEditor
             label="Trends – für / gegen die Idee"
             items={data.trends ?? []}
             onChange={(v) => patch({ trends: v })}
+            multiline
+            rows={3}
+            placeholder="z. B. Regulatorik, Marktbewegung, Technologie …"
           />
           <ListEditor
             label="Chancen – wo liegen Opportunities?"
             items={data.chancen ?? []}
             onChange={(v) => patch({ chancen: v })}
+            multiline
+            rows={3}
+            placeholder="z. B. Neue Zielgruppe, Partnerschaft, Kanal …"
           />
         </div>
       </CanvasSection>
