@@ -243,7 +243,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" ? (
             <Button
               type="button"
               variant="outline"
