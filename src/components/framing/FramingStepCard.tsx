@@ -804,6 +804,7 @@ function VariantCynefin({
     subtitle: string;
     bg: string;
     border: string;
+    accent: string;
   }> = [
     {
       key: "komplex",
