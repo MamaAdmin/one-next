@@ -1259,11 +1259,13 @@ export type Database = {
           includes_certificate: boolean | null
           intro_video: Json | null
           is_active: boolean
+          is_public: boolean
           language: string | null
           options: Json | null
           prerequisites: string | null
           price_chf: number | null
           pricing: Json | null
+          public_course_id: string | null
           rating: number | null
           rating_count: number | null
           slug: string | null
@@ -1289,11 +1291,13 @@ export type Database = {
           includes_certificate?: boolean | null
           intro_video?: Json | null
           is_active?: boolean
+          is_public?: boolean
           language?: string | null
           options?: Json | null
           prerequisites?: string | null
           price_chf?: number | null
           pricing?: Json | null
+          public_course_id?: string | null
           rating?: number | null
           rating_count?: number | null
           slug?: string | null
@@ -1319,11 +1323,13 @@ export type Database = {
           includes_certificate?: boolean | null
           intro_video?: Json | null
           is_active?: boolean
+          is_public?: boolean
           language?: string | null
           options?: Json | null
           prerequisites?: string | null
           price_chf?: number | null
           pricing?: Json | null
+          public_course_id?: string | null
           rating?: number | null
           rating_count?: number | null
           slug?: string | null
@@ -1335,7 +1341,15 @@ export type Database = {
           updated_at?: string
           visibility?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lms_courses_public_course_id_fkey"
+            columns: ["public_course_id"]
+            isOneToOne: false
+            referencedRelation: "public_courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lms_gdpr_consents: {
         Row: {
