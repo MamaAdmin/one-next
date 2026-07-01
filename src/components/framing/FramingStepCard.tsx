@@ -785,14 +785,11 @@ function VariantCynefin({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   const ursachen = data.ursachen ?? [];
-  if (ursachen.length === 0) {
-    return (
-      <div className="rounded-md border border-dashed p-6 text-sm text-muted-foreground">
-        Keine Ursachen aus Schritt 5 vorhanden. Gehe zurück zu <strong>Root Cause (5 Whys)</strong>,
-        um Ursachen zu erfassen – sie werden hier automatisch übernommen.
-      </div>
-    );
-  }
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverKey, setDragOverKey] = useState<Cynefin | null>(null);
+  const [justDroppedKey, setJustDroppedKey] = useState<Cynefin | null>(null);
+  const [snappedIndex, setSnappedIndex] = useState<number | null>(null);
+  const dropHandledRef = useMemo(() => ({ current: false }), []);
   const setCynefin = (i: number, c: Cynefin) => {
     const next = [...ursachen];
     next[i] = { ...next[i], cynefin: c };
