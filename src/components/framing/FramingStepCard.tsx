@@ -568,7 +568,7 @@ function VariantTwoFields({
 }) {
   return (
     <div className="space-y-6">
-      <CanvasSection title="Present – Warum jetzt?">
+      <CanvasSection title="Gegenwart – Warum jetzt?">
         <Textarea
           rows={4}
           value={data.warumJetzt ?? ""}
@@ -577,7 +577,7 @@ function VariantTwoFields({
         />
       </CanvasSection>
 
-      <CanvasSection title="Past – Was wurde bisher versucht?">
+      <CanvasSection title="Vergangenheit – Was wurde bisher versucht?">
         <PastAttemptsEditor
           items={data.frueherVersucht ?? []}
           onChange={(v) => patch({ frueherVersucht: v })}
@@ -585,7 +585,7 @@ function VariantTwoFields({
         />
       </CanvasSection>
 
-      <CanvasSection title="Future – Default Future (was passiert ohne Handeln?)">
+      <CanvasSection title="Zukunft – Standard-Zukunft (was passiert ohne Handeln?)">
         <Textarea
           rows={4}
           value={data.defaultFuture ?? ""}
@@ -594,7 +594,7 @@ function VariantTwoFields({
         />
       </CanvasSection>
 
-      <CanvasSection title="Business-Future – Wettbewerb, Trends, Chancen">
+      <CanvasSection title="Geschäftliche Zukunft – Wettbewerb, Trends, Chancen">
         <div className="space-y-4">
           <ListEditor
             label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
