@@ -29,13 +29,23 @@ export interface FramingStepData {
   // Step 1
   kontext?: string;
   nichtZiele?: string[];
+  // Step 1 – Canvas: Business-Past
+  frueherVersucht?: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
   // Step 2
   warumJetzt?: string;
   defaultFuture?: string;
+  // Step 2 – Canvas: Business-Future
+  wettbewerber?: string[];
+  trends?: string[];
+  chancen?: string[];
   // Step 3
   stakeholder?: string[];
   primaereZielgruppe?: string;
   sekundaerGeparkt?: string[];
+  // Step 3 – Canvas: Customer-Present/Past/Pain
+  kundeHeuteLoesung?: string;
+  kundeVersuchePast?: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
+  kundePainGain?: string;
   // Step 4
   sailboat?: {
     wind: string[];

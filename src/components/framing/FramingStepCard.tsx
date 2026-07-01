@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -436,6 +436,83 @@ function ListEditor({
   );
 }
 
+/* ---------- canvas helpers ---------- */
+
+function CanvasSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <details className="rounded-md border bg-muted/30 px-3 py-2 group">
+      <summary className="cursor-pointer text-sm font-medium text-muted-foreground list-none flex items-center justify-between">
+        <span>{title}</span>
+        <span className="text-xs opacity-60 group-open:hidden">öffnen</span>
+        <span className="text-xs opacity-60 hidden group-open:inline">schließen</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
+  );
+}
+
+function PastAttemptsEditor({
+  label = "Frühere Versuche",
+  items,
+  onChange,
+  placeholder,
+}: {
+  label?: string;
+  items: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
+  onChange: (next: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>) => void;
+  placeholder?: string;
+}) {
+  const [input, setInput] = useState("");
+  const add = (ergebnis: "worked" | "didnt-work") => {
+    if (!input.trim()) return;
+    onChange([...items, { text: input.trim(), ergebnis }]);
+    setInput("");
+  };
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="flex flex-wrap gap-2">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={placeholder}
+          className="flex-1 min-w-[200px]"
+        />
+        <Button type="button" variant="outline" size="sm" onClick={() => add("worked")}>
+          + Hat funktioniert
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => add("didnt-work")}>
+          + Hat nicht funktioniert
+        </Button>
+      </div>
+      {items.length > 0 ? (
+        <ul className="space-y-1">
+          {items.map((it, i) => (
+            <li
+              key={i}
+              className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-1.5 text-sm"
+            >
+              <span className="flex-1">{it.text}</span>
+              <Badge variant={it.ergebnis === "worked" ? "default" : "secondary"}>
+                {it.ergebnis === "worked" ? "worked" : "didn't work"}
+              </Badge>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6"
+                onClick={() => onChange(items.filter((_, j) => j !== i))}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 /* ---------- variants ---------- */
 
 function VariantContextList({
@@ -462,6 +539,13 @@ function VariantContextList({
         onChange={(v) => patch({ nichtZiele: v })}
         placeholder="z. B. Neues CI/CD-System aufsetzen"
       />
+      <CanvasSection title="Business-Past (optional) – Was wurde früher schon versucht?">
+        <PastAttemptsEditor
+          items={data.frueherVersucht ?? []}
+          onChange={(v) => patch({ frueherVersucht: v })}
+          placeholder="z. B. Interne Schulung im Q2/2024"
+        />
+      </CanvasSection>
     </div>
   );
 }
@@ -474,23 +558,44 @@ function VariantTwoFields({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <Label>Warum jetzt?</Label>
-        <Textarea
-          rows={5}
-          value={data.warumJetzt ?? ""}
-          onChange={(e) => patch({ warumJetzt: e.target.value })}
-        />
+    <div className="space-y-4">
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Warum jetzt?</Label>
+          <Textarea
+            rows={5}
+            value={data.warumJetzt ?? ""}
+            onChange={(e) => patch({ warumJetzt: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Default Future – was passiert ohne Handeln?</Label>
+          <Textarea
+            rows={5}
+            value={data.defaultFuture ?? ""}
+            onChange={(e) => patch({ defaultFuture: e.target.value })}
+          />
+        </div>
       </div>
-      <div className="space-y-2">
-        <Label>Default Future – was passiert ohne Handeln?</Label>
-        <Textarea
-          rows={5}
-          value={data.defaultFuture ?? ""}
-          onChange={(e) => patch({ defaultFuture: e.target.value })}
-        />
-      </div>
+      <CanvasSection title="Business-Future (optional) – Wettbewerb, Trends, Chancen">
+        <div className="space-y-4">
+          <ListEditor
+            label="Was machen Wettbewerber / Vergleichbare?"
+            items={data.wettbewerber ?? []}
+            onChange={(v) => patch({ wettbewerber: v })}
+          />
+          <ListEditor
+            label="Trends – für / gegen die Idee"
+            items={data.trends ?? []}
+            onChange={(v) => patch({ trends: v })}
+          />
+          <ListEditor
+            label="Chancen – wo liegen Opportunities?"
+            items={data.chancen ?? []}
+            onChange={(v) => patch({ chancen: v })}
+          />
+        </div>
+      </CanvasSection>
     </div>
   );
 }
@@ -533,6 +638,34 @@ function VariantStakeholder({
         items={data.sekundaerGeparkt ?? []}
         onChange={(v) => patch({ sekundaerGeparkt: v })}
       />
+      <CanvasSection title="Customer-Kontext (optional) – Verhalten, frühere Versuche, Pain/Gain">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Wie löst die Zielgruppe das Problem heute?</Label>
+            <Textarea
+              rows={3}
+              value={data.kundeHeuteLoesung ?? ""}
+              onChange={(e) => patch({ kundeHeuteLoesung: e.target.value })}
+              placeholder="Aktuelles Verhalten, Workarounds, Tools …"
+            />
+          </div>
+          <PastAttemptsEditor
+            label="Was hat die Zielgruppe früher versucht?"
+            items={data.kundeVersuchePast ?? []}
+            onChange={(v) => patch({ kundeVersuchePast: v })}
+            placeholder="z. B. Nutzung eines Wettbewerber-Tools"
+          />
+          <div className="space-y-2">
+            <Label>Welchen Pain lindern wir – welchen Gain schaffen wir?</Label>
+            <Textarea
+              rows={3}
+              value={data.kundePainGain ?? ""}
+              onChange={(e) => patch({ kundePainGain: e.target.value })}
+              placeholder="Konkreter Nutzen aus Sicht der Zielgruppe"
+            />
+          </div>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
