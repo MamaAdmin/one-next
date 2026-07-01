@@ -936,41 +936,81 @@ function VariantCynefin({
           <span>Ungeordneter Bereich</span>
           <span className="text-right">Geordneter Bereich</span>
         </div>
-        <div className="relative grid grid-cols-2 gap-4 p-4 rounded-2xl bg-muted/40">
+        <div
+          className="relative grid grid-cols-2 gap-4 p-4 rounded-2xl bg-muted/40"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDropOutside}
+        >
           {/* dashed axis cross */}
           <div className="pointer-events-none absolute inset-x-4 top-1/2 border-t border-dashed border-muted-foreground/40" aria-hidden />
           <div className="pointer-events-none absolute inset-y-4 left-1/2 border-l border-dashed border-muted-foreground/40" aria-hidden />
 
-          {quadrants.map((q) => (
-            <div
-              key={q.key}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => onDrop(e, q.key)}
-              className={`relative min-h-[180px] rounded-2xl border ${q.border} ${q.bg} p-5 flex flex-col transition-colors`}
-            >
-              <div className="mb-3">
-                <div className={`font-bold text-lg tracking-tight ${q.accent}`}>{q.title}</div>
-                <div className="text-[12px] italic text-foreground/70 mt-0.5">{q.subtitle}</div>
-              </div>
-              <div className="flex flex-wrap gap-1.5 content-start">
-                {ursachen.map((u, i) =>
-                  u.cynefin === q.key ? (
-                    <div
-                      key={i}
-                      draggable
-                      onDragStart={(e) => e.dataTransfer.setData("text/plain", String(i))}
-                      className={`cursor-grab active:cursor-grabbing rounded-full border border-foreground/15 bg-background/95 px-3 py-1 text-xs font-medium shadow-sm max-w-full truncate ${
-                        u.adressierbar ? "" : "opacity-60 line-through"
-                      }`}
-                      title={u.text}
-                    >
-                      {u.text || "(leer)"}
+          {quadrants.map((q) => {
+            const isOver = dragOverKey === q.key;
+            const justDropped = justDroppedKey === q.key;
+            return (
+              <div
+                key={q.key}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setDragOverKey(q.key);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                  if (dragOverKey !== q.key) setDragOverKey(q.key);
+                }}
+                onDragLeave={(e) => {
+                  // only clear when leaving the quadrant itself
+                  if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+                  setDragOverKey((k) => (k === q.key ? null : k));
+                }}
+                onDrop={(e) => handleDropInQuadrant(e, q.key)}
+                className={`relative min-h-[180px] rounded-2xl border ${q.border} ${q.bg} p-5 flex flex-col transition-all duration-150 ${
+                  isOver ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-[1.01]" : ""
+                } ${justDropped ? "ring-2 ring-primary/60 animate-in fade-in zoom-in-95" : ""}`}
+                aria-dropeffect="move"
+              >
+                <div className="mb-3">
+                  <div className={`font-bold text-lg tracking-tight ${q.accent}`}>{q.title}</div>
+                  <div className="text-[12px] italic text-foreground/70 mt-0.5">{q.subtitle}</div>
+                </div>
+                <div className="flex flex-wrap gap-1.5 content-start">
+                  {ursachen.map((u, i) =>
+                    u.cynefin === q.key ? (
+                      <div
+                        key={i}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData("text/plain", String(i));
+                          e.dataTransfer.effectAllowed = "move";
+                          setDragIndex(i);
+                          dropHandledRef.current = false;
+                        }}
+                        onDragEnd={() => {
+                          setDragIndex(null);
+                          setDragOverKey(null);
+                        }}
+                        className={`cursor-grab active:cursor-grabbing rounded-full border border-foreground/15 bg-background/95 px-3 py-1 text-xs font-medium shadow-sm max-w-full truncate transition-all ${
+                          u.adressierbar ? "" : "opacity-60 line-through"
+                        } ${dragIndex === i ? "opacity-40 scale-95" : ""} ${
+                          snappedIndex === i ? "ring-2 ring-primary/70 scale-105" : ""
+                        }`}
+                        title={u.text}
+                      >
+                        {u.text || "(leer)"}
+                      </div>
+                    ) : null,
+                  )}
+                  {isOver ? (
+                    <div className="w-full text-[11px] font-medium text-primary/80 border border-dashed border-primary/50 rounded-full px-2.5 py-1 text-center bg-primary/5">
+                      Hier ablegen
                     </div>
-                  ) : null,
-                )}
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* center diamond */}
           <div
@@ -981,6 +1021,7 @@ function VariantCynefin({
           </div>
         </div>
       </div>
+
 
 
       {ursachen.length === 0 ? (
