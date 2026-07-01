@@ -1,0 +1,132 @@
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+const STEP_META: Record<string, { title: string; task: string }> = {
+  "1": { title: "Kick-off & Zielbild", task: "Schlage typische Nicht-Ziele / Abgrenzungen zum Kontext vor." },
+  "2": { title: "Warum jetzt? & Default Future", task: "Schlage mögliche Konsequenzen des Nichthandelns vor (Default Future)." },
+  "3": { title: "Stakeholder & Zielgruppe", task: "Schlage plausible Stakeholder / Zielgruppen zum Kontext vor." },
+  "4": { title: "Smart Sailboat", task: "Schlage Einträge für Wind (Treiber), Anker (Hindernisse), Hafen (Ziel), Eisberg (Risiken) vor. Gib eine gemischte Liste, jeweils prefixed mit '[Wind]', '[Anker]', '[Hafen]', '[Eisberg]'." },
+  "5": { title: "Root Cause & Cynefin", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor." },
+  "6": { title: "Annahmen & Risiken", task: "Schlage bisher unausgesprochene, kritische Annahmen zum Framing vor." },
+  "7": { title: "Erfolg & Constraints", task: "Schlage messbare Erfolgskriterien (5 Tage) und typische Constraints vor." },
+  "8": { title: "Scope-Cut & Sprint-Fragen", task: "Schlage In-/Out-of-Scope-Punkte und Decision Questions ('Können wir …?') vor." },
+  "9": { title: "Priorisierung (NUF)", task: "Schlage je Sprint-Frage eine erste NUF-Einschätzung vor (Neuheit/Nutzen/Machbarkeit)." },
+  "10": { title: "Entscheidung & Next Steps", task: "Schlage Standard-Pre-Sprint-To-dos vor (Decider, ≥5 Testnutzer:innen, Datenzugang, Constraints)." },
+};
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claims, error: claimsErr } = await supabase.auth.getClaims(token);
+    if (claimsErr || !claims?.claims) return json({ error: "Unauthorized" }, 401);
+
+    const body = await req.json().catch(() => ({}));
+    const session_id = String(body?.session_id ?? "");
+    const step_key = String(body?.step_key ?? "");
+    if (!session_id || !STEP_META[step_key]) {
+      return json({ error: "Bad request" }, 400);
+    }
+
+    // Read session + prior steps (RLS scoped to owner)
+    const { data: session, error: sErr } = await supabase
+      .from("framing_sessions")
+      .select("*")
+      .eq("id", session_id)
+      .maybeSingle();
+    if (sErr || !session) return json({ error: "Session not found" }, 404);
+
+    const { data: allSteps } = await supabase
+      .from("framing_steps")
+      .select("*")
+      .eq("session_id", session_id);
+
+    const context = buildContext(session, allSteps ?? [], step_key);
+
+    const meta = STEP_META[step_key];
+    const key = Deno.env.get("LOVABLE_API_KEY");
+    if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
+
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Lovable-API-Key": key,
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content:
+              "Du bist ein erfahrener Problem-Framing-Facilitator (Pre-Sprint-Workshop). Antworte AUSSCHLIESSLICH als JSON im Format {\"vorschlaege\": string[]}. 5–8 kurze, konkrete Punkte auf Deutsch. Keine Erklärungen außerhalb des JSON.",
+          },
+          {
+            role: "user",
+            content:
+              `Aktueller Schritt: ${meta.title}\nAufgabe: ${meta.task}\n\nBisheriger Workshop-Kontext:\n${context}\n\nGib jetzt die Vorschläge zurück.`,
+          },
+        ],
+      }),
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      const status = resp.status === 429 || resp.status === 402 ? resp.status : 500;
+      return json({ error: `AI error: ${errText}` }, status);
+    }
+
+    const j = await resp.json();
+    const content = j?.choices?.[0]?.message?.content ?? "{}";
+    let parsed: { vorschlaege?: unknown } = {};
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      parsed = {};
+    }
+    const vorschlaege = Array.isArray(parsed.vorschlaege)
+      ? parsed.vorschlaege.filter((x): x is string => typeof x === "string").slice(0, 12)
+      : [];
+
+    return json({ vorschlaege });
+  } catch (e) {
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+});
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function buildContext(session: any, steps: any[], currentKey: string): string {
+  const lines: string[] = [];
+  lines.push(`Arbeitstitel: ${session.titel_arbeitstitel || "—"}`);
+  if (session.kontext) lines.push(`Kontext: ${session.kontext}`);
+  const sorted = [...steps].sort((a, b) => a.step_key.localeCompare(b.step_key));
+  for (const s of sorted) {
+    if (s.step_key === currentKey) continue;
+    lines.push(`\n--- Schritt ${s.step_key} ---\n${JSON.stringify(s.data)}`);
+  }
+  return lines.join("\n");
+}

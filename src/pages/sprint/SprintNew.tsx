@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Compass, Rocket } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useCreateSprint } from "@/hooks/useSprint";
+import { useCreateFramingSession } from "@/hooks/useFraming";
 import { z } from "zod";
 
 const schema = z.object({
@@ -28,12 +30,41 @@ const schema = z.object({
 
 export default function SprintNew() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const create = useCreateSprint();
+  const createFraming = useCreateFramingSession();
+  const [mode, setMode] = useState<"choose" | "clear" | "framing">(() =>
+    params.get("mode") === "framing" ? "framing" : "choose",
+  );
   const [titel, setTitel] = useState("");
   const [problemstellung, setProblemstellung] = useState("");
   const [modus, setModus] = useState<"solo" | "team">("solo");
   const [decider, setDecider] = useState("");
   const [sprintLeader, setSprintLeader] = useState("");
+  const [framingTitel, setFramingTitel] = useState("");
+
+  async function startFraming(e: React.FormEvent) {
+    e.preventDefault();
+    if (framingTitel.trim().length < 3) {
+      toast({
+        title: "Arbeitstitel zu kurz",
+        description: "Mindestens 3 Zeichen.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      const s = await createFraming.mutateAsync({ titel_arbeitstitel: framingTitel.trim() });
+      toast({ title: "Problem-Framing gestartet", description: "10 Schritte · ~3–4 Stunden." });
+      navigate(`/sprint/framing/${s.id}`);
+    } catch (e) {
+      toast({
+        title: "Konnte nicht gestartet werden",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -82,9 +113,84 @@ export default function SprintNew() {
           Diese Angaben kommen in jeden Schritt als Kontext.
         </p>
 
+        {mode === "choose" ? (
+          <div className="grid md:grid-cols-2 gap-4 mb-8">
+            <button
+              type="button"
+              onClick={() => setMode("clear")}
+              className="text-left rounded-xl border-2 border-transparent bg-card p-6 shadow-lg hover:border-primary transition-colors"
+            >
+              <Rocket className="w-8 h-8 text-primary mb-3" />
+              <h2 className="text-xl font-semibold mb-1">Mein Problem ist klar</h2>
+              <p className="text-sm text-muted-foreground">
+                Titel & Problemstellung sind schon scharf – direkt Sprint starten.
+              </p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("framing")}
+              className="text-left rounded-xl border-2 border-transparent bg-card p-6 shadow-lg hover:border-primary transition-colors"
+            >
+              <Compass className="w-8 h-8 text-primary mb-3" />
+              <h2 className="text-xl font-semibold mb-1">Problem noch unscharf</h2>
+              <p className="text-sm text-muted-foreground">
+                Problem-Framing-Workshop (10 Schritte, 3–4 h) starten. Am Ende entsteht
+                automatisch ein Sprint mit vorbefüllter Problemstellung.
+              </p>
+            </button>
+          </div>
+        ) : null}
+
+        {mode === "framing" ? (
+          <Card className="border-none shadow-xl">
+            <CardContent className="p-8 space-y-6">
+              <form onSubmit={startFraming} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="ftitel">Arbeitstitel für den Workshop</Label>
+                  <Input
+                    id="ftitel"
+                    value={framingTitel}
+                    onChange={(e) => setFramingTitel(e.target.value)}
+                    placeholder="z. B. Warum springen Nutzer im Onboarding ab?"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Kannst du später ändern. Am Ende wird daraus dein Sprint-Titel.
+                  </p>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <Button type="button" variant="ghost" onClick={() => setMode("choose")}>
+                    ← Zurück
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-gradient-primary hover:opacity-90"
+                    disabled={createFraming.isPending}
+                  >
+                    {createFraming.isPending
+                      ? "Wird gestartet …"
+                      : "Problem-Framing starten"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        {mode === "clear" ? (
         <Card className="border-none shadow-xl">
           <CardContent className="p-8">
+            <div className="mb-4">
+              <button
+                type="button"
+                onClick={() => setMode("choose")}
+                className="text-sm text-muted-foreground hover:underline"
+              >
+                ← Andere Option wählen
+              </button>
+            </div>
             <form onSubmit={onSubmit} className="space-y-6">
+
               <div className="space-y-2">
                 <Label htmlFor="titel">Sprint-Titel</Label>
                 <Input
@@ -175,6 +281,7 @@ export default function SprintNew() {
             </form>
           </CardContent>
         </Card>
+        ) : null}
       </main>
 
       <Footer />

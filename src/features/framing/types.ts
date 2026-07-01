@@ -1,0 +1,77 @@
+// Types for the Problem-Framing Workshop (pre-sprint).
+
+export interface FramingSessionRow {
+  id: string;
+  owner_id: string;
+  titel_arbeitstitel: string;
+  kontext: string;
+  current_step: number;
+  status: "active" | "done" | "archived";
+  challenge_statement: string | null;
+  resulting_sprint_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FramingStepRow {
+  id: string;
+  session_id: string;
+  step_key: string; // "1".."10"
+  data: FramingStepData;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type Cynefin = "einfach" | "kompliziert" | "komplex" | "chaotisch";
+
+export interface FramingStepData {
+  // Step 1
+  kontext?: string;
+  nichtZiele?: string[];
+  // Step 2
+  warumJetzt?: string;
+  defaultFuture?: string;
+  // Step 3
+  stakeholder?: string[];
+  primaereZielgruppe?: string;
+  sekundaerGeparkt?: string[];
+  // Step 4
+  sailboat?: {
+    wind: string[];
+    anker: string[];
+    hafen: string;
+    eisberg: string[];
+  };
+  // Step 5
+  fiveWhys?: string[];
+  ursachen?: Array<{ text: string; cynefin: Cynefin; adressierbar: boolean }>;
+  // Step 6
+  annahmen?: Array<{ text: string; unsicherheit: number; einfluss: number }>;
+  // Step 7
+  erfolgsmessung?: string;
+  constraints?: string[];
+  // Step 8
+  inScope?: string[];
+  outOfScope?: string[];
+  sprintFragen?: string[];
+  // Step 9
+  nufBewertungen?: Array<{ text: string; neuheit: number; nutzen: number; machbarkeit: number }>;
+  top1Challenge?: string;
+  // Step 10
+  sprintGo?: boolean;
+  preSprintTodos?: Array<{ text: string; wer: string; wann: string }>;
+  // Shared
+  vorschlaege?: string[];
+  notes?: string;
+  [k: string]: unknown;
+}
+
+export interface ChallengeStatementResult {
+  titel: string;
+  challenge_statement: string;
+  zielgruppe: string;
+  erfolgsmessung: string;
+  sprintFragen: string[];
+  risiken: string[];
+}

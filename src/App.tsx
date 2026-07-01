@@ -69,6 +69,7 @@ import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import SprintDashboard from "./pages/sprint/SprintDashboard";
 import SprintNew from "./pages/sprint/SprintNew";
 import SprintWorkspace from "./pages/sprint/SprintWorkspace";
+import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import RequireAuth from "./components/sprint/RequireAuth";
 
 
@@ -155,6 +156,7 @@ const App = () => (
           {/* Online Design Sprint (auth required) */}
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
           <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
+          <Route path="/sprint/framing/:id" element={<RequireAuth><FramingWorkspace /></RequireAuth>} />
           <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
