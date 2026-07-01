@@ -74,6 +74,9 @@ export interface FramingStepData {
   // Step 5
   fiveWhys?: string[];
   ursachen?: Array<{ text: string; cynefin: Cynefin; adressierbar: boolean }>;
+  // Step 5 – Übernommene KI-Vorschläge (getrennt von User-Eingaben)
+  kiFiveWhys?: string[];
+  kiUrsachen?: string[];
   // Step 6
   annahmen?: Array<{ text: string; unsicherheit: number; einfluss: number }>;
   // Step 7
