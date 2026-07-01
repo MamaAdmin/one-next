@@ -1264,24 +1264,26 @@ function VariantFiveWhys({
   };
   const [ursacheInput, setUrsacheInput] = useState("");
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>5 Whys</Label>
-        {whys.map((w, i) => (
-          <Input
-            key={i}
-            value={w}
-            onChange={(e) => setWhy(i, e.target.value)}
-            placeholder={`Warum ${i + 1}?`}
-          />
-        ))}
-      </div>
-      <div className="space-y-2">
-        <Label>Adressierbare Ursachen</Label>
+    <div className="space-y-6">
+      <CanvasSection title="5 Whys – Warum-Kette">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          {whys.map((w, i) => (
+            <Input
+              key={i}
+              value={w}
+              onChange={(e) => setWhy(i, e.target.value)}
+              placeholder={`Warum ${i + 1}?`}
+            />
+          ))}
+        </div>
+      </CanvasSection>
+
+      <CanvasSection title="Adressierbare Ursachen">
         <p className="text-xs text-muted-foreground">
           Nur Ursachen sammeln – die Cynefin-Einordnung erfolgt automatisch im nächsten Schritt.
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-2">
           <Input
             value={ursacheInput}
             onChange={(e) => setUrsacheInput(e.target.value)}
@@ -1305,26 +1307,28 @@ function VariantFiveWhys({
             <Plus className="w-4 h-4" />
           </Button>
         </div>
-        {ursachen.map((u, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <Input
-              value={u.text}
-              onChange={(e) => {
-                const next = [...ursachen];
-                next[i] = { ...u, text: e.target.value };
-                patch({ ursachen: next });
-              }}
-            />
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
-            </Button>
-          </div>
-        ))}
-      </div>
+        <div className="mt-2 space-y-2">
+          {ursachen.map((u, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Input
+                value={u.text}
+                onChange={(e) => {
+                  const next = [...ursachen];
+                  next[i] = { ...u, text: e.target.value };
+                  patch({ ursachen: next });
+                }}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      </CanvasSection>
     </div>
   );
 }
