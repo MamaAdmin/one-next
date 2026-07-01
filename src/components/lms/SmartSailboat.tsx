@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Wind, Ship, Anchor, Mountain, X, Download, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
 
 interface SailboatData {
   wind: string[];
