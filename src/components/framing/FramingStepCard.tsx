@@ -680,52 +680,56 @@ function VariantCynefin({
       {ursachen.map((u, i) => (
         <div
           key={i}
-          className="grid grid-cols-[1fr_180px_140px_auto] gap-2 items-center rounded-md border p-2"
+          className="flex flex-col gap-2 rounded-md border p-2 md:grid md:grid-cols-[minmax(0,1fr)_180px_140px_auto] md:items-start"
         >
-          <Input
+          <Textarea
             value={u.text}
+            rows={2}
+            className="min-h-[60px] w-full resize-y break-words"
             onChange={(e) => {
               const next = [...ursachen];
               next[i] = { ...u, text: e.target.value };
               patch({ ursachen: next });
             }}
           />
-          <Select
-            value={u.cynefin}
-            onValueChange={(v) => {
-              const next = [...ursachen];
-              next[i] = { ...u, cynefin: v as Cynefin };
-              patch({ ursachen: next });
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="einfach">einfach</SelectItem>
-              <SelectItem value="kompliziert">kompliziert</SelectItem>
-              <SelectItem value="komplex">komplex</SelectItem>
-              <SelectItem value="chaotisch">chaotisch</SelectItem>
-            </SelectContent>
-          </Select>
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox
-              checked={u.adressierbar}
-              onCheckedChange={(v) => {
+          <div className="flex flex-wrap items-center gap-2 md:contents">
+            <Select
+              value={u.cynefin}
+              onValueChange={(v) => {
                 const next = [...ursachen];
-                next[i] = { ...u, adressierbar: !!v };
+                next[i] = { ...u, cynefin: v as Cynefin };
                 patch({ ursachen: next });
               }}
-            />
-            adressierbar
-          </label>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
-          >
-            <X className="w-3.5 h-3.5" />
-          </Button>
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="einfach">einfach</SelectItem>
+                <SelectItem value="kompliziert">kompliziert</SelectItem>
+                <SelectItem value="komplex">komplex</SelectItem>
+                <SelectItem value="chaotisch">chaotisch</SelectItem>
+              </SelectContent>
+            </Select>
+            <label className="flex items-center gap-2 text-sm">
+              <Checkbox
+                checked={u.adressierbar}
+                onCheckedChange={(v) => {
+                  const next = [...ursachen];
+                  next[i] = { ...u, adressierbar: !!v };
+                  patch({ ursachen: next });
+                }}
+              />
+              adressierbar
+            </label>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          </div>
         </div>
       ))}
     </div>
