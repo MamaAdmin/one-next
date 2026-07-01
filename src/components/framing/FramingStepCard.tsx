@@ -321,7 +321,17 @@ function StepVariant({
         />
       );
     case "stakeholder":
-      return <VariantStakeholder data={data} patch={patch} />;
+      return (
+        <VariantStakeholder
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "sailboat":
       return <VariantSailboat data={data} patch={patch} />;
     case "five-whys":
