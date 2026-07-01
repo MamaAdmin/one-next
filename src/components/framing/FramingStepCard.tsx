@@ -834,7 +834,7 @@ function VariantCynefin({
       border: "border-blue-300 dark:border-blue-800",
     },
   ];
-  const onDrop = (e: React.DragEvent, c: Cynefin) => {
+  const onDrop = (e: DragEvent, c: Cynefin) => {
     e.preventDefault();
     const idx = Number(e.dataTransfer.getData("text/plain"));
     if (!Number.isNaN(idx) && ursachen[idx]) setCynefin(idx, c);
