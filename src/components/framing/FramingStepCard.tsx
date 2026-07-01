@@ -722,6 +722,9 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "heute") return "heute";
   if (tag === "paingain" || tag === "pain-gain" || tag === "pain/gain")
     return "paingain";
+  if (tag === "kontext" || tag === "context") return "kontext";
+  if (tag === "nichtziel" || tag === "nicht-ziel" || tag === "nichtziele")
+    return "nichtziel";
   return null;
 }
 
