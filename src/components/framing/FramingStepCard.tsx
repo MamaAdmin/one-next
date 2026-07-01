@@ -344,7 +344,17 @@ function StepVariant({
         />
       );
     case "sailboat":
-      return <VariantSailboat data={data} patch={patch} />;
+      return (
+        <VariantSailboat
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "five-whys":
       return <VariantFiveWhys data={data} patch={patch} />;
     case "cynefin":
