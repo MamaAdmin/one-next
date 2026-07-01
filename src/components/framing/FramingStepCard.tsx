@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Sparkles, Loader2, Plus, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import type { FramingStepDef } from "@/features/framing/steps";
+import { FRAMING_STEPS, type FramingStepDef } from "@/features/framing/steps";
 import type {
   FramingStepData,
   FramingStepRow,
