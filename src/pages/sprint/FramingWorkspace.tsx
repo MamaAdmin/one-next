@@ -223,8 +223,8 @@ export default function FramingWorkspace() {
                         Kontext aus vorherigen Schritten
                       </div>
                       <ul className="text-sm space-y-1">
-                        {currentDef.nutztDatenAus.map((k) => {
-                          const def = getFramingStep(k);
+                        {currentDef.nutztDatenAus.map((k: string) => {
+                          const def = FRAMING_STEPS.find((s) => s.key === k);
                           const row = steps.find((s) => s.step_key === k);
                           const done = !!row?.completed_at;
                           return (
