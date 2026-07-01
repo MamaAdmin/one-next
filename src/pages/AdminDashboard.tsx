@@ -16,6 +16,7 @@ import { RedirectManager } from "@/components/admin/RedirectManager";
 import { PageTemplateManager } from "@/components/admin/PageTemplateManager";
 import BMADInvitationManager from "@/components/admin/BMADInvitationManager";
 import UserRoleManager from "@/components/admin/UserRoleManager";
+import SprintAdminManager from "@/components/admin/SprintAdminManager";
 import { 
   BMADSessionIcon, 
   BMADArtifactIcon, 
