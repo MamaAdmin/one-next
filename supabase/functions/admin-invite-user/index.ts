@@ -10,7 +10,7 @@ const corsHeaders = {
 const BodySchema = z.object({
   email: z.string().email().max(255),
   full_name: z.string().trim().min(1).max(200),
-  role: z.enum(["admin", "content_manager", "bmad_user", "user"]),
+  role: z.enum(["admin", "content_manager", "sprint_user", "bmad_user", "user"]),
 });
 
 serve(async (req) => {
