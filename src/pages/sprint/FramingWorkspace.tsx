@@ -125,10 +125,12 @@ export default function FramingWorkspace() {
                 {session.titel_arbeitstitel || "Ohne Titel"}
               </h1>
               <p className="text-sm text-muted-foreground">
-                Schritt {currentDef.index} von {FRAMING_STEPS.length} · gesamte Timebox ~{Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h
+                {currentDef.variant === "intro"
+                  ? `Einführung · gesamte Timebox ~${Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h`
+                  : `Schritt ${currentDef.index} von ${realSteps.length} · gesamte Timebox ~${Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h`}
               </p>
             </div>
-            {!showCompletion ? (
+            {!showCompletion && currentDef.timeboxMin > 0 ? (
               <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 bg-background ${timeboxOver ? "border-destructive text-destructive" : ""}`}>
                 <Timer className="w-4 h-4" />
                 <span className="font-mono text-lg tabular-nums">{mm}:{ss}</span>
@@ -147,6 +149,7 @@ export default function FramingWorkspace() {
                 </Button>
               </div>
             ) : null}
+
           </div>
           <div className="mt-3">
             <Progress value={progressPct} />
