@@ -1434,6 +1434,35 @@ function VariantFiveWhys({
   );
 }
 
+function QuadrantAddInput({ onAdd }: { onAdd: (text: string) => void }) {
+  const [val, setVal] = useState("");
+  const commit = () => {
+    const t = val.trim();
+    if (!t) return;
+    onAdd(t);
+    setVal("");
+  };
+  return (
+    <div className="mt-3 flex gap-1.5">
+      <Input
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        placeholder="Eigene Ursache …"
+        className="h-8 text-xs bg-background/80"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && val.trim()) {
+            e.preventDefault();
+            commit();
+          }
+        }}
+      />
+      <Button type="button" variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={commit}>
+        <Plus className="w-3.5 h-3.5" />
+      </Button>
+    </div>
+  );
+}
+
 
 function VariantCynefin({
   data,
