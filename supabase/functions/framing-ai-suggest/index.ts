@@ -13,7 +13,7 @@ const STEP_META: Record<string, { title: string; task: string }> = {
   "4": { title: "Smart Sailboat", task: "Schlage Einträge für Wind (Treiber), Anker (Hindernisse), Hafen (Ziel), Eisberg (Risiken) vor. Gib eine gemischte Liste, jeweils prefixed mit '[Wind]', '[Anker]', '[Hafen]', '[Eisberg]'." },
   "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor (nur Text, keine Cynefin-Einordnung – die passiert im nächsten Schritt automatisch)." },
   "5b": { title: "Cynefin-Einordnung", task: "Schlage für die Ursachen aus Schritt 5 plausible Cynefin-Kategorien (einfach/kompliziert/komplex/chaotisch) inkl. kurzer Begründung vor. Format je Item: 'Ursache — [Kategorie]: Begründung'." },
-  "6": { title: "Annahmen & Risiken", task: "Schlage bisher unausgesprochene, kritische Annahmen zum Framing vor." },
+  "6": { title: "Annahmen & Risiken", task: "Schlage kritische Annahmen zum Framing vor, verteilt auf 4 Quadranten der 2×2-Matrix (Unsicherheit × Einfluss): Kritisch (hoch/hoch), Einflussreich (niedrige Unsicherheit / hoher Einfluss), Unsicher (hohe Unsicherheit / niedriger Einfluss), Gering (niedrig/niedrig). Gib GENAU 3 Punkte je Quadrant (insgesamt 12 Items). Prefixe JEDES Item mit '[Kritisch]', '[Einflussreich]', '[Unsicher]' oder '[Gering]'." },
   "7": { title: "Erfolg & Constraints", task: "Schlage messbare Erfolgskriterien (5 Tage) und typische Constraints vor." },
   "8": { title: "Scope-Cut & Sprint-Fragen", task: "Schlage In-/Out-of-Scope-Punkte und Decision Questions ('Können wir …?') vor." },
   "9": { title: "Priorisierung (NUF)", task: "Schlage je Sprint-Frage eine erste NUF-Einschätzung vor (Neuheit/Nutzen/Machbarkeit)." },
@@ -161,6 +161,21 @@ Deno.serve(async (req) => {
       meta = {
         title: meta.title,
         task: `Schlage GENAU 3 adressierbare Ursachen vor, die in die Cynefin-Domäne ${CYNEFIN_BUCKETS[field]} passen. Keine anderen Domänen. Prefixe JEDES Item mit '${cynefinTag[field]}'.`,
+      };
+    }
+    const ASSUMPTION_BUCKETS: Record<string, string> = {
+      kritisch: "Kritisch (hohe Unsicherheit UND hoher Einfluss – sofort testen)",
+      einflussreich: "Einflussreich (niedrige Unsicherheit, hoher Einfluss – belastbare Annahmen mit Hebel)",
+      unsicher: "Unsicher (hohe Unsicherheit, niedriger Einfluss – später klären)",
+      gering: "Gering (niedrige Unsicherheit UND niedriger Einfluss – ignorierbar)",
+    };
+    const assumptionTag: Record<string, string> = {
+      kritisch: "[Kritisch]", einflussreich: "[Einflussreich]", unsicher: "[Unsicher]", gering: "[Gering]",
+    };
+    if (step_key === "6" && field && ASSUMPTION_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Annahmen NUR für den Quadranten ${ASSUMPTION_BUCKETS[field]} vor. Keine anderen Quadranten. Prefixe JEDES Item mit '${assumptionTag[field]}'.`,
       };
     }
     const key = Deno.env.get("LOVABLE_API_KEY");

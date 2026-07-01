@@ -107,7 +107,8 @@ export default function FramingStepCard({
           step.variant === "context-list" ||
           step.variant === "sailboat" ||
           step.variant === "five-whys" ||
-          step.variant === "cynefin") &&
+          step.variant === "cynefin" ||
+          step.variant === "assumptions") &&
         field
       ) {
         // Replace only this bucket's suggestions, keep others
@@ -388,7 +389,17 @@ function StepVariant({
         />
       );
     case "assumptions":
-      return <VariantAssumptions data={data} patch={patch} />;
+      return (
+        <VariantAssumptions
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "success-constraints":
       return <VariantSuccess data={data} patch={patch} />;
     case "scope-questions":
@@ -497,12 +508,22 @@ function applySuggestion(
       ];
       return;
     }
-    case "assumptions":
+    case "assumptions": {
+      const m = text.match(/^\[(Kritisch|Unsicher|Einflussreich|Gering)\]\s*(.+)$/i);
+      const tag = m ? m[1].toLowerCase() : "";
+      const value = m ? m[2].trim() : text;
+      let unsicherheit = 3;
+      let einfluss = 3;
+      if (tag === "kritisch") { unsicherheit = 5; einfluss = 5; }
+      else if (tag === "unsicher") { unsicherheit = 5; einfluss = 2; }
+      else if (tag === "einflussreich") { unsicherheit = 2; einfluss = 5; }
+      else if (tag === "gering") { unsicherheit = 2; einfluss = 2; }
       data.annahmen = [
         ...(data.annahmen ?? []),
-        { text, unsicherheit: 3, einfluss: 3 },
+        { text: value, unsicherheit, einfluss },
       ];
       return;
+    }
     case "success-constraints":
       data.constraints = pushUnique(data.constraints, text);
       return;
@@ -792,7 +813,9 @@ type FiveWhysBucket = "why" | "ursache";
 
 type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket;
+type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
@@ -828,6 +851,10 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "kompliziert" || tag === "complicated") return "kompliziert";
   if (tag === "chaotisch" || tag === "chaotic") return "chaotisch";
   if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") return "einfach";
+  if (tag === "kritisch" || tag === "critical") return "kritisch";
+  if (tag === "unsicher" || tag === "uncertain") return "unsicher";
+  if (tag === "einflussreich" || tag === "impactful" || tag === "high-impact") return "einflussreich";
+  if (tag === "gering" || tag === "low") return "gering";
   return null;
 }
 
@@ -1758,9 +1785,19 @@ function VariantCynefin({
 function VariantAssumptions({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const annahmen = data.annahmen ?? [];
   const [input, setInput] = useState("");
@@ -1769,11 +1806,69 @@ function VariantAssumptions({
     patch({ annahmen: [...annahmen, { text: input.trim(), unsicherheit: 3, einfluss: 3 }] });
     setInput("");
   };
+  const inline = (bucket: AssumptionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+
+  const quadrants: Array<{
+    key: AssumptionBucket;
+    title: string;
+    subtitle: string;
+    bg: string;
+    border: string;
+  }> = [
+    {
+      key: "kritisch",
+      title: "Kritisch",
+      subtitle: "Hohe Unsicherheit · Hoher Einfluss – jetzt testen",
+      bg: "bg-primary/5",
+      border: "border-primary/60",
+    },
+    {
+      key: "einflussreich",
+      title: "Einflussreich, aber sicher",
+      subtitle: "Niedrige Unsicherheit · Hoher Einfluss – im Blick behalten",
+      bg: "bg-emerald-50 dark:bg-emerald-950/30",
+      border: "border-emerald-300 dark:border-emerald-800/60",
+    },
+    {
+      key: "unsicher",
+      title: "Nur unsicher",
+      subtitle: "Hohe Unsicherheit · Niedriger Einfluss – später klären",
+      bg: "bg-amber-50 dark:bg-amber-950/30",
+      border: "border-amber-300 dark:border-amber-800/60",
+    },
+    {
+      key: "gering",
+      title: "Gering",
+      subtitle: "Niedrige Unsicherheit · Niedriger Einfluss – ignorieren",
+      bg: "bg-muted/40",
+      border: "border-muted",
+    },
+  ];
+
   return (
     <div className="space-y-6">
+      <div className="grid gap-3 md:grid-cols-2">
+        {quadrants.map((q) => (
+          <div key={q.key} className={`rounded-md border p-3 ${q.bg} ${q.border}`}>
+            <div className="mb-1 text-sm font-semibold">{q.title}</div>
+            <div className="mb-2 text-xs text-muted-foreground">{q.subtitle}</div>
+            {inline(q.key)}
+          </div>
+        ))}
+      </div>
+
       <CanvasSection title="Annahmen (Unsicherheit / Einfluss je 1–5)">
         <div className="space-y-3">
-          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <p className="text-sm font-medium">Eigene Annahmen</p>
           <div className="flex gap-2">
             <Input
               value={input}
