@@ -894,30 +894,34 @@ function VariantCynefin({
 
 
       <div className="relative">
-        <div className="text-xs text-muted-foreground grid grid-cols-2 mb-1 px-2">
+        <div className="text-[11px] font-medium tracking-wide uppercase text-muted-foreground grid grid-cols-2 mb-2 px-1">
           <span>Ungeordneter Bereich</span>
           <span className="text-right">Geordneter Bereich</span>
         </div>
-        <div className="grid grid-cols-2 gap-2 border-2 border-dashed border-muted-foreground/30 p-2 rounded-lg">
+        <div className="relative grid grid-cols-2 gap-4 p-4 rounded-2xl bg-muted/40">
+          {/* dashed axis cross */}
+          <div className="pointer-events-none absolute inset-x-4 top-1/2 border-t border-dashed border-muted-foreground/40" aria-hidden />
+          <div className="pointer-events-none absolute inset-y-4 left-1/2 border-l border-dashed border-muted-foreground/40" aria-hidden />
+
           {quadrants.map((q) => (
             <div
               key={q.key}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => onDrop(e, q.key)}
-              className={`min-h-[140px] rounded-md border ${q.border} ${q.bg} p-3 flex flex-col`}
+              className={`relative min-h-[180px] rounded-2xl border ${q.border} ${q.bg} p-5 flex flex-col transition-colors`}
             >
-              <div className="mb-2">
-                <div className="font-semibold text-sm">{q.title}</div>
-                <div className="text-[11px] italic text-muted-foreground">{q.subtitle}</div>
+              <div className="mb-3">
+                <div className={`font-bold text-lg tracking-tight ${q.accent}`}>{q.title}</div>
+                <div className="text-[12px] italic text-foreground/70 mt-0.5">{q.subtitle}</div>
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 content-start">
                 {ursachen.map((u, i) =>
                   u.cynefin === q.key ? (
                     <div
                       key={i}
                       draggable
                       onDragStart={(e) => e.dataTransfer.setData("text/plain", String(i))}
-                      className={`cursor-grab active:cursor-grabbing rounded-full border bg-background/90 px-2.5 py-1 text-xs shadow-sm max-w-full truncate ${
+                      className={`cursor-grab active:cursor-grabbing rounded-full border border-foreground/15 bg-background/95 px-3 py-1 text-xs font-medium shadow-sm max-w-full truncate ${
                         u.adressierbar ? "" : "opacity-60 line-through"
                       }`}
                       title={u.text}
@@ -929,14 +933,17 @@ function VariantCynefin({
               </div>
             </div>
           ))}
-        </div>
-        <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-background border-2 border-muted-foreground/60 w-16 h-16 flex items-center justify-center shadow-sm pointer-events-none"
-          aria-hidden
-        >
-          <span className="-rotate-45 text-xs font-medium">Unklar</span>
+
+          {/* center diamond */}
+          <div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-background border-2 border-foreground/70 w-20 h-20 flex items-center justify-center shadow-md pointer-events-none rounded-md"
+            aria-hidden
+          >
+            <span className="-rotate-45 text-sm font-semibold tracking-tight">Unklar</span>
+          </div>
         </div>
       </div>
+
 
       {ursachen.length === 0 ? (
         <div className="rounded-md border border-dashed p-6 text-sm text-muted-foreground">
