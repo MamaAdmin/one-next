@@ -42,13 +42,51 @@ export default function SprintDashboard() {
                 Selbstgeführte Online Design Sprints – flexibel, mit KI-Unterstützung.
               </p>
             </div>
-            <Button asChild size="lg" className="bg-gradient-primary hover:opacity-90">
-              <Link to="/sprint/neu">
-                <Plus className="w-5 h-5 mr-2" />
-                Neuen Sprint anlegen
-              </Link>
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild size="lg" variant="outline">
+                <Link to="/sprint/neu?mode=framing">
+                  <Compass className="w-5 h-5 mr-2" />
+                  Problem framen (3–4 h)
+                </Link>
+              </Button>
+              <Button asChild size="lg" className="bg-gradient-primary hover:opacity-90">
+                <Link to="/sprint/neu">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Neuen Sprint anlegen
+                </Link>
+              </Button>
+            </div>
           </div>
+
+          {activeFramings.length > 0 ? (
+            <section className="mb-10">
+              <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                <Compass className="w-5 h-5" /> Aktive Problem-Framing-Workshops
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {activeFramings.map((f) => (
+                  <Card key={f.id} className="hover:shadow-hover transition-shadow">
+                    <Link to={`/sprint/framing/${f.id}`} className="block">
+                      <CardContent className="p-5 space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="font-semibold">
+                            {f.titel_arbeitstitel || "Ohne Titel"}
+                          </h3>
+                          <Badge variant="secondary">
+                            Schritt {f.current_step} / 10
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Framing läuft – weiterarbeiten und daraus einen Sprint erzeugen.
+                        </p>
+                      </CardContent>
+                    </Link>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
 
           {isLoading ? (
             <p className="text-muted-foreground">Wird geladen …</p>
