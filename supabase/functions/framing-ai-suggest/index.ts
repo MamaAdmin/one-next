@@ -178,6 +178,17 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 Annahmen NUR für den Quadranten ${ASSUMPTION_BUCKETS[field]} vor. Keine anderen Quadranten. Prefixe JEDES Item mit '${assumptionTag[field]}'.`,
       };
     }
+    const SUCCESS_BUCKETS: Record<string, string> = {
+      erfolg: "Erfolg (messbare Erfolgskriterien, in 5 Tagen prüfbar – z. B. konkrete Zahlen, Signale, Nutzertests)",
+      constraint: "Constraint (harte Randbedingungen, die gesetzt sind – z. B. Budget, Technik, Zeit, Recht/Compliance, Team)",
+    };
+    const successTag: Record<string, string> = { erfolg: "[Erfolg]", constraint: "[Constraint]" };
+    if (step_key === "7" && field && SUCCESS_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SUCCESS_BUCKETS[field]} vor. Keine anderen Kategorien. Antworte auf Deutsch. Prefixe JEDES Item mit '${successTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 
