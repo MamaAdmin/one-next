@@ -136,6 +136,8 @@ export default function FramingStepCard({
           data={data}
           patch={patch}
           suggestions={vorschlaege}
+          onLoadSuggestions={(field) => loadSuggestions(field)}
+          suggestPending={suggest.isPending}
           onAcceptSuggestion={(i) => {
             const v = vorschlaege[i];
             if (v == null) return;
