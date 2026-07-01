@@ -39,9 +39,10 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "2",
     index: 2,
-    title: "2. Warum jetzt? & Default Future",
-    frage: "Warum jetzt – und was passiert, wenn wir NICHTS tun?",
-    arbeit: "Dringlichkeit beschreiben und ein realistisches Bild der 'Zukunft ohne Handeln' zeichnen.",
+    title: "2. Present, Past & Future",
+    frage: "Wo stehen wir heute, was ist bereits passiert – und was erwartet uns, wenn wir NICHTS tun?",
+    arbeit:
+      "Present (Warum jetzt?), Past (bisher Versuchtes / Erfahrungen) und Future (Default Future + Wettbewerb, Trends, Chancen) sichtbar machen.",
     timeboxMin: 15,
     variant: "two-fields",
     nutztDatenAus: ["1"],
