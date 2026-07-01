@@ -433,20 +433,13 @@ function applySuggestion(
       return;
     }
     case "sailboat": {
-      const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
       const m = text.match(/^\[(Wind|Anker|Hafen|Eisberg)\]\s*(.+)$/i);
-      if (m) {
-        const bucket = m[1].toLowerCase();
-        const value = m[2].trim();
-        if (bucket === "wind") sb.wind = pushUnique(sb.wind, value);
-        else if (bucket === "anker") sb.anker = pushUnique(sb.anker, value);
-        else if (bucket === "hafen")
-          sb.hafen = sb.hafen ? `${sb.hafen}\n${value}` : value;
-        else if (bucket === "eisberg") sb.eisberg = pushUnique(sb.eisberg, value);
-      } else {
-        sb.wind = pushUnique(sb.wind, text);
-      }
-      data.sailboat = sb;
+      const bucket = m ? m[1].toLowerCase() : "wind";
+      const value = m ? m[2].trim() : text;
+      if (bucket === "wind") data.kiWind = pushUnique(data.kiWind, value);
+      else if (bucket === "anker") data.kiAnker = pushUnique(data.kiAnker, value);
+      else if (bucket === "hafen") data.kiHafen = pushUnique(data.kiHafen, value);
+      else if (bucket === "eisberg") data.kiEisberg = pushUnique(data.kiEisberg, value);
       return;
     }
     case "five-whys": {
