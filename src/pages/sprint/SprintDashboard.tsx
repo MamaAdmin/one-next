@@ -81,7 +81,7 @@ export default function SprintDashboard() {
               <CardContent className="p-5 space-y-2">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-accent" />
-                  <h2 className="font-semibold">Starte mit Design Sprint (4–5 Tage)</h2>
+                  <h2 className="font-semibold">Starte mit Design Sprint (8h)</h2>
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Wenn du eine <strong>klare Sprint-Frage</strong> und definierte Zielgruppe
