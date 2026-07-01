@@ -23,6 +23,7 @@ import type {
 } from "@/features/framing/types";
 import { useFramingSuggest } from "@/hooks/useFraming";
 import { CanvasSection } from "./CanvasSection";
+import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
 
 interface Props {
   sessionId: string;
