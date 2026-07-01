@@ -836,10 +836,51 @@ function VariantCynefin({
       accent: "text-[#1f4a70] dark:text-sky-200",
     },
   ];
-  const onDrop = (e: DragEvent, c: Cynefin) => {
+  const flashSnap = (c: Cynefin, i: number) => {
+    setJustDroppedKey(c);
+    setSnappedIndex(i);
+    window.setTimeout(() => {
+      setJustDroppedKey((k) => (k === c ? null : k));
+      setSnappedIndex((s) => (s === i ? null : s));
+    }, 550);
+  };
+  const handleDropInQuadrant = (e: DragEvent, c: Cynefin) => {
     e.preventDefault();
-    const idx = Number(e.dataTransfer.getData("text/plain"));
-    if (!Number.isNaN(idx) && ursachen[idx]) setCynefin(idx, c);
+    e.stopPropagation();
+    dropHandledRef.current = true;
+    setDragOverKey(null);
+    const raw = e.dataTransfer.getData("text/plain");
+    const idx = Number(raw);
+    if (raw === "" || Number.isNaN(idx) || !ursachen[idx]) {
+      toast({
+        title: "Chip konnte nicht platziert werden",
+        description: "Der Ursachen-Chip wurde nicht korrekt erkannt. Bitte erneut ziehen.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (ursachen[idx].cynefin === c) {
+      // no-op, but still confirm with a subtle snap
+      flashSnap(c, idx);
+      return;
+    }
+    setCynefin(idx, c);
+    flashSnap(c, idx);
+  };
+  const handleDropOutside = (e: DragEvent) => {
+    e.preventDefault();
+    if (dropHandledRef.current) {
+      dropHandledRef.current = false;
+      return;
+    }
+    toast({
+      title: "Kein gültiger Bereich",
+      description:
+        "Chip muss in einem der vier Cynefin-Quadranten abgelegt werden (Komplex, Kompliziert, Chaotisch, Einfach).",
+      variant: "destructive",
+    });
+    setDragOverKey(null);
+    setDragIndex(null);
   };
   return (
     <div className="space-y-4">
