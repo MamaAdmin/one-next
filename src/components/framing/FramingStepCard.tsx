@@ -333,6 +333,12 @@ function applySuggestion(
       }
       return;
     }
+    case "cynefin":
+      data.ursachen = [
+        ...(data.ursachen ?? []),
+        { text, cynefin: "kompliziert", adressierbar: true },
+      ];
+      return;
     case "assumptions":
       data.annahmen = [
         ...(data.annahmen ?? []),
