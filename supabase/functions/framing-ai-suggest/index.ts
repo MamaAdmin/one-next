@@ -113,6 +113,12 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${STAKEHOLDER_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${stakeholderTag[field]}'.`,
       };
     }
+    if (step_key === "1" && field && KICKOFF_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${KICKOFF_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${kickoffTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 
