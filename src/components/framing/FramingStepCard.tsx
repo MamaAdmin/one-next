@@ -370,9 +370,13 @@ function applySuggestion(
       } else if (bucket === "chancen") {
         data.chancen = pushUnique(data.chancen, value);
       } else {
-        // future / default future
-        const cur = data.defaultFuture ?? "";
-        data.defaultFuture = cur ? `${cur}\n• ${value}` : `• ${value}`;
+        // future / default future → array
+        const current = Array.isArray(data.defaultFuture)
+          ? data.defaultFuture
+          : data.defaultFuture
+            ? [data.defaultFuture]
+            : [];
+        data.defaultFuture = pushUnique(current, value);
       }
       return;
     }
@@ -791,11 +795,19 @@ function VariantTwoFields({
       </CanvasSection>
 
       <CanvasSection title="Zukunft – Standard-Zukunft (was passiert ohne Handeln?)">
-        <Textarea
-          rows={4}
-          value={data.defaultFuture ?? ""}
-          onChange={(e) => patch({ defaultFuture: e.target.value })}
-          placeholder="Realistisches Bild der Zukunft, wenn wir nichts tun …"
+        <ListEditor
+          label="Standard-Zukunft – realistisches Bild, wenn wir nichts tun"
+          items={
+            Array.isArray(data.defaultFuture)
+              ? data.defaultFuture
+              : data.defaultFuture
+                ? [data.defaultFuture]
+                : []
+          }
+          onChange={(v) => patch({ defaultFuture: v })}
+          multiline
+          rows={3}
+          placeholder="z. B. Marktanteil sinkt weiter, Team verliert Motivation …"
         />
         {inline("zukunft")}
       </CanvasSection>
