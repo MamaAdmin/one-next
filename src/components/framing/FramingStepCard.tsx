@@ -610,13 +610,112 @@ function VariantContextList({
   );
 }
 
+type TwoFieldsBucket =
+  | "gegenwart"
+  | "vergangenheit"
+  | "zukunft"
+  | "wettbewerb"
+  | "trends"
+  | "chancen";
+
+function bucketOfTwoFieldsSuggestion(raw: string): TwoFieldsBucket | null {
+  const m = raw.match(
+    /^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]/i,
+  );
+  if (!m) return null;
+  const tag = m[1].toLowerCase();
+  if (tag === "gegenwart" || tag === "present") return "gegenwart";
+  if (tag === "vergangenheit" || tag === "past") return "vergangenheit";
+  if (
+    tag === "zukunft" ||
+    tag === "future" ||
+    tag === "standard-zukunft" ||
+    tag === "default future"
+  )
+    return "zukunft";
+  if (tag === "wettbewerb") return "wettbewerb";
+  if (tag === "trends") return "trends";
+  if (tag === "chancen") return "chancen";
+  return null;
+}
+
+function stripBucketTag(raw: string): string {
+  return raw.replace(/^\[[^\]]+\]\s*/, "").trim();
+}
+
+function InlineSuggestions({
+  bucket,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+}: {
+  bucket: TwoFieldsBucket;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+}) {
+  const matches = suggestions
+    .map((v, i) => ({ v, i }))
+    .filter(({ v }) => bucketOfTwoFieldsSuggestion(v) === bucket);
+  if (matches.length === 0) return null;
+  return (
+    <div className="mt-2 rounded-md border border-dashed bg-muted/30 p-2 space-y-1.5">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <Sparkles className="w-3.5 h-3.5" /> KI-Vorschläge
+      </div>
+      <ul className="space-y-1.5">
+        {matches.map(({ v, i }) => (
+          <li
+            key={i}
+            className="flex items-start gap-2 rounded-md border bg-background px-2.5 py-1.5 text-sm"
+          >
+            <span className="flex-1">{stripBucketTag(v)}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-7"
+              onClick={() => onAcceptSuggestion(i)}
+            >
+              <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => onDismissSuggestion(i)}
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function VariantTwoFields({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
 }) {
+  const inline = (bucket: TwoFieldsBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+    />
+  );
   return (
     <div className="space-y-6">
       <CanvasSection title="Gegenwart – Warum jetzt?">
@@ -626,6 +725,7 @@ function VariantTwoFields({
           onChange={(e) => patch({ warumJetzt: e.target.value })}
           placeholder="Was macht das Thema gerade jetzt dringlich?"
         />
+        {inline("gegenwart")}
       </CanvasSection>
 
       <CanvasSection title="Vergangenheit – Was wurde bisher versucht?">
@@ -634,6 +734,7 @@ function VariantTwoFields({
           onChange={(v) => patch({ frueherVersucht: v })}
           placeholder="z. B. Interne Schulung im Q2/2024"
         />
+        {inline("vergangenheit")}
       </CanvasSection>
 
       <CanvasSection title="Zukunft – Standard-Zukunft (was passiert ohne Handeln?)">
@@ -643,34 +744,44 @@ function VariantTwoFields({
           onChange={(e) => patch({ defaultFuture: e.target.value })}
           placeholder="Realistisches Bild der Zukunft, wenn wir nichts tun …"
         />
+        {inline("zukunft")}
       </CanvasSection>
 
       <CanvasSection title="Geschäftliche Zukunft – Wettbewerb, Trends, Chancen">
         <div className="space-y-4">
-          <ListEditor
-            label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
-            items={data.wettbewerber ?? []}
-            onChange={(v) => patch({ wettbewerber: v })}
-            multiline
-            rows={3}
-            placeholder="z. B. Anbieter X setzt seit 2024 auf …"
-          />
-          <ListEditor
-            label="Trends – für / gegen die Idee"
-            items={data.trends ?? []}
-            onChange={(v) => patch({ trends: v })}
-            multiline
-            rows={3}
-            placeholder="z. B. Regulatorik, Marktbewegung, Technologie …"
-          />
-          <ListEditor
-            label="Chancen – wo liegen Opportunities?"
-            items={data.chancen ?? []}
-            onChange={(v) => patch({ chancen: v })}
-            multiline
-            rows={3}
-            placeholder="z. B. Neue Zielgruppe, Partnerschaft, Kanal …"
-          />
+          <div>
+            <ListEditor
+              label="Wettbewerb – was machen Wettbewerber / Vergleichbare?"
+              items={data.wettbewerber ?? []}
+              onChange={(v) => patch({ wettbewerber: v })}
+              multiline
+              rows={3}
+              placeholder="z. B. Anbieter X setzt seit 2024 auf …"
+            />
+            {inline("wettbewerb")}
+          </div>
+          <div>
+            <ListEditor
+              label="Trends – für / gegen die Idee"
+              items={data.trends ?? []}
+              onChange={(v) => patch({ trends: v })}
+              multiline
+              rows={3}
+              placeholder="z. B. Regulatorik, Marktbewegung, Technologie …"
+            />
+            {inline("trends")}
+          </div>
+          <div>
+            <ListEditor
+              label="Chancen – wo liegen Opportunities?"
+              items={data.chancen ?? []}
+              onChange={(v) => patch({ chancen: v })}
+              multiline
+              rows={3}
+              placeholder="z. B. Neue Zielgruppe, Partnerschaft, Kanal …"
+            />
+            {inline("chancen")}
+          </div>
         </div>
       </CanvasSection>
     </div>
