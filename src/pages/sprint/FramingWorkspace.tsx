@@ -63,7 +63,7 @@ export default function FramingWorkspace() {
   }
 
   async function handleNext() {
-    if (currentDef.index === 10) {
+    if (currentDef.index === FRAMING_STEPS.length) {
       setShowCompletion(true);
       return;
     }
