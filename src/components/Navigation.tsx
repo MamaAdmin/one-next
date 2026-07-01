@@ -138,11 +138,19 @@ const Navigation = () => {
                       Mein Profil
                     </Link>
                   </DropdownMenuItem>
-                  {/* Regular users (not admin, not bmad_user) see LMS */}
-                  {!isAdmin && !isBmadUser && (
+                  {/* Regular users (not admin, not bmad_user, not sprint_user) see LMS */}
+                  {!isAdmin && !isBmadUser && !isSprintUser && (
                     <DropdownMenuItem asChild>
                       <Link to="/lms/dashboard" className="cursor-pointer">
                         Meine Kurse
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {/* Sprint users see their sprints */}
+                  {!isAdmin && isSprintUser && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/sprint" className="cursor-pointer">
+                        Meine Sprints
                       </Link>
                     </DropdownMenuItem>
                   )}
