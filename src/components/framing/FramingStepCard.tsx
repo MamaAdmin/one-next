@@ -438,7 +438,7 @@ function ListEditor({
 
 /* ---------- canvas helpers ---------- */
 
-function CanvasSection({ title, children }: { title: string; children: React.ReactNode }) {
+function CanvasSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <details className="rounded-md border bg-muted/30 px-3 py-2 group">
       <summary className="cursor-pointer text-sm font-medium text-muted-foreground list-none flex items-center justify-between">
