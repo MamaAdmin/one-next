@@ -152,6 +152,7 @@ export default function FramingStepCard({
           suggestions={vorschlaege}
           onLoadSuggestions={(field) => loadSuggestions(field)}
           suggestPending={suggest.isPending}
+          pendingBucket={pendingBucket}
           onAcceptSuggestion={(i) => {
             const v = vorschlaege[i];
             if (v == null) return;
