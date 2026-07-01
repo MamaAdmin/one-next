@@ -100,11 +100,11 @@ export default function FramingStepCard({
         field,
       });
       const incoming = res.vorschlaege ?? [];
-      if (step.variant === "two-fields" && field) {
+      if ((step.variant === "two-fields" || step.variant === "stakeholder") && field) {
         // Replace only this bucket's suggestions, keep others
         const bucket = field.toLowerCase();
         setVorschlaege((prev) => [
-          ...prev.filter((v) => bucketOfTwoFieldsSuggestion(v) !== bucket),
+          ...prev.filter((v) => bucketOfSuggestion(v) !== bucket),
           ...incoming,
         ]);
       } else {
@@ -173,7 +173,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
@@ -243,7 +243,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" ? (
             <Button
               type="button"
               variant="outline"
@@ -321,7 +321,17 @@ function StepVariant({
         />
       );
     case "stakeholder":
-      return <VariantStakeholder data={data} patch={patch} />;
+      return (
+        <VariantStakeholder
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "sailboat":
       return <VariantSailboat data={data} patch={patch} />;
     case "five-whys":
@@ -380,9 +390,20 @@ function applySuggestion(
       }
       return;
     }
-    case "stakeholder":
-      data.stakeholder = pushUnique(data.stakeholder, text);
+    case "stakeholder": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "geparkt") {
+        data.kiSekundaerGeparkt = pushUnique(data.kiSekundaerGeparkt, value);
+      } else if (b === "heute") {
+        data.kiKundeHeuteLoesung = pushUnique(data.kiKundeHeuteLoesung, value);
+      } else if (b === "paingain") {
+        data.kiKundePainGain = pushUnique(data.kiKundePainGain, value);
+      } else {
+        data.kiStakeholder = pushUnique(data.kiStakeholder, value);
+      }
       return;
+    }
     case "sailboat": {
       const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
       const m = text.match(/^\[(Wind|Anker|Hafen|Eisberg)\]\s*(.+)$/i);
@@ -657,12 +678,14 @@ type TwoFieldsBucket =
   | "trends"
   | "chancen";
 
-function bucketOfTwoFieldsSuggestion(raw: string): TwoFieldsBucket | null {
-  const m = raw.match(
-    /^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]/i,
-  );
+type StakeholderBucket = "stakeholder" | "geparkt" | "heute" | "paingain";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket;
+
+function bucketOfSuggestion(raw: string): SuggestionBucket | null {
+  const m = raw.match(/^\[([^\]]+)\]/);
   if (!m) return null;
-  const tag = m[1].toLowerCase();
+  const tag = m[1].toLowerCase().trim();
   if (tag === "gegenwart" || tag === "present") return "gegenwart";
   if (tag === "vergangenheit" || tag === "past") return "vergangenheit";
   if (
@@ -675,6 +698,11 @@ function bucketOfTwoFieldsSuggestion(raw: string): TwoFieldsBucket | null {
   if (tag === "wettbewerb") return "wettbewerb";
   if (tag === "trends") return "trends";
   if (tag === "chancen") return "chancen";
+  if (tag === "stakeholder") return "stakeholder";
+  if (tag === "geparkt") return "geparkt";
+  if (tag === "heute") return "heute";
+  if (tag === "paingain" || tag === "pain-gain" || tag === "pain/gain")
+    return "paingain";
   return null;
 }
 
@@ -690,7 +718,7 @@ function InlineSuggestions({
   onLoadSuggestions,
   pending,
 }: {
-  bucket: TwoFieldsBucket;
+  bucket: SuggestionBucket;
   suggestions: string[];
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
@@ -699,7 +727,7 @@ function InlineSuggestions({
 }) {
   const matches = suggestions
     .map((v, i) => ({ v, i }))
-    .filter(({ v }) => bucketOfTwoFieldsSuggestion(v) === bucket)
+    .filter(({ v }) => bucketOfSuggestion(v) === bucket)
     .slice(0, 3);
   return (
     <div className="mt-2 space-y-2">
@@ -805,7 +833,7 @@ function VariantTwoFields({
   onLoadSuggestions: (field?: string) => void;
   pendingBucket: string | null;
 }) {
-  const inline = (bucket: TwoFieldsBucket) => (
+  const inline = (bucket: SuggestionBucket) => (
     <InlineSuggestions
       bucket={bucket}
       suggestions={suggestions}
@@ -933,72 +961,136 @@ function VariantTwoFields({
 function VariantStakeholder({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const stakeholder = data.stakeholder ?? [];
+  const inline = (bucket: SuggestionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (
+    key: "kiStakeholder" | "kiSekundaerGeparkt" | "kiKundeHeuteLoesung" | "kiKundePainGain",
+    index: number,
+  ) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
+  };
   return (
-    <div className="space-y-4">
-      <ListEditor
-        label="Stakeholder / potenzielle Zielgruppen"
-        items={stakeholder}
-        onChange={(v) => patch({ stakeholder: v })}
-      />
-      <div className="space-y-2">
-        <Label>Primäre Zielgruppe</Label>
-        <Select
-          value={data.primaereZielgruppe ?? ""}
-          onValueChange={(v) => patch({ primaereZielgruppe: v })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Aus Stakeholdern wählen …" />
-          </SelectTrigger>
-          <SelectContent>
-            {stakeholder.map((s, i) => (
-              <SelectItem key={i} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <ListEditor
-        label="Sekundäre Gruppen – bewusst geparkt"
-        items={data.sekundaerGeparkt ?? []}
-        onChange={(v) => patch({ sekundaerGeparkt: v })}
-      />
-      <CanvasSection title="Customer-Kontext (optional) – Verhalten, frühere Versuche, Pain/Gain">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Wie löst die Zielgruppe das Problem heute?</Label>
-            <Textarea
-              rows={3}
-              value={data.kundeHeuteLoesung ?? ""}
-              onChange={(e) => patch({ kundeHeuteLoesung: e.target.value })}
-              placeholder="Aktuelles Verhalten, Workarounds, Tools …"
-            />
-          </div>
+    <div className="space-y-6">
+      <CanvasSection title="Stakeholder & Zielgruppe">
+        <ListEditor
+          label="Eigene Anmerkungen – Stakeholder / potenzielle Zielgruppen"
+          items={stakeholder}
+          onChange={(v) => patch({ stakeholder: v })}
+        />
+        <AcceptedKiList
+          items={data.kiStakeholder ?? []}
+          onRemove={(i) => removeKi("kiStakeholder", i)}
+        />
+        {inline("stakeholder")}
+        <div className="space-y-2 mt-4">
+          <Label>Primäre Zielgruppe</Label>
+          <Select
+            value={data.primaereZielgruppe ?? ""}
+            onValueChange={(v) => patch({ primaereZielgruppe: v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Aus Stakeholdern wählen …" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...stakeholder, ...(data.kiStakeholder ?? [])].map((s, i) => (
+                <SelectItem key={`${s}-${i}`} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </CanvasSection>
+
+      <CanvasSection title="Sekundäre Gruppen – bewusst geparkt">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.sekundaerGeparkt ?? []}
+          onChange={(v) => patch({ sekundaerGeparkt: v })}
+          placeholder="z. B. Rechtsabteilung, interne Admins …"
+        />
+        <AcceptedKiList
+          items={data.kiSekundaerGeparkt ?? []}
+          onRemove={(i) => removeKi("kiSekundaerGeparkt", i)}
+        />
+        {inline("geparkt")}
+      </CanvasSection>
+
+      <CanvasSection title="Heute – Wie löst die Zielgruppe das Problem aktuell?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={3}
+            value={data.kundeHeuteLoesung ?? ""}
+            onChange={(e) => patch({ kundeHeuteLoesung: e.target.value })}
+            placeholder="Aktuelles Verhalten, Workarounds, Tools …"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiKundeHeuteLoesung ?? []}
+          onRemove={(i) => removeKi("kiKundeHeuteLoesung", i)}
+        />
+        {inline("heute")}
+      </CanvasSection>
+
+      <CanvasSection title="Vergangenheit – Was hat die Zielgruppe früher versucht?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
           <PastAttemptsEditor
-            label="Was hat die Zielgruppe früher versucht?"
             items={data.kundeVersuchePast ?? []}
             onChange={(v) => patch({ kundeVersuchePast: v })}
             placeholder="z. B. Nutzung eines Wettbewerber-Tools"
           />
-          <div className="space-y-2">
-            <Label>Welchen Pain lindern wir – welchen Gain schaffen wir?</Label>
-            <Textarea
-              rows={3}
-              value={data.kundePainGain ?? ""}
-              onChange={(e) => patch({ kundePainGain: e.target.value })}
-              placeholder="Konkreter Nutzen aus Sicht der Zielgruppe"
-            />
-          </div>
         </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Hier zählen echte Erfahrungen der Zielgruppe – bitte selbst eintragen.
+        </p>
+      </CanvasSection>
+
+      <CanvasSection title="Pain / Gain – Welchen Pain lindern wir, welchen Gain schaffen wir?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={3}
+            value={data.kundePainGain ?? ""}
+            onChange={(e) => patch({ kundePainGain: e.target.value })}
+            placeholder="Konkreter Nutzen aus Sicht der Zielgruppe"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiKundePainGain ?? []}
+          onRemove={(i) => removeKi("kiKundePainGain", i)}
+        />
+        {inline("paingain")}
       </CanvasSection>
     </div>
   );
 }
+
 
 function VariantSailboat({
   data,

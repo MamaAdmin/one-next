@@ -9,7 +9,7 @@ const corsHeaders = {
 const STEP_META: Record<string, { title: string; task: string }> = {
   "1": { title: "Kick-off & Zielbild", task: "Schlage typische Nicht-Ziele / Abgrenzungen zum Kontext vor." },
   "2": { title: "Gegenwart, Vergangenheit & Zukunft", task: "Schlage Punkte zu allen sechs Kategorien vor: Gegenwart (warum jetzt / aktuelle Dringlichkeit), Vergangenheit (was wurde früher versucht / Erfahrungen), Zukunft (Standard-Zukunft – was passiert ohne Handeln), Wettbewerb (was machen Vergleichbare), Trends (für/gegen die Idee) und Chancen (Opportunities). Gib GENAU 3 Punkte je Kategorie (insgesamt 18 Items). Prefixe JEDES Item mit einem der Tags: '[Gegenwart]', '[Vergangenheit]', '[Zukunft]', '[Wettbewerb]', '[Trends]', '[Chancen]'." },
-  "3": { title: "Stakeholder & Zielgruppe", task: "Schlage plausible Stakeholder / Zielgruppen zum Kontext vor." },
+  "3": { title: "Stakeholder & Zielgruppe", task: "Schlage Punkte zu vier Kategorien vor: Stakeholder/Zielgruppen (potenzielle primäre/sekundäre Gruppen), Geparkt (Gruppen, die bewusst NICHT im Sprint-Fokus sind), Heute (wie die Zielgruppe das Problem heute löst / aktuelle Workarounds/Tools), PainGain (welchen Pain lindern wir – welchen Gain schaffen wir aus Sicht der Zielgruppe). Gib GENAU 3 Punkte je Kategorie (insgesamt 12 Items). Prefixe JEDES Item mit einem der Tags: '[Stakeholder]', '[Geparkt]', '[Heute]', '[PainGain]'." },
   "4": { title: "Smart Sailboat", task: "Schlage Einträge für Wind (Treiber), Anker (Hindernisse), Hafen (Ziel), Eisberg (Risiken) vor. Gib eine gemischte Liste, jeweils prefixed mit '[Wind]', '[Anker]', '[Hafen]', '[Eisberg]'." },
   "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor (nur Text, keine Cynefin-Einordnung – die passiert im nächsten Schritt automatisch)." },
   "5b": { title: "Cynefin-Einordnung", task: "Schlage für die Ursachen aus Schritt 5 plausible Cynefin-Kategorien (einfach/kompliziert/komplex/chaotisch) inkl. kurzer Begründung vor. Format je Item: 'Ursache — [Kategorie]: Begründung'." },
@@ -63,6 +63,19 @@ Deno.serve(async (req) => {
       chancen: "[Chancen]",
     };
 
+    const STAKEHOLDER_BUCKETS: Record<string, string> = {
+      stakeholder: "Stakeholder/Zielgruppen (potenzielle primäre/sekundäre Gruppen)",
+      geparkt: "Geparkt (Gruppen, die bewusst NICHT im Sprint-Fokus sind)",
+      heute: "Heute (wie die Zielgruppe das Problem heute löst / Workarounds/Tools)",
+      paingain: "PainGain (welchen Pain lindern wir – welchen Gain schaffen wir)",
+    };
+    const stakeholderTag: Record<string, string> = {
+      stakeholder: "[Stakeholder]",
+      geparkt: "[Geparkt]",
+      heute: "[Heute]",
+      paingain: "[PainGain]",
+    };
+
     // Read session + prior steps (RLS scoped to owner)
     const { data: session, error: sErr } = await supabase
       .from("framing_sessions")
@@ -83,6 +96,12 @@ Deno.serve(async (req) => {
       meta = {
         title: meta.title,
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${TWO_FIELDS_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${bucketTag[field]}'.`,
+      };
+    }
+    if (step_key === "3" && field && STAKEHOLDER_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${STAKEHOLDER_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${stakeholderTag[field]}'.`,
       };
     }
     const key = Deno.env.get("LOVABLE_API_KEY");
