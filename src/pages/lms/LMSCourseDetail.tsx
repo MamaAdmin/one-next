@@ -12,7 +12,6 @@ import { Loader2 } from "lucide-react";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
 import { supabase } from "@/integrations/supabase/client";
-import { CoursePreview } from "@/components/lms/CoursePreview";
 import { PublicCourseView } from "@/components/course/PublicCourseView";
 import { LessonsList } from "@/components/lms/LessonsList";
 import { QuizView } from "@/components/lms/QuizView";
