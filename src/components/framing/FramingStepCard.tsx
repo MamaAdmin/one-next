@@ -257,7 +257,7 @@ export default function FramingStepCard({
               type="button"
               variant="outline"
               size="sm"
-              className="border-accent bg-accent-soft text-accent-foreground hover:bg-accent hover:text-accent-foreground"
+              className="!border-accent !bg-accent-soft !text-accent-foreground hover:!bg-accent hover:!text-accent-foreground"
               onClick={() => loadSuggestions()}
               disabled={suggest.isPending}
             >
