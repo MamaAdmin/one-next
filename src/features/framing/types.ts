@@ -53,6 +53,11 @@ export interface FramingStepData {
   kundeHeuteLoesung?: string;
   kundeVersuchePast?: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
   kundePainGain?: string;
+  // Step 3 – Übernommene KI-Vorschläge
+  kiStakeholder?: string[];
+  kiSekundaerGeparkt?: string[];
+  kiKundeHeuteLoesung?: string[];
+  kiKundePainGain?: string[];
   // Step 4
   sailboat?: {
     wind: string[];
