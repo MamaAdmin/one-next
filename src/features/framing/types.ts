@@ -38,6 +38,12 @@ export interface FramingStepData {
   wettbewerber?: string[];
   trends?: string[];
   chancen?: string[];
+  // Step 2 – Übernommene KI-Vorschläge (getrennt von User-Eingaben)
+  kiWarumJetzt?: string[];
+  kiDefaultFuture?: string[];
+  kiWettbewerber?: string[];
+  kiTrends?: string[];
+  kiChancen?: string[];
   // Step 3
   stakeholder?: string[];
   primaereZielgruppe?: string;
