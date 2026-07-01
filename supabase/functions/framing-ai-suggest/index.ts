@@ -78,7 +78,13 @@ Deno.serve(async (req) => {
 
     const context = buildContext(session, allSteps ?? [], step_key);
 
-    const meta = STEP_META[step_key];
+    let meta = STEP_META[step_key];
+    if (step_key === "2" && field && TWO_FIELDS_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${TWO_FIELDS_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${bucketTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 
