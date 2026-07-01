@@ -1757,20 +1757,24 @@ function VariantSuccess({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>Erfolgsmessung – messbar in 5 Tagen</Label>
-        <Textarea
-          rows={3}
-          value={data.erfolgsmessung ?? ""}
-          onChange={(e) => patch({ erfolgsmessung: e.target.value })}
+    <div className="space-y-6">
+      <CanvasSection title="Erfolgsmessung – messbar in 5 Tagen">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={3}
+            value={data.erfolgsmessung ?? ""}
+            onChange={(e) => patch({ erfolgsmessung: e.target.value })}
+          />
+        </div>
+      </CanvasSection>
+      <CanvasSection title="Constraints – was ist gesetzt?">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.constraints ?? []}
+          onChange={(v) => patch({ constraints: v })}
         />
-      </div>
-      <ListEditor
-        label="Constraints – was ist gesetzt?"
-        items={data.constraints ?? []}
-        onChange={(v) => patch({ constraints: v })}
-      />
+      </CanvasSection>
     </div>
   );
 }
@@ -1783,25 +1787,29 @@ function VariantScope({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="grid md:grid-cols-2 gap-4">
+    <div className="space-y-6">
+      <CanvasSection title="In Scope">
         <ListEditor
-          label="In Scope"
+          label="Eigene Anmerkungen"
           items={data.inScope ?? []}
           onChange={(v) => patch({ inScope: v })}
         />
+      </CanvasSection>
+      <CanvasSection title="Out of Scope">
         <ListEditor
-          label="Out of Scope"
+          label="Eigene Anmerkungen"
           items={data.outOfScope ?? []}
           onChange={(v) => patch({ outOfScope: v })}
         />
-      </div>
-      <ListEditor
-        label="Sprint-Fragen (Decision Questions)"
-        items={data.sprintFragen ?? []}
-        onChange={(v) => patch({ sprintFragen: v })}
-        placeholder="z. B. Können wir X in 5 Tagen mit Y validieren?"
-      />
+      </CanvasSection>
+      <CanvasSection title="Sprint-Fragen (Decision Questions)">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.sprintFragen ?? []}
+          onChange={(v) => patch({ sprintFragen: v })}
+          placeholder="z. B. Können wir X in 5 Tagen mit Y validieren?"
+        />
+      </CanvasSection>
     </div>
   );
 }
