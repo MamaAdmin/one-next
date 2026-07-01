@@ -119,6 +119,50 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${KICKOFF_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${kickoffTag[field]}'.`,
       };
     }
+
+    const SAILBOAT_BUCKETS: Record<string, string> = {
+      wind: "Wind (Treiber, die das Team voranbringen)",
+      anker: "Anker (Hindernisse, die das Team bremsen)",
+      hafen: "Hafen (klares Ziel / gewünschter Zielzustand)",
+      eisberg: "Eisberg (verborgene Risiken)",
+    };
+    const sailboatTag: Record<string, string> = {
+      wind: "[Wind]", anker: "[Anker]", hafen: "[Hafen]", eisberg: "[Eisberg]",
+    };
+    if (step_key === "4" && field && SAILBOAT_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SAILBOAT_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${sailboatTag[field]}'.`,
+      };
+    }
+
+    const FIVE_WHYS_BUCKETS: Record<string, string> = {
+      why: "Why (tiefere 'Warum?'-Ebenen – jeweils als vollständige 'Warum …? Weil …'-Zeile)",
+      ursache: "Ursache (adressierbare Grundursachen – kurze Nominalphrasen)",
+    };
+    const fiveWhysTag: Record<string, string> = { why: "[Why]", ursache: "[Ursache]" };
+    if (step_key === "5" && field && FIVE_WHYS_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${FIVE_WHYS_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${fiveWhysTag[field]}'.`,
+      };
+    }
+
+    const CYNEFIN_BUCKETS: Record<string, string> = {
+      komplex: "Komplex (Ursache/Wirkung erst rückblickend erkennbar – emergente Praktiken)",
+      kompliziert: "Kompliziert (analytisch lösbar mit Fachwissen – gute Praktiken)",
+      chaotisch: "Chaotisch (keine erkennbare Kausalität – schnell handeln)",
+      einfach: "Einfach/Klar (offensichtliche Ursache/Wirkung – bewährte Praktiken)",
+    };
+    const cynefinTag: Record<string, string> = {
+      komplex: "[Komplex]", kompliziert: "[Kompliziert]", chaotisch: "[Chaotisch]", einfach: "[Einfach]",
+    };
+    if (step_key === "5b" && field && CYNEFIN_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 adressierbare Ursachen vor, die in die Cynefin-Domäne ${CYNEFIN_BUCKETS[field]} passen. Keine anderen Domänen. Prefixe JEDES Item mit '${cynefinTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 
