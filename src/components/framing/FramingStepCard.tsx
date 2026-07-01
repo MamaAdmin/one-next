@@ -532,6 +532,7 @@ function ListEditor({
   placeholder,
   multiline = false,
   rows = 3,
+  maxItems,
 }: {
   label: string;
   items: string[];
@@ -539,9 +540,12 @@ function ListEditor({
   placeholder?: string;
   multiline?: boolean;
   rows?: number;
+  maxItems?: number;
 }) {
   const [input, setInput] = useState("");
+  const isFull = typeof maxItems === "number" && items.length >= maxItems;
   const commit = () => {
+    if (isFull) return;
     if (input.trim()) {
       onChange([...items, input.trim()]);
       setInput("");
