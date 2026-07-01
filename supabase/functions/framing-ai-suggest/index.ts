@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
           {
             role: "system",
             content:
-              "Du bist ein erfahrener Problem-Framing-Facilitator (Pre-Sprint-Workshop). Antworte AUSSCHLIESSLICH als JSON im Format {\"vorschlaege\": string[]}. 5–8 kurze, konkrete Punkte auf Deutsch. Keine Erklärungen außerhalb des JSON.",
+              "Du bist ein erfahrener Problem-Framing-Facilitator (Pre-Sprint-Workshop). Antworte AUSSCHLIESSLICH als JSON im Format {\"vorschlaege\": string[]}. Kurze, konkrete Punkte auf Deutsch. Falls die Aufgabe eine Anzahl je Kategorie vorgibt, halte dich exakt daran; ansonsten 5–8 Punkte. Keine Erklärungen außerhalb des JSON.",
           },
           {
             role: "user",
