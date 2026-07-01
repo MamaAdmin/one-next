@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { useAdminAllSprints, type AdminSprintRow } from "@/hooks/useAdminSprints";
+import { useAdminAllSprints, useAdminAllFramingSessions, type AdminSprintRow, type AdminFramingRow } from "@/hooks/useAdminSprints";
+import { FRAMING_STEPS } from "@/features/framing/steps";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
