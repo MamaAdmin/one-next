@@ -453,17 +453,13 @@ function applySuggestion(
       return;
     }
     case "five-whys": {
-      const whys = data.fiveWhys ?? ["", "", "", "", ""];
-      const idx = whys.findIndex((w) => !w.trim());
-      if (idx >= 0) {
-        const next = [...whys];
-        next[idx] = text;
-        data.fiveWhys = next;
+      const m = text.match(/^\[(Why|Warum|Ursache|Cause)\]\s*(.+)$/i);
+      const bucket = m ? m[1].toLowerCase() : "why";
+      const value = m ? m[2].trim() : text;
+      if (bucket === "ursache" || bucket === "cause") {
+        data.kiUrsachen = pushUnique(data.kiUrsachen, value);
       } else {
-        data.ursachen = [
-          ...(data.ursachen ?? []),
-          { text, cynefin: "kompliziert", adressierbar: true },
-        ];
+        data.kiFiveWhys = pushUnique(data.kiFiveWhys, value);
       }
       return;
     }
