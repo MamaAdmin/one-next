@@ -48,6 +48,7 @@ export default function FramingStepCard({
   const [saving, setSaving] = useState(false);
   const suggest = useFramingSuggest();
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
+  const [pendingBucket, setPendingBucket] = useState<string | null>(null);
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as FramingStepData;
