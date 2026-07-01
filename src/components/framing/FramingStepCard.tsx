@@ -1172,38 +1172,69 @@ function VariantStakeholder({
 function VariantSailboat({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
   const set = (upd: Partial<typeof sb>) => patch({ sailboat: { ...sb, ...upd } });
+  const hafenItems = sb.hafen ? sb.hafen.split("\n").filter((l) => l.trim().length > 0) : [];
+  const inline = (bucket: SailboatBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
   return (
     <div className="space-y-4">
       <div className="flex justify-center">
         <SailboatIllustration className="w-full max-w-2xl h-auto rounded-2xl border bg-gradient-hero shadow-card" />
       </div>
       <div className="grid md:grid-cols-2 gap-4">
-        <ListEditor label="Wind – Treiber" items={sb.wind} onChange={(v) => set({ wind: v })} />
-        <ListEditor label="Anker – Hindernisse" items={sb.anker} onChange={(v) => set({ anker: v })} />
-        <div className="space-y-2 md:col-span-1">
-          <Label>Hafen – Ziel</Label>
-          <Textarea
-            rows={3}
-            value={sb.hafen}
-            onChange={(e) => set({ hafen: e.target.value })}
+        <div className="space-y-2">
+          <ListEditor label="Wind – Treiber" items={sb.wind} onChange={(v) => set({ wind: v })} />
+          {inline("wind")}
+        </div>
+        <div className="space-y-2">
+          <ListEditor label="Anker – Hindernisse" items={sb.anker} onChange={(v) => set({ anker: v })} />
+          {inline("anker")}
+        </div>
+        <div className="space-y-2">
+          <ListEditor
+            label="Hafen – Ziel"
+            items={hafenItems}
+            onChange={(v) => set({ hafen: v.join("\n") })}
             placeholder="Wohin wollen wir?"
           />
+          {inline("hafen")}
         </div>
-        <ListEditor
-          label="Eisberg – Risiken"
-          items={sb.eisberg}
-          onChange={(v) => set({ eisberg: v })}
-        />
+        <div className="space-y-2">
+          <ListEditor
+            label="Eisberg – Risiken"
+            items={sb.eisberg}
+            onChange={(v) => set({ eisberg: v })}
+          />
+          {inline("eisberg")}
+        </div>
       </div>
     </div>
   );
 }
+
 
 function VariantFiveWhys({
   data,
