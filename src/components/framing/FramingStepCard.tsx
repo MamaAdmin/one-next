@@ -747,7 +747,7 @@ function VariantTwoFields({
   onAcceptSuggestion,
   onDismissSuggestion,
   onLoadSuggestions,
-  suggestPending,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
@@ -755,7 +755,7 @@ function VariantTwoFields({
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
   onLoadSuggestions: (field?: string) => void;
-  suggestPending: boolean;
+  pendingBucket: string | null;
 }) {
   const inline = (bucket: TwoFieldsBucket) => (
     <InlineSuggestions
@@ -764,7 +764,7 @@ function VariantTwoFields({
       onAcceptSuggestion={onAcceptSuggestion}
       onDismissSuggestion={onDismissSuggestion}
       onLoadSuggestions={() => onLoadSuggestions(bucket)}
-      pending={suggestPending}
+      pending={pendingBucket === bucket}
     />
   );
   return (
