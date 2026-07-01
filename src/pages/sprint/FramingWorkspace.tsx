@@ -122,7 +122,7 @@ export default function FramingWorkspace() {
                 {session.titel_arbeitstitel || "Ohne Titel"}
               </h1>
               <p className="text-sm text-muted-foreground">
-                Schritt {currentDef.index} von 10 · gesamte Timebox ~{Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h
+                Schritt {currentDef.index} von {FRAMING_STEPS.length} · gesamte Timebox ~{Math.round(FRAMING_TOTAL_MIN / 60 * 10) / 10} h
               </p>
             </div>
             {!showCompletion ? (
