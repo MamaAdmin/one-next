@@ -1,39 +1,51 @@
-## Ziel
+# Abgleich: Problem Framing Canvas (DSA) ↔ bestehender Framing-Workshop
 
-Public Courses erscheinen zukünftig in der LMS Kursverwaltung (`/admin/lms/courses`). Jeder Kurs bekommt einen Flag **Public** / **Nicht public**. Der bestehende Public-Kurs "KI als Werkzeug im Scheidungsrecht" wird verknüpft, bleibt aber datenkompatibel (Termine, Registrierungen, Stripe Price).
+Der Canvas von Design Sprint Academy ist ein 2×4-Raster (Business/Customer × Present/Past/Future/Needs) plus finalem Problem Statement. Vieles davon ist im bestehenden 11-Schritte-Workshop schon abgedeckt, ein paar Felder fehlen jedoch bzw. würden ihn schärfen.
 
-## Vorgehen
+## Was der Canvas hat vs. was wir schon haben
 
-### 1. Datenbank
-Migration:
-- Neue Spalten in `lms_courses`:
-  - `is_public boolean not null default false` — der neue Flag
-  - `public_course_id uuid` FK auf `public_courses(id)` (nullable) — Verknüpfung zu bestehenden public-course-Daten (Termine, Registrierungen, Module, stripe_price)
-- Migrationsstep: Für jeden Datensatz in `public_courses` einen entsprechenden `lms_courses`-Datensatz einfügen (falls noch nicht via slug vorhanden), mit `is_public = true`, `visibility = 'public'`, `is_active`, Titel, Beschreibung, Bild, Preis, Slug und `public_course_id` gesetzt.
+| Canvas-Feld | Status im Workshop | Empfehlung |
+|---|---|---|
+| Idea/Hypothesis/Challenge (Kopfzeile) | ~ Titel + Challenge Statement am Ende | schon abgedeckt |
+| **Business – Present:** current state | ✓ Schritt 1 (Kontext) | ok |
+| **Business – Past:** what worked / didn't work | ✗ fehlt | **neu ergänzen** |
+| **Business – Future:** Wettbewerber, Trends, Chancen | teils ✓ (Sailboat Wind/Eisberg), aber Wettbewerb + Trends fehlen | **ergänzen** |
+| **Business – Needs/Goals:** what do we want to achieve, KPIs | ✓ Schritt 7 (Erfolg & Constraints) | ok |
+| **Customer – Present:** Zielgruppe, wann/wo, wie lösen sie heute | teils ✓ Schritt 3 (Stakeholder/Zielgruppe); "wie lösen sie heute" fehlt | **ergänzen** |
+| **Customer – Past:** was hat Zielgruppe versucht, Enabler/Hindernisse | ✗ fehlt | **neu ergänzen** |
+| **Customer – Future:** Trends bei Kunden, Default Future für sie | ✓ Schritt 2 (Default Future) – aber businesslastig | **auf Kunde erweitern** |
+| **Customer – Needs/Goals:** welchen Schmerz lindern wir | teils ✓ (Zielgruppe/Erfolg), nicht explizit als Pain/Gain | **ergänzen** |
+| **Problem Statement Template** (Our X has problem Y when Z, solution will A, business B) | ✓ Challenge Statement Generator | ok, ggf. Template angleichen |
 
-### 2. LMS Kursverwaltung UI (`LMSCourseDashboard.tsx` + `CourseEditor`)
-- Neue Spalte "Sichtbarkeit" in der Kurs-Tabelle mit Badge:
-  - **Public** (grün) wenn `is_public = true`
-  - **Nicht public** (grau) sonst
-- Neuer Filter im Header: „Alle / Public / Nicht public".
-- Im `CourseEditor` ein Switch **Public Kurs** hinzufügen (schaltet `is_public`).
-- Wenn `is_public = true` und `public_course_id` gesetzt: unterhalb des Editors ein Button „Termine & Anmeldungen verwalten" → verlinkt auf `/admin/kurse` mit vorausgewähltem Kurs (via query param `?course=<id>`).
+## Vorschlag: 3 gezielte Erweiterungen
 
-### 3. Public Course Dashboard
-- Bleibt unter `/admin/kurse` verfügbar für Termine, Registrierungen, Public-Module und Stripe-Preis (Daten die nicht in `lms_courses` liegen).
-- Unterstützt `?course=<publicCourseId>` als vorausgewählte Auswahl.
-- Zusätzlich: neuer Link/Hinweis oben "Kurs-Grunddaten werden jetzt in der LMS Kursverwaltung gepflegt".
+### 1. Schritt 1 („Kick-off & Zielbild") um „Past attempts" erweitern
+Neues optionales Feld `frueherVersucht`: Liste mit `{ text, ergebnis: 'worked'|'didnt-work' }`. Beantwortet Business-Past des Canvas ohne neuen Schritt.
 
-### 4. Hooks
-- `useLMSCourse` erweitern: `is_public` und `public_course_id` in Select/Update aufnehmen.
-- Kein Bruch an bestehenden Public-Course-Routes (`/kurs/:slug`) — nutzen weiterhin `public_courses`-Tabelle.
+### 2. Schritt 3 („Stakeholder & Zielgruppe") um Customer-Present/Past/Pain erweitern
+Zusätzliche Felder in `FramingStepData`:
+- `kundeHeuteLoesung` (string) – "Wie lösen sie das Problem heute?"
+- `kundeVersuchePast` (Array `{ text, worked }`)
+- `kundePainGain` (string) – "Welchen Pain lindern wir, welchen Gain schaffen wir?"
 
-## Technisches
+Ein Schritt-Card-Abschnitt "Customer-Kontext (optional)" mit diesen drei Feldern.
 
-- Migration erstellt `is_public`, `public_course_id`, Index, und synchronisiert bestehende Public Courses in `lms_courses`.
-- Typescript-Types werden nach Migration regeneriert; Code-Änderungen erfolgen danach.
-- Keine Änderungen an RLS-Policies (bestehende Admin-Policy deckt die neuen Spalten ab). SELECT-Policy erweitern, damit `is_public = true` auch für anon sichtbar wäre — **nicht** nötig, da öffentliche Ansicht über `public_courses` läuft.
+### 3. Schritt 2 („Warum jetzt? & Default Future") um Trends/Wettbewerb erweitern
+Zusätzliche Felder:
+- `wettbewerber` (string[]) – "Was machen Wettbewerber / Vergleichbare?"
+- `trends` (string[]) – "Trends für/gegen die Idee"
+- `chancen` (string[]) – "Wo liegen Chancen?"
 
-## Nicht Teil dieser Änderung
-- Migration von Modulen (`public_course_modules` → `lms_course_modules`): unterschiedliche Strukturen, würde separate Umstellung erfordern.
-- Frontend `/kurs/:slug` bleibt unverändert.
+Damit ist Business-Future komplett abgedeckt, ohne einen zusätzlichen Navigationsschritt einzuführen.
+
+## Was NICHT übernommen wird
+- Kein neuer „Canvas"-Schritt und kein 2×4-Grid-UI – der geführte Wizard ist stärker als ein leeres Poster.
+- Problem-Statement-Satzschablone bleibt beim bestehenden LLM-Challenge-Generator; wir könnten den Prompt aber um den DSA-Wortlaut ("Our … has the problem … when … Our solution will … and also help our business …") ergänzen, damit das Ergebnis dem Canvas-Format entspricht.
+
+## Technische Umsetzung (kurz)
+- `src/features/framing/types.ts`: neue optionale Felder in `FramingStepData` (keine DB-Migration nötig – Daten liegen in `jsonb data`).
+- `src/components/framing/FramingStepCard.tsx`: in den Varianten `context-list` (Schritt 1), `two-fields` (Schritt 2) und `stakeholder` (Schritt 3) je einen ausklappbaren „Weitere Canvas-Felder"-Block anhängen.
+- `supabase/functions/framing-generate-challenge/index.ts`: Prompt so anpassen, dass die neuen Felder in das Challenge-Statement einfließen und die Ausgabe optional dem Canvas-Satzbau folgt.
+
+## Offene Frage vor Umsetzung
+Sollen die Canvas-Felder **verpflichtend** in die drei Schritte integriert werden, oder als **optionaler „Canvas-Modus" pro Session** einschaltbar sein? Das entscheidet, ob wir bestehende Sessions unangetastet lassen oder die UI standardmäßig länger machen.
