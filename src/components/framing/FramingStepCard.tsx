@@ -961,72 +961,136 @@ function VariantTwoFields({
 function VariantStakeholder({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const stakeholder = data.stakeholder ?? [];
+  const inline = (bucket: SuggestionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (
+    key: "kiStakeholder" | "kiSekundaerGeparkt" | "kiKundeHeuteLoesung" | "kiKundePainGain",
+    index: number,
+  ) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
+  };
   return (
-    <div className="space-y-4">
-      <ListEditor
-        label="Stakeholder / potenzielle Zielgruppen"
-        items={stakeholder}
-        onChange={(v) => patch({ stakeholder: v })}
-      />
-      <div className="space-y-2">
-        <Label>Primäre Zielgruppe</Label>
-        <Select
-          value={data.primaereZielgruppe ?? ""}
-          onValueChange={(v) => patch({ primaereZielgruppe: v })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Aus Stakeholdern wählen …" />
-          </SelectTrigger>
-          <SelectContent>
-            {stakeholder.map((s, i) => (
-              <SelectItem key={i} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <ListEditor
-        label="Sekundäre Gruppen – bewusst geparkt"
-        items={data.sekundaerGeparkt ?? []}
-        onChange={(v) => patch({ sekundaerGeparkt: v })}
-      />
-      <CanvasSection title="Customer-Kontext (optional) – Verhalten, frühere Versuche, Pain/Gain">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Wie löst die Zielgruppe das Problem heute?</Label>
-            <Textarea
-              rows={3}
-              value={data.kundeHeuteLoesung ?? ""}
-              onChange={(e) => patch({ kundeHeuteLoesung: e.target.value })}
-              placeholder="Aktuelles Verhalten, Workarounds, Tools …"
-            />
-          </div>
+    <div className="space-y-6">
+      <CanvasSection title="Stakeholder & Zielgruppe">
+        <ListEditor
+          label="Eigene Anmerkungen – Stakeholder / potenzielle Zielgruppen"
+          items={stakeholder}
+          onChange={(v) => patch({ stakeholder: v })}
+        />
+        <AcceptedKiList
+          items={data.kiStakeholder ?? []}
+          onRemove={(i) => removeKi("kiStakeholder", i)}
+        />
+        {inline("stakeholder")}
+        <div className="space-y-2 mt-4">
+          <Label>Primäre Zielgruppe</Label>
+          <Select
+            value={data.primaereZielgruppe ?? ""}
+            onValueChange={(v) => patch({ primaereZielgruppe: v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Aus Stakeholdern wählen …" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...stakeholder, ...(data.kiStakeholder ?? [])].map((s, i) => (
+                <SelectItem key={`${s}-${i}`} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </CanvasSection>
+
+      <CanvasSection title="Sekundäre Gruppen – bewusst geparkt">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.sekundaerGeparkt ?? []}
+          onChange={(v) => patch({ sekundaerGeparkt: v })}
+          placeholder="z. B. Rechtsabteilung, interne Admins …"
+        />
+        <AcceptedKiList
+          items={data.kiSekundaerGeparkt ?? []}
+          onRemove={(i) => removeKi("kiSekundaerGeparkt", i)}
+        />
+        {inline("geparkt")}
+      </CanvasSection>
+
+      <CanvasSection title="Heute – Wie löst die Zielgruppe das Problem aktuell?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={3}
+            value={data.kundeHeuteLoesung ?? ""}
+            onChange={(e) => patch({ kundeHeuteLoesung: e.target.value })}
+            placeholder="Aktuelles Verhalten, Workarounds, Tools …"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiKundeHeuteLoesung ?? []}
+          onRemove={(i) => removeKi("kiKundeHeuteLoesung", i)}
+        />
+        {inline("heute")}
+      </CanvasSection>
+
+      <CanvasSection title="Vergangenheit – Was hat die Zielgruppe früher versucht?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
           <PastAttemptsEditor
-            label="Was hat die Zielgruppe früher versucht?"
             items={data.kundeVersuchePast ?? []}
             onChange={(v) => patch({ kundeVersuchePast: v })}
             placeholder="z. B. Nutzung eines Wettbewerber-Tools"
           />
-          <div className="space-y-2">
-            <Label>Welchen Pain lindern wir – welchen Gain schaffen wir?</Label>
-            <Textarea
-              rows={3}
-              value={data.kundePainGain ?? ""}
-              onChange={(e) => patch({ kundePainGain: e.target.value })}
-              placeholder="Konkreter Nutzen aus Sicht der Zielgruppe"
-            />
-          </div>
         </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Hier zählen echte Erfahrungen der Zielgruppe – bitte selbst eintragen.
+        </p>
+      </CanvasSection>
+
+      <CanvasSection title="Pain / Gain – Welchen Pain lindern wir, welchen Gain schaffen wir?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={3}
+            value={data.kundePainGain ?? ""}
+            onChange={(e) => patch({ kundePainGain: e.target.value })}
+            placeholder="Konkreter Nutzen aus Sicht der Zielgruppe"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiKundePainGain ?? []}
+          onRemove={(i) => removeKi("kiKundePainGain", i)}
+        />
+        {inline("paingain")}
       </CanvasSection>
     </div>
   );
 }
+
 
 function VariantSailboat({
   data,
