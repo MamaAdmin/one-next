@@ -808,28 +808,28 @@ function VariantCynefin({
     {
       key: "komplex",
       title: "Komplex",
-      subtitle: "Probe – Sense – Respond",
+      subtitle: "Ausprobieren – Erkennen – Reagieren",
       bg: "bg-yellow-50 dark:bg-yellow-950/30",
       border: "border-yellow-300 dark:border-yellow-800",
     },
     {
       key: "kompliziert",
       title: "Kompliziert",
-      subtitle: "Sense – Analyse – Respond",
+      subtitle: "Erkennen – Analysieren – Reagieren",
       bg: "bg-green-50 dark:bg-green-950/30",
       border: "border-green-300 dark:border-green-800",
     },
     {
       key: "chaotisch",
       title: "Chaotisch",
-      subtitle: "Act – Sense – Respond",
+      subtitle: "Handeln – Erkennen – Reagieren",
       bg: "bg-red-50 dark:bg-red-950/30",
       border: "border-red-300 dark:border-red-800",
     },
     {
       key: "einfach",
-      title: "Einfach",
-      subtitle: "Sense – Categorize – Respond",
+      title: "Einfach (Klar)",
+      subtitle: "Erkennen – Kategorisieren – Reagieren",
       bg: "bg-blue-50 dark:bg-blue-950/30",
       border: "border-blue-300 dark:border-blue-800",
     },
@@ -841,10 +841,52 @@ function VariantCynefin({
   };
   return (
     <div className="space-y-4">
+      <CanvasSection title="Was ist das Cynefin-Modell? (Erklärung einblenden)">
+        <div className="space-y-3 text-sm leading-relaxed">
+          <p>
+            Das Cynefin-Framework unterscheidet <strong>fünf Domänen</strong>, um Probleme nach der
+            Beziehung zwischen Ursache und Wirkung einzuordnen und daraus die passende
+            Herangehensweise abzuleiten.
+          </p>
+          <ul className="space-y-2 list-disc pl-5">
+            <li>
+              <strong>Einfach / Klar</strong> – Ursache und Wirkung sind für alle offensichtlich.
+              Vorgehen: <em>Erkennen – Kategorisieren – Reagieren</em>. Es gelten <em>bewährte
+              Praktiken</em> (best practice).
+            </li>
+            <li>
+              <strong>Kompliziert</strong> – Ursache und Wirkung erfordern Analyse, Prüfung oder
+              Fachwissen. Vorgehen: <em>Erkennen – Analysieren – Reagieren</em>. Es gelten <em>gute
+              Praktiken</em> (good practice).
+            </li>
+            <li>
+              <strong>Komplex</strong> – Ursache und Wirkung sind nur im Nachhinein erkennbar.
+              Vorgehen: <em>Ausprobieren – Erkennen – Reagieren</em>. Es entstehen <em>emergente
+              Praktiken</em>.
+            </li>
+            <li>
+              <strong>Chaotisch</strong> – Keine erkennbare Beziehung zwischen Ursache und Wirkung
+              auf Systemebene. Vorgehen: <em>Handeln – Erkennen – Reagieren</em>. Chance auf
+              <em> innovative Praktiken</em>.
+            </li>
+            <li>
+              <strong>Unklar (Disorder)</strong> – Zustand des Nicht-Wissens, welche Kausalität
+              vorliegt. Menschen fallen dann in ihre Komfortzone zurück. Ziel: schnell in eine der
+              anderen vier Domänen wechseln.
+            </li>
+          </ul>
+          <p className="text-xs text-muted-foreground">
+            Achtung: Die Grenze zwischen <em>Einfach</em> und <em>Chaotisch</em> gilt als
+            katastrophal – Selbstzufriedenheit führt zum Scheitern.
+          </p>
+        </div>
+      </CanvasSection>
+
       <p className="text-xs text-muted-foreground">
         Ursachen aus Schritt 5 in das Cynefin-Modell einordnen: per Drag &amp; Drop in einen Bereich
         ziehen oder unten im Editor klassifizieren.
       </p>
+
 
       <div className="relative">
         <div className="text-xs text-muted-foreground grid grid-cols-2 mb-1 px-2">
