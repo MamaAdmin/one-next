@@ -795,6 +795,10 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "eisberg" || tag === "iceberg") return "eisberg";
   if (tag === "why" || tag === "warum") return "why";
   if (tag === "ursache" || tag === "cause") return "ursache";
+  if (tag === "komplex" || tag === "complex") return "komplex";
+  if (tag === "kompliziert" || tag === "complicated") return "kompliziert";
+  if (tag === "chaotisch" || tag === "chaotic") return "chaotisch";
+  if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") return "einfach";
   return null;
 }
 
