@@ -22,6 +22,7 @@ import type {
   Cynefin,
 } from "@/features/framing/types";
 import { useFramingSuggest } from "@/hooks/useFraming";
+import { CanvasSection } from "./CanvasSection";
 
 interface Props {
   sessionId: string;
