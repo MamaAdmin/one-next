@@ -699,7 +699,7 @@ function InlineSuggestions({
         type="button"
         variant="outline"
         size="sm"
-        className="h-8"
+        className="h-8 border-accent bg-accent-soft text-accent-foreground hover:bg-accent hover:text-accent-foreground"
         onClick={onLoadSuggestions}
         disabled={pending}
       >
@@ -715,7 +715,7 @@ function InlineSuggestions({
           {matches.map(({ v, i }) => (
             <li
               key={i}
-              className="flex items-start gap-2 rounded-md border bg-background px-2.5 py-1.5 text-sm"
+              className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-accent-foreground"
             >
               <span className="flex-1">{stripBucketTag(v)}</span>
               <Button
