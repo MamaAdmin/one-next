@@ -678,12 +678,14 @@ type TwoFieldsBucket =
   | "trends"
   | "chancen";
 
-function bucketOfTwoFieldsSuggestion(raw: string): TwoFieldsBucket | null {
-  const m = raw.match(
-    /^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]/i,
-  );
+type StakeholderBucket = "stakeholder" | "geparkt" | "heute" | "paingain";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket;
+
+function bucketOfSuggestion(raw: string): SuggestionBucket | null {
+  const m = raw.match(/^\[([^\]]+)\]/);
   if (!m) return null;
-  const tag = m[1].toLowerCase();
+  const tag = m[1].toLowerCase().trim();
   if (tag === "gegenwart" || tag === "present") return "gegenwart";
   if (tag === "vergangenheit" || tag === "past") return "vergangenheit";
   if (
@@ -696,6 +698,11 @@ function bucketOfTwoFieldsSuggestion(raw: string): TwoFieldsBucket | null {
   if (tag === "wettbewerb") return "wettbewerb";
   if (tag === "trends") return "trends";
   if (tag === "chancen") return "chancen";
+  if (tag === "stakeholder") return "stakeholder";
+  if (tag === "geparkt") return "geparkt";
+  if (tag === "heute") return "heute";
+  if (tag === "paingain" || tag === "pain-gain" || tag === "pain/gain")
+    return "paingain";
   return null;
 }
 
@@ -711,7 +718,7 @@ function InlineSuggestions({
   onLoadSuggestions,
   pending,
 }: {
-  bucket: TwoFieldsBucket;
+  bucket: SuggestionBucket;
   suggestions: string[];
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
@@ -720,7 +727,7 @@ function InlineSuggestions({
 }) {
   const matches = suggestions
     .map((v, i) => ({ v, i }))
-    .filter(({ v }) => bucketOfTwoFieldsSuggestion(v) === bucket)
+    .filter(({ v }) => bucketOfSuggestion(v) === bucket)
     .slice(0, 3);
   return (
     <div className="mt-2 space-y-2">
