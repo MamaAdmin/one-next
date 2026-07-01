@@ -856,6 +856,8 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "unsicher" || tag === "uncertain") return "unsicher";
   if (tag === "einflussreich" || tag === "impactful" || tag === "high-impact") return "einflussreich";
   if (tag === "gering" || tag === "low") return "gering";
+  if (tag === "erfolg" || tag === "success" || tag === "kpi" || tag === "metrik") return "erfolg";
+  if (tag === "constraint" || tag === "constraints" || tag === "rahmen") return "constraint";
   return null;
 }
 
