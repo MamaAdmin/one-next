@@ -100,11 +100,11 @@ export default function FramingStepCard({
         field,
       });
       const incoming = res.vorschlaege ?? [];
-      if (step.variant === "two-fields" && field) {
+      if ((step.variant === "two-fields" || step.variant === "stakeholder") && field) {
         // Replace only this bucket's suggestions, keep others
         const bucket = field.toLowerCase();
         setVorschlaege((prev) => [
-          ...prev.filter((v) => bucketOfTwoFieldsSuggestion(v) !== bucket),
+          ...prev.filter((v) => bucketOfSuggestion(v) !== bucket),
           ...incoming,
         ]);
       } else {
