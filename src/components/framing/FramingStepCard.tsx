@@ -136,6 +136,8 @@ export default function FramingStepCard({
           data={data}
           patch={patch}
           suggestions={vorschlaege}
+          onLoadSuggestions={(field) => loadSuggestions(field)}
+          suggestPending={suggest.isPending}
           onAcceptSuggestion={(i) => {
             const v = vorschlaege[i];
             if (v == null) return;
@@ -264,6 +266,8 @@ function StepVariant({
   suggestions,
   onAcceptSuggestion,
   onDismissSuggestion,
+  onLoadSuggestions,
+  suggestPending,
 }: {
   step: FramingStepDef;
   data: FramingStepData;
@@ -271,6 +275,8 @@ function StepVariant({
   suggestions: string[];
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  suggestPending: boolean;
 }) {
   switch (step.variant) {
     case "context-list":
@@ -283,6 +289,8 @@ function StepVariant({
           suggestions={suggestions}
           onAcceptSuggestion={onAcceptSuggestion}
           onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          suggestPending={suggestPending}
         />
       );
     case "stakeholder":
@@ -648,50 +656,67 @@ function InlineSuggestions({
   suggestions,
   onAcceptSuggestion,
   onDismissSuggestion,
+  onLoadSuggestions,
+  pending,
 }: {
   bucket: TwoFieldsBucket;
   suggestions: string[];
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: () => void;
+  pending: boolean;
 }) {
   const matches = suggestions
     .map((v, i) => ({ v, i }))
     .filter(({ v }) => bucketOfTwoFieldsSuggestion(v) === bucket)
     .slice(0, 3);
-  if (matches.length === 0) return null;
   return (
-    <div className="mt-2 rounded-md border border-dashed bg-muted/30 p-2 space-y-1.5">
-      <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-        <Sparkles className="w-3.5 h-3.5" /> KI-Vorschläge
-      </div>
-      <ul className="space-y-1.5">
-        {matches.map(({ v, i }) => (
-          <li
-            key={i}
-            className="flex items-start gap-2 rounded-md border bg-background px-2.5 py-1.5 text-sm"
-          >
-            <span className="flex-1">{stripBucketTag(v)}</span>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-7"
-              onClick={() => onAcceptSuggestion(i)}
+    <div className="mt-2 space-y-2">
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="h-8"
+        onClick={onLoadSuggestions}
+        disabled={pending}
+      >
+        {pending ? (
+          <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+        ) : (
+          <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+        )}
+        KI-Vorschläge
+      </Button>
+      {matches.length > 0 ? (
+        <ul className="space-y-1.5">
+          {matches.map(({ v, i }) => (
+            <li
+              key={i}
+              className="flex items-start gap-2 rounded-md border bg-background px-2.5 py-1.5 text-sm"
             >
-              <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={() => onDismissSuggestion(i)}
-            >
-              <X className="w-3.5 h-3.5" />
-            </Button>
-          </li>
-        ))}
-      </ul>
+              <span className="flex-1">{stripBucketTag(v)}</span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7"
+                onClick={() => onAcceptSuggestion(i)}
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => onDismissSuggestion(i)}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }
@@ -702,12 +727,16 @@ function VariantTwoFields({
   suggestions,
   onAcceptSuggestion,
   onDismissSuggestion,
+  onLoadSuggestions,
+  suggestPending,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
   suggestions: string[];
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  suggestPending: boolean;
 }) {
   const inline = (bucket: TwoFieldsBucket) => (
     <InlineSuggestions
@@ -715,6 +744,8 @@ function VariantTwoFields({
       suggestions={suggestions}
       onAcceptSuggestion={onAcceptSuggestion}
       onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={suggestPending}
     />
   );
   return (
