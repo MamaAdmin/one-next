@@ -101,7 +101,15 @@ export default function FramingStepCard({
         field,
       });
       const incoming = res.vorschlaege ?? [];
-      if ((step.variant === "two-fields" || step.variant === "stakeholder" || step.variant === "context-list") && field) {
+      if (
+        (step.variant === "two-fields" ||
+          step.variant === "stakeholder" ||
+          step.variant === "context-list" ||
+          step.variant === "sailboat" ||
+          step.variant === "five-whys" ||
+          step.variant === "cynefin") &&
+        field
+      ) {
         // Replace only this bucket's suggestions, keep others
         const bucket = field.toLowerCase();
         setVorschlaege((prev) => [
