@@ -524,9 +524,17 @@ function applySuggestion(
       ];
       return;
     }
-    case "success-constraints":
-      data.constraints = pushUnique(data.constraints, text);
+    case "success-constraints": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "erfolg") {
+        const current = (data.erfolgsmessung ?? "").trim();
+        data.erfolgsmessung = current ? `${current}\n• ${value}` : `• ${value}`;
+      } else {
+        data.constraints = pushUnique(data.constraints, value);
+      }
       return;
+    }
     case "scope-questions":
       data.sprintFragen = pushUnique(data.sprintFragen, text);
       return;
