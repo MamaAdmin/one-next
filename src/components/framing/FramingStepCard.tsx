@@ -766,6 +766,10 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "kontext" || tag === "context") return "kontext";
   if (tag === "nichtziel" || tag === "nicht-ziel" || tag === "nichtziele")
     return "nichtziel";
+  if (tag === "wind") return "wind";
+  if (tag === "anker" || tag === "anchor") return "anker";
+  if (tag === "hafen" || tag === "harbor" || tag === "harbour") return "hafen";
+  if (tag === "eisberg" || tag === "iceberg") return "eisberg";
   return null;
 }
 
