@@ -69,6 +69,7 @@ import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import SprintDashboard from "./pages/sprint/SprintDashboard";
 import SprintNew from "./pages/sprint/SprintNew";
 import SprintWorkspace from "./pages/sprint/SprintWorkspace";
+import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import RequireAuth from "./components/sprint/RequireAuth";
 
 
