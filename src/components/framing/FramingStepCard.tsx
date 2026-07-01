@@ -1434,6 +1434,35 @@ function VariantFiveWhys({
   );
 }
 
+function QuadrantAddInput({ onAdd }: { onAdd: (text: string) => void }) {
+  const [val, setVal] = useState("");
+  const commit = () => {
+    const t = val.trim();
+    if (!t) return;
+    onAdd(t);
+    setVal("");
+  };
+  return (
+    <div className="mt-3 flex gap-1.5">
+      <Input
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        placeholder="Eigene Ursache …"
+        className="h-8 text-xs bg-background/80"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && val.trim()) {
+            e.preventDefault();
+            commit();
+          }
+        }}
+      />
+      <Button type="button" variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={commit}>
+        <Plus className="w-3.5 h-3.5" />
+      </Button>
+    </div>
+  );
+}
+
 
 function VariantCynefin({
   data,
@@ -1686,6 +1715,16 @@ function VariantCynefin({
                     </div>
                   ) : null}
                 </div>
+                <QuadrantAddInput
+                  onAdd={(text) =>
+                    patch({
+                      ursachen: [
+                        ...ursachen,
+                        { text, cynefin: q.key, adressierbar: true },
+                      ],
+                    })
+                  }
+                />
                 <div className="mt-3">
                   {inline(q.key as CynefinBucket)}
                 </div>
@@ -1710,61 +1749,7 @@ function VariantCynefin({
           Keine Ursachen aus Schritt 5 vorhanden. Gehe zurück zu <strong>Root Cause (5 Whys)</strong>,
           um Ursachen zu erfassen – sie werden hier automatisch übernommen.
         </div>
-      ) : (
-        <div className="space-y-2">
-          <div className="text-xs font-semibold uppercase text-muted-foreground">
-            Ursachen bearbeiten
-          </div>
-          {ursachen.map((u, i) => (
-            <div
-              key={i}
-              className="flex flex-col gap-2 rounded-md border p-2 md:grid md:grid-cols-[minmax(0,1fr)_180px_140px_auto] md:items-start"
-            >
-              <Textarea
-                value={u.text}
-                rows={2}
-                className="min-h-[60px] w-full resize-y break-words"
-                onChange={(e) => {
-                  const next = [...ursachen];
-                  next[i] = { ...u, text: e.target.value };
-                  patch({ ursachen: next });
-                }}
-              />
-              <div className="flex flex-wrap items-center gap-2 md:contents">
-                <Select value={u.cynefin} onValueChange={(v) => setCynefin(i, v as Cynefin)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="einfach">einfach</SelectItem>
-                    <SelectItem value="kompliziert">kompliziert</SelectItem>
-                    <SelectItem value="komplex">komplex</SelectItem>
-                    <SelectItem value="chaotisch">chaotisch</SelectItem>
-                  </SelectContent>
-                </Select>
-                <label className="flex items-center gap-2 text-sm">
-                  <Checkbox
-                    checked={u.adressierbar}
-                    onCheckedChange={(v) => {
-                      const next = [...ursachen];
-                      next[i] = { ...u, adressierbar: !!v };
-                      patch({ ursachen: next });
-                    }}
-                  />
-                  adressierbar
-                </label>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
