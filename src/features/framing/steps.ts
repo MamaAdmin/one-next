@@ -1,4 +1,5 @@
 export type FramingVariant =
+  | "intro" // 0 – Erklärung / How-To vor Schritt 1
   | "context-list" // 1
   | "two-fields" // 2
   | "stakeholder" // 3
@@ -10,6 +11,7 @@ export type FramingVariant =
   | "scope-questions" // 8
   | "nuf" // 9
   | "next-steps"; // 10
+
 
 export interface FramingStepDef {
   key: string;
