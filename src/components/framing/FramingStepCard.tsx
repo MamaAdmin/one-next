@@ -1978,10 +1978,30 @@ function clamp(n: number) {
 function VariantSuccess({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
+  const inline = (bucket: SuccessBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
   return (
     <div className="space-y-6">
       <CanvasSection title="Erfolgsmessung – messbar in 5 Tagen">
@@ -1993,6 +2013,7 @@ function VariantSuccess({
             onChange={(e) => patch({ erfolgsmessung: e.target.value })}
           />
         </div>
+        {inline("erfolg")}
       </CanvasSection>
       <CanvasSection title="Constraints – was ist gesetzt?">
         <ListEditor
@@ -2000,6 +2021,7 @@ function VariantSuccess({
           items={data.constraints ?? []}
           onChange={(v) => patch({ constraints: v })}
         />
+        {inline("constraint")}
       </CanvasSection>
     </div>
   );
