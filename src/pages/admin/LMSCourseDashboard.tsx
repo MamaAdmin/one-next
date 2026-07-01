@@ -179,6 +179,16 @@ export default function LMSCourseDashboard() {
                       <SelectItem value="draft">Entwurf</SelectItem>
                     </SelectContent>
                   </Select>
+                  <Select value={filterPublic} onValueChange={setFilterPublic}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Sichtbarkeit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Alle Kurse</SelectItem>
+                      <SelectItem value="public">Public</SelectItem>
+                      <SelectItem value="private">Nicht public</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button variant="outline" size="icon">
                     <DownloadIcon className="h-4 w-4" />
                   </Button>
