@@ -554,44 +554,51 @@ function ListEditor({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <div className={multiline ? "flex flex-col gap-2" : "flex gap-2"}>
-        {multiline ? (
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={placeholder}
-            rows={rows}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && input.trim()) {
-                e.preventDefault();
-                commit();
-              }
-            }}
-          />
-        ) : (
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={placeholder}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && input.trim()) {
-                e.preventDefault();
-                commit();
-              }
-            }}
-          />
-        )}
-        <Button
-          type="button"
-          variant="outline"
-          size={multiline ? "sm" : "icon"}
-          className={multiline ? "self-end" : ""}
-          onClick={commit}
-        >
-          <Plus className="w-4 h-4" />
-          {multiline ? <span className="ml-1">Hinzufügen</span> : null}
-        </Button>
-      </div>
+      {isFull ? null : (
+        <div className={multiline ? "flex flex-col gap-2" : "flex gap-2"}>
+          {multiline ? (
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={placeholder}
+              rows={rows}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && input.trim()) {
+                  e.preventDefault();
+                  commit();
+                }
+              }}
+            />
+          ) : (
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={placeholder}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && input.trim()) {
+                  e.preventDefault();
+                  commit();
+                }
+              }}
+            />
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            size={multiline ? "sm" : "icon"}
+            className={multiline ? "self-end" : ""}
+            onClick={commit}
+          >
+            <Plus className="w-4 h-4" />
+            {multiline ? <span className="ml-1">Hinzufügen</span> : null}
+          </Button>
+        </div>
+      )}
+      {typeof maxItems === "number" ? (
+        <p className="text-xs text-muted-foreground">
+          {items.length} / {maxItems}
+        </p>
+      ) : null}
       {items.length > 0 ? (
         <ul className="space-y-1">
           {items.map((it, i) => (
