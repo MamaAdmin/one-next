@@ -1200,37 +1200,43 @@ function VariantSailboat({
     />
   );
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-center">
         <SailboatIllustration className="w-full max-w-2xl h-auto rounded-2xl border bg-gradient-hero shadow-card" />
       </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <ListEditor label="Wind – Treiber" items={sb.wind} onChange={(v) => set({ wind: v })} />
-          {inline("wind")}
-        </div>
-        <div className="space-y-2">
-          <ListEditor label="Anker – Hindernisse" items={sb.anker} onChange={(v) => set({ anker: v })} />
-          {inline("anker")}
-        </div>
-        <div className="space-y-2">
-          <ListEditor
-            label="Hafen – Ziel"
-            items={hafenItems}
-            onChange={(v) => set({ hafen: v.join("\n") })}
-            placeholder="Wohin wollen wir?"
-          />
-          {inline("hafen")}
-        </div>
-        <div className="space-y-2">
-          <ListEditor
-            label="Eisberg – Risiken"
-            items={sb.eisberg}
-            onChange={(v) => set({ eisberg: v })}
-          />
-          {inline("eisberg")}
-        </div>
-      </div>
+      <CanvasSection title="Wind – Treiber">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={sb.wind}
+          onChange={(v) => set({ wind: v })}
+        />
+        {inline("wind")}
+      </CanvasSection>
+      <CanvasSection title="Anker – Hindernisse">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={sb.anker}
+          onChange={(v) => set({ anker: v })}
+        />
+        {inline("anker")}
+      </CanvasSection>
+      <CanvasSection title="Hafen – Ziel">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={hafenItems}
+          onChange={(v) => set({ hafen: v.join("\n") })}
+          placeholder="Wohin wollen wir?"
+        />
+        {inline("hafen")}
+      </CanvasSection>
+      <CanvasSection title="Eisberg – Risiken">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={sb.eisberg}
+          onChange={(v) => set({ eisberg: v })}
+        />
+        {inline("eisberg")}
+      </CanvasSection>
     </div>
   );
 }
