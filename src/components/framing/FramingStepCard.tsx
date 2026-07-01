@@ -1200,37 +1200,43 @@ function VariantSailboat({
     />
   );
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-center">
         <SailboatIllustration className="w-full max-w-2xl h-auto rounded-2xl border bg-gradient-hero shadow-card" />
       </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <ListEditor label="Wind – Treiber" items={sb.wind} onChange={(v) => set({ wind: v })} />
-          {inline("wind")}
-        </div>
-        <div className="space-y-2">
-          <ListEditor label="Anker – Hindernisse" items={sb.anker} onChange={(v) => set({ anker: v })} />
-          {inline("anker")}
-        </div>
-        <div className="space-y-2">
-          <ListEditor
-            label="Hafen – Ziel"
-            items={hafenItems}
-            onChange={(v) => set({ hafen: v.join("\n") })}
-            placeholder="Wohin wollen wir?"
-          />
-          {inline("hafen")}
-        </div>
-        <div className="space-y-2">
-          <ListEditor
-            label="Eisberg – Risiken"
-            items={sb.eisberg}
-            onChange={(v) => set({ eisberg: v })}
-          />
-          {inline("eisberg")}
-        </div>
-      </div>
+      <CanvasSection title="Wind – Treiber">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={sb.wind}
+          onChange={(v) => set({ wind: v })}
+        />
+        {inline("wind")}
+      </CanvasSection>
+      <CanvasSection title="Anker – Hindernisse">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={sb.anker}
+          onChange={(v) => set({ anker: v })}
+        />
+        {inline("anker")}
+      </CanvasSection>
+      <CanvasSection title="Hafen – Ziel">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={hafenItems}
+          onChange={(v) => set({ hafen: v.join("\n") })}
+          placeholder="Wohin wollen wir?"
+        />
+        {inline("hafen")}
+      </CanvasSection>
+      <CanvasSection title="Eisberg – Risiken">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={sb.eisberg}
+          onChange={(v) => set({ eisberg: v })}
+        />
+        {inline("eisberg")}
+      </CanvasSection>
     </div>
   );
 }
@@ -1258,24 +1264,26 @@ function VariantFiveWhys({
   };
   const [ursacheInput, setUrsacheInput] = useState("");
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>5 Whys</Label>
-        {whys.map((w, i) => (
-          <Input
-            key={i}
-            value={w}
-            onChange={(e) => setWhy(i, e.target.value)}
-            placeholder={`Warum ${i + 1}?`}
-          />
-        ))}
-      </div>
-      <div className="space-y-2">
-        <Label>Adressierbare Ursachen</Label>
+    <div className="space-y-6">
+      <CanvasSection title="5 Whys – Warum-Kette">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          {whys.map((w, i) => (
+            <Input
+              key={i}
+              value={w}
+              onChange={(e) => setWhy(i, e.target.value)}
+              placeholder={`Warum ${i + 1}?`}
+            />
+          ))}
+        </div>
+      </CanvasSection>
+
+      <CanvasSection title="Adressierbare Ursachen">
         <p className="text-xs text-muted-foreground">
           Nur Ursachen sammeln – die Cynefin-Einordnung erfolgt automatisch im nächsten Schritt.
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-2">
           <Input
             value={ursacheInput}
             onChange={(e) => setUrsacheInput(e.target.value)}
@@ -1299,26 +1307,28 @@ function VariantFiveWhys({
             <Plus className="w-4 h-4" />
           </Button>
         </div>
-        {ursachen.map((u, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <Input
-              value={u.text}
-              onChange={(e) => {
-                const next = [...ursachen];
-                next[i] = { ...u, text: e.target.value };
-                patch({ ursachen: next });
-              }}
-            />
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
-            </Button>
-          </div>
-        ))}
-      </div>
+        <div className="mt-2 space-y-2">
+          {ursachen.map((u, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Input
+                value={u.text}
+                onChange={(e) => {
+                  const next = [...ursachen];
+                  next[i] = { ...u, text: e.target.value };
+                  patch({ ursachen: next });
+                }}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      </CanvasSection>
     </div>
   );
 }
@@ -1650,82 +1660,86 @@ function VariantAssumptions({
     setInput("");
   };
   return (
-    <div className="space-y-3">
-      <Label>Annahmen (Unsicherheit / Einfluss je 1–5)</Label>
-      <div className="flex gap-2">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Annahme …"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              add();
-            }
-          }}
-        />
-        <Button variant="outline" size="icon" onClick={add}>
-          <Plus className="w-4 h-4" />
-        </Button>
-      </div>
-      {annahmen.map((a, i) => {
-        const critical = a.unsicherheit >= 4 && a.einfluss >= 4;
-        return (
-          <div
-            key={i}
-            className={`grid grid-cols-[1fr_140px_140px_auto] gap-2 items-center rounded-md border p-2 ${
-              critical ? "border-primary bg-primary/5" : ""
-            }`}
-          >
+    <div className="space-y-6">
+      <CanvasSection title="Annahmen (Unsicherheit / Einfluss je 1–5)">
+        <div className="space-y-3">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <div className="flex gap-2">
             <Input
-              value={a.text}
-              onChange={(e) => {
-                const next = [...annahmen];
-                next[i] = { ...a, text: e.target.value };
-                patch({ annahmen: next });
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Annahme …"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  add();
+                }
               }}
             />
-            <div>
-              <Label className="text-xs">Unsicherheit</Label>
-              <Input
-                type="number"
-                min={1}
-                max={5}
-                value={a.unsicherheit}
-                onChange={(e) => {
-                  const next = [...annahmen];
-                  next[i] = { ...a, unsicherheit: clamp(+e.target.value) };
-                  patch({ annahmen: next });
-                }}
-              />
-            </div>
-            <div>
-              <Label className="text-xs">Einfluss</Label>
-              <Input
-                type="number"
-                min={1}
-                max={5}
-                value={a.einfluss}
-                onChange={(e) => {
-                  const next = [...annahmen];
-                  next[i] = { ...a, einfluss: clamp(+e.target.value) };
-                  patch({ annahmen: next });
-                }}
-              />
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ annahmen: annahmen.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
+            <Button variant="outline" size="icon" onClick={add}>
+              <Plus className="w-4 h-4" />
             </Button>
           </div>
-        );
-      })}
-      <p className="text-xs text-muted-foreground">
-        Kritische Annahmen (Unsicherheit ≥4 UND Einfluss ≥4) werden hervorgehoben.
-      </p>
+          {annahmen.map((a, i) => {
+            const critical = a.unsicherheit >= 4 && a.einfluss >= 4;
+            return (
+              <div
+                key={i}
+                className={`grid grid-cols-[1fr_140px_140px_auto] gap-2 items-center rounded-md border p-2 ${
+                  critical ? "border-primary bg-primary/5" : ""
+                }`}
+              >
+                <Input
+                  value={a.text}
+                  onChange={(e) => {
+                    const next = [...annahmen];
+                    next[i] = { ...a, text: e.target.value };
+                    patch({ annahmen: next });
+                  }}
+                />
+                <div>
+                  <Label className="text-xs">Unsicherheit</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={5}
+                    value={a.unsicherheit}
+                    onChange={(e) => {
+                      const next = [...annahmen];
+                      next[i] = { ...a, unsicherheit: clamp(+e.target.value) };
+                      patch({ annahmen: next });
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Einfluss</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={5}
+                    value={a.einfluss}
+                    onChange={(e) => {
+                      const next = [...annahmen];
+                      next[i] = { ...a, einfluss: clamp(+e.target.value) };
+                      patch({ annahmen: next });
+                    }}
+                  />
+                </div>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => patch({ annahmen: annahmen.filter((_, j) => j !== i) })}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            );
+          })}
+          <p className="text-xs text-muted-foreground">
+            Kritische Annahmen (Unsicherheit ≥4 UND Einfluss ≥4) werden hervorgehoben.
+          </p>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
@@ -1743,20 +1757,24 @@ function VariantSuccess({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>Erfolgsmessung – messbar in 5 Tagen</Label>
-        <Textarea
-          rows={3}
-          value={data.erfolgsmessung ?? ""}
-          onChange={(e) => patch({ erfolgsmessung: e.target.value })}
+    <div className="space-y-6">
+      <CanvasSection title="Erfolgsmessung – messbar in 5 Tagen">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={3}
+            value={data.erfolgsmessung ?? ""}
+            onChange={(e) => patch({ erfolgsmessung: e.target.value })}
+          />
+        </div>
+      </CanvasSection>
+      <CanvasSection title="Constraints – was ist gesetzt?">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.constraints ?? []}
+          onChange={(v) => patch({ constraints: v })}
         />
-      </div>
-      <ListEditor
-        label="Constraints – was ist gesetzt?"
-        items={data.constraints ?? []}
-        onChange={(v) => patch({ constraints: v })}
-      />
+      </CanvasSection>
     </div>
   );
 }
@@ -1769,25 +1787,29 @@ function VariantScope({
   patch: (p: Partial<FramingStepData>) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="grid md:grid-cols-2 gap-4">
+    <div className="space-y-6">
+      <CanvasSection title="In Scope">
         <ListEditor
-          label="In Scope"
+          label="Eigene Anmerkungen"
           items={data.inScope ?? []}
           onChange={(v) => patch({ inScope: v })}
         />
+      </CanvasSection>
+      <CanvasSection title="Out of Scope">
         <ListEditor
-          label="Out of Scope"
+          label="Eigene Anmerkungen"
           items={data.outOfScope ?? []}
           onChange={(v) => patch({ outOfScope: v })}
         />
-      </div>
-      <ListEditor
-        label="Sprint-Fragen (Decision Questions)"
-        items={data.sprintFragen ?? []}
-        onChange={(v) => patch({ sprintFragen: v })}
-        placeholder="z. B. Können wir X in 5 Tagen mit Y validieren?"
-      />
+      </CanvasSection>
+      <CanvasSection title="Sprint-Fragen (Decision Questions)">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.sprintFragen ?? []}
+          onChange={(v) => patch({ sprintFragen: v })}
+          placeholder="z. B. Können wir X in 5 Tagen mit Y validieren?"
+        />
+      </CanvasSection>
     </div>
   );
 }
@@ -1801,72 +1823,76 @@ function VariantNuf({
 }) {
   const bew = data.nufBewertungen ?? [];
   return (
-    <div className="space-y-3">
-      <Label>Sprint-Fragen bewerten (1–5)</Label>
-      {bew.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Keine Sprint-Fragen vorhanden. Nutze KI-Vorschläge oder gehe zurück zu Schritt 8.
-        </p>
-      ) : null}
-      {bew.map((r, i) => {
-        const sum = r.neuheit + r.nutzen + r.machbarkeit;
-        const isTop = data.top1Challenge === r.text;
-        return (
-          <div
-            key={i}
-            className={`grid grid-cols-[1fr_80px_80px_80px_60px_auto] gap-2 items-center rounded-md border p-2 ${
-              isTop ? "border-primary bg-primary/5" : ""
-            }`}
-          >
-            <Input
-              value={r.text}
-              onChange={(e) => {
-                const next = [...bew];
-                next[i] = { ...r, text: e.target.value };
-                patch({ nufBewertungen: next });
-              }}
-            />
-            {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
-              <div key={k}>
-                <Label className="text-xs capitalize">{k}</Label>
+    <div className="space-y-6">
+      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–5)">
+        <div className="space-y-3">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          {bew.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Keine Sprint-Fragen vorhanden. Nutze KI-Vorschläge oder gehe zurück zu Schritt 8.
+            </p>
+          ) : null}
+          {bew.map((r, i) => {
+            const sum = r.neuheit + r.nutzen + r.machbarkeit;
+            const isTop = data.top1Challenge === r.text;
+            return (
+              <div
+                key={i}
+                className={`grid grid-cols-[1fr_80px_80px_80px_60px_auto] gap-2 items-center rounded-md border p-2 ${
+                  isTop ? "border-primary bg-primary/5" : ""
+                }`}
+              >
                 <Input
-                  type="number"
-                  min={1}
-                  max={5}
-                  value={r[k]}
+                  value={r.text}
                   onChange={(e) => {
                     const next = [...bew];
-                    next[i] = { ...r, [k]: clamp(+e.target.value) };
+                    next[i] = { ...r, text: e.target.value };
                     patch({ nufBewertungen: next });
                   }}
                 />
+                {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
+                  <div key={k}>
+                    <Label className="text-xs capitalize">{k}</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={r[k]}
+                      onChange={(e) => {
+                        const next = [...bew];
+                        next[i] = { ...r, [k]: clamp(+e.target.value) };
+                        patch({ nufBewertungen: next });
+                      }}
+                    />
+                  </div>
+                ))}
+                <div className="text-sm font-semibold text-center">{sum}</div>
+                <Button
+                  variant={isTop ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => patch({ top1Challenge: r.text })}
+                >
+                  Top-1
+                </Button>
               </div>
-            ))}
-            <div className="text-sm font-semibold text-center">{sum}</div>
-            <Button
-              variant={isTop ? "default" : "outline"}
-              size="sm"
-              onClick={() => patch({ top1Challenge: r.text })}
-            >
-              Top-1
-            </Button>
-          </div>
-        );
-      })}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() =>
-          patch({
-            nufBewertungen: [
-              ...bew,
-              { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3 },
-            ],
-          })
-        }
-      >
-        <Plus className="w-4 h-4 mr-1" /> Challenge hinzufügen
-      </Button>
+            );
+          })}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              patch({
+                nufBewertungen: [
+                  ...bew,
+                  { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3 },
+                ],
+              })
+            }
+          >
+            <Plus className="w-4 h-4 mr-1" /> Challenge hinzufügen
+          </Button>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
@@ -1880,64 +1906,68 @@ function VariantNextSteps({
 }) {
   const todos = data.preSprintTodos ?? [];
   return (
-    <div className="space-y-4">
-      <label className="flex items-center gap-3">
-        <Checkbox
-          checked={!!data.sprintGo}
-          onCheckedChange={(v) => patch({ sprintGo: !!v })}
-        />
-        <span className="font-medium">Sprint-Go?</span>
-      </label>
-      <div className="space-y-2">
-        <Label>Pre-Sprint-To-dos</Label>
-        {todos.map((t, i) => (
-          <div key={i} className="grid grid-cols-[1fr_160px_140px_auto] gap-2">
-            <Input
-              value={t.text}
-              placeholder="To-do"
-              onChange={(e) => {
-                const next = [...todos];
-                next[i] = { ...t, text: e.target.value };
-                patch({ preSprintTodos: next });
-              }}
-            />
-            <Input
-              value={t.wer}
-              placeholder="Wer?"
-              onChange={(e) => {
-                const next = [...todos];
-                next[i] = { ...t, wer: e.target.value };
-                patch({ preSprintTodos: next });
-              }}
-            />
-            <Input
-              value={t.wann}
-              placeholder="Wann?"
-              onChange={(e) => {
-                const next = [...todos];
-                next[i] = { ...t, wann: e.target.value };
-                patch({ preSprintTodos: next });
-              }}
-            />
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ preSprintTodos: todos.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
-            </Button>
-          </div>
-        ))}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            patch({ preSprintTodos: [...todos, { text: "", wer: "", wann: "" }] })
-          }
-        >
-          <Plus className="w-4 h-4 mr-1" /> To-do hinzufügen
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <CanvasSection title="Sprint-Go?">
+        <label className="flex items-center gap-3">
+          <Checkbox
+            checked={!!data.sprintGo}
+            onCheckedChange={(v) => patch({ sprintGo: !!v })}
+          />
+          <span className="font-medium">Sprint freigeben</span>
+        </label>
+      </CanvasSection>
+      <CanvasSection title="Pre-Sprint-To-dos">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          {todos.map((t, i) => (
+            <div key={i} className="grid grid-cols-[1fr_160px_140px_auto] gap-2">
+              <Input
+                value={t.text}
+                placeholder="To-do"
+                onChange={(e) => {
+                  const next = [...todos];
+                  next[i] = { ...t, text: e.target.value };
+                  patch({ preSprintTodos: next });
+                }}
+              />
+              <Input
+                value={t.wer}
+                placeholder="Wer?"
+                onChange={(e) => {
+                  const next = [...todos];
+                  next[i] = { ...t, wer: e.target.value };
+                  patch({ preSprintTodos: next });
+                }}
+              />
+              <Input
+                value={t.wann}
+                placeholder="Wann?"
+                onChange={(e) => {
+                  const next = [...todos];
+                  next[i] = { ...t, wann: e.target.value };
+                  patch({ preSprintTodos: next });
+                }}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => patch({ preSprintTodos: todos.filter((_, j) => j !== i) })}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              patch({ preSprintTodos: [...todos, { text: "", wer: "", wann: "" }] })
+            }
+          >
+            <Plus className="w-4 h-4 mr-1" /> To-do hinzufügen
+          </Button>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
