@@ -168,7 +168,7 @@ export default function LMSCourseDetail() {
       )}
 
       {/* Modulnavigation */}
-      <div className="mb-6">
+      <div id="lms-modules" className="mb-6 scroll-mt-32">
         <h2 className="text-2xl font-bold mb-2">Kursmodule</h2>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">
