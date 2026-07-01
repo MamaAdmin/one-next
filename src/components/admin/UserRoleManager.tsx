@@ -42,6 +42,40 @@ const UserRoleManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<AppRole | "all">("all");
   const [addingRole, setAddingRole] = useState<{ userId: string; role: AppRole } | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteName, setInviteName] = useState("");
+  const [inviteRole, setInviteRole] = useState<AppRole>("user");
+  const [inviting, setInviting] = useState(false);
+
+  const handleInvite = async () => {
+    if (!inviteEmail || !inviteName) {
+      toast.error("Bitte E-Mail und Name angeben");
+      return;
+    }
+    setInviting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-invite-user", {
+        body: { email: inviteEmail, full_name: inviteName, role: inviteRole },
+      });
+      if (error) throw error;
+      if ((data as { already_existed?: boolean })?.already_existed) {
+        toast.success("Nutzer existierte bereits – Rolle wurde hinzugefügt");
+      } else {
+        toast.success("Einladung versendet");
+      }
+      setInviteOpen(false);
+      setInviteEmail("");
+      setInviteName("");
+      setInviteRole("user");
+      fetchUsers();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Fehler beim Einladen";
+      toast.error(msg);
+    } finally {
+      setInviting(false);
+    }
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
