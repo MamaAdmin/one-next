@@ -43,3 +43,6 @@ project_id = "ookvxyctxmtcxowcwnij"
     verify_jwt = true
   [functions.voice-rag]
     verify_jwt = false
+
+[functions.admin-invite-user]
+verify_jwt = true

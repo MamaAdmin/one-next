@@ -4,10 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Search, UserPlus, X, Shield, Users } from "lucide-react";
+import { Search, UserPlus, X, Shield, Users, Mail } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -33,6 +42,40 @@ const UserRoleManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<AppRole | "all">("all");
   const [addingRole, setAddingRole] = useState<{ userId: string; role: AppRole } | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteName, setInviteName] = useState("");
+  const [inviteRole, setInviteRole] = useState<AppRole>("user");
+  const [inviting, setInviting] = useState(false);
+
+  const handleInvite = async () => {
+    if (!inviteEmail || !inviteName) {
+      toast.error("Bitte E-Mail und Name angeben");
+      return;
+    }
+    setInviting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-invite-user", {
+        body: { email: inviteEmail, full_name: inviteName, role: inviteRole },
+      });
+      if (error) throw error;
+      if ((data as { already_existed?: boolean })?.already_existed) {
+        toast.success("Nutzer existierte bereits – Rolle wurde hinzugefügt");
+      } else {
+        toast.success("Einladung versendet");
+      }
+      setInviteOpen(false);
+      setInviteEmail("");
+      setInviteName("");
+      setInviteRole("user");
+      fetchUsers();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Fehler beim Einladen";
+      toast.error(msg);
+    } finally {
+      setInviting(false);
+    }
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -155,13 +198,21 @@ const UserRoleManager = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            <CardTitle>Benutzerverwaltung</CardTitle>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                <CardTitle>Benutzerverwaltung</CardTitle>
+              </div>
+              <CardDescription className="mt-1.5">
+                Verwalten Sie Benutzerrollen und Berechtigungen
+              </CardDescription>
+            </div>
+            <Button onClick={() => setInviteOpen(true)}>
+              <Mail className="h-4 w-4 mr-2" />
+              Benutzer einladen
+            </Button>
           </div>
-          <CardDescription>
-            Verwalten Sie Benutzerrollen und Berechtigungen
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {/* Filters */}
@@ -361,6 +412,61 @@ const UserRoleManager = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Neuen Benutzer einladen</DialogTitle>
+            <DialogDescription>
+              Der Nutzer erhält eine E-Mail mit einem Link zum Setzen seines Passworts.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="invite-name">Voller Name</Label>
+              <Input
+                id="invite-name"
+                value={inviteName}
+                onChange={(e) => setInviteName(e.target.value)}
+                placeholder="Max Mustermann"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="invite-email">E-Mail</Label>
+              <Input
+                id="invite-email"
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="name@beispiel.de"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="invite-role">Rolle</Label>
+              <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as AppRole)}>
+                <SelectTrigger id="invite-role">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {AVAILABLE_ROLES.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setInviteOpen(false)} disabled={inviting}>
+              Abbrechen
+            </Button>
+            <Button onClick={handleInvite} disabled={inviting}>
+              {inviting ? "Wird versendet…" : "Einladung senden"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
