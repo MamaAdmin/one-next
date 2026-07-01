@@ -781,6 +781,8 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "anker" || tag === "anchor") return "anker";
   if (tag === "hafen" || tag === "harbor" || tag === "harbour") return "hafen";
   if (tag === "eisberg" || tag === "iceberg") return "eisberg";
+  if (tag === "why" || tag === "warum") return "why";
+  if (tag === "ursache" || tag === "cause") return "ursache";
   return null;
 }
 
