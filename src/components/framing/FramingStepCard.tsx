@@ -103,17 +103,70 @@ export default function FramingStepCard({
 
         {vorschlaege.length > 0 ? (
           <div className="rounded-lg border bg-muted/30 p-4">
-            <div className="text-sm font-semibold mb-2 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" /> KI-Vorschläge
+            <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4" /> KI-Vorschläge
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    const next = { ...data };
+                    vorschlaege.forEach((v) => applySuggestion(step.variant, v, next));
+                    setData(next);
+                    setVorschlaege([]);
+                    toast({ title: "Alle Vorschläge übernommen" });
+                  }}
+                >
+                  Alle übernehmen
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setVorschlaege([])}
+                >
+                  Verwerfen
+                </Button>
+              </div>
             </div>
-            <ul className="space-y-1">
+            <ul className="space-y-1.5">
               {vorschlaege.map((v, i) => (
-                <li key={i} className="text-sm">• {v}</li>
+                <li
+                  key={i}
+                  className="flex items-start gap-2 rounded-md border bg-background px-3 py-2 text-sm"
+                >
+                  <span className="flex-1">{v}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7"
+                    onClick={() => {
+                      const next = { ...data };
+                      applySuggestion(step.variant, v, next);
+                      setData(next);
+                      setVorschlaege((prev) => prev.filter((_, j) => j !== i));
+                    }}
+                  >
+                    <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={() =>
+                      setVorschlaege((prev) => prev.filter((_, j) => j !== i))
+                    }
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </Button>
+                </li>
               ))}
             </ul>
-            <p className="text-xs text-muted-foreground mt-2">
-              Übernimm passende Punkte in deine Antwort oberhalb.
-            </p>
           </div>
         ) : null}
 
