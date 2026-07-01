@@ -163,6 +163,21 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 adressierbare Ursachen vor, die in die Cynefin-Domäne ${CYNEFIN_BUCKETS[field]} passen. Keine anderen Domänen. Prefixe JEDES Item mit '${cynefinTag[field]}'.`,
       };
     }
+    const ASSUMPTION_BUCKETS: Record<string, string> = {
+      kritisch: "Kritisch (hohe Unsicherheit UND hoher Einfluss – sofort testen)",
+      einflussreich: "Einflussreich (niedrige Unsicherheit, hoher Einfluss – belastbare Annahmen mit Hebel)",
+      unsicher: "Unsicher (hohe Unsicherheit, niedriger Einfluss – später klären)",
+      gering: "Gering (niedrige Unsicherheit UND niedriger Einfluss – ignorierbar)",
+    };
+    const assumptionTag: Record<string, string> = {
+      kritisch: "[Kritisch]", einflussreich: "[Einflussreich]", unsicher: "[Unsicher]", gering: "[Gering]",
+    };
+    if (step_key === "6" && field && ASSUMPTION_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Annahmen NUR für den Quadranten ${ASSUMPTION_BUCKETS[field]} vor. Keine anderen Quadranten. Prefixe JEDES Item mit '${assumptionTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 
