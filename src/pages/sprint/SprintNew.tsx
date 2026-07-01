@@ -30,12 +30,41 @@ const schema = z.object({
 
 export default function SprintNew() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const create = useCreateSprint();
+  const createFraming = useCreateFramingSession();
+  const [mode, setMode] = useState<"choose" | "clear" | "framing">(() =>
+    params.get("mode") === "framing" ? "framing" : "choose",
+  );
   const [titel, setTitel] = useState("");
   const [problemstellung, setProblemstellung] = useState("");
   const [modus, setModus] = useState<"solo" | "team">("solo");
   const [decider, setDecider] = useState("");
   const [sprintLeader, setSprintLeader] = useState("");
+  const [framingTitel, setFramingTitel] = useState("");
+
+  async function startFraming(e: React.FormEvent) {
+    e.preventDefault();
+    if (framingTitel.trim().length < 3) {
+      toast({
+        title: "Arbeitstitel zu kurz",
+        description: "Mindestens 3 Zeichen.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      const s = await createFraming.mutateAsync({ titel_arbeitstitel: framingTitel.trim() });
+      toast({ title: "Problem-Framing gestartet", description: "10 Schritte · ~3–4 Stunden." });
+      navigate(`/sprint/framing/${s.id}`);
+    } catch (e) {
+      toast({
+        title: "Konnte nicht gestartet werden",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
