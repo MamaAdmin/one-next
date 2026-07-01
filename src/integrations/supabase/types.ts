@@ -701,6 +701,79 @@ export type Database = {
           },
         ]
       }
+      framing_invitations: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          revoked: boolean
+          role: string
+          session_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          id?: string
+          revoked?: boolean
+          role: string
+          session_id: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          revoked?: boolean
+          role?: string
+          session_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framing_invitations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "framing_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      framing_members: {
+        Row: {
+          created_at: string
+          id: string
+          rolle: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rolle: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rolle?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framing_members_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "framing_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       framing_sessions: {
         Row: {
           challenge_statement: string | null
@@ -2874,6 +2947,10 @@ export type Database = {
         Returns: undefined
       }
       calculate_streak: { Args: { p_participant_id: string }; Returns: number }
+      can_edit_framing: {
+        Args: { _session_id: string; _user_id: string }
+        Returns: boolean
+      }
       can_edit_sprint: {
         Args: { _sprint_id: string; _user_id: string }
         Returns: boolean
@@ -2938,6 +3015,10 @@ export type Database = {
         Args: { _customer_id: string; _user_id: string }
         Returns: boolean
       }
+      is_framing_member: {
+        Args: { _session_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_sprint_member: {
         Args: { _sprint_id: string; _user_id: string }
         Returns: boolean
@@ -2963,6 +3044,7 @@ export type Database = {
         Args: { faq_id: string; is_helpful: boolean }
         Returns: undefined
       }
+      redeem_framing_invitation: { Args: { p_token: string }; Returns: string }
       redeem_sprint_invitation: { Args: { p_token: string }; Returns: string }
     }
     Enums: {

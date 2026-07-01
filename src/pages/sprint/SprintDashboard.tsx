@@ -13,6 +13,7 @@ import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import ShareSprintDialog from "@/components/sprint/ShareSprintDialog";
+import ShareFramingDialog from "@/components/sprint/ShareFramingDialog";
 import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
@@ -20,6 +21,7 @@ export default function SprintDashboard() {
   const { data: framingSessions } = useMyFramingSessions();
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [sharing, setSharing] = useState<SprintRow | null>(null);
+  const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
   const activeFramings = (framingSessions ?? []).filter((f) => f.status === "active");
 
   return (
@@ -106,11 +108,11 @@ export default function SprintDashboard() {
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {activeFramings.map((f) => (
-                  <Card key={f.id} className="hover:shadow-hover transition-shadow">
+                  <Card key={f.id} className="hover:shadow-hover transition-shadow relative">
                     <Link to={`/sprint/framing/${f.id}`} className="block">
                       <CardContent className="p-5 space-y-2">
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-semibold">
+                          <h3 className="font-semibold pr-16">
                             {f.titel_arbeitstitel || "Ohne Titel"}
                           </h3>
                           <Badge variant="secondary">
@@ -122,6 +124,19 @@ export default function SprintDashboard() {
                         </p>
                       </CardContent>
                     </Link>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Framing teilen"
+                      className="absolute top-3 right-24 h-8 w-8"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSharingFramingId(f.id);
+                      }}
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
                   </Card>
                 ))}
               </div>
@@ -231,6 +246,13 @@ export default function SprintDashboard() {
           sprintId={sharing.id}
           open={!!sharing}
           onOpenChange={(o) => !o && setSharing(null)}
+        />
+      ) : null}
+      {sharingFramingId ? (
+        <ShareFramingDialog
+          sessionId={sharingFramingId}
+          open={!!sharingFramingId}
+          onOpenChange={(o) => !o && setSharingFramingId(null)}
         />
       ) : null}
     </>
