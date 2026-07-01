@@ -614,6 +614,91 @@ export type Database = {
           },
         ]
       }
+      framing_sessions: {
+        Row: {
+          challenge_statement: string | null
+          created_at: string
+          current_step: number
+          id: string
+          kontext: string
+          owner_id: string
+          resulting_sprint_id: string | null
+          status: string
+          titel_arbeitstitel: string
+          updated_at: string
+        }
+        Insert: {
+          challenge_statement?: string | null
+          created_at?: string
+          current_step?: number
+          id?: string
+          kontext?: string
+          owner_id: string
+          resulting_sprint_id?: string | null
+          status?: string
+          titel_arbeitstitel?: string
+          updated_at?: string
+        }
+        Update: {
+          challenge_statement?: string | null
+          created_at?: string
+          current_step?: number
+          id?: string
+          kontext?: string
+          owner_id?: string
+          resulting_sprint_id?: string | null
+          status?: string
+          titel_arbeitstitel?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framing_sessions_resulting_sprint_id_fkey"
+            columns: ["resulting_sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      framing_steps: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          data: Json
+          id: string
+          session_id: string
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          session_id: string
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          session_id?: string
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framing_steps_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "framing_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lms_achievements: {
         Row: {
           achievement_type: string
