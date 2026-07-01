@@ -17,7 +17,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const { isAdmin, isBmadUser } = useUserRoles();
+  const { isAdmin, isBmadUser, isSprintUser } = useUserRoles();
   
   // Load navigation dynamically from database
   const { items: headerItems } = useNavigation("header");
@@ -138,11 +138,19 @@ const Navigation = () => {
                       Mein Profil
                     </Link>
                   </DropdownMenuItem>
-                  {/* Regular users (not admin, not bmad_user) see LMS */}
-                  {!isAdmin && !isBmadUser && (
+                  {/* Regular users (not admin, not bmad_user, not sprint_user) see LMS */}
+                  {!isAdmin && !isBmadUser && !isSprintUser && (
                     <DropdownMenuItem asChild>
                       <Link to="/lms/dashboard" className="cursor-pointer">
                         Meine Kurse
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {/* Sprint users see their sprints */}
+                  {!isAdmin && isSprintUser && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/sprint" className="cursor-pointer">
+                        Meine Sprints
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -238,10 +246,16 @@ const Navigation = () => {
 
               {user ? (
                 <>
-                  {/* Regular users (not admin, not bmad_user) see LMS */}
-                  {!isAdmin && !isBmadUser && (
+                  {/* Regular users see LMS */}
+                  {!isAdmin && !isBmadUser && !isSprintUser && (
                     <Link to="/lms/dashboard" className="block py-2 px-4 hover:bg-accent rounded-md">
                       Meine Kurse
+                    </Link>
+                  )}
+                  {/* Sprint users */}
+                  {!isAdmin && isSprintUser && (
+                    <Link to="/sprint" className="block py-2 px-4 hover:bg-accent rounded-md">
+                      Meine Sprints
                     </Link>
                   )}
                   {/* BMAD users (not admin) see BMAD Portal */}

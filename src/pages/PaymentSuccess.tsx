@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -5,10 +6,21 @@ import { SEO } from "@/components/SEO";
 import { CheckCircle, ArrowLeft, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type"); // "sprint" or "kurs"
+  const registrationId = searchParams.get("registration_id");
+
+  useEffect(() => {
+    if (type === "kurs" && registrationId) {
+      supabase.functions
+        .invoke("verify-course-registration", { body: { registrationId } })
+        .catch((e) => console.error("verify-course-registration failed", e));
+    }
+  }, [type, registrationId]);
+
 
   return (
     <div className="min-h-screen flex flex-col">
