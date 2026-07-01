@@ -31,7 +31,7 @@ export default function FramingWorkspace() {
   const steps = stepsQ.data ?? [];
 
   const currentIndex = session?.current_step ?? 1;
-  const currentDef = getFramingStep(String(currentIndex)) ?? FRAMING_STEPS[0];
+  const currentDef = getFramingStepByIndex(currentIndex) ?? FRAMING_STEPS[0];
   const currentRow = steps.find((s) => s.step_key === currentDef.key);
 
   // Timer
