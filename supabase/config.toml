@@ -1,62 +1,45 @@
 project_id = "ookvxyctxmtcxowcwnij"
 
-[functions.voice-rag]
-verify_jwt = false
-
-[functions.create-course-checkout]
-verify_jwt = true
-
-[functions.verify-course-purchase]
-verify_jwt = true
-
-[functions.check-phase-gate]
-verify_jwt = true
-
-[functions.cleanup-expired-sessions]
-verify_jwt = false
-
-[functions.create-checkout-session]
-verify_jwt = true
-
-[functions.create-company-from-registration]
-verify_jwt = false
-
-[functions.create-participant]
-verify_jwt = true
-
-[functions.export-to-miro]
-verify_jwt = true
-
-[functions.generate-completion-certificate]
-verify_jwt = true
-
-[functions.generate-data-export]
-verify_jwt = true
-
-[functions.send-booking-email]
-verify_jwt = true
-
-[functions.send-booking-to-n8n]
-verify_jwt = true
-
-[functions.send-enrollment-invitation]
-verify_jwt = true
-
-[functions.send-sprint-invitation]
-verify_jwt = true
-
-[functions.bmad-create-session]
-verify_jwt = true
-
-[functions.bmad-run-phase]
-verify_jwt = true
-
-[functions.bmad-approve-artifact]
-verify_jwt = true
-
-[functions.bmad-progress-phase]
-verify_jwt = true
-
-
-[functions.process-email-queue]
-verify_jwt = true
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.bmad-approve-artifact]
+    verify_jwt = true
+  [functions.bmad-create-session]
+    verify_jwt = true
+  [functions.bmad-progress-phase]
+    verify_jwt = true
+  [functions.bmad-run-phase]
+    verify_jwt = true
+  [functions.check-phase-gate]
+    verify_jwt = true
+  [functions.cleanup-expired-sessions]
+    verify_jwt = false
+  [functions.create-checkout-session]
+    verify_jwt = true
+  [functions.create-company-from-registration]
+    verify_jwt = false
+  [functions.create-course-checkout]
+    verify_jwt = true
+  [functions.create-participant]
+    verify_jwt = true
+  [functions.export-to-miro]
+    verify_jwt = true
+  [functions.generate-completion-certificate]
+    verify_jwt = true
+  [functions.generate-data-export]
+    verify_jwt = true
+  [functions.process-email-queue]
+    verify_jwt = true
+  [functions.send-booking-email]
+    verify_jwt = true
+  [functions.send-booking-to-n8n]
+    verify_jwt = true
+  [functions.send-enrollment-invitation]
+    verify_jwt = true
+  [functions.send-sprint-invitation]
+    verify_jwt = true
+  [functions.verify-course-purchase]
+    verify_jwt = true
+  [functions.voice-rag]
+    verify_jwt = false
