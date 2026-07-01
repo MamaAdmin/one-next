@@ -242,7 +242,93 @@ function StepVariant({
   }
 }
 
+/* ---------- suggestion adoption ---------- */
+
+function applySuggestion(
+  variant: FramingStepDef["variant"],
+  raw: string,
+  data: FramingStepData,
+): void {
+  const text = raw.trim();
+  if (!text) return;
+  const pushUnique = (arr: string[] | undefined, v: string): string[] => {
+    const list = arr ?? [];
+    return list.includes(v) ? list : [...list, v];
+  };
+
+  switch (variant) {
+    case "context-list":
+      data.nichtZiele = pushUnique(data.nichtZiele, text);
+      return;
+    case "two-fields": {
+      const existing = data.defaultFuture ?? "";
+      data.defaultFuture = existing ? `${existing}\n• ${text}` : `• ${text}`;
+      return;
+    }
+    case "stakeholder":
+      data.stakeholder = pushUnique(data.stakeholder, text);
+      return;
+    case "sailboat": {
+      const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
+      const m = text.match(/^\[(Wind|Anker|Hafen|Eisberg)\]\s*(.+)$/i);
+      if (m) {
+        const bucket = m[1].toLowerCase();
+        const value = m[2].trim();
+        if (bucket === "wind") sb.wind = pushUnique(sb.wind, value);
+        else if (bucket === "anker") sb.anker = pushUnique(sb.anker, value);
+        else if (bucket === "hafen")
+          sb.hafen = sb.hafen ? `${sb.hafen}\n${value}` : value;
+        else if (bucket === "eisberg") sb.eisberg = pushUnique(sb.eisberg, value);
+      } else {
+        sb.wind = pushUnique(sb.wind, text);
+      }
+      data.sailboat = sb;
+      return;
+    }
+    case "five-whys": {
+      const whys = data.fiveWhys ?? ["", "", "", "", ""];
+      const idx = whys.findIndex((w) => !w.trim());
+      if (idx >= 0) {
+        const next = [...whys];
+        next[idx] = text;
+        data.fiveWhys = next;
+      } else {
+        data.ursachen = [
+          ...(data.ursachen ?? []),
+          { text, cynefin: "kompliziert", adressierbar: true },
+        ];
+      }
+      return;
+    }
+    case "assumptions":
+      data.annahmen = [
+        ...(data.annahmen ?? []),
+        { text, unsicherheit: 3, einfluss: 3 },
+      ];
+      return;
+    case "success-constraints":
+      data.constraints = pushUnique(data.constraints, text);
+      return;
+    case "scope-questions":
+      data.sprintFragen = pushUnique(data.sprintFragen, text);
+      return;
+    case "nuf":
+      data.nufBewertungen = [
+        ...(data.nufBewertungen ?? []),
+        { text, neuheit: 3, nutzen: 3, machbarkeit: 3 },
+      ];
+      return;
+    case "next-steps":
+      data.preSprintTodos = [
+        ...(data.preSprintTodos ?? []),
+        { text, wer: "", wann: "" },
+      ];
+      return;
+  }
+}
+
 /* ---------- shared list editor ---------- */
+
 
 function ListEditor({
   label,
