@@ -1660,82 +1660,86 @@ function VariantAssumptions({
     setInput("");
   };
   return (
-    <div className="space-y-3">
-      <Label>Annahmen (Unsicherheit / Einfluss je 1–5)</Label>
-      <div className="flex gap-2">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Annahme …"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              add();
-            }
-          }}
-        />
-        <Button variant="outline" size="icon" onClick={add}>
-          <Plus className="w-4 h-4" />
-        </Button>
-      </div>
-      {annahmen.map((a, i) => {
-        const critical = a.unsicherheit >= 4 && a.einfluss >= 4;
-        return (
-          <div
-            key={i}
-            className={`grid grid-cols-[1fr_140px_140px_auto] gap-2 items-center rounded-md border p-2 ${
-              critical ? "border-primary bg-primary/5" : ""
-            }`}
-          >
+    <div className="space-y-6">
+      <CanvasSection title="Annahmen (Unsicherheit / Einfluss je 1–5)">
+        <div className="space-y-3">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <div className="flex gap-2">
             <Input
-              value={a.text}
-              onChange={(e) => {
-                const next = [...annahmen];
-                next[i] = { ...a, text: e.target.value };
-                patch({ annahmen: next });
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Annahme …"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  add();
+                }
               }}
             />
-            <div>
-              <Label className="text-xs">Unsicherheit</Label>
-              <Input
-                type="number"
-                min={1}
-                max={5}
-                value={a.unsicherheit}
-                onChange={(e) => {
-                  const next = [...annahmen];
-                  next[i] = { ...a, unsicherheit: clamp(+e.target.value) };
-                  patch({ annahmen: next });
-                }}
-              />
-            </div>
-            <div>
-              <Label className="text-xs">Einfluss</Label>
-              <Input
-                type="number"
-                min={1}
-                max={5}
-                value={a.einfluss}
-                onChange={(e) => {
-                  const next = [...annahmen];
-                  next[i] = { ...a, einfluss: clamp(+e.target.value) };
-                  patch({ annahmen: next });
-                }}
-              />
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ annahmen: annahmen.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
+            <Button variant="outline" size="icon" onClick={add}>
+              <Plus className="w-4 h-4" />
             </Button>
           </div>
-        );
-      })}
-      <p className="text-xs text-muted-foreground">
-        Kritische Annahmen (Unsicherheit ≥4 UND Einfluss ≥4) werden hervorgehoben.
-      </p>
+          {annahmen.map((a, i) => {
+            const critical = a.unsicherheit >= 4 && a.einfluss >= 4;
+            return (
+              <div
+                key={i}
+                className={`grid grid-cols-[1fr_140px_140px_auto] gap-2 items-center rounded-md border p-2 ${
+                  critical ? "border-primary bg-primary/5" : ""
+                }`}
+              >
+                <Input
+                  value={a.text}
+                  onChange={(e) => {
+                    const next = [...annahmen];
+                    next[i] = { ...a, text: e.target.value };
+                    patch({ annahmen: next });
+                  }}
+                />
+                <div>
+                  <Label className="text-xs">Unsicherheit</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={5}
+                    value={a.unsicherheit}
+                    onChange={(e) => {
+                      const next = [...annahmen];
+                      next[i] = { ...a, unsicherheit: clamp(+e.target.value) };
+                      patch({ annahmen: next });
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Einfluss</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={5}
+                    value={a.einfluss}
+                    onChange={(e) => {
+                      const next = [...annahmen];
+                      next[i] = { ...a, einfluss: clamp(+e.target.value) };
+                      patch({ annahmen: next });
+                    }}
+                  />
+                </div>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => patch({ annahmen: annahmen.filter((_, j) => j !== i) })}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            );
+          })}
+          <p className="text-xs text-muted-foreground">
+            Kritische Annahmen (Unsicherheit ≥4 UND Einfluss ≥4) werden hervorgehoben.
+          </p>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
