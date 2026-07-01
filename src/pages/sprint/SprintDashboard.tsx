@@ -106,39 +106,50 @@ export default function SprintDashboard() {
               <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
                 <Compass className="w-5 h-5" /> Aktive Problem-Framing-Workshops
               </h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {activeFramings.map((f) => (
-                  <Card key={f.id} className="hover:shadow-hover transition-shadow relative">
-                    <Link to={`/sprint/framing/${f.id}`} className="block">
-                      <CardContent className="p-5 space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-semibold pr-16">
-                            {f.titel_arbeitstitel || "Ohne Titel"}
-                          </h3>
-                          <Badge variant="secondary">
-                            Schritt {f.current_step} / {FRAMING_STEPS.length}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Framing läuft – weiterarbeiten und daraus einen Sprint erzeugen.
-                        </p>
-                      </CardContent>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Framing teilen"
-                      className="absolute top-3 right-24 h-8 w-8"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setSharingFramingId(f.id);
-                      }}
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </Card>
-                ))}
+              <div className="grid md:grid-cols-2 gap-6">
+                {activeFramings.map((f) => {
+                  const fStep = FRAMING_STEPS.find((s) => s.index === f.current_step);
+                  return (
+                    <Card key={f.id} className="h-full hover:shadow-hover transition-shadow relative">
+                      <Link to={`/sprint/framing/${f.id}`} className="block">
+                        <CardContent className="p-6 space-y-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="text-xl font-semibold leading-tight pr-16">
+                              {f.titel_arbeitstitel || "Ohne Titel"}
+                            </h3>
+                            <Badge variant={f.status === "active" ? "default" : "secondary"}>
+                              {f.status === "active" ? "Aktiv" : f.status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            Framing läuft – weiterarbeiten und daraus einen Sprint erzeugen.
+                          </p>
+                          <div className="text-sm text-muted-foreground pt-2">
+                            Aktueller Schritt:{" "}
+                            <span className="font-medium text-foreground">
+                              {fStep ? fStep.title : `Schritt ${f.current_step}`}
+                            </span>{" "}
+                            <span className="text-xs">({f.current_step} / {FRAMING_STEPS.length})</span>
+                          </div>
+                          <div className="text-xs text-muted-foreground">Modus: Problem Framing</div>
+                        </CardContent>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Framing teilen"
+                        className="absolute top-3 right-20 h-8 w-8"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSharingFramingId(f.id);
+                        }}
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </Card>
+                  );
+                })}
               </div>
             </section>
           ) : null}
