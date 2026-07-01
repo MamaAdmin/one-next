@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode, type DragEvent } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -793,67 +793,164 @@ function VariantCynefin({
       </div>
     );
   }
+  const setCynefin = (i: number, c: Cynefin) => {
+    const next = [...ursachen];
+    next[i] = { ...next[i], cynefin: c };
+    patch({ ursachen: next });
+  };
+  const quadrants: Array<{
+    key: Cynefin;
+    title: string;
+    subtitle: string;
+    bg: string;
+    border: string;
+  }> = [
+    {
+      key: "komplex",
+      title: "Komplex",
+      subtitle: "Probe – Sense – Respond",
+      bg: "bg-yellow-50 dark:bg-yellow-950/30",
+      border: "border-yellow-300 dark:border-yellow-800",
+    },
+    {
+      key: "kompliziert",
+      title: "Kompliziert",
+      subtitle: "Sense – Analyse – Respond",
+      bg: "bg-green-50 dark:bg-green-950/30",
+      border: "border-green-300 dark:border-green-800",
+    },
+    {
+      key: "chaotisch",
+      title: "Chaotisch",
+      subtitle: "Act – Sense – Respond",
+      bg: "bg-red-50 dark:bg-red-950/30",
+      border: "border-red-300 dark:border-red-800",
+    },
+    {
+      key: "einfach",
+      title: "Einfach",
+      subtitle: "Sense – Categorize – Respond",
+      bg: "bg-blue-50 dark:bg-blue-950/30",
+      border: "border-blue-300 dark:border-blue-800",
+    },
+  ];
+  const onDrop = (e: DragEvent, c: Cynefin) => {
+    e.preventDefault();
+    const idx = Number(e.dataTransfer.getData("text/plain"));
+    if (!Number.isNaN(idx) && ursachen[idx]) setCynefin(idx, c);
+  };
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <p className="text-xs text-muted-foreground">
-        Automatisch aus Schritt 5 übernommen. Klassifiziere jede Ursache nach Cynefin
-        (einfach / kompliziert / komplex / chaotisch) und markiere, ob sie im Sprint adressierbar ist.
+        Ursachen aus Schritt 5 in das Cynefin-Modell einordnen: per Drag &amp; Drop in einen Bereich
+        ziehen oder unten im Editor klassifizieren.
       </p>
-      {ursachen.map((u, i) => (
-        <div
-          key={i}
-          className="flex flex-col gap-2 rounded-md border p-2 md:grid md:grid-cols-[minmax(0,1fr)_180px_140px_auto] md:items-start"
-        >
-          <Textarea
-            value={u.text}
-            rows={2}
-            className="min-h-[60px] w-full resize-y break-words"
-            onChange={(e) => {
-              const next = [...ursachen];
-              next[i] = { ...u, text: e.target.value };
-              patch({ ursachen: next });
-            }}
-          />
-          <div className="flex flex-wrap items-center gap-2 md:contents">
-            <Select
-              value={u.cynefin}
-              onValueChange={(v) => {
-                const next = [...ursachen];
-                next[i] = { ...u, cynefin: v as Cynefin };
-                patch({ ursachen: next });
-              }}
+
+      <div className="relative">
+        <div className="text-xs text-muted-foreground grid grid-cols-2 mb-1 px-2">
+          <span>Ungeordneter Bereich</span>
+          <span className="text-right">Geordneter Bereich</span>
+        </div>
+        <div className="grid grid-cols-2 gap-2 border-2 border-dashed border-muted-foreground/30 p-2 rounded-lg">
+          {quadrants.map((q) => (
+            <div
+              key={q.key}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => onDrop(e, q.key)}
+              className={`min-h-[140px] rounded-md border ${q.border} ${q.bg} p-3 flex flex-col`}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="einfach">einfach</SelectItem>
-                <SelectItem value="kompliziert">kompliziert</SelectItem>
-                <SelectItem value="komplex">komplex</SelectItem>
-                <SelectItem value="chaotisch">chaotisch</SelectItem>
-              </SelectContent>
-            </Select>
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox
-                checked={u.adressierbar}
-                onCheckedChange={(v) => {
+              <div className="mb-2">
+                <div className="font-semibold text-sm">{q.title}</div>
+                <div className="text-[11px] italic text-muted-foreground">{q.subtitle}</div>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {ursachen.map((u, i) =>
+                  u.cynefin === q.key ? (
+                    <div
+                      key={i}
+                      draggable
+                      onDragStart={(e) => e.dataTransfer.setData("text/plain", String(i))}
+                      className={`cursor-grab active:cursor-grabbing rounded-full border bg-background/90 px-2.5 py-1 text-xs shadow-sm max-w-full truncate ${
+                        u.adressierbar ? "" : "opacity-60 line-through"
+                      }`}
+                      title={u.text}
+                    >
+                      {u.text || "(leer)"}
+                    </div>
+                  ) : null,
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-background border-2 border-muted-foreground/60 w-16 h-16 flex items-center justify-center shadow-sm pointer-events-none"
+          aria-hidden
+        >
+          <span className="-rotate-45 text-xs font-medium">Unklar</span>
+        </div>
+      </div>
+
+      {ursachen.length === 0 ? (
+        <div className="rounded-md border border-dashed p-6 text-sm text-muted-foreground">
+          Keine Ursachen aus Schritt 5 vorhanden. Gehe zurück zu <strong>Root Cause (5 Whys)</strong>,
+          um Ursachen zu erfassen – sie werden hier automatisch übernommen.
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <div className="text-xs font-semibold uppercase text-muted-foreground">
+            Ursachen bearbeiten
+          </div>
+          {ursachen.map((u, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-2 rounded-md border p-2 md:grid md:grid-cols-[minmax(0,1fr)_180px_140px_auto] md:items-start"
+            >
+              <Textarea
+                value={u.text}
+                rows={2}
+                className="min-h-[60px] w-full resize-y break-words"
+                onChange={(e) => {
                   const next = [...ursachen];
-                  next[i] = { ...u, adressierbar: !!v };
+                  next[i] = { ...u, text: e.target.value };
                   patch({ ursachen: next });
                 }}
               />
-              adressierbar
-            </label>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
-            </Button>
-          </div>
+              <div className="flex flex-wrap items-center gap-2 md:contents">
+                <Select value={u.cynefin} onValueChange={(v) => setCynefin(i, v as Cynefin)}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="einfach">einfach</SelectItem>
+                    <SelectItem value="kompliziert">kompliziert</SelectItem>
+                    <SelectItem value="komplex">komplex</SelectItem>
+                    <SelectItem value="chaotisch">chaotisch</SelectItem>
+                  </SelectContent>
+                </Select>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={u.adressierbar}
+                    onCheckedChange={(v) => {
+                      const next = [...ursachen];
+                      next[i] = { ...u, adressierbar: !!v };
+                      patch({ ursachen: next });
+                    }}
+                  />
+                  adressierbar
+                </label>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => patch({ ursachen: ursachen.filter((_, j) => j !== i) })}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
