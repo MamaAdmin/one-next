@@ -833,7 +833,7 @@ function VariantTwoFields({
   onLoadSuggestions: (field?: string) => void;
   pendingBucket: string | null;
 }) {
-  const inline = (bucket: TwoFieldsBucket) => (
+  const inline = (bucket: SuggestionBucket) => (
     <InlineSuggestions
       bucket={bucket}
       suggestions={suggestions}
