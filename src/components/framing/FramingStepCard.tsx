@@ -149,7 +149,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" ? (
           <div className="rounded-lg border bg-muted/30 p-4">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
