@@ -48,6 +48,8 @@ export default function LMSCourseDashboard() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedCourses, setSelectedCourses] = useState<Set<string>>(new Set());
 
+  const [filterPublic, setFilterPublic] = useState<string>("all");
+
   const filteredAndSortedCourses = useMemo(() => {
     let result = courses.filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,7 +58,10 @@ export default function LMSCourseDashboard() {
       const matchesStatus = filterStatus === "all" ||
         (filterStatus === "published" && course.visibility === "public") ||
         (filterStatus === "draft" && course.visibility === "draft");
-      return matchesSearch && matchesCategory && matchesStatus;
+      const matchesPublic = filterPublic === "all" ||
+        (filterPublic === "public" && (course as any).is_public === true) ||
+        (filterPublic === "private" && !(course as any).is_public);
+      return matchesSearch && matchesCategory && matchesStatus && matchesPublic;
     });
 
     result.sort((a, b) => {
@@ -72,7 +77,7 @@ export default function LMSCourseDashboard() {
     });
 
     return result;
-  }, [courses, searchQuery, filterCategory, filterStatus, sortBy, sortOrder]);
+  }, [courses, searchQuery, filterCategory, filterStatus, filterPublic, sortBy, sortOrder]);
 
   const toggleSort = (column: "title" | "date") => {
     if (sortBy === column) {
