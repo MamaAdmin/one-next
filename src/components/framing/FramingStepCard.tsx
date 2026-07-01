@@ -1823,72 +1823,76 @@ function VariantNuf({
 }) {
   const bew = data.nufBewertungen ?? [];
   return (
-    <div className="space-y-3">
-      <Label>Sprint-Fragen bewerten (1–5)</Label>
-      {bew.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Keine Sprint-Fragen vorhanden. Nutze KI-Vorschläge oder gehe zurück zu Schritt 8.
-        </p>
-      ) : null}
-      {bew.map((r, i) => {
-        const sum = r.neuheit + r.nutzen + r.machbarkeit;
-        const isTop = data.top1Challenge === r.text;
-        return (
-          <div
-            key={i}
-            className={`grid grid-cols-[1fr_80px_80px_80px_60px_auto] gap-2 items-center rounded-md border p-2 ${
-              isTop ? "border-primary bg-primary/5" : ""
-            }`}
-          >
-            <Input
-              value={r.text}
-              onChange={(e) => {
-                const next = [...bew];
-                next[i] = { ...r, text: e.target.value };
-                patch({ nufBewertungen: next });
-              }}
-            />
-            {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
-              <div key={k}>
-                <Label className="text-xs capitalize">{k}</Label>
+    <div className="space-y-6">
+      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–5)">
+        <div className="space-y-3">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          {bew.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Keine Sprint-Fragen vorhanden. Nutze KI-Vorschläge oder gehe zurück zu Schritt 8.
+            </p>
+          ) : null}
+          {bew.map((r, i) => {
+            const sum = r.neuheit + r.nutzen + r.machbarkeit;
+            const isTop = data.top1Challenge === r.text;
+            return (
+              <div
+                key={i}
+                className={`grid grid-cols-[1fr_80px_80px_80px_60px_auto] gap-2 items-center rounded-md border p-2 ${
+                  isTop ? "border-primary bg-primary/5" : ""
+                }`}
+              >
                 <Input
-                  type="number"
-                  min={1}
-                  max={5}
-                  value={r[k]}
+                  value={r.text}
                   onChange={(e) => {
                     const next = [...bew];
-                    next[i] = { ...r, [k]: clamp(+e.target.value) };
+                    next[i] = { ...r, text: e.target.value };
                     patch({ nufBewertungen: next });
                   }}
                 />
+                {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
+                  <div key={k}>
+                    <Label className="text-xs capitalize">{k}</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={r[k]}
+                      onChange={(e) => {
+                        const next = [...bew];
+                        next[i] = { ...r, [k]: clamp(+e.target.value) };
+                        patch({ nufBewertungen: next });
+                      }}
+                    />
+                  </div>
+                ))}
+                <div className="text-sm font-semibold text-center">{sum}</div>
+                <Button
+                  variant={isTop ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => patch({ top1Challenge: r.text })}
+                >
+                  Top-1
+                </Button>
               </div>
-            ))}
-            <div className="text-sm font-semibold text-center">{sum}</div>
-            <Button
-              variant={isTop ? "default" : "outline"}
-              size="sm"
-              onClick={() => patch({ top1Challenge: r.text })}
-            >
-              Top-1
-            </Button>
-          </div>
-        );
-      })}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() =>
-          patch({
-            nufBewertungen: [
-              ...bew,
-              { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3 },
-            ],
-          })
-        }
-      >
-        <Plus className="w-4 h-4 mr-1" /> Challenge hinzufügen
-      </Button>
+            );
+          })}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              patch({
+                nufBewertungen: [
+                  ...bew,
+                  { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3 },
+                ],
+              })
+            }
+          >
+            <Plus className="w-4 h-4 mr-1" /> Challenge hinzufügen
+          </Button>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
@@ -1902,64 +1906,68 @@ function VariantNextSteps({
 }) {
   const todos = data.preSprintTodos ?? [];
   return (
-    <div className="space-y-4">
-      <label className="flex items-center gap-3">
-        <Checkbox
-          checked={!!data.sprintGo}
-          onCheckedChange={(v) => patch({ sprintGo: !!v })}
-        />
-        <span className="font-medium">Sprint-Go?</span>
-      </label>
-      <div className="space-y-2">
-        <Label>Pre-Sprint-To-dos</Label>
-        {todos.map((t, i) => (
-          <div key={i} className="grid grid-cols-[1fr_160px_140px_auto] gap-2">
-            <Input
-              value={t.text}
-              placeholder="To-do"
-              onChange={(e) => {
-                const next = [...todos];
-                next[i] = { ...t, text: e.target.value };
-                patch({ preSprintTodos: next });
-              }}
-            />
-            <Input
-              value={t.wer}
-              placeholder="Wer?"
-              onChange={(e) => {
-                const next = [...todos];
-                next[i] = { ...t, wer: e.target.value };
-                patch({ preSprintTodos: next });
-              }}
-            />
-            <Input
-              value={t.wann}
-              placeholder="Wann?"
-              onChange={(e) => {
-                const next = [...todos];
-                next[i] = { ...t, wann: e.target.value };
-                patch({ preSprintTodos: next });
-              }}
-            />
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => patch({ preSprintTodos: todos.filter((_, j) => j !== i) })}
-            >
-              <X className="w-3.5 h-3.5" />
-            </Button>
-          </div>
-        ))}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            patch({ preSprintTodos: [...todos, { text: "", wer: "", wann: "" }] })
-          }
-        >
-          <Plus className="w-4 h-4 mr-1" /> To-do hinzufügen
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <CanvasSection title="Sprint-Go?">
+        <label className="flex items-center gap-3">
+          <Checkbox
+            checked={!!data.sprintGo}
+            onCheckedChange={(v) => patch({ sprintGo: !!v })}
+          />
+          <span className="font-medium">Sprint freigeben</span>
+        </label>
+      </CanvasSection>
+      <CanvasSection title="Pre-Sprint-To-dos">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          {todos.map((t, i) => (
+            <div key={i} className="grid grid-cols-[1fr_160px_140px_auto] gap-2">
+              <Input
+                value={t.text}
+                placeholder="To-do"
+                onChange={(e) => {
+                  const next = [...todos];
+                  next[i] = { ...t, text: e.target.value };
+                  patch({ preSprintTodos: next });
+                }}
+              />
+              <Input
+                value={t.wer}
+                placeholder="Wer?"
+                onChange={(e) => {
+                  const next = [...todos];
+                  next[i] = { ...t, wer: e.target.value };
+                  patch({ preSprintTodos: next });
+                }}
+              />
+              <Input
+                value={t.wann}
+                placeholder="Wann?"
+                onChange={(e) => {
+                  const next = [...todos];
+                  next[i] = { ...t, wann: e.target.value };
+                  patch({ preSprintTodos: next });
+                }}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => patch({ preSprintTodos: todos.filter((_, j) => j !== i) })}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              patch({ preSprintTodos: [...todos, { text: "", wer: "", wann: "" }] })
+            }
+          >
+            <Plus className="w-4 h-4 mr-1" /> To-do hinzufügen
+          </Button>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
