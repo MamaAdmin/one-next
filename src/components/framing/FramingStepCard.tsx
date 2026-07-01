@@ -264,6 +264,8 @@ function StepVariant({
   suggestions,
   onAcceptSuggestion,
   onDismissSuggestion,
+  onLoadSuggestions,
+  suggestPending,
 }: {
   step: FramingStepDef;
   data: FramingStepData;
@@ -271,6 +273,8 @@ function StepVariant({
   suggestions: string[];
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  suggestPending: boolean;
 }) {
   switch (step.variant) {
     case "context-list":
@@ -283,6 +287,8 @@ function StepVariant({
           suggestions={suggestions}
           onAcceptSuggestion={onAcceptSuggestion}
           onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          suggestPending={suggestPending}
         />
       );
     case "stakeholder":
