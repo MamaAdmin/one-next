@@ -156,6 +156,7 @@ const App = () => (
           {/* Online Design Sprint (auth required) */}
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
           <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
+          <Route path="/sprint/framing/:id" element={<RequireAuth><FramingWorkspace /></RequireAuth>} />
           <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
