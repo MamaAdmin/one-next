@@ -17,7 +17,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const { isAdmin, isBmadUser } = useUserRoles();
+  const { isAdmin, isBmadUser, isSprintUser } = useUserRoles();
   
   // Load navigation dynamically from database
   const { items: headerItems } = useNavigation("header");
