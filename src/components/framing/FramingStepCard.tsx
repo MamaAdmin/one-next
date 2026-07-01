@@ -462,6 +462,13 @@ function VariantContextList({
         onChange={(v) => patch({ nichtZiele: v })}
         placeholder="z. B. Neues CI/CD-System aufsetzen"
       />
+      <CanvasSection title="Business-Past (optional) – Was wurde früher schon versucht?">
+        <PastAttemptsEditor
+          items={data.frueherVersucht ?? []}
+          onChange={(v) => patch({ frueherVersucht: v })}
+          placeholder="z. B. Interne Schulung im Q2/2024"
+        />
+      </CanvasSection>
     </div>
   );
 }
