@@ -246,10 +246,16 @@ const Navigation = () => {
 
               {user ? (
                 <>
-                  {/* Regular users (not admin, not bmad_user) see LMS */}
-                  {!isAdmin && !isBmadUser && (
+                  {/* Regular users see LMS */}
+                  {!isAdmin && !isBmadUser && !isSprintUser && (
                     <Link to="/lms/dashboard" className="block py-2 px-4 hover:bg-accent rounded-md">
                       Meine Kurse
+                    </Link>
+                  )}
+                  {/* Sprint users */}
+                  {!isAdmin && isSprintUser && (
+                    <Link to="/sprint" className="block py-2 px-4 hover:bg-accent rounded-md">
+                      Meine Sprints
                     </Link>
                   )}
                   {/* BMAD users (not admin) see BMAD Portal */}
