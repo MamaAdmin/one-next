@@ -65,12 +65,13 @@ export default function FramingWorkspace() {
   }
 
   async function handleNext() {
-    if (currentDef.index === FRAMING_STEPS.length) {
+    if (currentDef.index === realSteps.length) {
       setShowCompletion(true);
       return;
     }
     await goTo(currentDef.index + 1);
   }
+
 
   async function handlePrev() {
     if (currentDef.index === 1) return;
