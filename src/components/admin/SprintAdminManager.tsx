@@ -1,0 +1,223 @@
+import { useMemo, useState } from "react";
+import { useAdminAllSprints, type AdminSprintRow } from "@/hooks/useAdminSprints";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getStepDef } from "@/features/sprint/steps";
+import SprintAdminDetail from "./SprintAdminDetail";
+
+function fmtDate(iso: string | null | undefined) {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleDateString("de-DE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  } catch {
+    return "—";
+  }
+}
+
+function ownerLabel(row: AdminSprintRow) {
+  return row.owner?.full_name || row.owner?.email || row.owner_id.slice(0, 8);
+}
+
+export default function SprintAdminManager() {
+  const { data, isLoading } = useAdminAllSprints();
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<string>("all");
+  const [modus, setModus] = useState<string>("all");
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const rows = data ?? [];
+
+  const stats = useMemo(() => {
+    return {
+      total: rows.length,
+      active: rows.filter((r) => r.status === "active").length,
+      done: rows.filter((r) => r.status === "done").length,
+      archived: rows.filter((r) => r.status === "archived").length,
+    };
+  }, [rows]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (status !== "all" && r.status !== status) return false;
+      if (modus !== "all" && r.modus !== modus) return false;
+      if (!q) return true;
+      return (
+        r.titel.toLowerCase().includes(q) ||
+        (r.owner?.email ?? "").toLowerCase().includes(q) ||
+        (r.owner?.full_name ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [rows, search, status, modus]);
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard label="Sprints gesamt" value={stats.total} />
+        <StatCard label="Aktiv" value={stats.active} />
+        <StatCard label="Abgeschlossen" value={stats.done} />
+        <StatCard label="Archiviert" value={stats.archived} />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Input
+          placeholder="Suche nach Titel oder Ersteller…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-xs"
+        />
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Alle Status</SelectItem>
+            <SelectItem value="active">Aktiv</SelectItem>
+            <SelectItem value="done">Abgeschlossen</SelectItem>
+            <SelectItem value="archived">Archiviert</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={modus} onValueChange={setModus}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Modus" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Alle Modi</SelectItem>
+            <SelectItem value="solo">Solo</SelectItem>
+            <SelectItem value="team">Team</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Titel</TableHead>
+                <TableHead>Ersteller</TableHead>
+                <TableHead>Modus</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Aktueller Schritt</TableHead>
+                <TableHead>Mitglieder</TableHead>
+                <TableHead>Erstellt</TableHead>
+                <TableHead>Abgeschlossen</TableHead>
+                <TableHead />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                    Wird geladen…
+                  </TableCell>
+                </TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                    Keine Sprints gefunden.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filtered.map((r) => {
+                  const step = getStepDef(r.current_step);
+                  return (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-medium">{r.titel}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span>{ownerLabel(r)}</span>
+                          {r.owner?.email && r.owner.full_name ? (
+                            <span className="text-xs text-muted-foreground">
+                              {r.owner.email}
+                            </span>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {r.modus === "solo" ? "Solo" : "Team"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            r.status === "active"
+                              ? "default"
+                              : r.status === "done"
+                              ? "secondary"
+                              : "outline"
+                          }
+                        >
+                          {r.status === "active"
+                            ? "Aktiv"
+                            : r.status === "done"
+                            ? "Abgeschlossen"
+                            : "Archiviert"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {step ? step.title : r.current_step}
+                      </TableCell>
+                      <TableCell>{r.member_count}</TableCell>
+                      <TableCell className="text-sm">{fmtDate(r.created_at)}</TableCell>
+                      <TableCell className="text-sm">
+                        {r.status === "done" ? fmtDate(r.updated_at) : "—"}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setSelected(r.id)}
+                        >
+                          Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <SprintAdminDetail
+        sprintId={selected}
+        onOpenChange={(o) => !o && setSelected(null)}
+      />
+    </div>
+  );
+}
+
+function StatCard({ label, value }: { label: string; value: number }) {
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <div className="text-sm text-muted-foreground">{label}</div>
+        <div className="text-3xl font-bold">{value}</div>
+      </CardContent>
+    </Card>
+  );
+}
