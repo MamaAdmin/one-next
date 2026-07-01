@@ -1736,3 +1736,124 @@ function VariantNextSteps({
     </div>
   );
 }
+
+/* ---------- Intro / How-To slide ---------- */
+
+function IntroSlide({ onNext }: { onNext?: () => void }) {
+  return (
+    <Card className="border-none shadow-xl">
+      <CardContent className="p-6 lg:p-8 space-y-6">
+        <div>
+          <Badge variant="secondary" className="mb-2 gap-1">
+            <Info className="w-3.5 h-3.5" /> Einführung
+          </Badge>
+          <h2 className="text-2xl font-bold">So arbeitest du im Problem-Framing-Workshop</h2>
+          <p className="text-muted-foreground mt-2">
+            Jeder Schritt trennt sauber zwischen deinen eigenen Gedanken und Vorschlägen der KI.
+            Du entscheidest, was übernommen wird.
+          </p>
+        </div>
+
+        {/* Block 1 – Eigene Anmerkungen */}
+        <div className="rounded-lg border bg-background p-4">
+          <div className="flex items-center gap-2 font-semibold mb-2">
+            <PenLine className="w-4 h-4" /> Eigene Anmerkungen
+          </div>
+          <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+            <li>Textfeld bzw. Liste mit dem Label „Eigene Anmerkungen".</li>
+            <li>Alles, was du hier einträgst, bleibt unverändert dein Text.</li>
+            <li>Wird nie automatisch mit KI-Inhalten überschrieben.</li>
+          </ul>
+        </div>
+
+        {/* Block 2 – KI-Vorschläge */}
+        <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
+          <div className="flex items-center gap-2 font-semibold mb-2">
+            <Sparkles className="w-4 h-4" /> KI-Vorschläge (im One-Next-Akzent)
+          </div>
+          <ul className="text-sm space-y-1 list-disc pl-5">
+            <li>
+              Der Button <strong>KI-Vorschläge</strong> erzeugt kontextbezogene Ideen aus deinen
+              bisherigen Eingaben.
+            </li>
+            <li>
+              Vorschlagskarten erscheinen im Akzent-Farbton – identisch zur Button-Farbe – klar
+              unterscheidbar von eigenen Anmerkungen.
+            </li>
+            <li>
+              Pro Karte: <strong>Übernehmen</strong> verschiebt den Text in die Liste
+              „Übernommene KI-Vorschläge", <strong>Verwerfen</strong> entfernt ihn.
+            </li>
+            <li>Übernommene Vorschläge behalten den Akzent-Farbton, um die Herkunft sichtbar zu halten.</li>
+            <li>Übernommene Punkte kannst du jederzeit per X wieder entfernen.</li>
+          </ul>
+        </div>
+
+        {/* Block 3 – Externe KI-Tools */}
+        <div className="rounded-lg border bg-background p-4">
+          <div className="flex items-center gap-2 font-semibold mb-2">
+            <Search className="w-4 h-4" /> Recherche mit externen KI-Tools (Claude, Gemini, ChatGPT)
+          </div>
+          <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+            <li>Du kannst parallel in Claude, Gemini oder ChatGPT recherchieren.</li>
+            <li>
+              Empfohlener Prompt-Rahmen: Kontext deines Sprints + konkrete Frage des aktuellen
+              Schritts + „Gib mir 3–5 kurze Stichpunkte".
+            </li>
+            <li>
+              Ergebnisse einzeln als eigene Zeile in „Eigene Anmerkungen" einfügen – oder nur die
+              Kernpunkte übernehmen.
+            </li>
+            <li>
+              Externe KI-Antworten sind nicht mit dem Akzent-Farbton markiert, weil sie außerhalb
+              des Tools entstanden sind – du kuratierst sie bewusst.
+            </li>
+          </ul>
+        </div>
+
+        {/* Block 4 – Farbcode */}
+        <div className="rounded-lg border bg-background p-4">
+          <div className="font-semibold mb-2">Farbcode auf einen Blick</div>
+          <div className="grid sm:grid-cols-2 gap-3 text-sm">
+            <div className="rounded-md border bg-background p-3">
+              <div className="font-medium mb-1">Neutrale UI-Farbe</div>
+              <div className="text-muted-foreground">Eigene Anmerkungen und User-Eingaben.</div>
+            </div>
+            <div className="rounded-md border border-accent/60 bg-accent-soft p-3 text-accent-foreground">
+              <div className="font-medium mb-1 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5" /> One-Next-Akzent
+              </div>
+              <div>KI-Button, Vorschlagskarten und übernommene KI-Vorschläge.</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Block 5 – How-To */}
+        <div className="rounded-lg border bg-background p-4">
+          <div className="font-semibold mb-2">How-To in 5 Schritten</div>
+          <ol className="text-sm text-muted-foreground space-y-1 list-decimal pl-5">
+            <li>Frage des Schritts lesen und mit eigenen Worten in „Eigene Anmerkungen" antworten.</li>
+            <li>Optional: Recherche in Claude, Gemini oder ChatGPT – Kernpunkte in Eigene Anmerkungen ergänzen.</li>
+            <li><strong>KI-Vorschläge</strong> klicken für ergänzende Ideen aus deinem Kontext.</li>
+            <li>Passende Karten <strong>Übernehmen</strong>, unpassende <strong>Verwerfen</strong>.</li>
+            <li>Ergebnis prüfen, <strong>Weiter</strong> klicken.</li>
+          </ol>
+        </div>
+
+        <div className="rounded-md border bg-muted/40 p-3 text-xs text-muted-foreground">
+          Die Timebox pro Schritt ist eine Orientierung, kein Zwang. Alles wird automatisch beim
+          Weiterklicken gespeichert.
+        </div>
+
+        <div className="flex justify-end pt-2 border-t">
+          {onNext ? (
+            <Button className="bg-gradient-primary hover:opacity-90" onClick={onNext}>
+              Los geht's <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : null}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
