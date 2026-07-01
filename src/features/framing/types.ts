@@ -29,6 +29,7 @@ export interface FramingStepData {
   // Step 1
   kontext?: string;
   nichtZiele?: string[];
+  kiNichtZiele?: string[];
   // Step 1 – Canvas: Business-Past
   frueherVersucht?: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
   // Step 2
