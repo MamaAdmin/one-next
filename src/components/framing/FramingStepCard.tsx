@@ -477,6 +477,8 @@ function applySuggestion(
       if (bucket === "ursache" || bucket === "cause") {
         data.kiUrsachen = pushUnique(data.kiUrsachen, value);
       } else {
+        const total = (data.fiveWhys?.length ?? 0) + (data.kiFiveWhys?.length ?? 0);
+        if (total >= 5) return;
         data.kiFiveWhys = pushUnique(data.kiFiveWhys, value);
       }
       return;
