@@ -244,7 +244,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" ? (
             <Button
               type="button"
               variant="outline"
@@ -356,7 +356,17 @@ function StepVariant({
         />
       );
     case "five-whys":
-      return <VariantFiveWhys data={data} patch={patch} />;
+      return (
+        <VariantFiveWhys
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "cynefin":
       return <VariantCynefin data={data} patch={patch} />;
     case "assumptions":
@@ -443,17 +453,13 @@ function applySuggestion(
       return;
     }
     case "five-whys": {
-      const whys = data.fiveWhys ?? ["", "", "", "", ""];
-      const idx = whys.findIndex((w) => !w.trim());
-      if (idx >= 0) {
-        const next = [...whys];
-        next[idx] = text;
-        data.fiveWhys = next;
+      const m = text.match(/^\[(Why|Warum|Ursache|Cause)\]\s*(.+)$/i);
+      const bucket = m ? m[1].toLowerCase() : "why";
+      const value = m ? m[2].trim() : text;
+      if (bucket === "ursache" || bucket === "cause") {
+        data.kiUrsachen = pushUnique(data.kiUrsachen, value);
       } else {
-        data.ursachen = [
-          ...(data.ursachen ?? []),
-          { text, cynefin: "kompliziert", adressierbar: true },
-        ];
+        data.kiFiveWhys = pushUnique(data.kiFiveWhys, value);
       }
       return;
     }
@@ -743,7 +749,9 @@ type KickoffBucket = "kontext" | "nichtziel";
 
 type SailboatBucket = "wind" | "anker" | "hafen" | "eisberg";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket;
+type FiveWhysBucket = "why" | "ursache";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
@@ -773,6 +781,8 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "anker" || tag === "anchor") return "anker";
   if (tag === "hafen" || tag === "harbor" || tag === "harbour") return "hafen";
   if (tag === "eisberg" || tag === "iceberg") return "eisberg";
+  if (tag === "why" || tag === "warum") return "why";
+  if (tag === "ursache" || tag === "cause") return "ursache";
   return null;
 }
 
@@ -1261,16 +1271,38 @@ function VariantSailboat({
 function VariantFiveWhys({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
-  const whys = data.fiveWhys ?? ["", "", "", "", ""];
+  const whys = data.fiveWhys ?? [];
   const ursachen = data.ursachen ?? [];
-  const setWhy = (i: number, v: string) => {
-    const next = [...whys];
-    next[i] = v;
-    patch({ fiveWhys: next });
+  const inline = (bucket: SuggestionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (
+    key: "kiFiveWhys" | "kiUrsachen",
+    index: number,
+  ) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
   };
   const addUrsache = (text: string) => {
     if (!text.trim()) return;
@@ -1282,17 +1314,19 @@ function VariantFiveWhys({
   return (
     <div className="space-y-6">
       <CanvasSection title="5 Whys – Warum-Kette">
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Eigene Anmerkungen</p>
-          {whys.map((w, i) => (
-            <Input
-              key={i}
-              value={w}
-              onChange={(e) => setWhy(i, e.target.value)}
-              placeholder={`Warum ${i + 1}?`}
-            />
-          ))}
-        </div>
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={whys}
+          onChange={(v) => patch({ fiveWhys: v })}
+          multiline
+          rows={2}
+          placeholder="z. B. Warum …? Weil …"
+        />
+        <AcceptedKiList
+          items={data.kiFiveWhys ?? []}
+          onRemove={(i) => removeKi("kiFiveWhys", i)}
+        />
+        {inline("why")}
       </CanvasSection>
 
       <CanvasSection title="Adressierbare Ursachen">
@@ -1344,10 +1378,16 @@ function VariantFiveWhys({
             </div>
           ))}
         </div>
+        <AcceptedKiList
+          items={data.kiUrsachen ?? []}
+          onRemove={(i) => removeKi("kiUrsachen", i)}
+        />
+        {inline("ursache")}
       </CanvasSection>
     </div>
   );
 }
+
 
 function VariantCynefin({
   data,
