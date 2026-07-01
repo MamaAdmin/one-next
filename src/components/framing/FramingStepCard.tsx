@@ -173,7 +173,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
