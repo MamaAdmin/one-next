@@ -63,6 +63,19 @@ Deno.serve(async (req) => {
       chancen: "[Chancen]",
     };
 
+    const STAKEHOLDER_BUCKETS: Record<string, string> = {
+      stakeholder: "Stakeholder/Zielgruppen (potenzielle primäre/sekundäre Gruppen)",
+      geparkt: "Geparkt (Gruppen, die bewusst NICHT im Sprint-Fokus sind)",
+      heute: "Heute (wie die Zielgruppe das Problem heute löst / Workarounds/Tools)",
+      paingain: "PainGain (welchen Pain lindern wir – welchen Gain schaffen wir)",
+    };
+    const stakeholderTag: Record<string, string> = {
+      stakeholder: "[Stakeholder]",
+      geparkt: "[Geparkt]",
+      heute: "[Heute]",
+      paingain: "[PainGain]",
+    };
+
     // Read session + prior steps (RLS scoped to owner)
     const { data: session, error: sErr } = await supabase
       .from("framing_sessions")
@@ -83,6 +96,12 @@ Deno.serve(async (req) => {
       meta = {
         title: meta.title,
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${TWO_FIELDS_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${bucketTag[field]}'.`,
+      };
+    }
+    if (step_key === "3" && field && STAKEHOLDER_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${STAKEHOLDER_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${stakeholderTag[field]}'.`,
       };
     }
     const key = Deno.env.get("LOVABLE_API_KEY");
