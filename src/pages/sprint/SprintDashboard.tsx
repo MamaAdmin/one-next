@@ -9,6 +9,7 @@ import { Pencil, Plus, Sparkles, Compass } from "lucide-react";
 import { useMySprints } from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
 import { getStepDef } from "@/features/sprint/steps";
+import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import type { SprintRow } from "@/features/sprint/types";
