@@ -389,7 +389,17 @@ function StepVariant({
         />
       );
     case "assumptions":
-      return <VariantAssumptions data={data} patch={patch} />;
+      return (
+        <VariantAssumptions
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "success-constraints":
       return <VariantSuccess data={data} patch={patch} />;
     case "scope-questions":
