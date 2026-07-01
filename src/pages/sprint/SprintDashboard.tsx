@@ -14,6 +14,7 @@ import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
+  const [editing, setEditing] = useState<SprintRow | null>(null);
 
   return (
     <>
