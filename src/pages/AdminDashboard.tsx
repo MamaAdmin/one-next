@@ -206,6 +206,9 @@ const AdminDashboard = () => {
                     <Link to="/admin/lms/participants">
                       <Button variant="outline" className="w-full h-20">Teilnehmer</Button>
                     </Link>
+                    <Link to="/admin/kurse">
+                      <Button variant="outline" className="w-full h-20">Public Kurse (Termine & Module)</Button>
+                    </Link>
                     <Link to="/admin/lms/analytics">
                       <Button variant="outline" className="w-full h-20">Analytik</Button>
                     </Link>
