@@ -1271,16 +1271,38 @@ function VariantSailboat({
 function VariantFiveWhys({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
-  const whys = data.fiveWhys ?? ["", "", "", "", ""];
+  const whys = data.fiveWhys ?? [];
   const ursachen = data.ursachen ?? [];
-  const setWhy = (i: number, v: string) => {
-    const next = [...whys];
-    next[i] = v;
-    patch({ fiveWhys: next });
+  const inline = (bucket: SuggestionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (
+    key: "kiFiveWhys" | "kiUrsachen",
+    index: number,
+  ) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
   };
   const addUrsache = (text: string) => {
     if (!text.trim()) return;
@@ -1292,17 +1314,19 @@ function VariantFiveWhys({
   return (
     <div className="space-y-6">
       <CanvasSection title="5 Whys – Warum-Kette">
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Eigene Anmerkungen</p>
-          {whys.map((w, i) => (
-            <Input
-              key={i}
-              value={w}
-              onChange={(e) => setWhy(i, e.target.value)}
-              placeholder={`Warum ${i + 1}?`}
-            />
-          ))}
-        </div>
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={whys}
+          onChange={(v) => patch({ fiveWhys: v })}
+          multiline
+          rows={2}
+          placeholder="z. B. Warum …? Weil …"
+        />
+        <AcceptedKiList
+          items={data.kiFiveWhys ?? []}
+          onRemove={(i) => removeKi("kiFiveWhys", i)}
+        />
+        {inline("why")}
       </CanvasSection>
 
       <CanvasSection title="Adressierbare Ursachen">
@@ -1354,10 +1378,16 @@ function VariantFiveWhys({
             </div>
           ))}
         </div>
+        <AcceptedKiList
+          items={data.kiUrsachen ?? []}
+          onRemove={(i) => removeKi("kiUrsachen", i)}
+        />
+        {inline("ursache")}
       </CanvasSection>
     </div>
   );
 }
+
 
 function VariantCynefin({
   data,
