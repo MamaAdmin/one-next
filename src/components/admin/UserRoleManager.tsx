@@ -198,13 +198,21 @@ const UserRoleManager = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            <CardTitle>Benutzerverwaltung</CardTitle>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                <CardTitle>Benutzerverwaltung</CardTitle>
+              </div>
+              <CardDescription className="mt-1.5">
+                Verwalten Sie Benutzerrollen und Berechtigungen
+              </CardDescription>
+            </div>
+            <Button onClick={() => setInviteOpen(true)}>
+              <Mail className="h-4 w-4 mr-2" />
+              Benutzer einladen
+            </Button>
           </div>
-          <CardDescription>
-            Verwalten Sie Benutzerrollen und Berechtigungen
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {/* Filters */}
