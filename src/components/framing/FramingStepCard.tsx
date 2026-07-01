@@ -357,27 +357,19 @@ function applySuggestion(
       const bucket = m ? m[1].toLowerCase() : "future";
       const value = m ? m[2].trim() : text;
       if (bucket === "present" || bucket === "gegenwart") {
-        const cur = data.warumJetzt ?? "";
-        data.warumJetzt = cur ? `${cur}\n• ${value}` : `• ${value}`;
+        data.kiWarumJetzt = pushUnique(data.kiWarumJetzt, value);
       } else if (bucket === "past" || bucket === "vergangenheit") {
-        data.frueherVersucht = [
-          ...(data.frueherVersucht ?? []),
-          { text: value, ergebnis: "didnt-work" },
-        ];
+        // Vergangenheit hat keine KI-Übernahme (User-only)
+        return;
       } else if (bucket === "wettbewerb") {
-        data.wettbewerber = pushUnique(data.wettbewerber, value);
+        data.kiWettbewerber = pushUnique(data.kiWettbewerber, value);
       } else if (bucket === "trends") {
-        data.trends = pushUnique(data.trends, value);
+        data.kiTrends = pushUnique(data.kiTrends, value);
       } else if (bucket === "chancen") {
-        data.chancen = pushUnique(data.chancen, value);
+        data.kiChancen = pushUnique(data.kiChancen, value);
       } else {
-        // future / default future → array
-        const current = Array.isArray(data.defaultFuture)
-          ? data.defaultFuture
-          : data.defaultFuture
-            ? [data.defaultFuture]
-            : [];
-        data.defaultFuture = pushUnique(current, value);
+        // future / default future
+        data.kiDefaultFuture = pushUnique(data.kiDefaultFuture, value);
       }
       return;
     }
