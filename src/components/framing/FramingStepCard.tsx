@@ -376,9 +376,16 @@ function applySuggestion(
   };
 
   switch (variant) {
-    case "context-list":
-      data.kiNichtZiele = pushUnique(data.kiNichtZiele, text);
+    case "context-list": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "kontext") {
+        data.kiKontext = pushUnique(data.kiKontext, value);
+      } else {
+        data.kiNichtZiele = pushUnique(data.kiNichtZiele, value);
+      }
       return;
+    }
     case "two-fields": {
       const m = text.match(/^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
       const bucket = m ? m[1].toLowerCase() : "future";
