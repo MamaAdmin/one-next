@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Compass, Rocket } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useCreateSprint } from "@/hooks/useSprint";
+import { useCreateFramingSession } from "@/hooks/useFraming";
 import { z } from "zod";
 
 const schema = z.object({
