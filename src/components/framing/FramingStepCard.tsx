@@ -1162,23 +1162,28 @@ function VariantSailboat({
   const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
   const set = (upd: Partial<typeof sb>) => patch({ sailboat: { ...sb, ...upd } });
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      <ListEditor label="Wind – Treiber" items={sb.wind} onChange={(v) => set({ wind: v })} />
-      <ListEditor label="Anker – Hindernisse" items={sb.anker} onChange={(v) => set({ anker: v })} />
-      <div className="space-y-2 md:col-span-1">
-        <Label>Hafen – Ziel</Label>
-        <Textarea
-          rows={3}
-          value={sb.hafen}
-          onChange={(e) => set({ hafen: e.target.value })}
-          placeholder="Wohin wollen wir?"
+    <div className="space-y-4">
+      <div className="flex justify-center">
+        <SailboatIllustration className="w-full max-w-2xl h-auto rounded-2xl border bg-gradient-hero shadow-card" />
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        <ListEditor label="Wind – Treiber" items={sb.wind} onChange={(v) => set({ wind: v })} />
+        <ListEditor label="Anker – Hindernisse" items={sb.anker} onChange={(v) => set({ anker: v })} />
+        <div className="space-y-2 md:col-span-1">
+          <Label>Hafen – Ziel</Label>
+          <Textarea
+            rows={3}
+            value={sb.hafen}
+            onChange={(e) => set({ hafen: e.target.value })}
+            placeholder="Wohin wollen wir?"
+          />
+        </div>
+        <ListEditor
+          label="Eisberg – Risiken"
+          items={sb.eisberg}
+          onChange={(v) => set({ eisberg: v })}
         />
       </div>
-      <ListEditor
-        label="Eisberg – Risiken"
-        items={sb.eisberg}
-        onChange={(v) => set({ eisberg: v })}
-      />
     </div>
   );
 }
