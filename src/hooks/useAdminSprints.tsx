@@ -126,3 +126,45 @@ export function useAdminSprintDetail(id: string | undefined) {
     },
   });
 }
+
+export interface AdminFramingRow {
+  id: string;
+  owner_id: string;
+  titel_arbeitstitel: string;
+  status: "active" | "done" | "archived";
+  current_step: number;
+  challenge_statement: string | null;
+  resulting_sprint_id: string | null;
+  created_at: string;
+  updated_at: string;
+  owner: AdminSprintProfile | null;
+  member_count: number;
+}
+
+export function useAdminAllFramingSessions() {
+  return useQuery({
+    queryKey: ["admin", "framing", "all"],
+    queryFn: async (): Promise<AdminFramingRow[]> => {
+      const { data: sessions, error } = await supabase
+        .from("framing_sessions")
+        .select("id,owner_id,titel_arbeitstitel,status,current_step,challenge_statement,resulting_sprint_id,created_at,updated_at")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const rows = (sessions ?? []) as Array<Omit<AdminFramingRow, "owner" | "member_count">>;
+      const profiles = await fetchProfiles(rows.map((r) => r.owner_id));
+      const { data: members, error: memErr } = await supabase
+        .from("framing_members")
+        .select("session_id");
+      if (memErr) throw memErr;
+      const counts: Record<string, number> = {};
+      (members ?? []).forEach((m: { session_id: string }) => {
+        counts[m.session_id] = (counts[m.session_id] ?? 0) + 1;
+      });
+      return rows.map((r) => ({
+        ...r,
+        owner: profiles[r.owner_id] ?? null,
+        member_count: counts[r.id] ?? 0,
+      }));
+    },
+  });
+}

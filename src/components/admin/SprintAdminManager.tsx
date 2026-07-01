@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { useAdminAllSprints, type AdminSprintRow } from "@/hooks/useAdminSprints";
+import { useAdminAllSprints, useAdminAllFramingSessions, type AdminSprintRow } from "@/hooks/useAdminSprints";
+import { FRAMING_STEPS } from "@/features/framing/steps";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +42,7 @@ function ownerLabel(row: AdminSprintRow) {
 
 export default function SprintAdminManager() {
   const { data, isLoading } = useAdminAllSprints();
+  const { data: framingData, isLoading: framingLoading } = useAdminAllFramingSessions();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [modus, setModus] = useState<string>("all");
@@ -71,14 +73,25 @@ export default function SprintAdminManager() {
     });
   }, [rows, search, status, modus]);
 
+  const framingRows = framingData ?? [];
+  const framingStats = useMemo(() => ({
+    total: framingRows.length,
+    active: framingRows.filter((r) => r.status === "active").length,
+    done: framingRows.filter((r) => r.status === "done").length,
+    archived: framingRows.filter((r) => r.status === "archived").length,
+  }), [framingRows]);
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Sprints gesamt" value={stats.total} />
-        <StatCard label="Aktiv" value={stats.active} />
-        <StatCard label="Abgeschlossen" value={stats.done} />
-        <StatCard label="Archiviert" value={stats.archived} />
-      </div>
+    <div className="space-y-10">
+      <section className="space-y-4">
+        <h3 className="text-lg font-semibold">Design Sprints</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard label="Sprints gesamt" value={stats.total} />
+          <StatCard label="Aktiv" value={stats.active} />
+          <StatCard label="Abgeschlossen" value={stats.done} />
+          <StatCard label="Archiviert" value={stats.archived} />
+        </div>
+      </section>
 
       <div className="flex flex-wrap items-center gap-3">
         <Input
@@ -202,6 +215,89 @@ export default function SprintAdminManager() {
           </Table>
         </CardContent>
       </Card>
+
+      <section className="space-y-4">
+        <h3 className="text-lg font-semibold">Problem Framing</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard label="Framings gesamt" value={framingStats.total} />
+          <StatCard label="Aktiv" value={framingStats.active} />
+          <StatCard label="Abgeschlossen" value={framingStats.done} />
+          <StatCard label="Archiviert" value={framingStats.archived} />
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Arbeitstitel</TableHead>
+                  <TableHead>Ersteller</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Aktueller Schritt</TableHead>
+                  <TableHead>Mitglieder</TableHead>
+                  <TableHead>Ergebnis-Sprint</TableHead>
+                  <TableHead>Erstellt</TableHead>
+                  <TableHead>Aktualisiert</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {framingLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                      Wird geladen…
+                    </TableCell>
+                  </TableRow>
+                ) : framingRows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                      Keine Problem-Framing-Sessions gefunden.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  framingRows.map((r) => {
+                    const step = FRAMING_STEPS.find((s) => s.index === r.current_step);
+                    return (
+                      <TableRow key={r.id}>
+                        <TableCell className="font-medium">{r.titel_arbeitstitel}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span>{r.owner?.full_name || r.owner?.email || r.owner_id.slice(0, 8)}</span>
+                            {r.owner?.email && r.owner.full_name ? (
+                              <span className="text-xs text-muted-foreground">{r.owner.email}</span>
+                            ) : null}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              r.status === "active" ? "default" : r.status === "done" ? "secondary" : "outline"
+                            }
+                          >
+                            {r.status === "active" ? "Aktiv" : r.status === "done" ? "Abgeschlossen" : "Archiviert"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {step ? `${step.index}. ${step.title}` : r.current_step}
+                        </TableCell>
+                        <TableCell>{r.member_count}</TableCell>
+                        <TableCell className="text-sm">
+                          {r.resulting_sprint_id ? (
+                            <Badge variant="outline">Sprint erstellt</Badge>
+                          ) : (
+                            "—"
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm">{fmtDate(r.created_at)}</TableCell>
+                        <TableCell className="text-sm">{fmtDate(r.updated_at)}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </section>
+
 
       <SprintAdminDetail
         sprintId={selected}
