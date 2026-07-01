@@ -13,6 +13,7 @@ import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import ShareSprintDialog from "@/components/sprint/ShareSprintDialog";
+import ShareFramingDialog from "@/components/sprint/ShareFramingDialog";
 import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
@@ -20,6 +21,7 @@ export default function SprintDashboard() {
   const { data: framingSessions } = useMyFramingSessions();
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [sharing, setSharing] = useState<SprintRow | null>(null);
+  const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
   const activeFramings = (framingSessions ?? []).filter((f) => f.status === "active");
 
   return (
