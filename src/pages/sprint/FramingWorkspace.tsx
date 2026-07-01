@@ -163,6 +163,7 @@ export default function FramingWorkspace() {
                 const row = steps.find((s) => s.step_key === def.key);
                 const done = !!row?.completed_at;
                 const isCurrent = def.key === currentDef.key && !showCompletion;
+                const isIntro = def.variant === "intro";
                 return (
                   <button
                     key={def.key}
@@ -174,7 +175,9 @@ export default function FramingWorkspace() {
                         : "hover:bg-muted"
                     }`}
                   >
-                    {done ? (
+                    {isIntro ? (
+                      <Info className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                    ) : done ? (
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
                     ) : isCurrent ? (
                       <Dot className="w-4 h-4 mt-0.5 shrink-0" />
@@ -182,14 +185,19 @@ export default function FramingWorkspace() {
                       <Circle className="w-4 h-4 mt-0.5 text-muted-foreground/40 shrink-0" />
                     )}
                     <span>
-                      <span className="text-xs text-muted-foreground block">
-                        {def.timeboxMin}′
-                      </span>
+                      {isIntro ? (
+                        <span className="text-xs text-muted-foreground block">Einführung</span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground block">
+                          {def.timeboxMin}′
+                        </span>
+                      )}
                       {def.title}
                     </span>
                   </button>
                 );
               })}
+
               <button
                 type="button"
                 onClick={() => setShowCompletion(true)}
