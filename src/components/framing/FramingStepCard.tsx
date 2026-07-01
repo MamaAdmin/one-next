@@ -390,9 +390,20 @@ function applySuggestion(
       }
       return;
     }
-    case "stakeholder":
-      data.stakeholder = pushUnique(data.stakeholder, text);
+    case "stakeholder": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "geparkt") {
+        data.kiSekundaerGeparkt = pushUnique(data.kiSekundaerGeparkt, value);
+      } else if (b === "heute") {
+        data.kiKundeHeuteLoesung = pushUnique(data.kiKundeHeuteLoesung, value);
+      } else if (b === "paingain") {
+        data.kiKundePainGain = pushUnique(data.kiKundePainGain, value);
+      } else {
+        data.kiStakeholder = pushUnique(data.kiStakeholder, value);
+      }
       return;
+    }
     case "sailboat": {
       const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
       const m = text.match(/^\[(Wind|Anker|Hafen|Eisberg)\]\s*(.+)$/i);
