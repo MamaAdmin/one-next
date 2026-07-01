@@ -1416,11 +1416,31 @@ function VariantFiveWhys({
 function VariantCynefin({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const ursachen = data.ursachen ?? [];
+  const inline = (bucket: CynefinBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverKey, setDragOverKey] = useState<Cynefin | null>(null);
   const [justDroppedKey, setJustDroppedKey] = useState<Cynefin | null>(null);
