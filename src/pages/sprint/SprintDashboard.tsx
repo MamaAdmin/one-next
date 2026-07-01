@@ -73,7 +73,7 @@ export default function SprintDashboard() {
                             {f.titel_arbeitstitel || "Ohne Titel"}
                           </h3>
                           <Badge variant="secondary">
-                            Schritt {f.current_step} / 10
+                            Schritt {f.current_step} / {FRAMING_STEPS.length}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
