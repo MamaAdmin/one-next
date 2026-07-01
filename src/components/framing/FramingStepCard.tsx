@@ -350,7 +350,7 @@ function applySuggestion(
 
   switch (variant) {
     case "context-list":
-      data.nichtZiele = pushUnique(data.nichtZiele, text);
+      data.kiNichtZiele = pushUnique(data.kiNichtZiele, text);
       return;
     case "two-fields": {
       const m = text.match(/^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
