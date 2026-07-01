@@ -41,9 +41,27 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const session_id = String(body?.session_id ?? "");
     const step_key = String(body?.step_key ?? "");
+    const field = typeof body?.field === "string" ? body.field.trim().toLowerCase() : "";
     if (!session_id || !STEP_META[step_key]) {
       return json({ error: "Bad request" }, 400);
     }
+
+    const TWO_FIELDS_BUCKETS: Record<string, string> = {
+      gegenwart: "Gegenwart (warum jetzt / aktuelle Dringlichkeit)",
+      vergangenheit: "Vergangenheit (was wurde früher versucht / Erfahrungen)",
+      zukunft: "Zukunft (Standard-Zukunft – was passiert ohne Handeln)",
+      wettbewerb: "Wettbewerb (was machen Vergleichbare)",
+      trends: "Trends (für/gegen die Idee)",
+      chancen: "Chancen (Opportunities)",
+    };
+    const bucketTag: Record<string, string> = {
+      gegenwart: "[Gegenwart]",
+      vergangenheit: "[Vergangenheit]",
+      zukunft: "[Zukunft]",
+      wettbewerb: "[Wettbewerb]",
+      trends: "[Trends]",
+      chancen: "[Chancen]",
+    };
 
     // Read session + prior steps (RLS scoped to owner)
     const { data: session, error: sErr } = await supabase
@@ -60,7 +78,13 @@ Deno.serve(async (req) => {
 
     const context = buildContext(session, allSteps ?? [], step_key);
 
-    const meta = STEP_META[step_key];
+    let meta = STEP_META[step_key];
+    if (step_key === "2" && field && TWO_FIELDS_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${TWO_FIELDS_BUCKETS[field]} vor. Keine anderen Kategorien. Prefixe JEDES Item mit '${bucketTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 

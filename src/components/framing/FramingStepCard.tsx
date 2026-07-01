@@ -48,6 +48,7 @@ export default function FramingStepCard({
   const [saving, setSaving] = useState(false);
   const suggest = useFramingSuggest();
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
+  const [pendingBucket, setPendingBucket] = useState<string | null>(null);
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as FramingStepData;
@@ -91,19 +92,32 @@ export default function FramingStepCard({
   }
 
   async function loadSuggestions(field?: string) {
+    setPendingBucket(field ?? "__all__");
     try {
       const res = await suggest.mutateAsync({
         session_id: sessionId,
         step_key: step.key,
         field,
       });
-      setVorschlaege(res.vorschlaege ?? []);
+      const incoming = res.vorschlaege ?? [];
+      if (step.variant === "two-fields" && field) {
+        // Replace only this bucket's suggestions, keep others
+        const bucket = field.toLowerCase();
+        setVorschlaege((prev) => [
+          ...prev.filter((v) => bucketOfTwoFieldsSuggestion(v) !== bucket),
+          ...incoming,
+        ]);
+      } else {
+        setVorschlaege(incoming);
+      }
     } catch (e) {
       toast({
         title: "KI-Vorschläge fehlgeschlagen",
         description: e instanceof Error ? e.message : "Unbekannter Fehler",
         variant: "destructive",
       });
+    } finally {
+      setPendingBucket(null);
     }
   }
 
@@ -138,6 +152,7 @@ export default function FramingStepCard({
           suggestions={vorschlaege}
           onLoadSuggestions={(field) => loadSuggestions(field)}
           suggestPending={suggest.isPending}
+          pendingBucket={pendingBucket}
           onAcceptSuggestion={(i) => {
             const v = vorschlaege[i];
             if (v == null) return;
@@ -270,6 +285,7 @@ function StepVariant({
   onDismissSuggestion,
   onLoadSuggestions,
   suggestPending,
+  pendingBucket,
 }: {
   step: FramingStepDef;
   data: FramingStepData;
@@ -279,6 +295,7 @@ function StepVariant({
   onDismissSuggestion: (i: number) => void;
   onLoadSuggestions: (field?: string) => void;
   suggestPending: boolean;
+  pendingBucket: string | null;
 }) {
   switch (step.variant) {
     case "context-list":
@@ -292,7 +309,7 @@ function StepVariant({
           onAcceptSuggestion={onAcceptSuggestion}
           onDismissSuggestion={onDismissSuggestion}
           onLoadSuggestions={onLoadSuggestions}
-          suggestPending={suggestPending}
+          pendingBucket={pendingBucket}
         />
       );
     case "stakeholder":
@@ -730,7 +747,7 @@ function VariantTwoFields({
   onAcceptSuggestion,
   onDismissSuggestion,
   onLoadSuggestions,
-  suggestPending,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
@@ -738,7 +755,7 @@ function VariantTwoFields({
   onAcceptSuggestion: (i: number) => void;
   onDismissSuggestion: (i: number) => void;
   onLoadSuggestions: (field?: string) => void;
-  suggestPending: boolean;
+  pendingBucket: string | null;
 }) {
   const inline = (bucket: TwoFieldsBucket) => (
     <InlineSuggestions
@@ -747,7 +764,7 @@ function VariantTwoFields({
       onAcceptSuggestion={onAcceptSuggestion}
       onDismissSuggestion={onDismissSuggestion}
       onLoadSuggestions={() => onLoadSuggestions(bucket)}
-      pending={suggestPending}
+      pending={pendingBucket === bucket}
     />
   );
   return (
