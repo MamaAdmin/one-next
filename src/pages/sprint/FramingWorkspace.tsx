@@ -13,7 +13,7 @@ import {
   useSaveFramingStep,
   useSetFramingCurrentStep,
 } from "@/hooks/useFraming";
-import { FRAMING_STEPS, FRAMING_TOTAL_MIN, getFramingStep } from "@/features/framing/steps";
+import { FRAMING_STEPS, FRAMING_TOTAL_MIN, getFramingStepByIndex } from "@/features/framing/steps";
 import FramingStepCard from "@/components/framing/FramingStepCard";
 import FramingCompletionPanel from "@/components/framing/FramingCompletionPanel";
 import type { FramingStepData } from "@/features/framing/types";
