@@ -63,8 +63,9 @@ export function useAdminAllSprints() {
 export interface AdminSprintMember {
   id: string;
   sprint_id: string;
-  user_id: string;
-  role: string;
+  user_id: string | null;
+  email: string | null;
+  rolle: string;
   profile: AdminSprintProfile | null;
 }
 
