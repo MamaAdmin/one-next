@@ -813,7 +813,9 @@ type FiveWhysBucket = "why" | "ursache";
 
 type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket;
+type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
