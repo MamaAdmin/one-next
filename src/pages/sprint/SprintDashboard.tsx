@@ -68,11 +68,11 @@ export default function SprintDashboard() {
               {sprints.map((s) => {
                 const step = getStepDef(s.current_step);
                 return (
-                  <Link key={s.id} to={`/sprint/${s.id}`} className="block">
-                    <Card className="h-full hover:shadow-hover transition-shadow">
+                  <Card key={s.id} className="h-full hover:shadow-hover transition-shadow relative">
+                    <Link to={`/sprint/${s.id}`} className="block">
                       <CardContent className="p-6 space-y-3">
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="text-xl font-semibold leading-tight">{s.titel}</h3>
+                          <h3 className="text-xl font-semibold leading-tight pr-16">{s.titel}</h3>
                           <Badge variant={s.status === "active" ? "default" : "secondary"}>
                             {s.status === "active"
                               ? "Aktiv"
@@ -100,8 +100,21 @@ export default function SprintDashboard() {
                           Modus: {s.modus === "solo" ? "Solo (KI ersetzt Team)" : "Team"}
                         </div>
                       </CardContent>
-                    </Card>
-                  </Link>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Sprint bearbeiten"
+                      className="absolute top-3 right-20 h-8 w-8"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setEditing(s);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </Card>
                 );
               })}
             </div>
