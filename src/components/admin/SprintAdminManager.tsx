@@ -216,6 +216,89 @@ export default function SprintAdminManager() {
         </CardContent>
       </Card>
 
+      <section className="space-y-4">
+        <h3 className="text-lg font-semibold">Problem Framing</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard label="Framings gesamt" value={framingStats.total} />
+          <StatCard label="Aktiv" value={framingStats.active} />
+          <StatCard label="Abgeschlossen" value={framingStats.done} />
+          <StatCard label="Archiviert" value={framingStats.archived} />
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Arbeitstitel</TableHead>
+                  <TableHead>Ersteller</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Aktueller Schritt</TableHead>
+                  <TableHead>Mitglieder</TableHead>
+                  <TableHead>Ergebnis-Sprint</TableHead>
+                  <TableHead>Erstellt</TableHead>
+                  <TableHead>Aktualisiert</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {framingLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                      Wird geladen…
+                    </TableCell>
+                  </TableRow>
+                ) : framingRows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                      Keine Problem-Framing-Sessions gefunden.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  framingRows.map((r) => {
+                    const step = FRAMING_STEPS.find((s) => s.index === r.current_step);
+                    return (
+                      <TableRow key={r.id}>
+                        <TableCell className="font-medium">{r.titel_arbeitstitel}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span>{r.owner?.full_name || r.owner?.email || r.owner_id.slice(0, 8)}</span>
+                            {r.owner?.email && r.owner.full_name ? (
+                              <span className="text-xs text-muted-foreground">{r.owner.email}</span>
+                            ) : null}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              r.status === "active" ? "default" : r.status === "done" ? "secondary" : "outline"
+                            }
+                          >
+                            {r.status === "active" ? "Aktiv" : r.status === "done" ? "Abgeschlossen" : "Archiviert"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {step ? `${step.index}. ${step.title}` : r.current_step}
+                        </TableCell>
+                        <TableCell>{r.member_count}</TableCell>
+                        <TableCell className="text-sm">
+                          {r.resulting_sprint_id ? (
+                            <Badge variant="outline">Sprint erstellt</Badge>
+                          ) : (
+                            "—"
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm">{fmtDate(r.created_at)}</TableCell>
+                        <TableCell className="text-sm">{fmtDate(r.updated_at)}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </section>
+
+
       <SprintAdminDetail
         sprintId={selected}
         onOpenChange={(o) => !o && setSelected(null)}
