@@ -58,8 +58,6 @@ serve(async (req) => {
       .from("public_course_registrations")
       .update({
         payment_status: paid ? "paid" : session.payment_status ?? "pending",
-        stripe_payment_intent_id:
-          typeof session.payment_intent === "string" ? session.payment_intent : null,
       })
       .eq("id", registrationId);
 
