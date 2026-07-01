@@ -254,6 +254,20 @@ const AdminDashboard = () => {
               </Card>
             </TabsContent>
 
+            <TabsContent value="sprints">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Design Sprint Statistiken</CardTitle>
+                  <CardDescription>
+                    Übersicht aller Design Sprints: wer sie erstellt hat, Status, Fortschritt und Abschluss.
+                  </CardDescription>
+                </CardHeader>
+                <div className="p-6">
+                  <SprintAdminManager />
+                </div>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="users">
               <UserRoleManager />
             </TabsContent>
