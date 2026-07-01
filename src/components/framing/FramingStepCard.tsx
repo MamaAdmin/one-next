@@ -785,7 +785,9 @@ function VariantTwoFields({
           onChange={(v) => patch({ frueherVersucht: v })}
           placeholder="z. B. Interne Schulung im Q2/2024"
         />
-        {inline("vergangenheit")}
+        <p className="mt-2 text-xs text-muted-foreground">
+          Hier zählen deine eigenen Erfahrungen – bitte selbst eintragen.
+        </p>
       </CanvasSection>
 
       <CanvasSection title="Zukunft – Standard-Zukunft (was passiert ohne Handeln?)">
