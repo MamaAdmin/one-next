@@ -73,14 +73,25 @@ export default function SprintAdminManager() {
     });
   }, [rows, search, status, modus]);
 
+  const framingRows = framingData ?? [];
+  const framingStats = useMemo(() => ({
+    total: framingRows.length,
+    active: framingRows.filter((r) => r.status === "active").length,
+    done: framingRows.filter((r) => r.status === "done").length,
+    archived: framingRows.filter((r) => r.status === "archived").length,
+  }), [framingRows]);
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Sprints gesamt" value={stats.total} />
-        <StatCard label="Aktiv" value={stats.active} />
-        <StatCard label="Abgeschlossen" value={stats.done} />
-        <StatCard label="Archiviert" value={stats.archived} />
-      </div>
+    <div className="space-y-10">
+      <section className="space-y-4">
+        <h3 className="text-lg font-semibold">Design Sprints</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard label="Sprints gesamt" value={stats.total} />
+          <StatCard label="Aktiv" value={stats.active} />
+          <StatCard label="Abgeschlossen" value={stats.done} />
+          <StatCard label="Archiviert" value={stats.archived} />
+        </div>
+      </section>
 
       <div className="flex flex-wrap items-center gap-3">
         <Input
