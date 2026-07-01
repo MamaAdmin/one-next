@@ -436,6 +436,83 @@ function ListEditor({
   );
 }
 
+/* ---------- canvas helpers ---------- */
+
+function CanvasSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <details className="rounded-md border bg-muted/30 px-3 py-2 group">
+      <summary className="cursor-pointer text-sm font-medium text-muted-foreground list-none flex items-center justify-between">
+        <span>{title}</span>
+        <span className="text-xs opacity-60 group-open:hidden">öffnen</span>
+        <span className="text-xs opacity-60 hidden group-open:inline">schließen</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
+  );
+}
+
+function PastAttemptsEditor({
+  label = "Frühere Versuche",
+  items,
+  onChange,
+  placeholder,
+}: {
+  label?: string;
+  items: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
+  onChange: (next: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>) => void;
+  placeholder?: string;
+}) {
+  const [input, setInput] = useState("");
+  const add = (ergebnis: "worked" | "didnt-work") => {
+    if (!input.trim()) return;
+    onChange([...items, { text: input.trim(), ergebnis }]);
+    setInput("");
+  };
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="flex flex-wrap gap-2">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={placeholder}
+          className="flex-1 min-w-[200px]"
+        />
+        <Button type="button" variant="outline" size="sm" onClick={() => add("worked")}>
+          + Hat funktioniert
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => add("didnt-work")}>
+          + Hat nicht funktioniert
+        </Button>
+      </div>
+      {items.length > 0 ? (
+        <ul className="space-y-1">
+          {items.map((it, i) => (
+            <li
+              key={i}
+              className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-1.5 text-sm"
+            >
+              <span className="flex-1">{it.text}</span>
+              <Badge variant={it.ergebnis === "worked" ? "default" : "secondary"}>
+                {it.ergebnis === "worked" ? "worked" : "didn't work"}
+              </Badge>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6"
+                onClick={() => onChange(items.filter((_, j) => j !== i))}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 /* ---------- variants ---------- */
 
 function VariantContextList({
