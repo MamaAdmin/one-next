@@ -370,9 +370,13 @@ function applySuggestion(
       } else if (bucket === "chancen") {
         data.chancen = pushUnique(data.chancen, value);
       } else {
-        // future / default future
-        const cur = data.defaultFuture ?? "";
-        data.defaultFuture = cur ? `${cur}\n• ${value}` : `• ${value}`;
+        // future / default future → array
+        const current = Array.isArray(data.defaultFuture)
+          ? data.defaultFuture
+          : data.defaultFuture
+            ? [data.defaultFuture]
+            : [];
+        data.defaultFuture = pushUnique(current, value);
       }
       return;
     }
