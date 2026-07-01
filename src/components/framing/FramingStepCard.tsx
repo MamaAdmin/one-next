@@ -368,7 +368,17 @@ function StepVariant({
         />
       );
     case "cynefin":
-      return <VariantCynefin data={data} patch={patch} />;
+      return (
+        <VariantCynefin
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "assumptions":
       return <VariantAssumptions data={data} patch={patch} />;
     case "success-constraints":
