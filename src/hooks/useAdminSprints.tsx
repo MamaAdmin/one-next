@@ -99,8 +99,9 @@ export function useAdminSprintDetail(id: string | undefined) {
       const memberList = (members ?? []) as Array<{
         id: string;
         sprint_id: string;
-        user_id: string;
-        role: string;
+        user_id: string | null;
+        email: string | null;
+        rolle: string;
       }>;
 
       const profileIds = [
