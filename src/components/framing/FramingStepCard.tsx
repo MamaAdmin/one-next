@@ -100,7 +100,7 @@ export default function FramingStepCard({
         field,
       });
       const incoming = res.vorschlaege ?? [];
-      if ((step.variant === "two-fields" || step.variant === "stakeholder") && field) {
+      if ((step.variant === "two-fields" || step.variant === "stakeholder" || step.variant === "context-list") && field) {
         // Replace only this bucket's suggestions, keep others
         const bucket = field.toLowerCase();
         setVorschlaege((prev) => [
@@ -173,7 +173,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
@@ -243,7 +243,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" && step.variant !== "stakeholder" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" ? (
             <Button
               type="button"
               variant="outline"
@@ -307,7 +307,17 @@ function StepVariant({
 }) {
   switch (step.variant) {
     case "context-list":
-      return <VariantContextList data={data} patch={patch} />;
+      return (
+        <VariantContextList
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "two-fields":
       return (
         <VariantTwoFields
@@ -366,9 +376,16 @@ function applySuggestion(
   };
 
   switch (variant) {
-    case "context-list":
-      data.kiNichtZiele = pushUnique(data.kiNichtZiele, text);
+    case "context-list": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "kontext") {
+        data.kiKontext = pushUnique(data.kiKontext, value);
+      } else {
+        data.kiNichtZiele = pushUnique(data.kiNichtZiele, value);
+      }
       return;
+    }
     case "two-fields": {
       const m = text.match(/^\[(Gegenwart|Present|Vergangenheit|Past|Zukunft|Future|Standard-Zukunft|Default Future|Wettbewerb|Trends|Chancen)\]\s*(.+)$/i);
       const bucket = m ? m[1].toLowerCase() : "future";
@@ -630,41 +647,79 @@ function PastAttemptsEditor({
 function VariantContextList({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
+  const inline = (bucket: SuggestionBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (key: "kiKontext" | "kiNichtZiele", index: number) => {
+    const cur = (data[key] as string[] | undefined) ?? [];
+    patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
+  };
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>Kontext / Ausgangslage</Label>
-        <Textarea
-          rows={4}
-          value={data.kontext ?? ""}
-          onChange={(e) => patch({ kontext: e.target.value })}
-          placeholder="Kurz beschreiben, worum es geht …"
+    <div className="space-y-6">
+      <CanvasSection title="Kontext / Ausgangslage">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={4}
+            value={data.kontext ?? ""}
+            onChange={(e) => patch({ kontext: e.target.value })}
+            placeholder="Kurz beschreiben, worum es geht …"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiKontext ?? []}
+          onRemove={(i) => removeKi("kiKontext", i)}
         />
-      </div>
-      <ListEditor
-        label="Kein Sprint-Ziel (Abgrenzung) – Eigene Anmerkungen"
-        items={data.nichtZiele ?? []}
-        onChange={(v) => patch({ nichtZiele: v })}
-        placeholder="z. B. Neues CI/CD-System aufsetzen"
-      />
-      <AcceptedKiList
-        items={data.kiNichtZiele ?? []}
-        onRemove={(i) =>
-          patch({
-            kiNichtZiele: (data.kiNichtZiele ?? []).filter((_, j) => j !== i),
-          })
-        }
-      />
+        {inline("kontext")}
+      </CanvasSection>
+
+      <CanvasSection title="Kein Sprint-Ziel – Abgrenzung">
+        <ListEditor
+          label="Eigene Anmerkungen"
+          items={data.nichtZiele ?? []}
+          onChange={(v) => patch({ nichtZiele: v })}
+          placeholder="z. B. Neues CI/CD-System aufsetzen"
+        />
+        <AcceptedKiList
+          items={data.kiNichtZiele ?? []}
+          onRemove={(i) => removeKi("kiNichtZiele", i)}
+        />
+        {inline("nichtziel")}
+      </CanvasSection>
+
       <CanvasSection title="Geschäftliche Vergangenheit (optional) – Was wurde früher schon versucht?">
-        <PastAttemptsEditor
-          items={data.frueherVersucht ?? []}
-          onChange={(v) => patch({ frueherVersucht: v })}
-          placeholder="z. B. Interne Schulung im Q2/2024"
-        />
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <PastAttemptsEditor
+            items={data.frueherVersucht ?? []}
+            onChange={(v) => patch({ frueherVersucht: v })}
+            placeholder="z. B. Interne Schulung im Q2/2024"
+          />
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Hier zählen eure eigenen Erfahrungen – bitte selbst eintragen.
+        </p>
       </CanvasSection>
     </div>
   );
@@ -680,7 +735,9 @@ type TwoFieldsBucket =
 
 type StakeholderBucket = "stakeholder" | "geparkt" | "heute" | "paingain";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket;
+type KickoffBucket = "kontext" | "nichtziel";
+
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
@@ -703,6 +760,9 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "heute") return "heute";
   if (tag === "paingain" || tag === "pain-gain" || tag === "pain/gain")
     return "paingain";
+  if (tag === "kontext" || tag === "context") return "kontext";
+  if (tag === "nichtziel" || tag === "nicht-ziel" || tag === "nichtziele")
+    return "nichtziel";
   return null;
 }
 
