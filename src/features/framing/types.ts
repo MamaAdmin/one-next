@@ -33,7 +33,7 @@ export interface FramingStepData {
   frueherVersucht?: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;
   // Step 2
   warumJetzt?: string;
-  defaultFuture?: string;
+  defaultFuture?: string | string[];
   // Step 2 – Canvas: Business-Future
   wettbewerber?: string[];
   trends?: string[];
