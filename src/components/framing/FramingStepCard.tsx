@@ -561,6 +561,34 @@ function VariantStakeholder({
         items={data.sekundaerGeparkt ?? []}
         onChange={(v) => patch({ sekundaerGeparkt: v })}
       />
+      <CanvasSection title="Customer-Kontext (optional) – Verhalten, frühere Versuche, Pain/Gain">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Wie löst die Zielgruppe das Problem heute?</Label>
+            <Textarea
+              rows={3}
+              value={data.kundeHeuteLoesung ?? ""}
+              onChange={(e) => patch({ kundeHeuteLoesung: e.target.value })}
+              placeholder="Aktuelles Verhalten, Workarounds, Tools …"
+            />
+          </div>
+          <PastAttemptsEditor
+            label="Was hat die Zielgruppe früher versucht?"
+            items={data.kundeVersuchePast ?? []}
+            onChange={(v) => patch({ kundeVersuchePast: v })}
+            placeholder="z. B. Nutzung eines Wettbewerber-Tools"
+          />
+          <div className="space-y-2">
+            <Label>Welchen Pain lindern wir – welchen Gain schaffen wir?</Label>
+            <Textarea
+              rows={3}
+              value={data.kundePainGain ?? ""}
+              onChange={(e) => patch({ kundePainGain: e.target.value })}
+              placeholder="Konkreter Nutzen aus Sicht der Zielgruppe"
+            />
+          </div>
+        </div>
+      </CanvasSection>
     </div>
   );
 }
