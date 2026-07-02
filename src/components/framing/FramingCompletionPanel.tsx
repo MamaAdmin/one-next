@@ -220,7 +220,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                 )
               }
             />
-            <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt in Schritt 8)" />
+            <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt – eigene oder KI)" />
             <Item done={measureOk} label="Messziel definiert (Schritt 7)" />
             <Item
               done={deciderOk}
