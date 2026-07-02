@@ -10,6 +10,10 @@ export interface SprintRow {
   sprint_leader: string;
   current_step: string;
   status: "active" | "done" | "archived";
+  challenge_statement: string;
+  zielgruppe: string;
+  erfolgsmessung: string;
+  sprint_fragen: string[];
   created_at: string;
   updated_at: string;
 }
