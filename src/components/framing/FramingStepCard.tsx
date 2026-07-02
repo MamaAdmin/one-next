@@ -415,7 +415,17 @@ function StepVariant({
         />
       );
     case "scope-questions":
-      return <VariantScope data={data} patch={patch} />;
+      return (
+        <VariantScope
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "nuf":
       return <VariantNuf data={data} patch={patch} />;
     case "next-steps":
