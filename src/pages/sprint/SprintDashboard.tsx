@@ -20,8 +20,6 @@ export default function SprintDashboard() {
   const sprintIds = (sprints ?? []).map((s) => s.id);
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
-  const [sharing, setSharing] = useState<SprintRow | null>(null);
-  const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
   const allFramings = framingSessions ?? [];
   const framingBySprintId = new Map(
     allFramings
