@@ -2248,6 +2248,20 @@ function VariantNuf({
                   >
                     Top-1
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Sprint-Frage entfernen"
+                    title="Entfernen"
+                    onClick={() => {
+                      const next = bew.filter((_, j) => j !== i);
+                      const patchObj: Partial<typeof data> = { nufBewertungen: next };
+                      if (data.top1Challenge === r.text) patchObj.top1Challenge = "";
+                      patch(patchObj);
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             );
