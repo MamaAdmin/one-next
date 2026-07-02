@@ -70,13 +70,15 @@ const Navigation = () => {
   };
 
   return (
-    <nav className={`fixed top-0 w-full backdrop-blur-sm z-50 transition-all duration-300 ${
-      isScrolled ? "bg-white/90 shadow-md" : "bg-white"
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
+      isScrolled
+        ? "bg-background/85 backdrop-blur-md border-border/70"
+        : "bg-background/95 backdrop-blur-sm border-transparent"
     }`}>
-      <div className="container mx-auto px-6 py-2">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-6 h-16 flex items-center">
+        <div className="flex items-center justify-between w-full">
           <Link to="/" className="flex items-center">
-            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/Y7p4K5s0ZYMhiUT4kyDR1QHgUs42/uploads/1760245953105-one-next-logo-new.png" alt="one-next Logo" className="h-[2.1rem] w-auto" />
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/Y7p4K5s0ZYMhiUT4kyDR1QHgUs42/uploads/1760245953105-one-next-logo-new.png" alt="one-next Logo" className="h-7 w-auto" />
           </Link>
 
           {/* Desktop Navigation - Dynamic */}
