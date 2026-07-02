@@ -2204,9 +2204,14 @@ function VariantNuf({
                   }}
                 />
                 <div className="flex flex-wrap items-end gap-3">
-                  {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
-                    <div key={k} className="w-20">
-                      <Label className="text-xs capitalize">{k}</Label>
+                  {([
+                    { k: "neuheit", label: "Neu (Novelty)" },
+                    { k: "nutzen", label: "Nützlich (Usefulness)" },
+                    { k: "machbarkeit", label: "Realisierbar (Feasibility)" },
+                  ] as const).map(({ k, label }) => (
+                    <div key={k} className="w-40">
+                      <Label className="text-xs">{label}</Label>
+
                       <Input
                         type="number"
                         min={1}
