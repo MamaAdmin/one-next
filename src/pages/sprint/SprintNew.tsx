@@ -45,6 +45,10 @@ export default function SprintNew() {
   const [modus, setModus] = useState<"solo" | "team">("solo");
   const [decider, setDecider] = useState("");
   const [sprintLeader, setSprintLeader] = useState("");
+  const [challengeStatement, setChallengeStatement] = useState("");
+  const [zielgruppe, setZielgruppe] = useState("");
+  const [erfolgsmessung, setErfolgsmessung] = useState("");
+  const [sprintFragenText, setSprintFragenText] = useState("");
   const [framingTitel, setFramingTitel] = useState("");
 
   async function startFraming(e: React.FormEvent) {
