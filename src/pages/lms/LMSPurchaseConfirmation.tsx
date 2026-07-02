@@ -77,7 +77,8 @@ export default function LMSPurchaseConfirmation() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </>
     );
   }
 
