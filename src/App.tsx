@@ -172,7 +172,7 @@ const App = () => (
         <FeedbackWidget />
       </BrowserRouter>
         </TooltipProvider>
-      </ThemeProvider>
+      
     </HelmetProvider>
   </QueryClientProvider>
 );
