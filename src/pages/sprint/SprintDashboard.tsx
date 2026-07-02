@@ -19,6 +19,8 @@ import type { SprintRow } from "@/features/sprint/types";
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
   const { data: framingSessions } = useMyFramingSessions();
+  const sprintIds = (sprints ?? []).map((s) => s.id);
+  const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [sharing, setSharing] = useState<SprintRow | null>(null);
   const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
@@ -28,6 +30,13 @@ export default function SprintDashboard() {
       .filter((f) => f.resulting_sprint_id)
       .map((f) => [f.resulting_sprint_id as string, f]),
   );
+
+  const deriveCurrentStepKey = (sprintId: string, fallback: string): string => {
+    const done = new Set(completedByStep?.[sprintId] ?? []);
+    if (done.size === 0) return fallback;
+    const nextOpen = SPRINT_STEPS.find((s) => !done.has(s.key));
+    return nextOpen ? nextOpen.key : SPRINT_STEPS[SPRINT_STEPS.length - 1].key;
+  };
 
   return (
     <>
