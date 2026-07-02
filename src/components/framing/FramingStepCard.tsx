@@ -1999,6 +1999,12 @@ function clamp(n: number) {
   return Math.max(1, Math.min(5, Math.round(n)));
 }
 
+function clamp10(n: number) {
+  if (Number.isNaN(n)) return 1;
+  return Math.max(1, Math.min(10, Math.round(n)));
+}
+
+
 function VariantSuccess({
   data,
   patch,
@@ -2150,7 +2156,7 @@ function VariantNuf({
   const bew = data.nufBewertungen ?? [];
   return (
     <div className="space-y-6">
-      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–5)">
+      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–10)">
         <div className="space-y-3">
           <p className="text-sm font-medium">Eigene Anmerkungen</p>
           {bew.length === 0 ? (
@@ -2189,14 +2195,15 @@ function VariantNuf({
                       <Input
                         type="number"
                         min={1}
-                        max={5}
+                        max={10}
                         value={r[k]}
                         onChange={(e) => {
                           const next = [...bew];
-                          next[i] = { ...r, [k]: clamp(+e.target.value) };
+                          next[i] = { ...r, [k]: clamp10(+e.target.value) };
                           patch({ nufBewertungen: next });
                         }}
                       />
+
                     </div>
                   ))}
                   <div className="flex flex-col items-center">
