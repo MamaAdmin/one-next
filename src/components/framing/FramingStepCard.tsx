@@ -2066,10 +2066,37 @@ function VariantSuccess({
 function VariantScope({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
+  const inline = (bucket: ScopeBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (
+    key: "kiInScope" | "kiOutOfScope" | "kiSprintFragen",
+    index: number,
+  ) => {
+    const current = (data[key] ?? []) as string[];
+    patch({ [key]: current.filter((_, i) => i !== index) } as Partial<FramingStepData>);
+  };
   return (
     <div className="space-y-6">
       <CanvasSection title="In Scope">
@@ -2078,6 +2105,11 @@ function VariantScope({
           items={data.inScope ?? []}
           onChange={(v) => patch({ inScope: v })}
         />
+        <AcceptedKiList
+          items={data.kiInScope ?? []}
+          onRemove={(i) => removeKi("kiInScope", i)}
+        />
+        {inline("inscope")}
       </CanvasSection>
       <CanvasSection title="Out of Scope">
         <ListEditor
@@ -2085,6 +2117,11 @@ function VariantScope({
           items={data.outOfScope ?? []}
           onChange={(v) => patch({ outOfScope: v })}
         />
+        <AcceptedKiList
+          items={data.kiOutOfScope ?? []}
+          onRemove={(i) => removeKi("kiOutOfScope", i)}
+        />
+        {inline("outscope")}
       </CanvasSection>
       <CanvasSection title="Sprint-Fragen (Decision Questions)">
         <ListEditor
@@ -2093,6 +2130,11 @@ function VariantScope({
           onChange={(v) => patch({ sprintFragen: v })}
           placeholder="z. B. Können wir X in 5 Tagen mit Y validieren?"
         />
+        <AcceptedKiList
+          items={data.kiSprintFragen ?? []}
+          onRemove={(i) => removeKi("kiSprintFragen", i)}
+        />
+        {inline("sprintfrage")}
       </CanvasSection>
     </div>
   );
