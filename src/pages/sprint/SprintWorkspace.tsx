@@ -38,7 +38,6 @@ export default function SprintWorkspace() {
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
 
 
   const sprint = sprintQ.data;
