@@ -12,7 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { useNavigation } from "@/hooks/useNavigation";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
