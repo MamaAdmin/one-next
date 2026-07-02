@@ -82,13 +82,6 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem={false}
-        storageKey="one-next-theme"
-        disableTransitionOnChange
-      >
         <TooltipProvider>
           <Toaster />
           <Sonner />
