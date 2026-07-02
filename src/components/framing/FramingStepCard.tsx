@@ -538,10 +538,9 @@ function applySuggestion(
       const b = bucketOfSuggestion(text);
       const value = b ? stripBucketTag(text) : text;
       if (b === "erfolg") {
-        const current = (data.erfolgsmessung ?? "").trim();
-        data.erfolgsmessung = current ? `${current}\n• ${value}` : `• ${value}`;
+        data.kiErfolgsmessung = pushUnique(data.kiErfolgsmessung, value);
       } else {
-        data.constraints = pushUnique(data.constraints, value);
+        data.kiConstraints = pushUnique(data.kiConstraints, value);
       }
       return;
     }
@@ -2002,6 +2001,10 @@ function VariantSuccess({
       pending={pendingBucket === bucket}
     />
   );
+  const removeKi = (key: "kiErfolgsmessung" | "kiConstraints", index: number) => {
+    const current = (data[key] ?? []) as string[];
+    patch({ [key]: current.filter((_, i) => i !== index) } as Partial<FramingStepData>);
+  };
   return (
     <div className="space-y-6">
       <CanvasSection title="Erfolgsmessung – messbar in 5 Tagen">
@@ -2013,6 +2016,10 @@ function VariantSuccess({
             onChange={(e) => patch({ erfolgsmessung: e.target.value })}
           />
         </div>
+        <AcceptedKiList
+          items={data.kiErfolgsmessung ?? []}
+          onRemove={(i) => removeKi("kiErfolgsmessung", i)}
+        />
         {inline("erfolg")}
       </CanvasSection>
       <CanvasSection title="Constraints – was ist gesetzt?">
@@ -2020,6 +2027,10 @@ function VariantSuccess({
           label="Eigene Anmerkungen"
           items={data.constraints ?? []}
           onChange={(v) => patch({ constraints: v })}
+        />
+        <AcceptedKiList
+          items={data.kiConstraints ?? []}
+          onRemove={(i) => removeKi("kiConstraints", i)}
         />
         {inline("constraint")}
       </CanvasSection>
