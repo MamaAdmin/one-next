@@ -108,7 +108,9 @@ export default function FramingStepCard({
           step.variant === "sailboat" ||
           step.variant === "five-whys" ||
           step.variant === "cynefin" ||
-          step.variant === "assumptions") &&
+          step.variant === "assumptions" ||
+          step.variant === "success-constraints" ||
+          step.variant === "scope-questions") &&
         field
       ) {
         // Replace only this bucket's suggestions, keep others
@@ -413,7 +415,17 @@ function StepVariant({
         />
       );
     case "scope-questions":
-      return <VariantScope data={data} patch={patch} />;
+      return (
+        <VariantScope
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "nuf":
       return <VariantNuf data={data} patch={patch} />;
     case "next-steps":
@@ -544,9 +556,18 @@ function applySuggestion(
       }
       return;
     }
-    case "scope-questions":
-      data.sprintFragen = pushUnique(data.sprintFragen, text);
+    case "scope-questions": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "inscope") {
+        data.kiInScope = pushUnique(data.kiInScope, value);
+      } else if (b === "outscope") {
+        data.kiOutOfScope = pushUnique(data.kiOutOfScope, value);
+      } else {
+        data.kiSprintFragen = pushUnique(data.kiSprintFragen, value);
+      }
       return;
+    }
     case "nuf":
       data.nufBewertungen = [
         ...(data.nufBewertungen ?? []),
@@ -832,8 +853,9 @@ type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
 
 type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
 type SuccessBucket = "erfolg" | "constraint";
+type ScopeBucket = "inscope" | "outscope" | "sprintfrage";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket | SuccessBucket;
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket | SuccessBucket | ScopeBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
@@ -875,6 +897,9 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "gering" || tag === "low") return "gering";
   if (tag === "erfolg" || tag === "success" || tag === "kpi" || tag === "metrik") return "erfolg";
   if (tag === "constraint" || tag === "constraints" || tag === "rahmen") return "constraint";
+  if (tag === "inscope" || tag === "in-scope" || tag === "scope") return "inscope";
+  if (tag === "outscope" || tag === "out-of-scope" || tag === "out" || tag === "notscope") return "outscope";
+  if (tag === "sprintfrage" || tag === "sprint-frage" || tag === "sprintfragen" || tag === "question" || tag === "decision") return "sprintfrage";
   return null;
 }
 
@@ -2041,10 +2066,37 @@ function VariantSuccess({
 function VariantScope({
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
+  const inline = (bucket: ScopeBucket) => (
+    <InlineSuggestions
+      bucket={bucket}
+      suggestions={suggestions}
+      onAcceptSuggestion={onAcceptSuggestion}
+      onDismissSuggestion={onDismissSuggestion}
+      onLoadSuggestions={() => onLoadSuggestions(bucket)}
+      pending={pendingBucket === bucket}
+    />
+  );
+  const removeKi = (
+    key: "kiInScope" | "kiOutOfScope" | "kiSprintFragen",
+    index: number,
+  ) => {
+    const current = (data[key] ?? []) as string[];
+    patch({ [key]: current.filter((_, i) => i !== index) } as Partial<FramingStepData>);
+  };
   return (
     <div className="space-y-6">
       <CanvasSection title="In Scope">
@@ -2053,6 +2105,11 @@ function VariantScope({
           items={data.inScope ?? []}
           onChange={(v) => patch({ inScope: v })}
         />
+        <AcceptedKiList
+          items={data.kiInScope ?? []}
+          onRemove={(i) => removeKi("kiInScope", i)}
+        />
+        {inline("inscope")}
       </CanvasSection>
       <CanvasSection title="Out of Scope">
         <ListEditor
@@ -2060,6 +2117,11 @@ function VariantScope({
           items={data.outOfScope ?? []}
           onChange={(v) => patch({ outOfScope: v })}
         />
+        <AcceptedKiList
+          items={data.kiOutOfScope ?? []}
+          onRemove={(i) => removeKi("kiOutOfScope", i)}
+        />
+        {inline("outscope")}
       </CanvasSection>
       <CanvasSection title="Sprint-Fragen (Decision Questions)">
         <ListEditor
@@ -2068,6 +2130,11 @@ function VariantScope({
           onChange={(v) => patch({ sprintFragen: v })}
           placeholder="z. B. Können wir X in 5 Tagen mit Y validieren?"
         />
+        <AcceptedKiList
+          items={data.kiSprintFragen ?? []}
+          onRemove={(i) => removeKi("kiSprintFragen", i)}
+        />
+        {inline("sprintfrage")}
       </CanvasSection>
     </div>
   );
