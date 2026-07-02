@@ -19,7 +19,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
               value={content.hero_title || 'we define your way forward'}
               onSave={(value) => updateContent('hero_title', value)}
               isEditMode={isEditMode}
-              className="font-display text-6xl md:text-7xl lg:text-[8rem] lowercase text-foreground"
+              className="text-6xl lg:text-8xl font-light leading-tight lowercase"
               placeholder="Titel des Hero-Bereichs"
               as="h1"
             />
