@@ -27,17 +27,22 @@ All colors MUST be HSL.
     --muted: 40 20% 94%;
     --muted-foreground: 0 0% 38%;
 
-    --accent: 214 45% 54%;
-    --accent-foreground: 0 0% 10%;
-    --accent-soft: 214 55% 94%;
+    /* Cornflower Blue accent system — clear semantic roles */
+    --accent: 214 60% 54%;              /* primary interactive blue (buttons, active states) */
+    --accent-foreground: 0 0% 100%;     /* text on solid accent */
+    --accent-soft: 214 60% 95%;         /* tinted background (badges, cards, callouts) */
+    --accent-soft-foreground: 214 55% 28%; /* text on soft tint */
+    --accent-strong: 214 65% 42%;       /* hover / pressed */
+    --link: 214 65% 46%;                /* inline links */
+    --link-hover: 214 70% 34%;          /* link hover */
 
     --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 12% 88%;
-    --border-strong: 30 10% 78%;
-    --input: 30 12% 88%;
-    --ring: 0 0% 15%;
+    --border: 215 24% 88%;              /* subtle cool border */
+    --border-strong: 215 22% 76%;
+    --input: 215 24% 88%;
+    --ring: 214 60% 54%;                /* focus ring uses accent */
 
     --radius: 0.75rem;
 
@@ -77,17 +82,21 @@ All colors MUST be HSL.
     --muted: 0 0% 14%;
     --muted-foreground: 40 5% 65%;
 
-    --accent: 214 55% 62%;
-    --accent-foreground: 0 0% 8%;
-    --accent-soft: 214 35% 20%;
+    --accent: 214 70% 62%;
+    --accent-foreground: 0 0% 100%;
+    --accent-soft: 214 40% 18%;
+    --accent-soft-foreground: 214 60% 88%;
+    --accent-strong: 214 75% 72%;
+    --link: 214 75% 70%;
+    --link-hover: 214 85% 82%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --border-strong: 0 0% 28%;
-    --input: 0 0% 18%;
-    --ring: 40 10% 90%;
+    --border: 215 15% 22%;
+    --border-strong: 215 15% 32%;
+    --input: 215 15% 22%;
+    --ring: 214 70% 62%;
 
     --gradient-primary: linear-gradient(135deg, hsl(40 10% 96%), hsl(40 5% 78%));
     --gradient-hero: linear-gradient(180deg, hsl(0 0% 8%), hsl(0 0% 12%));
