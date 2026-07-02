@@ -26,6 +26,10 @@ const schema = z.object({
   modus: z.enum(["solo", "team"]),
   decider: z.string().trim().max(120).default(""),
   sprint_leader: z.string().trim().max(120).default(""),
+  challenge_statement: z.string().trim().max(4000).default(""),
+  zielgruppe: z.string().trim().max(1000).default(""),
+  erfolgsmessung: z.string().trim().max(2000).default(""),
+  sprint_fragen: z.array(z.string().trim().max(500)).max(20).default([]),
 });
 
 export default function SprintNew() {
@@ -41,6 +45,10 @@ export default function SprintNew() {
   const [modus, setModus] = useState<"solo" | "team">("solo");
   const [decider, setDecider] = useState("");
   const [sprintLeader, setSprintLeader] = useState("");
+  const [challengeStatement, setChallengeStatement] = useState("");
+  const [zielgruppe, setZielgruppe] = useState("");
+  const [erfolgsmessung, setErfolgsmessung] = useState("");
+  const [sprintFragenText, setSprintFragenText] = useState("");
   const [framingTitel, setFramingTitel] = useState("");
 
   async function startFraming(e: React.FormEvent) {
@@ -74,6 +82,13 @@ export default function SprintNew() {
       modus,
       decider,
       sprint_leader: sprintLeader,
+      challenge_statement: challengeStatement,
+      zielgruppe,
+      erfolgsmessung,
+      sprint_fragen: sprintFragenText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
     });
     if (!parsed.success) {
       toast({
@@ -213,6 +228,52 @@ export default function SprintNew() {
                   required
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="challenge">Challenge Statement <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+                <Textarea
+                  id="challenge"
+                  value={challengeStatement}
+                  onChange={(e) => setChallengeStatement(e.target.value)}
+                  placeholder="Wir entwickeln … damit … ohne …"
+                  rows={4}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="zielgruppe">Primäre Zielgruppe <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+                  <Textarea
+                    id="zielgruppe"
+                    value={zielgruppe}
+                    onChange={(e) => setZielgruppe(e.target.value)}
+                    placeholder="Für wen lösen wir das Problem?"
+                    rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="erfolg">Erfolgsmessung <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+                  <Textarea
+                    id="erfolg"
+                    value={erfolgsmessung}
+                    onChange={(e) => setErfolgsmessung(e.target.value)}
+                    placeholder="Woran erkennen wir Erfolg?"
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="fragen">Sprint-Fragen <span className="text-xs text-muted-foreground font-normal">(eine pro Zeile, optional)</span></Label>
+                <Textarea
+                  id="fragen"
+                  value={sprintFragenText}
+                  onChange={(e) => setSprintFragenText(e.target.value)}
+                  placeholder={"Können wir …?\nSind Nutzer bereit …?\nWird die Qualität …?"}
+                  rows={4}
+                />
+              </div>
+
 
               <div className="space-y-2">
                 <Label htmlFor="modus">Modus</Label>

@@ -91,6 +91,10 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         modus: "solo",
         decider: decider.trim(),
         sprint_leader: "",
+        challenge_statement: result.challenge_statement,
+        zielgruppe: result.zielgruppe,
+        erfolgsmessung: result.erfolgsmessung,
+        sprint_fragen: result.sprintFragen,
       });
       await updateSession.mutateAsync({
         status: "done",
