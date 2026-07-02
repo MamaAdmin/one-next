@@ -12,7 +12,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
       <div className="container mx-auto px-6 py-24 md:py-32">
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-16 items-center">
           <div className="space-y-8 animate-fade-in">
-            <span className="inline-block text-[11px] uppercase tracking-[0.18em] text-muted-foreground font-medium">
+            <span className="inline-block text-sm md:text-base uppercase tracking-[0.22em] text-muted-foreground font-medium">
               KI-Entwicklung · Design Sprints
             </span>
             <InlineTextField
