@@ -408,6 +408,9 @@ export const SPRINT_STEPS: SprintStepDef[] = [
   },
 ];
 
+export const SPRINT_TOTAL_MIN = SPRINT_STEPS.reduce((a, s) => a + s.timeboxMin, 0);
+
+
 export const STEP_KEYS = SPRINT_STEPS.map((s) => s.key);
 
 export function getStepDef(key: string): SprintStepDef | undefined {
