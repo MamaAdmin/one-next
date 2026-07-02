@@ -48,7 +48,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
           </div>
 
           {/* Bild 1 – Workshop, Post-its (großformatig, span 2 auf desktop) */}
-          <div className="hidden md:block rounded-2xl overflow-hidden group lg:col-span-2 h-full">
+          <div className="rounded-2xl overflow-hidden group md:col-span-2 lg:col-span-2 h-64 md:h-full">
             <img
               src={workshopPostits}
               alt="Hände arbeiten an einer Post-it-Wand während eines Design Sprints"
