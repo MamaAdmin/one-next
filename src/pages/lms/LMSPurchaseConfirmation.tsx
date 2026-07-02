@@ -66,7 +66,9 @@ export default function LMSPurchaseConfirmation() {
 
   if (isVerifying) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <>
+        <Navigation />
+        <div className="container mx-auto px-4 py-8 mt-32">
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <div className="text-center space-y-4">
