@@ -96,7 +96,7 @@ export default function LMSPurchaseConfirmation() {
       <Card className="max-w-2xl mx-auto border-primary">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <CheckCircle2 className="h-16 w-16 text-green-600" />
+            <CheckCircle2 className="h-16 w-16 text-primary" />
           </div>
           <CardTitle className="text-2xl">Kauf erfolgreich abgeschlossen!</CardTitle>
           <CardDescription>
@@ -148,7 +148,7 @@ export default function LMSPurchaseConfirmation() {
           </div>
 
           {enrollmentCount < purchase.number_of_licenses && (
-            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+            <div className="bg-accent-soft p-4 rounded-lg">
               <p className="text-sm">
                 <strong>Hinweis:</strong> Sie haben {purchase.number_of_licenses} Lizenzen gekauft, 
                 aber nur {enrollmentCount} wurde(n) automatisch erstellt. 
