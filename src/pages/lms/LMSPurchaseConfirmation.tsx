@@ -90,8 +90,10 @@ export default function LMSPurchaseConfirmation() {
   const enrollmentCount = purchase.lms_course_enrollments?.length || 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto border-green-600">
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 mt-32">
+      <Card className="max-w-2xl mx-auto border-primary">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <CheckCircle2 className="h-16 w-16 text-green-600" />
