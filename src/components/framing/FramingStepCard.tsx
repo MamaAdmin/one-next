@@ -211,7 +211,7 @@ export default function FramingStepCard({
         />
 
         {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
-          <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
+          <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4" /> KI-Vorschläge
@@ -245,7 +245,7 @@ export default function FramingStepCard({
               {vorschlaege.map((v, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-3 py-2 text-sm text-accent-foreground"
+                  className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-3 py-2 text-sm text-foreground"
                 >
                   <span className="flex-1">{v}</span>
                   <Button
@@ -285,7 +285,7 @@ export default function FramingStepCard({
               type="button"
               variant="outline"
               size="sm"
-              className="!border-accent !bg-accent-soft !text-accent-foreground hover:!bg-accent hover:!text-accent-foreground"
+              className="!border-accent !bg-accent-soft !text-foreground hover:!bg-accent hover:!text-foreground"
               onClick={() => loadSuggestions()}
               disabled={suggest.isPending}
             >
@@ -957,7 +957,7 @@ function InlineSuggestions({
         type="button"
         variant="outline"
         size="sm"
-        className="h-8 !border-accent !bg-accent-soft !text-accent-foreground hover:!bg-accent hover:!text-accent-foreground"
+        className="h-8 !border-accent !bg-accent-soft !text-foreground hover:!bg-accent hover:!text-foreground"
         onClick={onLoadSuggestions}
         disabled={pending}
       >
@@ -973,7 +973,7 @@ function InlineSuggestions({
           {matches.map(({ v, i }) => (
             <li
               key={i}
-              className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-accent-foreground"
+              className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-foreground"
             >
               <span className="flex-1">{stripBucketTag(v)}</span>
               <Button
@@ -1012,14 +1012,14 @@ function AcceptedKiList({
   if (items.length === 0) return null;
   return (
     <div className="mt-2 space-y-1.5">
-      <div className="flex items-center gap-1.5 text-xs font-medium text-accent-foreground/80">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-foreground/80">
         <Sparkles className="w-3.5 h-3.5" /> Übernommene KI-Vorschläge
       </div>
       <ul className="space-y-1.5">
         {items.map((v, i) => (
           <li
             key={i}
-            className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-accent-foreground"
+            className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5 text-sm text-foreground"
           >
             <span className="flex-1 whitespace-pre-wrap">{v}</span>
             <Button
@@ -2392,7 +2392,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
         </div>
 
         {/* Block 2 – KI-Vorschläge */}
-        <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-accent-foreground">
+        <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-foreground">
           <div className="flex items-center gap-2 font-semibold mb-2">
             <Sparkles className="w-4 h-4" /> KI-Vorschläge (im Pink-Akzent)
           </div>
@@ -2444,7 +2444,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
               <div className="font-medium mb-1">Neutrale Farbe</div>
               <div className="text-muted-foreground">Eigene Anmerkungen und User-Eingaben.</div>
             </div>
-            <div className="rounded-md border border-accent/60 bg-accent-soft p-3 text-accent-foreground">
+            <div className="rounded-md border border-accent/60 bg-accent-soft p-3 text-foreground">
               <div className="font-medium mb-1 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" /> One-Next-Akzent
               </div>
