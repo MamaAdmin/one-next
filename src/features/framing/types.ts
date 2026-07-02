@@ -89,6 +89,10 @@ export interface FramingStepData {
   inScope?: string[];
   outOfScope?: string[];
   sprintFragen?: string[];
+  // Step 8 – Übernommene KI-Vorschläge
+  kiInScope?: string[];
+  kiOutOfScope?: string[];
+  kiSprintFragen?: string[];
   // Step 9
   nufBewertungen?: Array<{ text: string; neuheit: number; nutzen: number; machbarkeit: number }>;
   top1Challenge?: string;
