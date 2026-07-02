@@ -26,6 +26,7 @@ interface UserWithRoles {
   email: string | null;
   full_name: string | null;
   created_at: string;
+  last_sign_in_at: string | null;
   roles: AppRole[];
 }
 
@@ -96,9 +97,19 @@ const UserRoleManager = () => {
 
       if (rolesError) throw rolesError;
 
+      // Fetch last sign-in timestamps via secure admin edge function
+      let signIns: Record<string, string | null> = {};
+      try {
+        const { data: signInData } = await supabase.functions.invoke("admin-list-user-signins");
+        signIns = (signInData as { last_sign_in?: Record<string, string | null> })?.last_sign_in || {};
+      } catch (e) {
+        console.warn("Could not load last sign-in data", e);
+      }
+
       // Combine profiles with their roles
       const usersWithRoles: UserWithRoles[] = (profiles || []).map((profile) => ({
         ...profile,
+        last_sign_in_at: signIns[profile.id] ?? null,
         roles: (roles || [])
           .filter((r) => r.user_id === profile.id)
           .map((r) => r.role as AppRole),
@@ -285,13 +296,14 @@ const UserRoleManager = () => {
                   <TableHead>E-Mail</TableHead>
                   <TableHead>Rollen</TableHead>
                   <TableHead>Registriert</TableHead>
+                  <TableHead>Zuletzt angemeldet</TableHead>
                   <TableHead className="text-right">Aktionen</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                       Keine Benutzer gefunden
                     </TableCell>
                   </TableRow>
@@ -335,6 +347,17 @@ const UserRoleManager = () => {
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {new Date(user.created_at).toLocaleDateString("de-DE")}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {user.last_sign_in_at
+                          ? new Date(user.last_sign_in_at).toLocaleString("de-DE", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : "—"}
                       </TableCell>
                       <TableCell className="text-right">
                         {addingRole?.userId === user.id ? (
