@@ -22,7 +22,12 @@ export default function SprintDashboard() {
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [sharing, setSharing] = useState<SprintRow | null>(null);
   const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
-  const activeFramings = (framingSessions ?? []).filter((f) => f.status === "active");
+  const allFramings = framingSessions ?? [];
+  const framingBySprintId = new Map(
+    allFramings
+      .filter((f) => f.resulting_sprint_id)
+      .map((f) => [f.resulting_sprint_id as string, f]),
+  );
 
   return (
     <>
