@@ -8,8 +8,8 @@ interface HeroProps {
 const Hero = ({ isEditMode = false }: HeroProps) => {
   const { content, updateContent } = usePageContent('index');
   return (
-    <section className="relative min-h-[70vh] flex items-center bg-gradient-hero pt-24 border-b border-border/60">
-      <div className="container mx-auto px-6 py-24 md:py-32">
+    <section className="relative flex items-center bg-gradient-hero pt-20 border-b border-border/60">
+      <div className="container mx-auto px-6 py-12 md:py-16">
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-16 items-center">
           <div className="space-y-8 animate-fade-in">
             <span className="inline-block text-sm md:text-base uppercase tracking-[0.22em] text-muted-foreground font-medium">
