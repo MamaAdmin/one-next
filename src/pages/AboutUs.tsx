@@ -6,8 +6,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { BrainIcon, TargetIcon, LightbulbIcon, RocketIcon } from "@/components/ui/custom-icons";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Users, Home, Flame } from "lucide-react";
 import juliaProfile from "@/assets/julia-haitz-profile.jpg";
+import trainingLocationRoom from "@/assets/training-location-room.jpg";
+import trainingLocationCozy from "@/assets/training-location-cozy.jpg";
 import { usePageContent } from "@/hooks/usePageContent";
 import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
@@ -243,6 +245,81 @@ const AboutUs = () => {
                 <p className="text-muted-foreground">
                   Wir unterstützen Sie bei der Implementierung und sorgen für nachhaltigen 
                   Erfolg durch kontinuierliche Optimierung.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Training Location Section */}
+      <section className="py-20 px-6 bg-background/50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Unsere Trainingslocation</h2>
+            <p className="text-lg text-muted-foreground">Cosy Training mitten im Grünen</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            <img
+              src={trainingLocationRoom}
+              alt="Heller Meetingraum der one-next Trainingslocation mit Holzdecke, langem Tisch und großen Fenstern ins Grüne"
+              className="rounded-2xl shadow-elegant w-full h-full object-cover"
+            />
+            <img
+              src={trainingLocationCozy}
+              alt="Gemütliche Lounge mit Kamin, Apéro und Fireside Talk in der one-next Trainingslocation"
+              className="rounded-2xl shadow-elegant w-full h-full object-cover"
+            />
+          </div>
+
+          <div className="max-w-3xl mx-auto text-center space-y-6 mb-12">
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Wir arbeiten bewusst in kleinen Gruppen mit <strong className="text-foreground">maximal 6 Personen</strong> —
+              für fokussierte Zusammenarbeit und echte Ergebnisse. Workshops finden in unseren
+              eigenen Räumen statt, bei Ihnen vor Ort oder auf Wunsch in einer passenden Location
+              in Kundennähe, die wir gerne für Sie organisieren.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Bei uns starten Sie am Nachmittag im lichtdurchfluteten Meetingraum und lassen den
+              Tag mit einem <strong className="text-foreground">Apéro und Fireside Talk</strong> ausklingen —
+              Erkenntnisse reflektieren am Kaminfeuer, mitten im Grünen mit Blick in die Berge.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="shadow-elegant">
+              <CardContent className="p-6 space-y-3 text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                  <Users className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Max. 6 Personen</h3>
+                <p className="text-sm text-muted-foreground">
+                  Fokussierte Intensität und echte Beteiligung aller Teilnehmenden.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-elegant">
+              <CardContent className="p-6 space-y-3 text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                  <Home className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Flexible Räume</h3>
+                <p className="text-sm text-muted-foreground">
+                  Bei uns, bei Ihnen oder in einer organisierten Location in Ihrer Nähe.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-elegant">
+              <CardContent className="p-6 space-y-3 text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                  <Flame className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Apéro & Fireside Talk</h3>
+                <p className="text-sm text-muted-foreground">
+                  Erkenntnisse gemeinsam reflektieren — am Kamin, mit Blick in die Berge.
                 </p>
               </CardContent>
             </Card>
