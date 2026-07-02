@@ -136,6 +136,26 @@ All colors MUST be HSL.
     letter-spacing: -0.02em;
     line-height: 1.05;
   }
+
+  /* Inline links inside prose / content get the semantic link color.
+     Links that already carry classes (nav, buttons, cards) are unaffected. */
+  a:not([class]) {
+    color: hsl(var(--link));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: hsl(var(--link) / 0.4);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+  a:not([class]):hover {
+    color: hsl(var(--link-hover));
+    text-decoration-color: hsl(var(--link-hover));
+  }
+  a:not([class]):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 
 /* Rich Text Editor (Quill) Styling for FAQ Manager */
@@ -179,11 +199,13 @@ All colors MUST be HSL.
 
 .ql-toolbar button:hover,
 .ql-toolbar button:focus {
-  background-color: hsl(var(--accent));
+  background-color: hsl(var(--accent-soft));
+  color: hsl(var(--accent-soft-foreground));
 }
 
 .ql-toolbar .ql-active {
-  background-color: hsl(var(--accent));
+  background-color: hsl(var(--accent-soft));
+  color: hsl(var(--accent-soft-foreground));
 }
 
 /* Dark mode adjustments */
