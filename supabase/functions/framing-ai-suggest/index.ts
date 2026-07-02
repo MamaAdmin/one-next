@@ -189,6 +189,20 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SUCCESS_BUCKETS[field]} vor. Keine anderen Kategorien. Antworte auf Deutsch. Prefixe JEDES Item mit '${successTag[field]}'.`,
       };
     }
+    const SCOPE_BUCKETS: Record<string, string> = {
+      inscope: "InScope (was gehört klar in den Sprint-Fokus – konkrete Themen, Deliverables, Aktivitäten)",
+      outscope: "OutScope (was wird bewusst ausgeklammert – typische Abgrenzungen, Nice-to-haves, Folgeprojekte)",
+      sprintfrage: "Sprintfrage (Decision Questions als 'Können wir …?'-Fragen, in 5 Tagen entscheidbar)",
+    };
+    const scopeTag: Record<string, string> = {
+      inscope: "[InScope]", outscope: "[OutScope]", sprintfrage: "[Sprintfrage]",
+    };
+    if (step_key === "8" && field && SCOPE_BUCKETS[field]) {
+      meta = {
+        title: meta.title,
+        task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SCOPE_BUCKETS[field]} vor. Keine anderen Kategorien. Antworte auf Deutsch. Prefixe JEDES Item mit '${scopeTag[field]}'.`,
+      };
+    }
     const key = Deno.env.get("LOVABLE_API_KEY");
     if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
 
