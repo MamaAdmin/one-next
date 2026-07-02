@@ -556,9 +556,18 @@ function applySuggestion(
       }
       return;
     }
-    case "scope-questions":
-      data.sprintFragen = pushUnique(data.sprintFragen, text);
+    case "scope-questions": {
+      const b = bucketOfSuggestion(text);
+      const value = b ? stripBucketTag(text) : text;
+      if (b === "inscope") {
+        data.kiInScope = pushUnique(data.kiInScope, value);
+      } else if (b === "outscope") {
+        data.kiOutOfScope = pushUnique(data.kiOutOfScope, value);
+      } else {
+        data.kiSprintFragen = pushUnique(data.kiSprintFragen, value);
+      }
       return;
+    }
     case "nuf":
       data.nufBewertungen = [
         ...(data.nufBewertungen ?? []),
