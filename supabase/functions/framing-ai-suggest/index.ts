@@ -245,7 +245,15 @@ Deno.serve(async (req) => {
       parsed = {};
     }
     const vorschlaege = Array.isArray(parsed.vorschlaege)
-      ? parsed.vorschlaege.filter((x): x is string => typeof x === "string").slice(0, 24)
+      ? parsed.vorschlaege
+          .filter((x): x is string => typeof x === "string")
+          .map((s) =>
+            step_key === "9"
+              ? s.replace(/\s*[\(\[][^)\]]*\b[NUF]\s*:[^)\]]*[\)\]]\s*$/i, "").trim()
+              : s,
+          )
+          .slice(0, 24)
+
       : [];
 
     return json({ vorschlaege });
