@@ -22,7 +22,12 @@ export default function SprintDashboard() {
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [sharing, setSharing] = useState<SprintRow | null>(null);
   const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
-  const activeFramings = (framingSessions ?? []).filter((f) => f.status === "active");
+  const allFramings = framingSessions ?? [];
+  const framingBySprintId = new Map(
+    allFramings
+      .filter((f) => f.resulting_sprint_id)
+      .map((f) => [f.resulting_sprint_id as string, f]),
+  );
 
   return (
     <>
@@ -101,14 +106,16 @@ export default function SprintDashboard() {
 
 
 
-          {activeFramings.length > 0 ? (
+          {allFramings.length > 0 ? (
             <section className="mb-10">
               <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                <Compass className="w-5 h-5" /> Aktive Problem-Framing-Workshops
+                <Compass className="w-5 h-5" /> Problem-Framing-Workshops
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
-                {activeFramings.map((f) => {
+                {allFramings.map((f) => {
                   const fStep = FRAMING_STEPS.find((s) => s.index === f.current_step);
+                  const isDone = f.status === "done";
+                  const isArchived = f.status === "archived";
                   return (
                     <Card key={f.id} className="h-full hover:shadow-hover transition-shadow relative">
                       <Link to={`/sprint/framing/${f.id}`} className="block">
@@ -117,20 +124,32 @@ export default function SprintDashboard() {
                             <h3 className="text-xl font-semibold leading-tight pr-16">
                               {f.titel_arbeitstitel || "Ohne Titel"}
                             </h3>
-                            <Badge variant={f.status === "active" ? "default" : "secondary"}>
-                              {f.status === "active" ? "Aktiv" : f.status}
+                            <Badge
+                              variant={
+                                isDone ? "secondary" : isArchived ? "outline" : "default"
+                              }
+                            >
+                              {isDone ? "Abgeschlossen" : isArchived ? "Archiviert" : "Aktiv"}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground line-clamp-2">
-                            Framing läuft – weiterarbeiten und daraus einen Sprint erzeugen.
+                            {isDone
+                              ? "Framing abgeschlossen – Ergebnisse einsehbar."
+                              : isArchived
+                                ? "Framing archiviert."
+                                : "Framing läuft – weiterarbeiten und daraus einen Sprint erzeugen."}
                           </p>
-                          <div className="text-sm text-muted-foreground pt-2">
-                            Aktueller Schritt:{" "}
-                            <span className="font-medium text-foreground">
-                              {fStep ? fStep.title : `Schritt ${f.current_step}`}
-                            </span>{" "}
-                            <span className="text-xs">({f.current_step} / {FRAMING_STEPS.length})</span>
-                          </div>
+                          {!isDone && !isArchived ? (
+                            <div className="text-sm text-muted-foreground pt-2">
+                              Aktueller Schritt:{" "}
+                              <span className="font-medium text-foreground">
+                                {fStep ? fStep.title : `Schritt ${f.current_step}`}
+                              </span>{" "}
+                              <span className="text-xs">
+                                ({f.current_step} / {FRAMING_STEPS.length})
+                              </span>
+                            </div>
+                          ) : null}
                           <div className="text-xs text-muted-foreground">Modus: Problem Framing</div>
                         </CardContent>
                       </Link>
@@ -155,6 +174,7 @@ export default function SprintDashboard() {
           ) : null}
 
 
+
           {isLoading ? (
             <p className="text-muted-foreground">Wird geladen …</p>
           ) : !sprints || sprints.length === 0 ? (
@@ -175,6 +195,7 @@ export default function SprintDashboard() {
             <div className="grid md:grid-cols-2 gap-6">
               {sprints.map((s) => {
                 const step = getStepDef(s.current_step);
+                const framing = framingBySprintId.get(s.id);
                 return (
                   <Card key={s.id} className="h-full hover:shadow-hover transition-shadow relative">
                     <Link to={`/sprint/${s.id}`} className="block">
@@ -207,6 +228,16 @@ export default function SprintDashboard() {
                         <div className="text-xs text-muted-foreground">
                           Modus: {s.modus === "solo" ? "Solo (KI ersetzt Team)" : "Team"}
                         </div>
+                        {framing ? (
+                          <Link
+                            to={`/sprint/framing/${framing.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                          >
+                            <Compass className="h-3.5 w-3.5" />
+                            Aus Problem Framing
+                          </Link>
+                        ) : null}
                       </CardContent>
                     </Link>
                     <Button
