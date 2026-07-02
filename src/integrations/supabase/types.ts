@@ -2751,43 +2751,55 @@ export type Database = {
       }
       sprints: {
         Row: {
+          challenge_statement: string
           created_at: string
           current_step: string
           decider: string
+          erfolgsmessung: string
           id: string
           modus: string
           owner_id: string
           problemstellung: string
+          sprint_fragen: Json
           sprint_leader: string
           status: string
           titel: string
           updated_at: string
+          zielgruppe: string
         }
         Insert: {
+          challenge_statement?: string
           created_at?: string
           current_step?: string
           decider?: string
+          erfolgsmessung?: string
           id?: string
           modus?: string
           owner_id: string
           problemstellung?: string
+          sprint_fragen?: Json
           sprint_leader?: string
           status?: string
           titel: string
           updated_at?: string
+          zielgruppe?: string
         }
         Update: {
+          challenge_statement?: string
           created_at?: string
           current_step?: string
           decider?: string
+          erfolgsmessung?: string
           id?: string
           modus?: string
           owner_id?: string
           problemstellung?: string
+          sprint_fragen?: Json
           sprint_leader?: string
           status?: string
           titel?: string
           updated_at?: string
+          zielgruppe?: string
         }
         Relationships: []
       }
