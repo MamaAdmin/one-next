@@ -82,6 +82,9 @@ export interface FramingStepData {
   // Step 7
   erfolgsmessung?: string;
   constraints?: string[];
+  // Step 7 – Übernommene KI-Vorschläge
+  kiErfolgsmessung?: string[];
+  kiConstraints?: string[];
   // Step 8
   inScope?: string[];
   outOfScope?: string[];
