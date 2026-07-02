@@ -195,6 +195,7 @@ export default function SprintDashboard() {
             <div className="grid md:grid-cols-2 gap-6">
               {sprints.map((s) => {
                 const step = getStepDef(s.current_step);
+                const framing = framingBySprintId.get(s.id);
                 return (
                   <Card key={s.id} className="h-full hover:shadow-hover transition-shadow relative">
                     <Link to={`/sprint/${s.id}`} className="block">
