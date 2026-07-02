@@ -162,17 +162,27 @@ export default function FramingStepCard({
             <p className="text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
               <span>{step.frage}</span>
               {step.variant === "nuf" ? (
-                <a
-                  href="https://gamma.app/docs/Die-NUF-Methode-yxs1qsjnjyii9uu?mode=doc"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => {
+                    const w = 1100;
+                    const h = 780;
+                    const left = window.screenX + Math.max(0, (window.outerWidth - w) / 2);
+                    const top = window.screenY + Math.max(0, (window.outerHeight - h) / 2);
+                    window.open(
+                      "https://gamma.app/docs/Die-NUF-Methode-yxs1qsjnjyii9uu?mode=doc",
+                      "nuf-help",
+                      `popup=yes,noopener,noreferrer,width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes`,
+                    );
+                  }}
                   aria-label="Erklärung zur NUF-Methode"
                   title="Erklärung zur NUF-Methode"
                   className="inline-flex items-center justify-center rounded-full text-primary hover:text-primary/80"
                 >
                   <HelpCircle className="w-4 h-4" />
-                </a>
+                </button>
               ) : null}
+
             </p>
             <p className="text-xs text-muted-foreground mt-2">{step.arbeit}</p>
 
