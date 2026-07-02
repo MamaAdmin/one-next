@@ -1012,7 +1012,7 @@ function AcceptedKiList({
   if (items.length === 0) return null;
   return (
     <div className="mt-2 space-y-1.5">
-      <div className="flex items-center gap-1.5 text-xs font-medium text-accent-foreground/80">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-foreground/80">
         <Sparkles className="w-3.5 h-3.5" /> Übernommene KI-Vorschläge
       </div>
       <ul className="space-y-1.5">
