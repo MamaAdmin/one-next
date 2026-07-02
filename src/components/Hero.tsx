@@ -13,7 +13,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-16 items-center">
           <div className="space-y-8 animate-fade-in">
             <span className="inline-block text-sm md:text-base uppercase tracking-[0.22em] text-muted-foreground font-medium">
-              Von der Idee zur fertigen Lösung · End-to-End KI-Entwicklung
+              VON DER IDEE ZUR FERTIGEN LÖSUNG · END-TO-END KI-ENTWICKLUNG & SCHULUNGEN
             </span>
             <InlineTextField
               value={content.hero_title || 'we define your way forward'}
