@@ -263,7 +263,7 @@ export default function SprintWorkspace() {
       </main>
 
       <SprintBasicsEditDialog sprint={sprint} open={editOpen} onOpenChange={setEditOpen} />
-      <ShareSprintDialog sprintId={sprint.id} open={shareOpen} onOpenChange={setShareOpen} />
+      
 
       <Footer />
     </div>
