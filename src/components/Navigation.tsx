@@ -235,7 +235,7 @@ const Navigation = () => {
                 }
                 return (
                   <div key={item.id} className="border-b pb-4">
-                    <p className="text-sm font-semibold mb-2">{item.label}</p>
+                    <p className="text-sm font-semibold mb-2 px-4">{item.label}</p>
                     {descendants.map((child) => (
                       <Link
                         key={child.id}
