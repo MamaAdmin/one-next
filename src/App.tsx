@@ -71,8 +71,6 @@ import SprintDashboard from "./pages/sprint/SprintDashboard";
 import SprintNew from "./pages/sprint/SprintNew";
 import SprintWorkspace from "./pages/sprint/SprintWorkspace";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
-import SprintJoin from "./pages/sprint/SprintJoin";
-import FramingJoin from "./pages/sprint/FramingJoin";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
 
