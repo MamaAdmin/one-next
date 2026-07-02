@@ -131,7 +131,9 @@ export default function LMSCourseDetail() {
   }, [courseData, currentModule, enrollmentId]);
 
   return (
-    <div className="container mx-auto py-8 mt-32">
+    <>
+      <Navigation />
+      <div className="container mx-auto py-8 mt-32">
       <LMSBreadcrumb items={breadcrumbItems} />
       <div className="mb-4">
         <Link to="/lms">
