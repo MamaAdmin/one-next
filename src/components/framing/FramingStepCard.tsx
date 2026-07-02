@@ -853,8 +853,9 @@ type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
 
 type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
 type SuccessBucket = "erfolg" | "constraint";
+type ScopeBucket = "inscope" | "outscope" | "sprintfrage";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket | SuccessBucket;
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket | SuccessBucket | ScopeBucket;
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
