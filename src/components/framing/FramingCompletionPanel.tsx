@@ -49,15 +49,23 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const [busy, setBusy] = useState(false);
 
   const step7 = steps.find((s) => s.step_key === "7")?.data as
-    | { erfolgsmessung?: string }
+    | { erfolgsmessung?: string; kiErfolgsmessung?: string[] }
     | undefined;
   const step8 = steps.find((s) => s.step_key === "8")?.data as
-    | { inScope?: string[]; outOfScope?: string[] }
+    | {
+        inScope?: string[];
+        outOfScope?: string[];
+        kiInScope?: string[];
+        kiOutOfScope?: string[];
+      }
     | undefined;
 
   const scopeOk =
-    (step8?.inScope?.length ?? 0) >= 1 && (step8?.outOfScope?.length ?? 0) >= 1;
-  const measureOk = !!step7?.erfolgsmessung?.trim();
+    ((step8?.inScope?.length ?? 0) + (step8?.kiInScope?.length ?? 0)) >= 1 &&
+    ((step8?.outOfScope?.length ?? 0) + (step8?.kiOutOfScope?.length ?? 0)) >= 1;
+  const measureOk =
+    (step7?.erfolgsmessung?.trim().length ?? 0) > 0 ||
+    (step7?.kiErfolgsmessung?.length ?? 0) > 0;
   const statementOk = !!result?.challenge_statement && signedOff;
   const deciderOk = decider.trim().length > 1;
 
@@ -212,7 +220,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                 )
               }
             />
-            <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt in Schritt 8)" />
+            <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt – eigene oder KI)" />
             <Item done={measureOk} label="Messziel definiert (Schritt 7)" />
             <Item
               done={deciderOk}
