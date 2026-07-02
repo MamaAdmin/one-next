@@ -160,8 +160,6 @@ const App = () => (
           <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
           <Route path="/sprint/framing/:id" element={<RequireAuth><FramingWorkspace /></RequireAuth>} />
           <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
-          <Route path="/sprint/join/:token" element={<RequireAuth><SprintJoin /></RequireAuth>} />
-          <Route path="/sprint/framing/join/:token" element={<RequireAuth><FramingJoin /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
