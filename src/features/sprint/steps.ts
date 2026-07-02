@@ -14,6 +14,8 @@ export interface SprintStepDef {
   dayLabel: string;
   /** Step display title, e.g. "1.1 Ziel" */
   title: string;
+  /** Empfohlene Timebox pro Schritt in Minuten (Jake Knapp Standard). */
+  timeboxMin: number;
   /** Main question / prompt shown as the headline. */
   frage: string;
   /** Allein arbeiten / Zusammen arbeiten instruction. */
