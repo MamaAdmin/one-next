@@ -27,7 +27,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
 
           <div className="relative animate-fade-in-up flex justify-center lg:justify-end">
             <div className="w-56 h-56 md:w-64 md:h-64 relative opacity-90">
-              <svg viewBox="0 0 200 200" className="w-full h-full">
+              <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-slow origin-center">
                 {Array.from({ length: 24 }).map((_, i) => {
                   const angle = (i * 360) / 24;
                   const x1 = 100 + Math.cos((angle * Math.PI) / 180) * 40;
