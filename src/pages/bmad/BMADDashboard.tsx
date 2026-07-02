@@ -143,7 +143,7 @@ const BMADDashboard = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "planning":
-        return "bg-blue-500/10 text-blue-500";
+        return "bg-primary/10 text-primary";
       case "development":
         return "bg-green-500/10 text-green-500";
       case "completed":

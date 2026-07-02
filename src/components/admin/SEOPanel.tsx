@@ -154,7 +154,7 @@ export const SEOPanel = ({ data, onChange }: SEOPanelProps) => {
           <div className="border-t pt-4">
             <Label className="mb-2 block">Google SERP Vorschau</Label>
             <div className="border rounded p-3 bg-background">
-              <div className="text-blue-600 text-lg mb-1 line-clamp-1">
+              <div className="text-primary text-lg mb-1 line-clamp-1">
                 {data.seo_title}
               </div>
               <div className="text-green-700 text-sm mb-1">

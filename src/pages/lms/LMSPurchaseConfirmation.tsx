@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Download, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import Navigation from "@/components/Navigation";
 
 export default function LMSPurchaseConfirmation() {
   const [searchParams] = useSearchParams();
@@ -65,7 +66,9 @@ export default function LMSPurchaseConfirmation() {
 
   if (isVerifying) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <>
+        <Navigation />
+        <div className="container mx-auto px-4 py-8 mt-32">
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <div className="text-center space-y-4">
@@ -74,7 +77,8 @@ export default function LMSPurchaseConfirmation() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </>
     );
   }
 
@@ -86,11 +90,13 @@ export default function LMSPurchaseConfirmation() {
   const enrollmentCount = purchase.lms_course_enrollments?.length || 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto border-green-600">
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 mt-32">
+      <Card className="max-w-2xl mx-auto border-primary">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <CheckCircle2 className="h-16 w-16 text-green-600" />
+            <CheckCircle2 className="h-16 w-16 text-primary" />
           </div>
           <CardTitle className="text-2xl">Kauf erfolgreich abgeschlossen!</CardTitle>
           <CardDescription>
@@ -142,7 +148,7 @@ export default function LMSPurchaseConfirmation() {
           </div>
 
           {enrollmentCount < purchase.number_of_licenses && (
-            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+            <div className="bg-accent-soft p-4 rounded-lg">
               <p className="text-sm">
                 <strong>Hinweis:</strong> Sie haben {purchase.number_of_licenses} Lizenzen gekauft, 
                 aber nur {enrollmentCount} wurde(n) automatisch erstellt. 
@@ -153,5 +159,6 @@ export default function LMSPurchaseConfirmation() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

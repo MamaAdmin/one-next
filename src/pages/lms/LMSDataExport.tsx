@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Download, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import Navigation from "@/components/Navigation";
 
 export default function LMSDataExport() {
   const [loading, setLoading] = useState(false);
@@ -48,7 +49,9 @@ export default function LMSDataExport() {
   };
 
   return (
-    <div className="container mx-auto py-8 max-w-2xl">
+    <>
+      <Navigation />
+      <div className="container mx-auto py-8 max-w-2xl mt-32">
       <Card>
         <CardHeader>
           <CardTitle>Daten-Export (GDPR)</CardTitle>
@@ -78,5 +81,6 @@ export default function LMSDataExport() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

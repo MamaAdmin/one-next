@@ -98,7 +98,7 @@ export default function SprintDashboard() {
             <Card className="border-l-4 border-l-accent">
               <CardContent className="p-5 space-y-2">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-accent" />
+                  <Sparkles className="w-5 h-5 text-primary" />
                   <h2 className="font-semibold">Starte mit Design Sprint (8h)</h2>
                 </div>
                 <p className="text-sm text-muted-foreground">

@@ -97,19 +97,19 @@ const AIDesignSprint = () => {
                 </div>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>1-2 Tage intensive Klärung</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Challenge präzise definieren</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Zielgruppe priorisieren</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Sprint-Ready machen</span>
                   </li>
                 </ul>
@@ -134,19 +134,19 @@ const AIDesignSprint = () => {
                 </div>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>2 bis 4 Tage intensive Workshops</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Vor Ort oder Remote mit Team</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Geleitet von KI-Experten und erfahrenen Moderatoren</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Maßgeschneidert für Ihre Bedürfnisse</span>
                   </li>
                 </ul>
@@ -171,23 +171,23 @@ const AIDesignSprint = () => {
                 </div>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Strukturierter, selbstgeführter Prozess</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span><strong>Solo-Modus:</strong> Allein durchlaufen – alle Entscheidungen beim Teilnehmer</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span><strong>Team-Modus:</strong> Gemeinsam mit verteiltem Team, Voting & Decider-Rolle</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Flexibel pausieren & fortsetzen</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Optionaler Experten-Input</span>
                   </li>
                 </ul>
@@ -218,11 +218,11 @@ const AIDesignSprint = () => {
                 </p>
                 <ul className="text-left space-y-4 max-w-2xl mx-auto">
                   <li className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <Check className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <span>Begleitet von erfahrenen Moderatoren mit KI-Expertise durchläuft Ihr Team klar strukturierte Phasen – von der Problemdefinition über die Ideenfindung bis zur Validierung erster Lösungen. Moderne KI-Tools beschleunigen dabei Analyse, Ideenfindung und Prototyping.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <Check className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <span>Das Ziel: in wenigen Tagen konkrete, umsetzbare KI-Anwendungsfälle identifizieren und als Prototyp oder Proof of Concept greifbar machen.</span>
                   </li>
                 </ul>

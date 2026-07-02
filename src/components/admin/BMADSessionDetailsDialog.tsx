@@ -32,7 +32,7 @@ const getStatusColor = (status: string) => {
     case "completed":
       return "bg-green-500";
     case "development":
-      return "bg-blue-500";
+      return "bg-primary";
     case "planning":
       return "bg-yellow-500";
     default:

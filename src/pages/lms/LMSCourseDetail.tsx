@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle2, Circle } from "lucide-react";
+import Navigation from "@/components/Navigation";
 import { Loader2 } from "lucide-react";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
@@ -130,7 +131,9 @@ export default function LMSCourseDetail() {
   }, [courseData, currentModule, enrollmentId]);
 
   return (
-    <div className="container mx-auto py-8 mt-32">
+    <>
+      <Navigation />
+      <div className="container mx-auto py-8 mt-32">
       <LMSBreadcrumb items={breadcrumbItems} />
       <div className="mb-4">
         <Link to="/lms">
@@ -304,5 +307,6 @@ export default function LMSCourseDetail() {
         </div>
       </div>
     </div>
+    </>
   );
 }

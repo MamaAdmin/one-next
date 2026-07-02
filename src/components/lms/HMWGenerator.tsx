@@ -231,10 +231,10 @@ export function HMWGenerator({ showSavedQuestions = true }: { showSavedQuestions
       {/* Left Column: Fixed Question Builder */}
       <div className="space-y-6">
         {/* Example Banner */}
-        <Alert className="bg-pink-50 border-pink-200 dark:bg-pink-950 dark:border-pink-800">
-          <Info className="h-4 w-4 text-pink-600 dark:text-pink-400" />
-          <AlertTitle className="text-pink-900 dark:text-pink-100">Beispiel:</AlertTitle>
-          <AlertDescription className="text-pink-700 dark:text-pink-300">
+        <Alert className="bg-accent-soft border-accent/20">
+          <Info className="h-4 w-4 text-primary dark:text-primary" />
+          <AlertTitle className="text-primary dark:text-primary">Beispiel:</AlertTitle>
+          <AlertDescription className="text-primary dark:text-primary">
             Wie können wir <strong>unseren Kunden</strong> <strong>ermöglichen</strong>, <strong>ihre Ziele zu erreichen</strong>?
           </AlertDescription>
         </Alert>

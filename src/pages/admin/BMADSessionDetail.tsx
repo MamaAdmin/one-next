@@ -36,28 +36,28 @@ const PHASE_CONFIG = {
   business_analyst: { 
     icon: AnalystIcon, 
     label: 'Business Analyst', 
-    color: 'text-blue-500',
+    color: 'text-primary',
     description: "Requirements-Analyse, Stakeholder-Interviews",
     output: "Requirements-Dokument"
   },
   product_manager: { 
     icon: ManagerIcon, 
     label: 'Product Manager', 
-    color: 'text-purple-500',
+    color: 'text-primary',
     description: "Product Vision, Roadmap & KPIs",
     output: "Product Vision Document"
   },
   ux_expert: { 
     icon: UXIcon, 
     label: 'UX Expert', 
-    color: 'text-pink-500',
+    color: 'text-primary',
     description: "User Journey, Wireframes, Design System",
     output: "UX Artifacts"
   },
   product_owner: { 
     icon: OwnerIcon, 
     label: 'Product Owner', 
-    color: 'text-indigo-500',
+    color: 'text-primary',
     description: "User Stories, Backlog, Acceptance Criteria",
     output: "User Stories & Epics"
   },
@@ -71,7 +71,7 @@ const PHASE_CONFIG = {
   scrum_master: { 
     icon: ScrumIcon, 
     label: 'Scrum Master', 
-    color: 'text-teal-500',
+    color: 'text-primary',
     description: "Sprint Planning, Story Refinement",
     output: "Sprint Plan"
   },
@@ -107,7 +107,7 @@ const getAgentIcon = (phase: string) => {
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'completed': return 'bg-green-500';
-    case 'development': return 'bg-blue-500';
+    case 'development': return 'bg-primary';
     case 'planning': return 'bg-yellow-500';
     default: return 'bg-gray-500';
   }
@@ -730,7 +730,7 @@ export default function BMADSessionDetail() {
                           {status === 'completed' ? (
                             <CheckCircle2 className="h-5 w-5 text-green-500" />
                           ) : status === 'running' ? (
-                            <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                            <Loader2 className="h-5 w-5 animate-spin text-primary" />
                           ) : status === 'error' ? (
                             <XCircle className="h-5 w-5 text-red-500" />
                           ) : (
