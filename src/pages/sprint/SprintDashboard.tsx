@@ -5,15 +5,13 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Plus, Sparkles, Compass, Share2 } from "lucide-react";
+import { Pencil, Plus, Sparkles, Compass } from "lucide-react";
 import { useMySprints, useMySprintsCompletedSteps } from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
 import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
-import ShareSprintDialog from "@/components/sprint/ShareSprintDialog";
-import ShareFramingDialog from "@/components/sprint/ShareFramingDialog";
 import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
@@ -22,8 +20,6 @@ export default function SprintDashboard() {
   const sprintIds = (sprints ?? []).map((s) => s.id);
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
-  const [sharing, setSharing] = useState<SprintRow | null>(null);
-  const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
   const allFramings = framingSessions ?? [];
   const framingBySprintId = new Map(
     allFramings
@@ -162,19 +158,6 @@ export default function SprintDashboard() {
                           <div className="text-xs text-muted-foreground">Modus: Problem Framing</div>
                         </CardContent>
                       </Link>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label="Framing teilen"
-                        className="absolute top-3 right-20 h-8 w-8"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setSharingFramingId(f.id);
-                        }}
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </Button>
                     </Card>
                   );
                 })}
@@ -253,19 +236,6 @@ export default function SprintDashboard() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label="Sprint teilen"
-                      className="absolute top-3 right-32 h-8 w-8"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setSharing(s);
-                      }}
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
                       aria-label="Sprint bearbeiten"
                       className="absolute top-3 right-20 h-8 w-8"
                       onClick={(e) => {
@@ -291,20 +261,6 @@ export default function SprintDashboard() {
           sprint={editing}
           open={!!editing}
           onOpenChange={(o) => !o && setEditing(null)}
-        />
-      ) : null}
-      {sharing ? (
-        <ShareSprintDialog
-          sprintId={sharing.id}
-          open={!!sharing}
-          onOpenChange={(o) => !o && setSharing(null)}
-        />
-      ) : null}
-      {sharingFramingId ? (
-        <ShareFramingDialog
-          sessionId={sharingFramingId}
-          open={!!sharingFramingId}
-          onOpenChange={(o) => !o && setSharingFramingId(null)}
         />
       ) : null}
     </>
