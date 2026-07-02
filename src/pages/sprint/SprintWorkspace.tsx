@@ -122,16 +122,6 @@ export default function SprintWorkspace() {
                     size="icon"
                     variant="ghost"
                     className="h-7 w-7"
-                    onClick={() => setShareOpen(true)}
-                    title="Sprint teilen"
-                  >
-                    <Share2 className="w-3.5 h-3.5" />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    className="h-7 w-7"
                     onClick={() => setEditOpen(true)}
                     title="Sprint-Grundlagen bearbeiten"
                   >
