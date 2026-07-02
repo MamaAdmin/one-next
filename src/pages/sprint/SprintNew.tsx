@@ -26,6 +26,10 @@ const schema = z.object({
   modus: z.enum(["solo", "team"]),
   decider: z.string().trim().max(120).default(""),
   sprint_leader: z.string().trim().max(120).default(""),
+  challenge_statement: z.string().trim().max(4000).default(""),
+  zielgruppe: z.string().trim().max(1000).default(""),
+  erfolgsmessung: z.string().trim().max(2000).default(""),
+  sprint_fragen: z.array(z.string().trim().max(500)).max(20).default([]),
 });
 
 export default function SprintNew() {
