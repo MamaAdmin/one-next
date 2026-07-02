@@ -126,7 +126,7 @@ const Navigation = () => {
               Kurse
             </Link>
 
-            <ThemeToggle />
+            
 
 
 
