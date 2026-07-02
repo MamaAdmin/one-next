@@ -1,64 +1,57 @@
-# Design-Politur one-next
+# ValueCards: weg von Deko-Stock zu erzählenden Bildern
 
-Ziel: Das bestehende, warm-neutrale Farbschema und die Grundstruktur bleiben. Wir schärfen Typografie, Farbkontraste, Hierarchie und Detail-Qualität, damit die Seite ruhiger, konsistenter und hochwertiger wirkt – im Stil moderner B2B-Studios (Linear, Vercel, Rauch-artige Editorial-Anmutung), aber weiterhin warm/menschlich.
+Der rosa Sektions-Hintergrund und die 3D-Objekt-Stockbilder (Ei, Pyramiden, pinkes Podest) wirken beliebig und lenken ab. Die Sektion soll ruhig werden und die Bilder sollen echte Inhalte tragen, nicht dekorieren.
 
-## 1. Typografie-System
-- Eine seriöse Editorial-Kombi einführen: **Instrument Serif** (Display/H1) + **Inter** oder **Söhne-Alternative (Geist / Söhne / Inter Tight)** für Body/UI.
-- Klare Type-Scale (Tailwind-Extension): `display-xl`, `display-lg`, `h1`–`h4`, `body-lg`, `body`, `body-sm`, `overline`.
-- Zeilenlängen begrenzen (`max-w-prose` auf Fließtext), `tracking-tight` nur auf Display, `leading-[1.15]` auf großen Headlines.
-- Farbverlauf-Headline (`bg-gradient-primary bg-clip-text`) sparsamer einsetzen – nur 1× pro Sektion.
+## Grundhaltung
+- Sektionshintergrund: **kein Rosa mehr**, sondern das warme Sand-Neutral der Seite (`bg-background`) mit dünnem Divider oben/unten.
+- Karten-Farbflächen (Beige/Schwarz/Gold) bleiben als Ankerpunkte, aber ruhiger, mit kleinerem Radius (`rounded-2xl`), einheitlichem Padding.
+- Bilder sind **inhaltlich**, nicht dekorativ. Einheitlicher Look: leicht entsättigt (0.9), warmes Farbklima passend zum Sand-Hintergrund, keine 3D-Renderings, keine pastelligen Studio-Sets.
 
-## 2. Farb- & Token-Verfeinerung
-- Sekundäre Neutralen-Palette einführen (`--surface`, `--surface-muted`, `--border-subtle`, `--border-strong`) statt nur `background/muted/border`.
-- Akzentfarbe (`--accent`) auf einen ruhigeren Ton kalibrieren (z. B. gedecktes Terracotta oder tiefes Petrol) – nicht das aktuelle Rosé, das billig wirken kann.
-- Feste Fokus- und Hover-States: `--ring` sichtbarer, `hover:bg-surface-muted` einheitlich.
-- Dark-Mode Kontraste prüfen (Text auf Card >= 7:1).
+## Bild-Konzept — drei Optionen zur Wahl
 
-## 3. Spacing, Rhythmus, Layout
-- Sektions-Rhythmus vereinheitlichen: `py-24 md:py-32`, konsistente `container` (max-w-6xl) statt gemischter Breiten.
-- 8-Punkt-Grid disziplinieren; Karten mit einheitlichem Padding `p-6 md:p-8` und `gap-6`.
-- Radius reduzieren: aktuell `--radius: 1.5rem` ist sehr weich; auf `1rem` senken, für Buttons/Chips `0.75rem`. Wirkt professioneller, weniger „App-Prototyp".
+Ich schlage drei kohärente Bildstile vor. Wir wählen einen und ich generiere/kuratiere alle drei Bilder in diesem Stil, damit die Sektion visuell aus einem Guss ist.
 
-## 4. Komponenten-Politur
-- **Buttons**: klare Hierarchie – Primary (solid, dunkel), Secondary (Outline mit `border-strong`), Ghost. Konsistente Höhe (`h-11`), Icon-Abstand `gap-2`.
-- **Cards**: einheitliche Border (`border border-border-subtle`), sehr dezenter Shadow, Hover: nur Border-Farbwechsel + 1 px Lift, kein starker Shadow-Sprung.
-- **Badges/Tags**: schmaler, `uppercase text-[11px] tracking-wider`.
-- **Navigation**: dünner (`h-16`), Backdrop-Blur, unten 1 px `border-subtle`, Logo auf `h-7` reduzieren.
-- **Footer**: dreispaltig, dezenter Divider, keine dekorativen Farbflächen.
+### Option A — Menschen bei der Arbeit (dokumentarisch)
+Reportage-Fotos aus Workshops und Sprint-Sessions: Post-its an der Wand, Hände am Whiteboard, konzentrierte Gesichter im Halbprofil, Laptops mit Skizzen, gebrauchte Kaffeetassen. Warm, körnig, natürliches Licht. Sagt sofort: „Hier passiert echte Arbeit mit echten Menschen." Passt zu Expertise/Erfolg.
+Referenz: IDEO-Case-Studies, Frog Design, Ammunition Group.
 
-## 5. Hero & Landing
-- Ruhigerer Hero: großes Serif-Statement links, kleiner erklärender Absatz + zwei CTAs, rechts entweder ruhige Grafik oder gar nichts – aktuell zu viel visuelles Rauschen.
-- Micro-Kicker („Für Innovationsteams") in Overline-Style.
-- Trust-Row (Kundenlogos oder Zahlen) direkt unter dem Hero.
+### Option B — Architektonische Ruhe (editorial-still)
+Ruhige, fast fotografische Studien: großer weißer Raum mit einem einzelnen Objekt, Papierstapel im Streiflicht, Detail einer Post-it-Wand aus der Nähe (abstrakte Farbfelder), eine geöffnete Notebook-Seite. Kein Mensch, aber Spuren von Denken. Sehr editorial, wie eine Kinfolk/Cereal-Doppelseite.
+Referenz: Kinfolk, Apartamento, Aesop Journal.
 
-## 6. Bilder & Icons
-- Einheitlicher Icon-Set (nur `lucide-react`), Stroke 1.5, Größe `h-4`/`h-5`.
-- Bilder: einheitlicher Look (leichte Entsättigung wie im Blog `0.9`), einheitliches Seitenverhältnis (16:10 oder 4:5), abgerundet `rounded-xl`.
+### Option C — Abstrakt-typografisch (Studio-Manifesto)
+Statt Fotos: großformatige typografische Kacheln — ein einziges Wort oder eine Zahl in Serif, viel Weißraum, warme Papier-Textur. „01 Sprint", „48h Prototyp", „12 Wochen". Wirkt wie Manifest-Poster einer Design-Agentur. Kein Foto-Rauschen, maximale Klarheit.
+Referenz: Pentagram, Base Design, Bureau Borsche.
 
-## 7. Motion & Interaktion
-- Vorhandene `reveal-on-scroll` behalten, aber Distanz auf `translateY(8px)` reduzieren, Dauer 500ms, `ease-out`.
-- Hover-Transforms nur noch auf interaktive Elemente, nicht auf Karten mit Link innen.
+## Struktur nach dem Umbau
 
-## 8. Konsistenz-Cleanup
-- Alle `text-white`/`bg-black`/Hex-Klassen durch semantische Tokens ersetzen (Grep + Fix).
-- `App.css` (React-Vite-Boilerplate mit `#root max-width: 1280px; text-align: center`) entfernen – überschreibt heute stellenweise Layout.
-- Doppelte Container-Breiten vereinheitlichen.
+Layout bleibt Bento-artig, aber ruhiger:
 
-## Umsetzung in Phasen
-1. **Foundation** (kein visueller Bruch nötig): Tokens erweitern, Radius/Spacing/Type-Scale in `index.css` + `tailwind.config.ts`, `App.css` bereinigen.
-2. **Core-Komponenten**: Button, Card, Badge, Navigation, Footer.
-3. **Landing-Sektionen**: Hero, ValueCards, About, Services – auf neues System heben.
-4. **Sekundärseiten**: Sprint-Dashboard, Blog, LMS-Übersichten nachziehen.
-5. **QA**: Kontraste, Dark-Mode, Mobile, Lighthouse.
+```text
+┌───────────────┬───────────────────────────────┐
+│ Expertise     │  Bild 1 (großformatig)        │
+│ (Text-Karte)  │                               │
+├───────────────┼───────────────┬───────────────┤
+│  Bild 2       │ Effizienz     │ Erfolg        │
+│               │ (schwarz)     │ (Gold, ruhig) │
+└───────────────┴───────────────┴───────────────┘
+```
 
-## Technische Details
-- Betroffene Dateien primär: `src/index.css`, `tailwind.config.ts`, `src/App.css` (löschen/leeren), `src/components/ui/button.tsx`, `card.tsx`, `badge.tsx`, `Navigation.tsx`, `Footer.tsx`, `Hero.tsx`, `ValueCards.tsx`, `About.tsx`, `Services.tsx`.
-- Keine Business-Logik-Änderungen, keine Routen-, Auth- oder Backend-Änderungen.
-- Fonts via `<link>` in `index.html` (Google Fonts: Instrument Serif + Inter Tight).
+- 3 Text-Karten (Expertise, Effizienz, Erfolg) bleiben inhaltlich unverändert.
+- Statt 3 Deko-Bildern nur **2 bewusste Bilder** — weniger ist mehr.
+- Karten-Radius auf `rounded-2xl` (passt zum neuen globalen Radius), einheitliche `p-8 md:p-10`.
+- Karten-Palette: Sand (Expertise, statt aktuelles Beige `bg-secondary`), Schwarz (Effizienz), dezenteres Gold (Erfolg) — Gold-Ton leicht entsättigen, damit er nicht mehr senffarben wirkt.
+- Buttons: konsistent `rounded-full` bleibt, aber Rand kräftiger (`border-strong`), keine Hex-Farben mehr.
 
-## Nicht Teil dieses Plans
-- Neue Features, Content-Umbauten, neue Seiten.
-- Änderungen an Sprint-/Framing-/LMS-Logik.
-- Marken-Redesign (Logo, Name, Claim).
+## Betroffene Dateien
+- `src/components/ValueCards.tsx` — Layout, Farben, Bildeinbindung.
+- `src/assets/` — je nach Option: neue Bilder generieren (imagegen) im gewählten Stil, alte 3D-Assets `geometric-paper.jpg`, `decorative-egg.jpg`, `pink-podium.jpg` entfernen.
+- `src/index.css` — keine Änderung nötig; nutzt bestehende Tokens.
 
-Sag mir, ob ich mit **Phase 1 (Foundation + Cleanup)** starten soll, oder ob du zuerst 3 gerenderte Design-Direktionen für den Hero sehen willst, bevor wir das System festziehen.
+## Nicht Teil dieses Schritts
+- Weitere Sektionen (About, Services, Footer).
+- Textliche Neuformulierung der Inhalte.
+- Neue Business-Logik.
+
+## Entscheidung nötig
+**Welche Bildrichtung soll ich umsetzen — A, B oder C?** Sag mir die Option, dann baue ich die Sektion um und generiere die passenden Bilder im gewählten Stil.
