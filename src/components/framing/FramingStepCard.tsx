@@ -1999,6 +1999,12 @@ function clamp(n: number) {
   return Math.max(1, Math.min(5, Math.round(n)));
 }
 
+function clamp10(n: number) {
+  if (Number.isNaN(n)) return 1;
+  return Math.max(1, Math.min(10, Math.round(n)));
+}
+
+
 function VariantSuccess({
   data,
   patch,
