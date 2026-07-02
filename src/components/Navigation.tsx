@@ -217,7 +217,7 @@ const Navigation = () => {
 
         {/* Mobile Menu - Dynamic */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-6 pb-4">
+          <div className="md:hidden pb-4 bg-background border-t border-border/60 max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="flex flex-col gap-4">
               {topLevelItems.map((item) => (
                 <div key={item.id} className="border-b pb-4">
