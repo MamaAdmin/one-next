@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info } from "lucide-react";
+import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info, HelpCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { FRAMING_STEPS, type FramingStepDef } from "@/features/framing/steps";
 import type {
