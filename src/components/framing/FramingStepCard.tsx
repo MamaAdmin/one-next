@@ -2329,6 +2329,7 @@ function VariantNextSteps({
                 }}
               />
               <Input
+                type="date"
                 value={t.wann}
                 placeholder="Wann?"
                 onChange={(e) => {
