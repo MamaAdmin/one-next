@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { useNavigation } from "@/hooks/useNavigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -124,6 +125,10 @@ const Navigation = () => {
             <Link to="/kurse" className="text-foreground hover:text-primary transition-colors">
               Kurse
             </Link>
+
+            <ThemeToggle />
+
+
 
             {user ? (
               <DropdownMenu>
