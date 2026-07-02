@@ -60,6 +60,10 @@ export interface CreateSprintInput {
   modus: "solo" | "team";
   decider: string;
   sprint_leader: string;
+  challenge_statement?: string;
+  zielgruppe?: string;
+  erfolgsmessung?: string;
+  sprint_fragen?: string[];
 }
 
 export function useCreateSprint() {
