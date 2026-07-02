@@ -307,5 +307,6 @@ export default function LMSCourseDetail() {
         </div>
       </div>
     </div>
+    </>
   );
 }
