@@ -105,14 +105,14 @@ All colors MUST be HSL.
     --shadow-hover: 0 4px 14px -6px hsl(0 0% 0% / 0.5), 0 2px 4px hsl(0 0% 0% / 0.3);
 
 
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 40 10% 90%;
-    --sidebar-primary: 40 10% 96%;
-    --sidebar-primary-foreground: 0 0% 8%;
-    --sidebar-accent: 0 0% 14%;
-    --sidebar-accent-foreground: 40 10% 96%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 40 10% 90%;
+    --sidebar-background: 210 20% 12%;
+    --sidebar-foreground: 36 20% 86%;
+    --sidebar-primary: 36 22% 92%;
+    --sidebar-primary-foreground: 210 20% 10%;
+    --sidebar-accent: 210 14% 18%;
+    --sidebar-accent-foreground: 36 22% 92%;
+    --sidebar-border: 210 14% 22%;
+    --sidebar-ring: 208 40% 62%;
   }
 }
 
