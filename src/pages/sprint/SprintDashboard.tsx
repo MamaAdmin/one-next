@@ -5,15 +5,13 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Plus, Sparkles, Compass, Share2 } from "lucide-react";
+import { Pencil, Plus, Sparkles, Compass } from "lucide-react";
 import { useMySprints, useMySprintsCompletedSteps } from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
 import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
-import ShareSprintDialog from "@/components/sprint/ShareSprintDialog";
-import ShareFramingDialog from "@/components/sprint/ShareFramingDialog";
 import type { SprintRow } from "@/features/sprint/types";
 
 export default function SprintDashboard() {
