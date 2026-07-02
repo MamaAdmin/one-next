@@ -182,11 +182,6 @@ const Navigation = () => {
                       </DropdownMenuItem>
                     </>
                   )}
-                  <DropdownMenuItem asChild>
-                    <Link to="/lms/account/delete" className="cursor-pointer">
-                      Account löschen
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     Abmelden
@@ -270,9 +265,6 @@ const Navigation = () => {
                       Admin-Dashboard
                     </Link>
                   )}
-                  <Link to="/lms/account/delete" className="block py-2 px-4 hover:bg-accent rounded-md">
-                    Account löschen
-                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="block w-full text-left py-2 px-4 hover:bg-accent rounded-md"
