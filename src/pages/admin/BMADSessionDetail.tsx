@@ -107,7 +107,7 @@ const getAgentIcon = (phase: string) => {
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'completed': return 'bg-green-500';
-    case 'development': return 'bg-blue-500';
+    case 'development': return 'bg-primary';
     case 'planning': return 'bg-yellow-500';
     default: return 'bg-gray-500';
   }
