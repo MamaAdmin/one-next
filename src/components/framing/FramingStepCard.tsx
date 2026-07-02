@@ -538,10 +538,9 @@ function applySuggestion(
       const b = bucketOfSuggestion(text);
       const value = b ? stripBucketTag(text) : text;
       if (b === "erfolg") {
-        const current = (data.erfolgsmessung ?? "").trim();
-        data.erfolgsmessung = current ? `${current}\n• ${value}` : `• ${value}`;
+        data.kiErfolgsmessung = pushUnique(data.kiErfolgsmessung, value);
       } else {
-        data.constraints = pushUnique(data.constraints, value);
+        data.kiConstraints = pushUnique(data.kiConstraints, value);
       }
       return;
     }
