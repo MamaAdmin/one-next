@@ -178,7 +178,8 @@ const App = () => (
         </Routes>
         <FeedbackWidget />
       </BrowserRouter>
-      </TooltipProvider>
+        </TooltipProvider>
+      </ThemeProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );
