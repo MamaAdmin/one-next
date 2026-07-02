@@ -127,7 +127,7 @@ const CustomAIDevelopment = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             {/* Badge with Icon */}
-            <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
+            <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full">
               <Target className="w-5 h-5" />
               <span className="font-semibold">Individuelle KI-Entwicklung</span>
             </div>
@@ -137,14 +137,14 @@ const CustomAIDevelopment = () => {
               onSave={(value) => updateContent("hero_title", value, "text")}
               isEditMode={isEditMode}
               as="h1"
-              className="text-5xl lg:text-6xl font-bold text-white"
+              className="text-5xl lg:text-6xl font-bold text-primary-foreground"
             />
             
             <InlineTextArea
               value={content.hero_description || "Nicht jedes Unternehmen hat die Kapazität oder das interne Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Wir bringen Ihre Idee in eine klare, umsetzungsreife Form – von der ersten Problemdefinition bis zum vollständigen Blueprint, mit dem ein Entwicklungsteam direkt starten kann. Strukturiert nach dem BMAD-Framework."}
               onSave={(value) => updateContent("hero_description", value, "text")}
               isEditMode={isEditMode}
-              className="text-xl text-white/90 leading-relaxed"
+              className="text-xl text-primary-foreground/90 leading-relaxed"
               minRows={3}
             />
             
