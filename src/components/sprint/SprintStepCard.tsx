@@ -297,7 +297,7 @@ export default function SprintStepCard({
         {/* Progress + Day */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <Badge variant="outline" className="text-sm">
-            {step.dayLabel} · Schritt {totalIndex + 1} von {totalCount}
+            {step.dayLabel} · Timebox {step.timeboxMin} Min · Schritt {totalIndex + 1} von {totalCount}
           </Badge>
           {limit ? (
             <span className="text-sm text-muted-foreground">

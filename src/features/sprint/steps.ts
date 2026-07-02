@@ -14,6 +14,8 @@ export interface SprintStepDef {
   dayLabel: string;
   /** Step display title, e.g. "1.1 Ziel" */
   title: string;
+  /** Empfohlene Timebox pro Schritt in Minuten (Jake Knapp Standard). */
+  timeboxMin: number;
   /** Main question / prompt shown as the headline. */
   frage: string;
   /** Allein arbeiten / Zusammen arbeiten instruction. */
@@ -52,6 +54,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.1 Ziel",
+    timeboxMin: 10,
     frage: "Wie sieht eine perfekte Welt für die Kunden in 12–18 Monaten aus?",
     arbeit:
       "Schreibe einen Satz, der ein perfektes Ergebnis für deine Kunden beschreibt. Mutig, optimistisch, idealistisch. Keine Zahlen/Metriken. Keine Lösung vorschreiben.",
@@ -66,6 +69,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.2 Metriken",
+    timeboxMin: 10,
     frage: "Woran erkennen wir, dass wir unser Ziel erreicht haben?",
     arbeit:
       "1–2 Metriken. Grober Entwurf, keine Verpflichtung. Stell dir vor, alles läuft perfekt. Eine Zahl aufnehmen, ehrgeizig sein.",
@@ -79,6 +83,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.3 Risiken",
+    timeboxMin: 10,
     frage: "Was könnte uns davon abhalten, Ziel und Metriken zu erreichen?",
     arbeit:
       "Werde pessimistisch. Wie könnten wir scheitern? Ja/Nein-Fragen (Beginn mit „Können wir.../Werden.../Ist...“).",
@@ -92,6 +97,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.4 HMW — How Might We",
+    timeboxMin: 90,
     frage: "Welche HMW-Fragen ergeben sich aus Ziel, Metriken und Risiken?",
     arbeit:
       "Fragen, zuhören, notieren. 2–4 Experten je 15–30 Min. interviewen. HMW-Notizen machen (Probleme/Ideen als „Wie könnten wir...?“-Fragen). Solo-Modus: Die KI generiert HMW-Fragen statt Experteninterviews.",
@@ -105,6 +111,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.5 Kunden",
+    timeboxMin: 10,
     frage: "Welche Kundentypen bedienen wir?",
     arbeit:
       "Ein Eintrag pro Kundentyp. Einfache Kategorien statt komplizierter Demografie. Auch Schlüsselakteure aufnehmen.",
@@ -118,6 +125,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.6 Discovery",
+    timeboxMin: 10,
     frage: "Wie entdecken Kunden dieses neue Ding?",
     arbeit:
       "Wichtigsten Kundentyp wählen. 3 Schritte: Entdecken → Lernen → Starten. Möglichst wenige Worte.",
@@ -132,6 +140,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.7 Core",
+    timeboxMin: 10,
     frage: "Was ist die Kernerfahrung?",
     arbeit:
       "Wichtigsten Kundentyp wählen. 3 Schritte der Kernerfahrung mit dem Produkt. Möglichst wenige Worte.",
@@ -146,6 +155,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.8 Map (Gesamtkarte)",
+    timeboxMin: 30,
     frage: "Wie sieht die Gesamterfahrung des Kunden aus?",
     arbeit:
       "Bereiche Kunden / Entdeckung / Kern / Ergebnis / Weitere Akteure / Zielrisiko zu einer großen Karte verbinden. Mit Pfeilen verbinden, 10–15 Schritte ideal, vereinfachen. Ergebnis = ein Ereignis, das zeigt, dass wir auf Kurs zum Ziel sind.",
@@ -159,6 +169,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.9 Recruit",
+    timeboxMin: 15,
     frage: "Wie finden wir unsere Zielkunden?",
     arbeit:
       "Felder: Interviewer · Recruiter · Wo Kunden zu finden sind · Brauchen Kunden außer einem Laptop etwas? · Video-Link fürs Interview.",
@@ -170,6 +181,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.10 Screening",
+    timeboxMin: 15,
     frage: "Welche Merkmale ein-/ausschließen? Und wie filtern wir Kandidaten?",
     arbeit:
       "Tabelle Einschließen/Ausschließen + Filtermethode (Google Forms, TypeForm, greatquestion.io ...).",
@@ -181,6 +193,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 1,
     dayLabel: "Tag 1 · Map",
     title: "1.11 Confirmed Interviews",
+    timeboxMin: 15,
     frage: "Wer wird interviewt?",
     arbeit:
       "3+ Interviews rekrutieren/bestätigen. Alle Kunden MÜSSEN dem Zielprofil aus Screening (1.10) entsprechen. Tabelle Kundenname / Interview-Zeit.",
@@ -194,6 +207,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 2,
     dayLabel: "Tag 2 · Sketch",
     title: "2.1 Lightning Demos",
+    timeboxMin: 45,
     frage: "Welche analogen Lösungen können uns inspirieren?",
     arbeit:
       "Inspirierende Lösungen aus anderen Branchen sammeln (gezielt zum Zielrisiko), Favorit wählen, kurze Demo, Kernidee beschriften.",
@@ -206,6 +220,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 2,
     dayLabel: "Tag 2 · Sketch",
     title: "2.2 Notes",
+    timeboxMin: 20,
     frage: "Was nehmen wir aus Tag 1 mit in die Skizzen?",
     arbeit:
       "Auf Papier Gedächtnis auffrischen: Ziel, Metrik, Zielrisiko aufschreiben, dann Lieblings-HMWs, Lightning Demos, Kernteile der Map.",
@@ -217,6 +232,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 2,
     dayLabel: "Tag 2 · Sketch",
     title: "2.3 Ideas",
+    timeboxMin: 20,
     frage: "Welche Ideen entstehen aus den HMWs?",
     arbeit:
       "Frei brainstormen: Antworten auf HMW-Fragen, Headlines, Doodles, Storyboards, Mindmaps. Privater Denkraum.",
@@ -228,6 +244,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 2,
     dayLabel: "Tag 2 · Sketch",
     title: "2.4 Crazy 8s",
+    timeboxMin: 10,
     frage: "Welche 8 schnellen Varianten skizzierst du?",
     arbeit: "8 schnelle Skizzen, 1 Min. pro Skizze (Timer). Eine Idee variieren.",
     nutztDatenAus: ["2.3"],
@@ -238,6 +255,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 2,
     dayLabel: "Tag 2 · Sketch",
     title: "2.5 Solution Sketch",
+    timeboxMin: 90,
     frage: "Wie sieht deine detaillierte Lösung für den Zielmoment aus?",
     arbeit:
       "Detaillierte Lösung für den Zielmoment zeichnen. Regeln: anonym, selbsterklärend, schwarz-weiß, „hässlich ist okay“, Worte sind wichtig, vorerst geheim.",
@@ -251,6 +269,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 3,
     dayLabel: "Tag 3 · Decide",
     title: "3.1 Decide",
+    timeboxMin: 90,
     frage: "Welche Lösungen sollen wir prototypisieren und testen?",
     arbeit:
       "(1) Heatmap – Punkte auf gemochte Stellen. (2) Speed-Review – 2–3 Min. pro Skizze, Cluster beschriften. (3) Straw Poll – still beste Lösung wählen + Begründung „Wir sollten X testen, weil...“. (4) Decider wählt 1–3 Skizzen.",
@@ -263,6 +282,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 3,
     dayLabel: "Tag 3 · Decide",
     title: "3.2 Hypotheses",
+    timeboxMin: 20,
     frage: "Warum testen wir diese Skizzen, und was glauben wir, wird passieren?",
     arbeit:
       "Große Idee hinter den Lösungen, die Ziel/Metrik erfüllt oder Top-Risiken adressiert. 1–2 Hypothesen zum Testen.",
@@ -276,6 +296,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 3,
     dayLabel: "Tag 3 · Decide",
     title: "3.3 Storyboard Flow",
+    timeboxMin: 20,
     frage: "Was sind die ersten 6 Schritte deines Prototyps?",
     arbeit:
       "Mit Eröffnungsszene VOR dem Produkt beginnen, dann Screens/Klicks. Gewinner-Skizzen nutzen, nichts Neues erfinden.",
@@ -289,6 +310,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 3,
     dayLabel: "Tag 3 · Decide",
     title: "3.4 Storyboard",
+    timeboxMin: 120,
     frage: "Wie sieht das fertige Storyboard aus?",
     arbeit:
       "Gewinner-Flow als Storyboard ausarbeiten (Eröffnungsszene + Prototyp-Screens). Schnelle Entscheidungen, keine langen Diskussionen, Aufgaben verteilen.",
@@ -300,6 +322,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 3,
     dayLabel: "Tag 3 · Decide",
     title: "3.5 Prototyping Jobs",
+    timeboxMin: 15,
     frage: "Wer ist wofür verantwortlich?",
     arbeit:
       "Rollen: Prototyper, Stitcher, Texter/Content-Sammler, Interviewer, Recruiter.",
@@ -311,6 +334,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 3,
     dayLabel: "Tag 3 · Decide",
     title: "3.6 Prototyping Schedule",
+    timeboxMin: 10,
     frage: "Wann checken wir uns ein?",
     arbeit:
       "9:30 Start · 12:00 Team-Check-in · 15:30 Review mit Decider · 17:00 Ende. Frei editierbar.",
@@ -324,6 +348,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 4,
     dayLabel: "Tag 4 · Prototype",
     title: "4.1 Prototype",
+    timeboxMin: 480,
     frage: "Wie bauen wir die realistische Simulation?",
     arbeit:
       "Realistische Simulation bauen / Prototyp-Screenshots einfügen. Die KI kann pro Storyboard-Screen Vorschläge für Inhalte/Texte liefern.",
@@ -337,6 +362,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 5,
     dayLabel: "Tag 5 · Test",
     title: "5.1 Scorecard",
+    timeboxMin: 60,
     frage: "Wie bewerten wir die Tests?",
     arbeit:
       "Mit 3+ Kunden testen, die zum Zielprofil (1.10) passen (optional 4–5). Pro Frage je Kunde bewerten: grün = ja, rot = nein, „vielleicht“ vermeiden. Ablauf: (1) Ansehen & abstimmen, (2) schnelle Recaps + Decider, (3) Conclusions.",
@@ -348,6 +374,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 5,
     dayLabel: "Tag 5 · Test",
     title: "5.2 Entscheidung",
+    timeboxMin: 15,
     frage: "Lasst es uns bauen – oder mehr lernen?",
     arbeit:
       "„Lasst es uns bauen“ ODER „Lasst uns mehr lernen“ (→ neuer Sprint, der Ziel/Metriken/Risiken aus diesem Sprint vorbefüllt übernimmt).",
@@ -359,6 +386,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 5,
     dayLabel: "Tag 5 · Test",
     title: "5.3 Hot Takes",
+    timeboxMin: 20,
     frage: "Was nehmen wir aus dem Sprint mit?",
     arbeit:
       "(1) Allein still ausfüllen, (2) Stille Abstimmung 5 Stimmen, (3) Diskussion 5–10 Min., (4) Decider wählt nächste Schritte.",
@@ -371,6 +399,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     day: 5,
     dayLabel: "Tag 5 · Test",
     title: "5.4 Next Steps",
+    timeboxMin: 30,
     frage: "Was tun wir nächste Woche?",
     arbeit:
       "Nächste Schritte vorschlagen (Timer 5 Min.), Decider verteilt Aufgaben + Zeitpläne. Spalten: Nächster Schritt/Aufgabe / Wer? / Wann?",
@@ -378,6 +407,9 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     variant: "table",
   },
 ];
+
+export const SPRINT_TOTAL_MIN = SPRINT_STEPS.reduce((a, s) => a + s.timeboxMin, 0);
+
 
 export const STEP_KEYS = SPRINT_STEPS.map((s) => s.key);
 
