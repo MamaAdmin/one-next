@@ -33,9 +33,9 @@ const getAgentIcon = (agentType: string) => {
 const getArtifactTypeColor = (type: string) => {
   switch (type) {
     case "requirements":
-      return "bg-purple-500";
+      return "bg-primary";
     case "architecture":
-      return "bg-blue-500";
+      return "bg-primary";
     case "code":
       return "bg-green-500";
     case "deployment":

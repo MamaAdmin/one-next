@@ -28,8 +28,8 @@ interface QuadrantCardProps {
 const STORAGE_KEY = 'smart-sailboat-data';
 const colorClasses = {
   blue: {
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
+    bg: 'bg-accent-soft',
+    border: 'border-accent/20',
     text: 'text-primary',
     hover: 'hover:bg-primary/10'
   },

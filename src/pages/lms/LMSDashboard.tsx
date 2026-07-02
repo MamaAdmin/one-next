@@ -79,7 +79,7 @@ export default function LMSDashboard() {
 
           {/* BMAD Portal Card */}
           {(isBmadUser || isAdmin) && (
-            <Card className="mb-6 border-purple-500/30 bg-gradient-to-r from-purple-500/5 to-transparent">
+            <Card className="mb-6 border-primary/30 bg-gradient-to-r from-primary/5 to-transparent">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
