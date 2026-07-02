@@ -289,20 +289,6 @@ export default function SprintDashboard() {
           onOpenChange={(o) => !o && setEditing(null)}
         />
       ) : null}
-      {sharing ? (
-        <ShareSprintDialog
-          sprintId={sharing.id}
-          open={!!sharing}
-          onOpenChange={(o) => !o && setSharing(null)}
-        />
-      ) : null}
-      {sharingFramingId ? (
-        <ShareFramingDialog
-          sessionId={sharingFramingId}
-          open={!!sharingFramingId}
-          onOpenChange={(o) => !o && setSharingFramingId(null)}
-        />
-      ) : null}
     </>
   );
 }
