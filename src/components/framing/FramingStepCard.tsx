@@ -1621,7 +1621,7 @@ function VariantCynefin({
       subtitle: "Erkennen – Analysieren – Reagieren",
       bg: "bg-[#d9eddb] dark:bg-emerald-950/40",
       border: "border-[#9cc9a2] dark:border-emerald-800/60",
-      accent: "text-[#2f6b3a] dark:text-emerald-200",
+      accent: "text-[#2f6b3a] dark:text-primary",
     },
     {
       key: "chaotisch",
@@ -1637,7 +1637,7 @@ function VariantCynefin({
       subtitle: "Erkennen – Kategorisieren – Reagieren",
       bg: "bg-[#cfe0f0] dark:bg-sky-950/40",
       border: "border-[#8fb6d6] dark:border-sky-800/60",
-      accent: "text-[#1f4a70] dark:text-sky-200",
+      accent: "text-[#1f4a70] dark:text-primary",
     },
   ];
   const flashSnap = (c: Cynefin, i: number) => {

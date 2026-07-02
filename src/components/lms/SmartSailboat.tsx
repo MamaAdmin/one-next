@@ -30,8 +30,8 @@ const colorClasses = {
   blue: {
     bg: 'bg-blue-50',
     border: 'border-blue-200',
-    text: 'text-blue-900',
-    hover: 'hover:bg-blue-100'
+    text: 'text-primary',
+    hover: 'hover:bg-primary/10'
   },
   green: {
     bg: 'bg-green-50',

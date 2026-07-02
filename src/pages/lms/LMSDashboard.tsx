@@ -83,8 +83,8 @@ export default function LMSDashboard() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-500/10 rounded-lg">
-                      <Brain className="h-6 w-6 text-purple-500" />
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Brain className="h-6 w-6 text-primary" />
                     </div>
                     <div>
                       <CardTitle>BMAD Portal</CardTitle>
@@ -160,7 +160,7 @@ export default function LMSDashboard() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium">Nächster Meilenstein</CardTitle>
-                    <Award className="h-4 w-4 text-blue-500" />
+                    <Award className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">

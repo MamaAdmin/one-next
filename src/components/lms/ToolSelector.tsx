@@ -23,8 +23,8 @@ interface ToolSelectorProps {
 }
 
 const categoryColors: Record<string, string> = {
-  understand: "bg-blue-100 text-blue-800",
-  ideate: "bg-purple-100 text-purple-800",
+  understand: "bg-primary/10 text-primary",
+  ideate: "bg-primary/10 text-primary",
   decide: "bg-orange-100 text-orange-800",
   prototype: "bg-green-100 text-green-800",
   validate: "bg-red-100 text-red-800",

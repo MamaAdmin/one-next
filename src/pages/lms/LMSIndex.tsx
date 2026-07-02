@@ -76,7 +76,7 @@ const LMSIndex = () => {
                           <Trophy className="h-5 w-5 text-yellow-500" />
                         )}
                         {enrollment.status === "active" && (
-                          <Clock className="h-5 w-5 text-blue-500" />
+                          <Clock className="h-5 w-5 text-primary" />
                         )}
                         Kurs #{enrollment.id.slice(0, 8)}
                       </CardTitle>

@@ -18,28 +18,28 @@ export const BMADInfo = () => {
       icon: AnalystIcon, 
       description: "Requirements-Analyse, Stakeholder-Interviews", 
       output: "Requirements-Dokument",
-      color: "text-blue-500" 
+      color: "text-primary" 
     },
     { 
       name: "Product Manager", 
       icon: ManagerIcon, 
       description: "Product Vision, Roadmap & KPIs", 
       output: "Product Vision Document",
-      color: "text-purple-500" 
+      color: "text-primary" 
     },
     { 
       name: "UX Expert", 
       icon: UXIcon, 
       description: "User Journey, Wireframes, Design System", 
       output: "UX Artifacts",
-      color: "text-pink-500" 
+      color: "text-primary" 
     },
     { 
       name: "Product Owner", 
       icon: OwnerIcon, 
       description: "User Stories, Backlog, Acceptance Criteria", 
       output: "User Stories & Epics",
-      color: "text-indigo-500" 
+      color: "text-primary" 
     },
     { 
       name: "Architect", 
@@ -53,7 +53,7 @@ export const BMADInfo = () => {
       icon: ScrumIcon, 
       description: "Sprint Planning, Story Refinement", 
       output: "Sprint Plan",
-      color: "text-teal-500" 
+      color: "text-primary" 
     },
     { 
       name: "Developer", 

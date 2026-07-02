@@ -34,7 +34,7 @@ interface Profile {
 }
 
 const STATUS_OPTIONS = [
-  { value: "new", label: "Neu", color: "bg-blue-100 text-blue-800" },
+  { value: "new", label: "Neu", color: "bg-primary/10 text-primary" },
   { value: "in_review", label: "In Bearbeitung", color: "bg-yellow-100 text-yellow-800" },
   { value: "resolved", label: "Erledigt", color: "bg-green-100 text-green-800" },
   { value: "dismissed", label: "Abgelehnt", color: "bg-gray-100 text-gray-600" },
@@ -139,7 +139,7 @@ const AppFeedbackTab = () => {
           <p className="text-xs text-muted-foreground">Gesamt</p>
         </CardContent></Card>
         <Card><CardContent className="pt-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">{newCount}</p>
+          <p className="text-2xl font-bold text-primary">{newCount}</p>
           <p className="text-xs text-muted-foreground">Neu</p>
         </CardContent></Card>
         <Card><CardContent className="pt-4 text-center">

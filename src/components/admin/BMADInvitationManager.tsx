@@ -145,7 +145,7 @@ const BMADInvitationManager = () => {
     if (new Date(invitation.expires_at) < new Date()) {
       return <Badge variant="destructive">Abgelaufen</Badge>;
     }
-    return <Badge className="bg-blue-500/10 text-blue-500">Ausstehend</Badge>;
+    return <Badge className="bg-primary/10 text-primary">Ausstehend</Badge>;
   };
 
   if (loading) {

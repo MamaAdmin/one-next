@@ -19,7 +19,7 @@ export const ProfileStats = ({
       title: "Eingeschriebene Kurse",
       value: totalCourses,
       icon: BookOpen,
-      color: "text-blue-600",
+      color: "text-primary",
     },
     {
       title: "Abgeschlossene Kurse",
@@ -37,7 +37,7 @@ export const ProfileStats = ({
       title: "Erfolge",
       value: achievements,
       icon: Award,
-      color: "text-purple-600",
+      color: "text-primary",
     },
   ];
 

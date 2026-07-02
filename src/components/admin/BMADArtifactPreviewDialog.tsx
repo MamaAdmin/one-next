@@ -18,9 +18,9 @@ interface BMADArtifactPreviewDialogProps {
 const getAgentIcon = (agentType: string) => {
   switch (agentType) {
     case "business_analyst":
-      return <Brain className="w-4 h-4 text-purple-500" />;
+      return <Brain className="w-4 h-4 text-primary" />;
     case "manager":
-      return <Users className="w-4 h-4 text-blue-500" />;
+      return <Users className="w-4 h-4 text-primary" />;
     case "architect":
       return <Layers className="w-4 h-4 text-orange-500" />;
     case "developer":
