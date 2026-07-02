@@ -228,6 +228,16 @@ export default function SprintDashboard() {
                         <div className="text-xs text-muted-foreground">
                           Modus: {s.modus === "solo" ? "Solo (KI ersetzt Team)" : "Team"}
                         </div>
+                        {framing ? (
+                          <Link
+                            to={`/sprint/framing/${framing.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                          >
+                            <Compass className="h-3.5 w-3.5" />
+                            Aus Problem Framing
+                          </Link>
+                        ) : null}
                       </CardContent>
                     </Link>
                     <Button
