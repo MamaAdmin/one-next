@@ -2156,7 +2156,7 @@ function VariantNuf({
   const bew = data.nufBewertungen ?? [];
   return (
     <div className="space-y-6">
-      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–5)">
+      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–10)">
         <div className="space-y-3">
           <p className="text-sm font-medium">Eigene Anmerkungen</p>
           {bew.length === 0 ? (
