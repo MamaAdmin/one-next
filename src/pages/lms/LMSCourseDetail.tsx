@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle2, Circle } from "lucide-react";
+import Navigation from "@/components/Navigation";
 import { Loader2 } from "lucide-react";
 import { GDPRConsent } from "@/components/lms/GDPRConsent";
 import { TemplateRenderer } from "@/components/lms/TemplateRenderer";
