@@ -897,6 +897,9 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "gering" || tag === "low") return "gering";
   if (tag === "erfolg" || tag === "success" || tag === "kpi" || tag === "metrik") return "erfolg";
   if (tag === "constraint" || tag === "constraints" || tag === "rahmen") return "constraint";
+  if (tag === "inscope" || tag === "in-scope" || tag === "scope") return "inscope";
+  if (tag === "outscope" || tag === "out-of-scope" || tag === "out" || tag === "notscope") return "outscope";
+  if (tag === "sprintfrage" || tag === "sprint-frage" || tag === "sprintfragen" || tag === "question" || tag === "decision") return "sprintfrage";
   return null;
 }
 
