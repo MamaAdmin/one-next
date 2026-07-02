@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { DeleteAccount } from "@/components/lms/DeleteAccount";
 import { CourseList } from "@/components/profile/CourseList";
 import { ProfileStats } from "@/components/profile/ProfileStats";
 import { PurchaseHistory } from "@/components/profile/PurchaseHistory";
@@ -178,6 +179,8 @@ const UserProfile = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              <DeleteAccount />
             </TabsContent>
 
             <TabsContent value="courses">
