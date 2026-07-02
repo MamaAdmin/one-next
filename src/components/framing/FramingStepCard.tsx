@@ -159,8 +159,23 @@ export default function FramingStepCard({
             </Badge>
 
             <h2 className="text-2xl font-bold">{step.title}</h2>
-            <p className="text-muted-foreground mt-1">{step.frage}</p>
+            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
+              <span>{step.frage}</span>
+              {step.variant === "nuf" ? (
+                <a
+                  href="https://gamma.app/docs/Die-NUF-Methode-yxs1qsjnjyii9uu?mode=doc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Erklärung zur NUF-Methode"
+                  title="Erklärung zur NUF-Methode"
+                  className="inline-flex items-center justify-center rounded-full text-primary hover:text-primary/80"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                </a>
+              ) : null}
+            </p>
             <p className="text-xs text-muted-foreground mt-2">{step.arbeit}</p>
+
           </div>
         </div>
 
