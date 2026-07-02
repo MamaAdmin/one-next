@@ -2,9 +2,8 @@ import { Button } from "@/components/ui/button";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
-import geometricPaper from "@/assets/geometric-paper.jpg";
-import decorativeEgg from "@/assets/decorative-egg.jpg";
-import pinkPodium from "@/assets/pink-podium.jpg";
+import workshopPostits from "@/assets/workshop-postits.jpg";
+import workshopTable from "@/assets/workshop-table.jpg";
 import { CalendarBookingDialog } from "./CalendarBookingDialog";
 
 interface ValueCardsProps {
@@ -13,29 +12,28 @@ interface ValueCardsProps {
 
 const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
   const { content, updateContent } = usePageContent('value-cards');
-  
+
   return (
-    <section className="py-8 md:py-16 bg-[#fff0ed]">
+    <section className="py-16 md:py-28 bg-background">
       <div className="container mx-auto px-4 md:px-6">
-        {/* Mobile: Stack vertically, Tablet: 2 cols, Desktop: Asymmetric grid with fixed height */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:auto-rows-[400px]">
-          
-          {/* Expertise Card - spans 1 col on mobile, 2 cols on tablet, 1 col on desktop */}
-          <div className="bg-secondary rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 md:col-span-2 lg:col-span-1 h-full flex flex-col justify-between text-foreground">
-            <div className="space-y-4 md:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:auto-rows-[380px]">
+
+          {/* Expertise – Text-Karte */}
+          <div className="bg-secondary rounded-2xl p-8 md:p-10 md:col-span-2 lg:col-span-1 h-full flex flex-col justify-between text-foreground">
+            <div className="space-y-5">
               <InlineTextField
                 value={content.expertise_title || 'Expertise'}
                 onSave={(value) => updateContent('expertise_title', value)}
                 isEditMode={isEditMode}
-                className="text-2xl md:text-4xl font-light"
+                className="text-2xl md:text-3xl font-light tracking-tight"
                 placeholder="Titel des Expertise-Abschnitts"
                 as="h2"
               />
               <InlineTextArea
-                value={content.expertise_description || 'Wir verbinden Menschen, Technologie und Prozesse. Mit agilen Methoden und Frameworks wie dem Design Sprint helfen wir, in wenigen Tagen Ideen zu entwickeln, Prototypen zu testen und schneller die richtigen Entscheidungen zu treffen. Unser Fokus: Strategieberatung, Coaching, maßgeschneiderte IT- und KI-Lösungen sowie die Förderung digitaler Kompetenz.'}
+                value={content.expertise_description || 'Wir verbinden Menschen, Technologie und Prozesse. Mit agilen Methoden wie dem Design Sprint entwickeln und testen wir Ideen in wenigen Tagen – für schnellere, bessere Entscheidungen. Unser Fokus: Strategie, Coaching und digitale Kompetenz.'}
                 onSave={(value) => updateContent('expertise_description', value)}
                 isEditMode={isEditMode}
-                className="text-sm md:text-base text-foreground/80 leading-relaxed"
+                className="text-sm md:text-base text-foreground/75 leading-relaxed"
                 placeholder="Beschreibung des Expertise-Abschnitts"
                 minRows={3}
               />
@@ -44,42 +42,59 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               <CalendarBookingDialog
                 buttonText={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
                 buttonSize="lg"
-                buttonClassName="rounded-full border-2 border-foreground/20 hover:bg-background/90 bg-background text-foreground"
+                buttonClassName="rounded-full border border-foreground/15 bg-background text-foreground hover:bg-background/90"
               />
             </div>
           </div>
 
-          {/* Decorative Image 1 - hidden on mobile, shown on tablet+ */}
-          <div className="hidden md:block rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1 h-full">
-            <img 
-              src={geometricPaper} 
-              alt="Dekorative geometrische Papierobjekte"
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          {/* Bild 1 – Workshop, Post-its (großformatig, span 2 auf desktop) */}
+          <div className="hidden md:block rounded-2xl overflow-hidden group lg:col-span-2 h-full">
+            <img
+              src={workshopPostits}
+              alt="Hände arbeiten an einer Post-it-Wand während eines Design Sprints"
+              loading="lazy"
+              width={1280}
+              height={1280}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              style={{ filter: 'saturate(0.9)' }}
             />
           </div>
 
-          {/* Effizienz Card - black background */}
-          <div className="bg-foreground text-background rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 lg:col-span-1 h-full flex flex-col justify-between">
-            <div className="space-y-4 md:space-y-6">
+          {/* Bild 2 – Arbeitstisch */}
+          <div className="hidden md:block rounded-2xl overflow-hidden group lg:col-span-1 h-full">
+            <img
+              src={workshopTable}
+              alt="Zwei Personen arbeiten gemeinsam an Wireframes und Skizzen"
+              loading="lazy"
+              width={1280}
+              height={1280}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              style={{ filter: 'saturate(0.9)' }}
+            />
+          </div>
+
+          {/* Effizienz – schwarze Karte */}
+          <div className="bg-foreground text-background rounded-2xl p-8 md:p-10 lg:col-span-1 h-full flex flex-col justify-between">
+            <div className="space-y-5">
               <InlineTextField
                 value={content.efficiency_title || 'Effizienz'}
                 onSave={(value) => updateContent('efficiency_title', value)}
                 isEditMode={isEditMode}
-                className="text-2xl md:text-4xl font-light text-background"
+                className="text-2xl md:text-3xl font-light text-background tracking-tight"
                 placeholder="Titel des Effizienz-Abschnitts"
                 as="h2"
               />
               <InlineTextArea
-                value={content.efficiency_description || 'Wir generieren Effizienz durch die neusten Technologien und Automatisierungen'}
+                value={content.efficiency_description || 'Mit modernsten Technologien und Automatisierungen reduzieren wir Aufwände, beschleunigen Prozesse und schaffen Freiräume für wertschöpfende Tätigkeiten.'}
                 onSave={(value) => updateContent('efficiency_description', value)}
                 isEditMode={isEditMode}
-                className="text-sm md:text-base text-background/80 leading-relaxed"
+                className="text-sm md:text-base text-background/75 leading-relaxed"
                 placeholder="Beschreibung des Effizienz-Abschnitts"
                 minRows={2}
               />
             </div>
             <div>
-              <Button variant="outline" size="lg" className="rounded-full border-background/20 hover:bg-background/10 text-foreground hover:text-background">
+              <Button variant="outline" size="lg" className="rounded-full border-background/25 hover:bg-background/10 text-foreground hover:text-background">
                 {isEditMode ? (
                   <InlineTextField
                     value={content.efficiency_button || 'Neuesten Bericht lesen'}
@@ -95,37 +110,28 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
             </div>
           </div>
 
-          {/* Decorative Image 2 - hidden on mobile */}
-          <div className="hidden md:block rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1 h-full">
-            <img 
-              src={decorativeEgg} 
-              alt="Dekoratives Oster-Ei"
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          </div>
-
-          {/* Erfolg Card - gold background */}
-          <div className="rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-12 bg-[#b0a377] lg:col-span-1 h-full flex flex-col justify-between">
-            <div className="space-y-4 md:space-y-6">
+          {/* Erfolg – ruhige, gedämpfte Karte */}
+          <div className="rounded-2xl p-8 md:p-10 bg-muted lg:col-span-1 h-full flex flex-col justify-between md:col-span-2">
+            <div className="space-y-5">
               <InlineTextField
                 value={content.success_title || 'Erfolg'}
                 onSave={(value) => updateContent('success_title', value)}
                 isEditMode={isEditMode}
-                className="text-2xl md:text-4xl font-light"
+                className="text-2xl md:text-3xl font-light tracking-tight"
                 placeholder="Titel des Erfolgs-Abschnitts"
                 as="h2"
               />
               <InlineTextArea
-                value={content.success_description || 'Erst wenn unsere Kunden erfolgreich mit unseren Produkten sind, sind wir zufrieden!'}
+                value={content.success_description || 'Erst wenn unsere Kunden erfolgreich sind, sind wir zufrieden. Mit Beratung, Coaching und agilen Methoden sorgen wir dafür, dass unsere Umsetzungen Wirkung zeigen.'}
                 onSave={(value) => updateContent('success_description', value)}
                 isEditMode={isEditMode}
-                className="text-sm md:text-base text-foreground/80 leading-relaxed"
+                className="text-sm md:text-base text-foreground/75 leading-relaxed"
                 placeholder="Beschreibung des Erfolgs-Abschnitts"
                 minRows={2}
               />
             </div>
             <div>
-              <Button variant="outline" size="lg" className="rounded-full border-foreground/20 hover:bg-foreground/5">
+              <Button variant="outline" size="lg" className="rounded-full border-foreground/15 hover:bg-foreground/5">
                 {isEditMode ? (
                   <InlineTextField
                     value={content.success_button || 'Unsere Lösungen'}
@@ -139,15 +145,6 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                 )}
               </Button>
             </div>
-          </div>
-
-          {/* Starburst Icon Card with decorative image - shown on all screens */}
-          <div className="bg-muted rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group lg:col-span-1 h-full">
-            <img 
-              src={pinkPodium} 
-              alt="Dekoratives pinkes Podest"
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
           </div>
         </div>
       </div>
