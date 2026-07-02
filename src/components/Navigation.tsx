@@ -219,24 +219,39 @@ const Navigation = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden pb-4 bg-background border-t border-border/60 max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="flex flex-col gap-4">
-              {topLevelItems.map((item) => (
-                <div key={item.id} className="border-b pb-4">
-                  <p className="text-sm font-semibold mb-2">{item.label}</p>
-                  {getAllDescendants(item).map((child) => (
+              {topLevelItems.map((item) => {
+                const descendants = getAllDescendants(item);
+                if (descendants.length === 0) {
+                  return item.url ? (
                     <Link
-                      key={child.id}
-                      to={child.url || "#"}
-                      className={`block py-2 hover:bg-accent rounded-md ${
-                        child.depth > 0 ? "pl-8" : "pl-4"
-                      }`}
+                      key={item.id}
+                      to={item.url}
+                      className="block py-2 px-4 hover:bg-accent rounded-md font-medium"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      {child.depth > 0 && "└─ "}
-                      {child.label}
+                      {item.label}
                     </Link>
-                  ))}
-                </div>
-              ))}
+                  ) : null;
+                }
+                return (
+                  <div key={item.id} className="border-b pb-4">
+                    <p className="text-sm font-semibold mb-2">{item.label}</p>
+                    {descendants.map((child) => (
+                      <Link
+                        key={child.id}
+                        to={child.url || "#"}
+                        className={`block py-2 hover:bg-accent rounded-md ${
+                          child.depth > 0 ? "pl-8" : "pl-4"
+                        }`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {child.depth > 0 && "└─ "}
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                );
+              })}
 
               <Link
                 to="/kurse"
