@@ -49,7 +49,9 @@ export default function LMSDataExport() {
   };
 
   return (
-    <div className="container mx-auto py-8 max-w-2xl">
+    <>
+      <Navigation />
+      <div className="container mx-auto py-8 max-w-2xl mt-32">
       <Card>
         <CardHeader>
           <CardTitle>Daten-Export (GDPR)</CardTitle>
