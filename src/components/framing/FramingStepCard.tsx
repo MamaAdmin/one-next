@@ -2161,45 +2161,57 @@ function VariantNuf({
           {bew.map((r, i) => {
             const sum = r.neuheit + r.nutzen + r.machbarkeit;
             const isTop = data.top1Challenge === r.text;
+            const isKi = (data.kiSprintFragen ?? []).includes(r.text);
+            const base = isKi
+              ? "border-accent/60 bg-accent-soft"
+              : "";
             return (
               <div
                 key={i}
-                className={`grid grid-cols-[1fr_80px_80px_80px_60px_auto] gap-2 items-center rounded-md border p-2 ${
-                  isTop ? "border-primary bg-primary/5" : ""
+                className={`rounded-md border p-3 space-y-2 ${
+                  isTop ? "border-primary bg-primary/5" : base
                 }`}
               >
-                <Input
+                <Textarea
+                  rows={2}
                   value={r.text}
+                  className={isKi ? "bg-background/60" : ""}
                   onChange={(e) => {
                     const next = [...bew];
                     next[i] = { ...r, text: e.target.value };
                     patch({ nufBewertungen: next });
                   }}
                 />
-                {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
-                  <div key={k}>
-                    <Label className="text-xs capitalize">{k}</Label>
-                    <Input
-                      type="number"
-                      min={1}
-                      max={5}
-                      value={r[k]}
-                      onChange={(e) => {
-                        const next = [...bew];
-                        next[i] = { ...r, [k]: clamp(+e.target.value) };
-                        patch({ nufBewertungen: next });
-                      }}
-                    />
+                <div className="flex flex-wrap items-end gap-3">
+                  {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
+                    <div key={k} className="w-20">
+                      <Label className="text-xs capitalize">{k}</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={r[k]}
+                        onChange={(e) => {
+                          const next = [...bew];
+                          next[i] = { ...r, [k]: clamp(+e.target.value) };
+                          patch({ nufBewertungen: next });
+                        }}
+                      />
+                    </div>
+                  ))}
+                  <div className="flex flex-col items-center">
+                    <Label className="text-xs">Summe</Label>
+                    <div className="text-sm font-semibold h-10 flex items-center px-2">{sum}</div>
                   </div>
-                ))}
-                <div className="text-sm font-semibold text-center">{sum}</div>
-                <Button
-                  variant={isTop ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => patch({ top1Challenge: r.text })}
-                >
-                  Top-1
-                </Button>
+                  <Button
+                    variant={isTop ? "default" : "outline"}
+                    size="sm"
+                    className="ml-auto"
+                    onClick={() => patch({ top1Challenge: r.text })}
+                  >
+                    Top-1
+                  </Button>
+                </div>
               </div>
             );
           })}
