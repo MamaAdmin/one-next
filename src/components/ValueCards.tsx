@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
-import workshopPostits from "@/assets/workshop-postits.jpg";
+import workshopPostits from "@/assets/workshop-stickynotes-blue.jpg";
 import workshopTable from "@/assets/workshop-table.jpg";
 import { CalendarBookingDialog } from "./CalendarBookingDialog";
 
