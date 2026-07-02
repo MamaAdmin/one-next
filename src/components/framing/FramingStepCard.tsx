@@ -108,7 +108,9 @@ export default function FramingStepCard({
           step.variant === "sailboat" ||
           step.variant === "five-whys" ||
           step.variant === "cynefin" ||
-          step.variant === "assumptions") &&
+          step.variant === "assumptions" ||
+          step.variant === "success-constraints" ||
+          step.variant === "scope-questions") &&
         field
       ) {
         // Replace only this bucket's suggestions, keep others
