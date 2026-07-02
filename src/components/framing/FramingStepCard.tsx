@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info } from "lucide-react";
+import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info, HelpCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { FRAMING_STEPS, type FramingStepDef } from "@/features/framing/steps";
 import type {
@@ -159,8 +159,23 @@ export default function FramingStepCard({
             </Badge>
 
             <h2 className="text-2xl font-bold">{step.title}</h2>
-            <p className="text-muted-foreground mt-1">{step.frage}</p>
+            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
+              <span>{step.frage}</span>
+              {step.variant === "nuf" ? (
+                <a
+                  href="https://gamma.app/docs/Die-NUF-Methode-yxs1qsjnjyii9uu?mode=doc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Erklärung zur NUF-Methode"
+                  title="Erklärung zur NUF-Methode"
+                  className="inline-flex items-center justify-center rounded-full text-primary hover:text-primary/80"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                </a>
+              ) : null}
+            </p>
             <p className="text-xs text-muted-foreground mt-2">{step.arbeit}</p>
+
           </div>
         </div>
 
@@ -2156,7 +2171,7 @@ function VariantNuf({
   const bew = data.nufBewertungen ?? [];
   return (
     <div className="space-y-6">
-      <CanvasSection title="Sprint-Fragen bewerten (Neuheit / Nutzen / Machbarkeit je 1–10)">
+      <CanvasSection title="Sprint-Fragen bewerten – Neu (Novelty) / Nützlich (Usefulness) / Realisierbar (Feasibility) je 1–10">
         <div className="space-y-3">
           <p className="text-sm font-medium">Eigene Anmerkungen</p>
           {bew.length === 0 ? (
@@ -2189,9 +2204,14 @@ function VariantNuf({
                   }}
                 />
                 <div className="flex flex-wrap items-end gap-3">
-                  {(["neuheit", "nutzen", "machbarkeit"] as const).map((k) => (
-                    <div key={k} className="w-20">
-                      <Label className="text-xs capitalize">{k}</Label>
+                  {([
+                    { k: "neuheit", label: "Neu (Novelty)" },
+                    { k: "nutzen", label: "Nützlich (Usefulness)" },
+                    { k: "machbarkeit", label: "Realisierbar (Feasibility)" },
+                  ] as const).map(({ k, label }) => (
+                    <div key={k} className="w-40">
+                      <Label className="text-xs">{label}</Label>
+
                       <Input
                         type="number"
                         min={1}
