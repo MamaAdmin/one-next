@@ -249,19 +249,6 @@ export default function SprintDashboard() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label="Sprint teilen"
-                      className="absolute top-3 right-32 h-8 w-8"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setSharing(s);
-                      }}
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
                       aria-label="Sprint bearbeiten"
                       className="absolute top-3 right-20 h-8 w-8"
                       onClick={(e) => {
