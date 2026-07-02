@@ -38,7 +38,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                 minRows={3}
               />
             </div>
-            <div>
+            <div className="pt-8 md:pt-0">
               <CalendarBookingDialog
                 buttonText={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
                 buttonSize="lg"
@@ -93,7 +93,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                 minRows={2}
               />
             </div>
-            <div>
+            <div className="pt-8 md:pt-0">
               <Button variant="outline" size="lg" className="rounded-full border-background/25 hover:bg-background/10 text-foreground hover:text-background">
                 {isEditMode ? (
                   <InlineTextField
@@ -130,7 +130,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
                 minRows={2}
               />
             </div>
-            <div>
+            <div className="pt-8 md:pt-0">
               <Button variant="outline" size="lg" className="rounded-full border-foreground/15 hover:bg-foreground/5">
                 {isEditMode ? (
                   <InlineTextField
