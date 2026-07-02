@@ -82,6 +82,13 @@ export default function SprintNew() {
       modus,
       decider,
       sprint_leader: sprintLeader,
+      challenge_statement: challengeStatement,
+      zielgruppe,
+      erfolgsmessung,
+      sprint_fragen: sprintFragenText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
     });
     if (!parsed.success) {
       toast({
