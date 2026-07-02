@@ -52,6 +52,32 @@ export function useSprintSteps(sprintId: string | undefined) {
   });
 }
 
+/**
+ * Returns a Map<sprintId, Set<step_key>> of completed steps across all sprints
+ * the current user can see. Used on the dashboard to derive the *actual*
+ * current step (first non-completed) rather than the stale sprints.current_step.
+ */
+export function useMySprintsCompletedSteps(sprintIds: string[]) {
+  const key = [...sprintIds].sort().join(",");
+  return useQuery({
+    queryKey: ["sprint-steps", "completed-map", key],
+    enabled: sprintIds.length > 0,
+    queryFn: async (): Promise<Record<string, string[]>> => {
+      const { data, error } = await supabase
+        .from(STEPS_TABLE)
+        .select("sprint_id,step_key,completed_at")
+        .in("sprint_id", sprintIds)
+        .not("completed_at", "is", null);
+      if (error) throw error;
+      const map: Record<string, string[]> = {};
+      for (const row of (data ?? []) as { sprint_id: string; step_key: string }[]) {
+        (map[row.sprint_id] ??= []).push(row.step_key);
+      }
+      return map;
+    },
+  });
+}
+
 /* -------------------------------- Mutations -------------------------------- */
 
 export interface CreateSprintInput {

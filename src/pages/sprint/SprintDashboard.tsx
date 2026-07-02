@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Plus, Sparkles, Compass, Share2 } from "lucide-react";
-import { useMySprints } from "@/hooks/useSprint";
+import { useMySprints, useMySprintsCompletedSteps } from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
-import { getStepDef } from "@/features/sprint/steps";
+import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
@@ -19,6 +19,8 @@ import type { SprintRow } from "@/features/sprint/types";
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
   const { data: framingSessions } = useMyFramingSessions();
+  const sprintIds = (sprints ?? []).map((s) => s.id);
+  const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [sharing, setSharing] = useState<SprintRow | null>(null);
   const [sharingFramingId, setSharingFramingId] = useState<string | null>(null);
@@ -28,6 +30,13 @@ export default function SprintDashboard() {
       .filter((f) => f.resulting_sprint_id)
       .map((f) => [f.resulting_sprint_id as string, f]),
   );
+
+  const deriveCurrentStepKey = (sprintId: string, fallback: string): string => {
+    const done = new Set(completedByStep?.[sprintId] ?? []);
+    if (done.size === 0) return fallback;
+    const nextOpen = SPRINT_STEPS.find((s) => !done.has(s.key));
+    return nextOpen ? nextOpen.key : SPRINT_STEPS[SPRINT_STEPS.length - 1].key;
+  };
 
   return (
     <>
@@ -194,7 +203,8 @@ export default function SprintDashboard() {
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {sprints.map((s) => {
-                const step = getStepDef(s.current_step);
+                const derivedKey = deriveCurrentStepKey(s.id, s.current_step);
+                const step = getStepDef(derivedKey);
                 const framing = framingBySprintId.get(s.id);
                 return (
                   <Card key={s.id} className="h-full hover:shadow-hover transition-shadow relative">
