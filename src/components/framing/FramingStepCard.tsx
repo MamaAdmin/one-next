@@ -2195,14 +2195,15 @@ function VariantNuf({
                       <Input
                         type="number"
                         min={1}
-                        max={5}
+                        max={10}
                         value={r[k]}
                         onChange={(e) => {
                           const next = [...bew];
-                          next[i] = { ...r, [k]: clamp(+e.target.value) };
+                          next[i] = { ...r, [k]: clamp10(+e.target.value) };
                           patch({ nufBewertungen: next });
                         }}
                       />
+
                     </div>
                   ))}
                   <div className="flex flex-col items-center">
