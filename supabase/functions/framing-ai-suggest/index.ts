@@ -16,7 +16,7 @@ const STEP_META: Record<string, { title: string; task: string }> = {
   "6": { title: "Annahmen & Risiken", task: "Schlage kritische Annahmen zum Framing vor, verteilt auf 4 Quadranten der 2×2-Matrix (Unsicherheit × Einfluss): Kritisch (hoch/hoch), Einflussreich (niedrige Unsicherheit / hoher Einfluss), Unsicher (hohe Unsicherheit / niedriger Einfluss), Gering (niedrig/niedrig). Gib GENAU 3 Punkte je Quadrant (insgesamt 12 Items). Prefixe JEDES Item mit '[Kritisch]', '[Einflussreich]', '[Unsicher]' oder '[Gering]'." },
   "7": { title: "Erfolg & Constraints", task: "Schlage Punkte zu zwei Kategorien vor: Erfolg (messbare Erfolgskriterien, in 5 Tagen prüfbar – z. B. Zahlen, Signale, Nutzertests) und Constraint (harte Randbedingungen, die gesetzt sind – z. B. Budget, Technik, Zeit, Recht/Compliance, Team). Gib GENAU 3 Punkte je Kategorie (insgesamt 6 Items) auf Deutsch. Prefixe JEDES Item mit '[Erfolg]' oder '[Constraint]'." },
   "8": { title: "Scope-Cut & Sprint-Fragen", task: "Schlage Punkte zu drei Kategorien vor: InScope (was gehört klar in den Sprint-Fokus – konkrete Themen, Deliverables, Aktivitäten), OutScope (was wird bewusst ausgeklammert – typische Abgrenzungen, Nice-to-haves, Folgeprojekte) und Sprintfrage (Decision Questions als 'Können wir …?'-Fragen, in 5 Tagen entscheidbar). Gib GENAU 3 Punkte je Kategorie (insgesamt 9 Items) auf Deutsch. Prefixe JEDES Item mit '[InScope]', '[OutScope]' oder '[Sprintfrage]'." },
-  "9": { title: "Priorisierung (NUF)", task: "Schlage je Sprint-Frage eine erste NUF-Einschätzung vor (Neuheit/Nutzen/Machbarkeit)." },
+  "9": { title: "Priorisierung (NUF)", task: "Schlage prägnante Sprint-Fragen für die NUF-Priorisierung vor. WICHTIG: Gib ausschliesslich den reinen Fragetext aus – KEINE NUF-Einschätzungen, KEINE Klammer-Zusätze wie '(N: Hoch, U: Hoch, F: Hoch)', keine Bewertungen, keine Tags." },
   "10": { title: "Entscheidung & Next Steps", task: "Schlage Standard-Pre-Sprint-To-dos vor (Decider, ≥5 Testnutzer:innen, Datenzugang, Constraints)." },
 };
 
@@ -245,7 +245,15 @@ Deno.serve(async (req) => {
       parsed = {};
     }
     const vorschlaege = Array.isArray(parsed.vorschlaege)
-      ? parsed.vorschlaege.filter((x): x is string => typeof x === "string").slice(0, 24)
+      ? parsed.vorschlaege
+          .filter((x): x is string => typeof x === "string")
+          .map((s) =>
+            step_key === "9"
+              ? s.replace(/\s*[\(\[][^)\]]*\b[NUF]\s*:[^)\]]*[\)\]]\s*$/i, "").trim()
+              : s,
+          )
+          .slice(0, 24)
+
       : [];
 
     return json({ vorschlaege });
