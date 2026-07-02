@@ -76,8 +76,8 @@ const Navigation = () => {
         ? "bg-background/85 backdrop-blur-md border-border/70"
         : "bg-background/95 backdrop-blur-sm border-transparent"
     }`}>
-      <div className="container mx-auto px-6 h-16 flex items-center">
-        <div className="flex items-center justify-between w-full">
+      <div className="container mx-auto px-6">
+        <div className="h-16 flex items-center justify-between w-full">
           <Link to="/" className="flex items-center">
             <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/Y7p4K5s0ZYMhiUT4kyDR1QHgUs42/uploads/1760245953105-one-next-logo-new.png" alt="one-next Logo" className="h-7 w-auto" />
           </Link>
@@ -217,7 +217,7 @@ const Navigation = () => {
 
         {/* Mobile Menu - Dynamic */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-6 pb-4">
+          <div className="md:hidden pb-4 bg-background border-t border-border/60 max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="flex flex-col gap-4">
               {topLevelItems.map((item) => (
                 <div key={item.id} className="border-b pb-4">
