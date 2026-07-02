@@ -73,6 +73,7 @@ import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import SprintJoin from "./pages/sprint/SprintJoin";
 import FramingJoin from "./pages/sprint/FramingJoin";
 import RequireAuth from "./components/sprint/RequireAuth";
+import FeedbackWidget from "./components/FeedbackWidget";
 
 
 const queryClient = new QueryClient();
@@ -167,6 +168,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <FeedbackWidget />
       </BrowserRouter>
       </TooltipProvider>
     </HelmetProvider>

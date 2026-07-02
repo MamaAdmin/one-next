@@ -16,6 +16,7 @@ import { RedirectManager } from "@/components/admin/RedirectManager";
 import { PageTemplateManager } from "@/components/admin/PageTemplateManager";
 import BMADInvitationManager from "@/components/admin/BMADInvitationManager";
 import UserRoleManager from "@/components/admin/UserRoleManager";
+import AppFeedbackTab from "@/components/admin/AppFeedbackTab";
 import SprintAdminManager from "@/components/admin/SprintAdminManager";
 import { 
   BMADSessionIcon, 
@@ -272,7 +273,18 @@ const AdminDashboard = () => {
             </TabsContent>
 
             <TabsContent value="users">
-              <UserRoleManager />
+              <Tabs defaultValue="roles" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 max-w-md mb-6">
+                  <TabsTrigger value="roles">Benutzer</TabsTrigger>
+                  <TabsTrigger value="feedback">Benutzer Feedback</TabsTrigger>
+                </TabsList>
+                <TabsContent value="roles">
+                  <UserRoleManager />
+                </TabsContent>
+                <TabsContent value="feedback">
+                  <AppFeedbackTab />
+                </TabsContent>
+              </Tabs>
             </TabsContent>
           </Tabs>
         </div>
