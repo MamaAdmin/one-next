@@ -5,27 +5,71 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Plus, Sparkles, Compass } from "lucide-react";
-import { useMySprints, useMySprintsCompletedSteps } from "@/hooks/useSprint";
+import { Pencil, Plus, Sparkles, Compass, Trash2 } from "lucide-react";
+import {
+  useMySprints,
+  useMySprintsCompletedSteps,
+  useMySprintDeleteCount,
+  useDeleteSprint,
+  MAX_SPRINT_RESTARTS,
+} from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
+import { useAdmin } from "@/hooks/useAdmin";
 import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import type { SprintRow } from "@/features/sprint/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
   const { data: framingSessions } = useMyFramingSessions();
+  const { data: deleteCount = 0 } = useMySprintDeleteCount();
+  const { isAdmin } = useAdmin();
+  const deleteMut = useDeleteSprint();
   const sprintIds = (sprints ?? []).map((s) => s.id);
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
+  const [deleting, setDeleting] = useState<SprintRow | null>(null);
   const allFramings = framingSessions ?? [];
   const framingBySprintId = new Map(
     allFramings
       .filter((f) => f.resulting_sprint_id)
       .map((f) => [f.resulting_sprint_id as string, f]),
   );
+
+  const remainingRestarts = Math.max(0, MAX_SPRINT_RESTARTS - deleteCount);
+  const canDelete = (s: SprintRow) =>
+    s.status !== "done" && (isAdmin || remainingRestarts > 0);
+
+  const handleDelete = async () => {
+    if (!deleting) return;
+    try {
+      await deleteMut.mutateAsync({
+        sprintId: deleting.id,
+        incrementCounter: !isAdmin,
+      });
+      toast({ title: "Sprint gelöscht" });
+      setDeleting(null);
+    } catch (e) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  };
 
   const deriveCurrentStepKey = (sprintId: string, fallback: string): string => {
     const done = new Set(completedByStep?.[sprintId] ?? []);
