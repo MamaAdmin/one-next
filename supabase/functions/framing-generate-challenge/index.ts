@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { callGemini, geminiErrorStatus } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,20 +39,14 @@ Deno.serve(async (req) => {
       .select("*")
       .eq("session_id", session_id);
 
-    const key = Deno.env.get("LOVABLE_API_KEY");
-    if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
-
     const context = buildContext(session, steps ?? []);
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": key,
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        response_format: { type: "json_object" },
+    let aiContent = "{}";
+    try {
+      const result = await callGemini({
+        model: "gemini-2.5-flash",
+        json: true,
+        temperature: 0.6,
         messages: [
           {
             role: "system",
@@ -63,20 +58,17 @@ Deno.serve(async (req) => {
             content: `Workshop-Kontext:\n${context}\n\nGib jetzt das strukturierte JSON zurück.`,
           },
         ],
-      }),
-    });
-
-    if (!resp.ok) {
-      const errText = await resp.text();
-      const status = resp.status === 429 || resp.status === 402 ? resp.status : 500;
-      return json({ error: `AI error: ${errText}` }, status);
+      });
+      aiContent = result.content || "{}";
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "AI error";
+      return json({ error: msg }, geminiErrorStatus(e));
     }
 
-    const j = await resp.json();
-    const content = j?.choices?.[0]?.message?.content ?? "{}";
     let parsed: Record<string, unknown> = {};
     try {
-      parsed = JSON.parse(content);
+      const cleaned = aiContent.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+      parsed = JSON.parse(cleaned);
     } catch {
       parsed = {};
     }

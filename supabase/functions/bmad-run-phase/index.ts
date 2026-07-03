@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -147,14 +148,25 @@ const PHASE_ARTIFACT_TYPES = {
 };
 
 // Provider detection based on model name
-function detectProvider(model: string): 'openai' | 'anthropic' | 'lovable' {
-  if (model.startsWith('gpt-') || model.startsWith('o1-') || model.startsWith('o3-') || model.startsWith('o4-')) {
+function detectProvider(model: string): 'openai' | 'anthropic' | 'gemini' {
+  const lower = model.toLowerCase();
+  if (
+    lower.startsWith('gpt-') ||
+    lower.startsWith('o1-') ||
+    lower.startsWith('o3-') ||
+    lower.startsWith('o4-') ||
+    lower.startsWith('openai/')
+  ) {
     return 'openai';
   }
-  if (model.startsWith('claude-')) {
+  if (lower.startsWith('claude-') || lower.startsWith('anthropic/')) {
     return 'anthropic';
   }
-  return 'lovable'; // Fallback for google/gemini or openai/gpt-5 via gateway
+  return 'gemini'; // google/gemini-* and bare gemini-* → Gemini API direct
+}
+
+function stripProviderPrefix(model: string): string {
+  return model.includes('/') ? model.split('/').slice(-1)[0] : model;
 }
 
 // OpenAI direct API call
@@ -171,7 +183,7 @@ async function callOpenAI(model: string, messages: Array<{role: string, content:
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model,
+      model: stripProviderPrefix(model),
       messages,
       max_completion_tokens: 4000
     }),
@@ -209,7 +221,7 @@ async function callAnthropic(model: string, messages: Array<{role: string, conte
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model,
+      model: stripProviderPrefix(model),
       system: systemMessage,
       messages: userMessages,
       max_tokens: 4000
@@ -233,39 +245,21 @@ async function callAnthropic(model: string, messages: Array<{role: string, conte
   };
 }
 
-// Lovable AI Gateway call
-async function callLovableAI(model: string, messages: Array<{role: string, content: string}>) {
-  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-  if (!LOVABLE_API_KEY) {
-    throw new Error('LOVABLE_API_KEY not configured');
-  }
-
-  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      messages,
-    }),
+// Google Gemini direct API call (via GEMINI_API_KEY, not Lovable Gateway).
+async function callGeminiProvider(model: string, messages: Array<{role: string, content: string}>) {
+  const result = await callGemini({
+    model,
+    messages: messages as Array<{ role: 'system' | 'user' | 'assistant'; content: string }>,
+    temperature: 0.7,
+    maxOutputTokens: 8192,
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Lovable AI Gateway error:', response.status, errorText);
-    throw new Error(`Lovable AI Gateway error: ${response.status}`);
-  }
-
-  const data = await response.json();
   return {
-    content: data.choices[0].message.content,
-    usage: data.usage
+    content: result.content,
+    usage: result.usage,
   };
 }
 
-// Unified AI provider call
+// Unified AI provider call — no Lovable Gateway anymore.
 async function callAIProvider(model: string, messages: Array<{role: string, content: string}>) {
   const provider = detectProvider(model);
   console.log('Using AI provider:', provider, 'with model:', model);
@@ -275,9 +269,9 @@ async function callAIProvider(model: string, messages: Array<{role: string, cont
       return await callOpenAI(model, messages);
     case 'anthropic':
       return await callAnthropic(model, messages);
-    case 'lovable':
+    case 'gemini':
     default:
-      return await callLovableAI(model, messages);
+      return await callGeminiProvider(model, messages);
   }
 }
 
