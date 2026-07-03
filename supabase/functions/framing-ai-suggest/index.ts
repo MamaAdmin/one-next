@@ -204,18 +204,12 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SCOPE_BUCKETS[field]} vor. Keine anderen Kategorien. Antworte auf Deutsch. Prefixe JEDES Item mit '${scopeTag[field]}'.`,
       };
     }
-    const key = Deno.env.get("LOVABLE_API_KEY");
-    if (!key) return json({ error: "Missing LOVABLE_API_KEY" }, 500);
-
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": key,
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        response_format: { type: "json_object" },
+    let aiContent = "{}";
+    try {
+      const result = await callGemini({
+        model: "gemini-2.5-flash",
+        json: true,
+        temperature: 0.7,
         messages: [
           {
             role: "system",
@@ -228,20 +222,17 @@ Deno.serve(async (req) => {
               `Aktueller Schritt: ${meta.title}\nAufgabe: ${meta.task}\n\nBisheriger Workshop-Kontext:\n${context}\n\nGib jetzt die Vorschläge zurück.`,
           },
         ],
-      }),
-    });
-
-    if (!resp.ok) {
-      const errText = await resp.text();
-      const status = resp.status === 429 || resp.status === 402 ? resp.status : 500;
-      return json({ error: `AI error: ${errText}` }, status);
+      });
+      aiContent = result.content || "{}";
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "AI error";
+      return json({ error: msg }, geminiErrorStatus(e));
     }
 
-    const j = await resp.json();
-    const content = j?.choices?.[0]?.message?.content ?? "{}";
     let parsed: { vorschlaege?: unknown } = {};
     try {
-      parsed = JSON.parse(content);
+      const cleaned = aiContent.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+      parsed = JSON.parse(cleaned);
     } catch {
       parsed = {};
     }
