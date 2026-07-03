@@ -285,7 +285,7 @@ export default function SprintDashboard() {
                         variant="ghost"
                         size="icon"
                         aria-label="Sprint bearbeiten"
-                        className="absolute top-3 right-16 h-8 w-8"
+                        className="absolute top-3 right-24 h-8 w-8"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
