@@ -67,9 +67,6 @@ const CompanyProfile = () => {
     }
   };
 
-  const handleInvite = async (email: string, fullName: string) => {
-    await createInvitation(email, fullName);
-  };
 
   if (loading) {
     return (
