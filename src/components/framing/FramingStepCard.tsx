@@ -2014,23 +2014,10 @@ function VariantAssumptions({
       <CanvasSection title="Feineinstellung (Unsicherheit / Einfluss je 1–5)">
         <div className="space-y-3">
 
-          <p className="text-sm font-medium">Eigene Annahmen</p>
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Annahme …"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  add();
-                }
-              }}
-            />
-            <Button variant="outline" size="icon" onClick={add}>
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Werte präzisieren – die Annahme wandert automatisch in den passenden Quadranten.
+          </p>
+
           {annahmen.map((a, i) => {
             const critical = a.unsicherheit >= 4 && a.einfluss >= 4;
             return (
