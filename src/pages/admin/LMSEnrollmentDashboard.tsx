@@ -93,15 +93,6 @@ export default function LMSEnrollmentDashboard() {
       <main className="container mx-auto px-4 py-8 mt-32">
         <div className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Enrollment-Einladungen</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EnrollmentInvitationManager customerId={purchases[0]?.customer_id || ""} />
-            </CardContent>
-          </Card>
-          
-          <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
