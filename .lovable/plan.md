@@ -1,42 +1,51 @@
-## Ziel
-Bei jedem Framing-Schritt sichtbar machen, **warum genau diese Übung jetzt sinnvoll ist** – als kurzer Nutzen-Hinweis direkt unter der Aufgaben-Beschreibung.
+## Umstellung: KI-Kosten über Gemini API statt Lovable Gateway
 
-## Änderungen
+Ziel: Alle KI-Aufrufe laufen direkt gegen `generativelanguage.googleapis.com` mit `GEMINI_API_KEY`. Kosten erscheinen im Google-Cloud-Dashboard, keine Lovable Credits mehr für KI. `GEMINI_API_KEY` ist bereits als Secret vorhanden.
 
-### 1. `src/features/framing/steps.ts`
-- `FramingStepDef` um Feld `nutzen: string` erweitern (Pflicht ab Schritt 1; für `intro` leer/optional).
-- Für jeden Schritt (1–11) einen kurzen Nutzen-Text pflegen. Formulierung: 1–2 Sätze, konkret, aus Sicht des Nutzers, beantwortet „Was habe ich davon, wenn ich diesen Schritt jetzt mache?".
+## Betroffene Edge Functions
 
-Beispiele (finale Formulierungen im Code, hier zur Illustration):
-- **1. Kick-off & Zielbild:** „Damit dein Team ab jetzt vom gleichen Ausgangspunkt startet und du später keine Diskussionen über den Scope neu aufmachen musst."
-- **2. Gegenwart / Vergangenheit / Zukunft:** „Damit klar wird, warum jetzt der richtige Zeitpunkt ist – und du erkennst, was passiert, wenn ihr nichts ändert."
-- **3. Stakeholder & Zielgruppe:** „Damit du weißt, für wen du löst und wessen Meinung im Sprint zählt – bevor du dich in Details verlierst."
-- **4. Smart Sailboat:** „Um Treiber, Bremsen, Ziel und Risiken in einem Bild zu sehen, statt sie über zehn Meetings verstreut zu sammeln."
-- **5. Root Cause (5 Whys):** „Damit du am echten Problem arbeitest, nicht am Symptom – sonst löst der Sprint das Falsche."
-- **6. Cynefin-Einordnung:** „Damit du weißt, ob du einfach umsetzen, testen oder erst noch probieren musst – das bestimmt den weiteren Vorgehensmodus."
-- **7. Annahmen & Risiken:** „Damit du erkennst, welche unsicheren Annahmen das ganze Vorhaben killen können – die musst du im Sprint testen."
-- **8. Erfolg & Constraints:** „Damit am Ende des Sprints messbar ist, ob er sich gelohnt hat – und du weißt, was du nicht anfassen darfst."
-- **9. Scope-Cut & Sprint-Fragen:** „Um den Sprint auf eine bearbeitbare Frage einzudampfen, statt fünf Themen halb zu bearbeiten."
-- **10. Priorisierung (NUF):** „Damit du auf die eine Frage fokussierst, die neu, nützlich und machbar ist – nicht auf die lauteste."
-- **11. Entscheidung & Next Steps:** „Damit das Framing verbindlich in einen Sprint mündet und nicht als Word-Dokument liegen bleibt."
+Bereits direkt (unverändert):
+- `sprint-ai-suggest`
+- `sprint-ai-rank`
 
-### 2. `src/components/framing/FramingStepCard.tsx` (~Zeile 189)
-Direkt unter `<p>{step.arbeit}</p>` einen Callout einfügen (nur wenn `step.nutzen` gesetzt):
+Umzustellen (aktuell Lovable Gateway → Gemini direkt):
+- `framing-ai-suggest` — Model `google/gemini-3-flash-preview` → `gemini-2.5-flash`
+- `framing-generate-challenge` — Model `google/gemini-3-flash-preview` → `gemini-2.5-flash`
+- `sprint-day-summary` — Model `google/gemini-2.5-flash` → `gemini-2.5-flash`
+- `bmad-run-phase` — Model konfigurierbar (`google/gemini-2.5-flash`/`pro`, teils `openai/gpt-5*`) → nur Gemini-Varianten mappen; OpenAI-Optionen aus der UI entfernen
 
-```tsx
-{step.nutzen ? (
-  <div className="mt-3 flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-    <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />
-    <div className="text-sm">
-      <span className="font-medium text-primary">Warum jetzt? </span>
-      <span className="text-foreground/80">{step.nutzen}</span>
-    </div>
-  </div>
-) : null}
-```
+Nicht betroffen (kein KI-Aufruf, `LOVABLE_API_KEY` wird dort für Resend/Connector genutzt):
+- `process-email-queue`
+- `auth-email-hook`
 
-- Icon `Lightbulb` aus `lucide-react` importieren.
-- Farb-Tokens (`text-primary`, `bg-primary/5`, `border-primary/20`) – keine Hardcodes.
+## Technische Änderungen pro Function
 
-### 3. Kein DB-, kein Backend-Change
-Nur Content + Presentation. Beschriftung „Warum jetzt?" bleibt einheitlich.
+1. Statt `POST https://ai.gateway.lovable.dev/v1/chat/completions` mit Header `Authorization: Bearer LOVABLE_API_KEY` und OpenAI-kompatiblem Body:
+   ```
+   POST https://generativelanguage.googleapis.com/v1beta/models/<MODEL>:generateContent?key=<GEMINI_API_KEY>
+   Body: { contents: [{ role, parts: [{ text }] }], systemInstruction?, generationConfig: { temperature, maxOutputTokens: 8192, responseMimeType?: "application/json" } }
+   ```
+2. Response-Parsing: `data.candidates[0].content.parts[0].text` (statt `data.choices[0].message.content`). `finishReason === "MAX_TOKENS"` behandeln (siehe Lovable-Stack-Overflow-Hinweis, `maxOutputTokens: 8192`).
+3. Strukturierte Ausgaben (`response_format: json_object`, Tool-Calls in `framing-ai-suggest`): auf Gemini umstellen mit `generationConfig.responseMimeType = "application/json"` + `responseSchema`, oder Tool-Calls über `tools: [{ functionDeclarations: [...] }]`. Für die aktuellen Use-Cases reicht `responseMimeType: application/json` + Schema im Prompt.
+4. Rollen-Mapping: OpenAI `system` → Gemini `systemInstruction`; `assistant` → `model`; `user` → `user`.
+5. Fehlerbehandlung: 429 (Quota) und 400 (Safety/Block) klar an die UI zurückgeben; Message- und Statuscodes unverändert lassen, damit Aufrufer weiter funktionieren.
+6. `LOVABLE_API_KEY`-Nutzung in diesen 4 Functions entfernen (in `process-email-queue`/`auth-email-hook` bleibt sie erhalten).
+7. Model-Auswahl in `src/pages/admin/BMADSessionDetail.tsx` und `bmad-create-session` auf reine Gemini-Werte reduzieren (`gemini-2.5-flash`, `gemini-2.5-pro`), OpenAI-Einträge entfernen. Default bleibt `gemini-2.5-flash`.
+
+## Vorgehen
+
+1. Gemeinsamen Helper `supabase/functions/_shared/gemini.ts` anlegen (`callGemini({ model, systemInstruction, messages, json?, schema? })` inkl. Debug-Log für `finishReason` + `MAX_TOKENS`-Warnung).
+2. `framing-ai-suggest`, `framing-generate-challenge`, `sprint-day-summary`, `bmad-run-phase` auf diesen Helper umstellen.
+3. UI-Model-Auswahl (`BMADSessionDetail.tsx`, `bmad-create-session`) bereinigen.
+4. Nach Deployment: je einen Test-Aufruf pro Function und `edge_function_logs` prüfen; danach `ai_gateway_logs--list_ai_gateway_requests` prüfen — es sollten keine neuen KI-Calls mehr erscheinen.
+
+## Hinweise / Trade-offs
+
+- **Kosten sichtbar in Google Cloud**, aber Rate-Limits & Quota-Management liegen jetzt beim Google-Projekt (`Preisstufe 1` reicht für die aktuelle Nutzung). Falls Quotas erreicht werden, muss der Tier in Google Cloud erhöht werden.
+- **Kein automatisches Fallback** mehr auf andere Provider (der Lovable Gateway erlaubte OpenAI-Modelle). BMAD verliert die GPT-5-Optionen — bestätige, ob das ok ist oder ob GPT-5 als Option bleiben soll (dann müsste dort weiter der Gateway laufen).
+- Modell `gemini-3-flash-preview` existiert nur über den Lovable Gateway. Direkter Gemini-Aufruf nutzt `gemini-2.5-flash` (Google-nativer Name). Falls du explizit `gemini-3` willst, muss der Preview-Zugang in Google AI Studio verfügbar sein — sonst bei `2.5-flash` bleiben.
+- `GEMINI_API_KEY` ist bereits als Secret vorhanden — keine neue Secret-Anfrage nötig.
+
+Bestätige bitte:
+(a) Sollen die OpenAI-Optionen in BMAD wirklich entfernt werden, oder für BMAD weiter Lovable Gateway behalten?
+(b) `gemini-2.5-flash` als Default ok (statt `gemini-3-flash-preview`)?
