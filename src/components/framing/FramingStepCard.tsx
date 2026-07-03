@@ -24,6 +24,8 @@ import type {
 import { useFramingSuggest } from "@/hooks/useFraming";
 import { CanvasSection } from "./CanvasSection";
 import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
+import { ExternalLlmBar } from "./ExternalLlmBar";
+import { EXTERNAL_LLMS, useExternalLlms } from "@/features/framing/externalLlms";
 
 interface Props {
   sessionId: string;
@@ -188,6 +190,8 @@ export default function FramingStepCard({
 
           </div>
         </div>
+
+        <ExternalLlmBar />
 
         <StepVariant
           step={step}
@@ -2434,6 +2438,8 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
               des Tools entstanden sind – du kuratierst sie bewusst.
             </li>
           </ul>
+
+          <ExternalLlmPicker />
         </div>
 
         {/* Block 4 – Farbcode */}
@@ -2481,4 +2487,30 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
     </Card>
   );
 }
+
+function ExternalLlmPicker() {
+  const { isSelected, toggle } = useExternalLlms();
+  return (
+    <div className="mt-4 pt-3 border-t">
+      <div className="text-xs font-medium mb-2 text-foreground">
+        Deine bevorzugten externen KI-Tools (öffnen sich pro Schritt in neuem Tab):
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-2">
+        {EXTERNAL_LLMS.map((llm) => (
+          <label
+            key={llm.id}
+            className="inline-flex items-center gap-2 text-sm cursor-pointer select-none"
+          >
+            <Checkbox
+              checked={isSelected(llm.id)}
+              onCheckedChange={() => toggle(llm.id)}
+            />
+            <span>{llm.label}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 

@@ -1,45 +1,70 @@
 
-# Memory-Aufräumung „One-next"
+# Externe KI-Tools auswählen und pro Schritt verlinken
 
-Ziel: `mem://index.md` und die referenzierten Memory-Dateien so kompakt und aktuell machen, dass jede neue Session mit einem sauberen, tokensparenden Kontext startet — ohne Detailwissen zu verlieren.
+## Ziel
+Im Intro-Schritt („So arbeitest du") kann der Nutzer seine bevorzugten externen KI-Tools auswählen. In jedem Framing-Schritt erscheint dann eine kompakte „Externe KI-Hilfe"-Leiste mit direkten Links zu genau diesen Tools — jeder Link öffnet in einem neuen Browser-Tab neben dem Framing/Sprint-Tab.
 
-## Was passiert
+## Änderungen
 
-### 1. Core-Regeln (immer im Prompt) — straffen & ergänzen
-Bleiben (Kurzform):
-- Sprache: durchgängig **KI** statt „AI" (Ausnahmen: etablierte Fachbegriffe).
-- Kontakt: `info@one-next.com`, keine Telefonnummern (Ausnahme: Twint-Checkout).
-- Externe Links/Dokumente: immer neuer Tab.
-- Nav-Sichtbarkeit: rollenexklusiv, max. 3 Ebenen.
-- Auth-Mails via Supabase, Business-Mails via Resend.
-- Brand-Logo: `one-next-logo-new.png` (`h-[2.1rem]`), verlinkt Homepage.
-- Überschriften/Buttons in Satzschreibweise, kein Denglisch, kein Lorem Ipsum.
+### 1. Neue Datei `src/features/framing/externalLlms.ts`
+Katalog der unterstützten Tools + LocalStorage-Hook.
 
-Neu ergänzen (Core):
-- **Stack:** React 18 + Vite + TS + Tailwind + shadcn; Backend = Lovable Cloud (Supabase). Dateinamen PascalCase.
-- **Design-Tokens statt Hardcoded Colors** (semantische Tokens in `index.css`).
-- **RLS-Pflicht** + `GRANT` auf jede public-Tabelle; Rollen in eigener Tabelle (`user_roles` + `has_role`).
+```ts
+export type ExternalLlmId = "chatgpt" | "claude" | "gemini" | "perplexity" | "copilot" | "grok" | "mistral";
 
-### 2. Neue Memory-Dateien anlegen
-- `mem://technical/tech-stack` — Stack, Ordnerstruktur, zentrale Verzeichnisse.
-- `mem://features/framing-sprint-flow` — Framing-Session → Sprint-Übergang: Status-Werte (`active`, `aktiv`, `abgeschlossen`), `current_step`, `resulting_sprint_id`, Completion-Panel-Logik (Definition of Done sperrt nach Abschluss; Zielgruppe/Erfolgsmessung/Sprint-Fragen vor Abschluss generierbar + regenerierbar).
-- `mem://features/feature-map` — kompakte Landkarte: LMS, Public Courses, Blog, Framing/Sprint, BMAD-Portal, Admin, Zahlungen (Stripe + Twint).
-- `mem://conventions/code-standards` — TS strict-Ziel, kein `any`, kein `console.log` in App-Code, `fetch` nur via `src/services/`, React Query für Server-State, Tailwind statt Inline-Styles, Named Exports, Kommentare Englisch / UI Deutsch.
-- `mem://pitfalls/known-traps` — `noUnusedLocals` bricht Build hart; `(supabase as any)` = fehlende generierte Types (Reihenfolge: Types regenerieren → strict → Casts weg); Auto-generierte Dateien (`client.ts`, `types.ts`, `.env`, `config.toml`) nie editieren; Schemas `auth/storage/realtime/…` tabu.
+export const EXTERNAL_LLMS: {
+  id: ExternalLlmId;
+  label: string;
+  url: string;      // Ziel, öffnet Chat direkt
+  color: string;    // Marken-Akzent (Tailwind-Klasse)
+}[] = [
+  { id: "chatgpt",    label: "ChatGPT",    url: "https://chat.openai.com/",       color: "..." },
+  { id: "claude",     label: "Claude",     url: "https://claude.ai/new",          color: "..." },
+  { id: "gemini",     label: "Gemini",     url: "https://gemini.google.com/app",  color: "..." },
+  { id: "perplexity", label: "Perplexity", url: "https://www.perplexity.ai/",     color: "..." },
+  { id: "copilot",    label: "Copilot",    url: "https://copilot.microsoft.com/", color: "..." },
+  { id: "grok",       label: "Grok",       url: "https://grok.com/",              color: "..." },
+  { id: "mistral",    label: "Le Chat",    url: "https://chat.mistral.ai/",       color: "..." },
+];
 
-### 3. Bestehende Memories konsolidieren
-- Zusammenführen: `blog-magazine-layout` + `blog-placeholder-strategy` + `blog-design-konsistenz` + `blog-image-architecture` → **eine** `mem://features/blog` Datei.
-- Zusammenführen: `stripe-twint-checkout` + `payment-promotion-codes` + `payment-success-flow` + `stripe-product-architecture` → **eine** `mem://features/payments` Datei.
-- Zusammenführen: `role-definitions` + `navigation-access-rules` + `bmad-portal-system` → **eine** `mem://auth/roles-and-access` Datei.
-- Zusammenführen: `public-course-platform` + `admin-data-visibility-pattern` + `public-course-design-standard` + `public-course-modules-architecture` → **eine** `mem://features/public-courses` Datei.
+// useExternalLlms(): { selected: ExternalLlmId[]; toggle(id); }
+// Persistenz: localStorage key "framing.externalLlms"
+// Default: ["chatgpt", "claude", "gemini"]
+```
 
-### 4. Index neu schreiben
-`mem://index.md` wird nach der Konsolidierung deutlich kürzer: ~8–10 Core-Zeilen + ~12 Memory-Referenzen (statt aktuell 27). Jede Referenz behält eine spezifische Ein-Zeilen-Beschreibung, damit die Relevanz-Erkennung weiter funktioniert.
+### 2. `IntroSlide` erweitern (FramingStepCard.tsx, Block 3)
+Statt statischer Aufzählung „Claude, Gemini, ChatGPT" bekommt Block 3 zusätzlich eine Checkbox-Reihe:
+
+```
+Deine bevorzugten externen KI-Tools:
+[✓] ChatGPT  [✓] Claude  [✓] Gemini  [ ] Perplexity  [ ] Copilot  [ ] Grok  [ ] Le Chat
+```
+
+Auswahl wird über `useExternalLlms()` in localStorage gespeichert und beeinflusst sofort alle anderen Schritte. Der bisherige Erklärtext bleibt, wird nur konsistent an die Auswahl angepasst.
+
+### 3. Neue Komponente `ExternalLlmBar`
+`src/components/framing/ExternalLlmBar.tsx` — kompakte Leiste:
+
+```
+🔎 Externe KI-Hilfe:  [ChatGPT ↗]  [Claude ↗]  [Gemini ↗]
+```
+
+- Jeder Button ist ein `<a href={url} target="_blank" rel="noopener noreferrer">` mit `ExternalLink`-Icon (Lucide).
+- Rendert nur die ausgewählten Tools aus dem Hook.
+- Wenn Auswahl leer: dezenter Hinweis „Im Intro-Schritt KI-Tools auswählen" + Link zum Intro.
+
+### 4. `ExternalLlmBar` in jeden Framing-Schritt einbauen
+In `FramingStepCard.tsx` direkt unter dem Step-Header (nach `arbeit`-Beschreibung, vor dem Inhalt) einfügen — für alle Varianten außer `intro` (dort ist die Auswahl-UI selbst).
+
+Optional: Tooltip am Icon mit dem empfohlenen Prompt-Rahmen aus dem Intro („Kontext + aktuelle Frage + 3–5 Stichpunkte").
 
 ## Was NICHT passiert
-- Kein Code wird angefasst.
-- Keine DB-Änderungen.
-- Keine Feature-Regeln inhaltlich geändert — nur zusammengefasst und umsortiert.
+- Keine DB-Änderung (Auswahl bleibt clientseitig via localStorage — pro Browser/User).
+- Keine Änderung an Framing-Schritt-Inhalten oder KI-Vorschlags-Logik.
+- Keine Übernahme externer Antworten ins Tool (der User kopiert manuell wie bisher).
+- Farbregel „übernommene KI-Vorschläge bleiben blau/pink" bleibt unverändert.
 
 ## Ergebnis
-Neue Chats starten mit ~40 % weniger Memory-Ballast im Prompt, alle wichtigen Regeln bleiben abrufbar, Framing/Sprint-Wissen (das bisher nur im Chat lebte) ist persistent.
+- Intro: sichtbare Multi-Select für LLM-Präferenzen, Standard = ChatGPT + Claude + Gemini.
+- Jeder Schritt: klickbare Direkt-Links zu genau diesen Tools, jeweils in neuem Tab.
+- Ein-Klick-Weg vom Framing-Schritt zum Wunsch-LLM, ohne den Sprint-Tab zu verlieren.
