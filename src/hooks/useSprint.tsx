@@ -90,6 +90,7 @@ export interface CreateSprintInput {
   zielgruppe?: string;
   erfolgsmessung?: string;
   sprint_fragen?: string[];
+  risiken?: string[];
 }
 
 export function useCreateSprint() {
