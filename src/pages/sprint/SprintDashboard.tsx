@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Plus, Sparkles, Compass, Trash2 } from "lucide-react";
+import { Pencil, Plus, Sparkles, Compass, Trash2, ChevronRight } from "lucide-react";
 import {
   useMySprints,
   useMySprintsCompletedSteps,
