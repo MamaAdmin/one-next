@@ -228,93 +228,98 @@ export default function SprintDashboard() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 gap-6">
-              {sprints.map((s) => {
-                const derivedKey = deriveCurrentStepKey(s.id, s.current_step);
-                const step = getStepDef(derivedKey);
-                const framing = framingBySprintId.get(s.id);
-                return (
-                  <Card key={s.id} className="h-full hover:shadow-hover transition-shadow relative">
-                    <Link to={`/sprint/${s.id}`} className="block">
-                      <CardContent className="p-6 space-y-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="text-xl font-semibold leading-tight pr-16">{s.titel}</h3>
-                          <Badge variant={s.status === "active" ? "default" : "secondary"}>
-                            {s.status === "active"
-                              ? "Aktiv"
-                              : s.status === "done"
-                              ? "Abgeschlossen"
-                              : "Archiviert"}
-                          </Badge>
-                        </div>
-                        {s.problemstellung ? (
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {s.problemstellung}
-                          </p>
-                        ) : null}
-                        <div className="text-sm text-muted-foreground pt-2">
-                          {step ? (
-                            <>
-                              Aktueller Schritt:{" "}
-                              <span className="font-medium text-foreground">{step.title}</span>
-                            </>
-                          ) : (
-                            <>Schritt {s.current_step}</>
-                          )}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Modus: {s.modus === "solo" ? "Solo (KI ersetzt Team)" : "Team"}
-                        </div>
-                        {framing ? (
-                          <Link
-                            to={`/sprint/framing/${framing.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
-                          >
-                            <Compass className="h-3.5 w-3.5" />
-                            Aus Problem Framing
-                          </Link>
-                        ) : null}
-                      </CardContent>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Sprint bearbeiten"
-                      className="absolute top-3 right-20 h-8 w-8"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setEditing(s);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    {s.status !== "done" ? (
+            <section>
+              <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                <Sparkles className="w-5 h-5" /> Design Sprints
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {sprints.map((s) => {
+                  const derivedKey = deriveCurrentStepKey(s.id, s.current_step);
+                  const step = getStepDef(derivedKey);
+                  const framing = framingBySprintId.get(s.id);
+                  return (
+                    <Card key={s.id} className="h-full hover:shadow-hover transition-shadow relative">
+                      <Link to={`/sprint/${s.id}`} className="block">
+                        <CardContent className="p-6 space-y-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="text-xl font-semibold leading-tight pr-16">{s.titel}</h3>
+                            <Badge variant={s.status === "active" ? "default" : "secondary"}>
+                              {s.status === "active"
+                                ? "Aktiv"
+                                : s.status === "done"
+                                ? "Abgeschlossen"
+                                : "Archiviert"}
+                            </Badge>
+                          </div>
+                          {s.problemstellung ? (
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {s.problemstellung}
+                            </p>
+                          ) : null}
+                          <div className="text-sm text-muted-foreground pt-2">
+                            {step ? (
+                              <>
+                                Aktueller Schritt:{" "}
+                                <span className="font-medium text-foreground">{step.title}</span>
+                              </>
+                            ) : (
+                              <>Schritt {s.current_step}</>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Modus: {s.modus === "solo" ? "Solo (KI ersetzt Team)" : "Team"}
+                          </div>
+                          {framing ? (
+                            <Link
+                              to={`/sprint/framing/${framing.id}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                            >
+                              <Compass className="h-3.5 w-3.5" />
+                              Aus Problem Framing
+                            </Link>
+                          ) : null}
+                        </CardContent>
+                      </Link>
                       <Button
                         variant="ghost"
                         size="icon"
-                        aria-label="Sprint löschen"
-                        disabled={!canDelete(s)}
-                        title={
-                          !canDelete(s)
-                            ? "Maximal 3 Neuanfänge – keine Löschung mehr möglich."
-                            : "Sprint löschen"
-                        }
-                        className="absolute top-3 right-11 h-8 w-8 text-destructive hover:text-destructive"
+                        aria-label="Sprint bearbeiten"
+                        className="absolute top-3 right-20 h-8 w-8"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          if (canDelete(s)) setDeleting(s);
+                          setEditing(s);
                         }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" />
                       </Button>
-                    ) : null}
-                  </Card>
-                );
-              })}
-            </div>
+                      {s.status !== "done" ? (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Sprint löschen"
+                          disabled={!canDelete(s)}
+                          title={
+                            !canDelete(s)
+                              ? "Maximal 3 Neuanfänge – keine Löschung mehr möglich."
+                              : "Sprint löschen"
+                          }
+                          className="absolute top-3 right-11 h-8 w-8 text-destructive hover:text-destructive"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (canDelete(s)) setDeleting(s);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      ) : null}
+                    </Card>
+                  );
+                })}
+              </div>
+            </section>
           )}
 
           {!isAdmin && sprints && sprints.length > 0 ? (
