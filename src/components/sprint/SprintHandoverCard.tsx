@@ -166,16 +166,22 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                     Titel
                   </div>
                   <div className="text-sm font-medium">{sprint.titel}</div>
-                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground pt-2">
-                    Problemstellung
-                  </div>
-                  <p className="text-sm whitespace-pre-wrap">{sprint.problemstellung}</p>
+                  {sprint.problemstellung?.trim() &&
+                  sprint.problemstellung.trim() !== sprint.challenge_statement?.trim() ? (
+                    <>
+                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground pt-2">
+                        Problemstellung
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap">{sprint.problemstellung}</p>
+                    </>
+                  ) : null}
                 </div>
                 <Button variant="outline" size="sm" onClick={onEdit}>
                   Bearbeiten
                 </Button>
               </div>
             </div>
+
 
             <EditField
               label="Challenge Statement"
