@@ -1,70 +1,40 @@
-
-# Externe KI-Tools auswählen und pro Schritt verlinken
-
 ## Ziel
-Im Intro-Schritt („So arbeitest du") kann der Nutzer seine bevorzugten externen KI-Tools auswählen. In jedem Framing-Schritt erscheint dann eine kompakte „Externe KI-Hilfe"-Leiste mit direkten Links zu genau diesen Tools — jeder Link öffnet in einem neuen Browser-Tab neben dem Framing/Sprint-Tab.
+Ein Problem-Framing und der daraus entstandene Design Sprint sollen auf `/sprint` klar als **ein Vorhaben** erkennbar sein – umschlossen von einer gemeinsamen Gruppen-Card.
 
-## Änderungen
+## Layout-Änderung in `src/pages/sprint/SprintDashboard.tsx`
 
-### 1. Neue Datei `src/features/framing/externalLlms.ts`
-Katalog der unterstützten Tools + LocalStorage-Hook.
+Aktuell: getrennte Sektionen „Problem-Framing-Workshops" und „Design Sprints". Ein Framing und sein Ziel-Sprint stehen entkoppelt untereinander.
 
-```ts
-export type ExternalLlmId = "chatgpt" | "claude" | "gemini" | "perplexity" | "copilot" | "grok" | "mistral";
+Neu: Eine kombinierte Sektion **„Meine Vorhaben"**, in der zusammengehörige Paare als eine Gruppen-Card gerendert werden:
 
-export const EXTERNAL_LLMS: {
-  id: ExternalLlmId;
-  label: string;
-  url: string;      // Ziel, öffnet Chat direkt
-  color: string;    // Marken-Akzent (Tailwind-Klasse)
-}[] = [
-  { id: "chatgpt",    label: "ChatGPT",    url: "https://chat.openai.com/",       color: "..." },
-  { id: "claude",     label: "Claude",     url: "https://claude.ai/new",          color: "..." },
-  { id: "gemini",     label: "Gemini",     url: "https://gemini.google.com/app",  color: "..." },
-  { id: "perplexity", label: "Perplexity", url: "https://www.perplexity.ai/",     color: "..." },
-  { id: "copilot",    label: "Copilot",    url: "https://copilot.microsoft.com/", color: "..." },
-  { id: "grok",       label: "Grok",       url: "https://grok.com/",              color: "..." },
-  { id: "mistral",    label: "Le Chat",    url: "https://chat.mistral.ai/",       color: "..." },
-];
-
-// useExternalLlms(): { selected: ExternalLlmId[]; toggle(id); }
-// Persistenz: localStorage key "framing.externalLlms"
-// Default: ["chatgpt", "claude", "gemini"]
+```text
+┌─ Vorhaben: [Arbeitstitel]  ───────────── [Status-Chip]
+│
+│  ┌─ Problem Framing ─────┐   ┌─ Design Sprint ────┐
+│  │  Framing-Card         │ → │  Sprint-Card       │
+│  │  (Schritt x/12)       │   │  (Schritt Map…)    │
+│  └───────────────────────┘   └────────────────────┘
+└──────────────────────────────────────────────────────
 ```
 
-### 2. `IntroSlide` erweitern (FramingStepCard.tsx, Block 3)
-Statt statischer Aufzählung „Claude, Gemini, ChatGPT" bekommt Block 3 zusätzlich eine Checkbox-Reihe:
+- Die Gruppen-Card ist die visuelle Klammer: dezenter Rahmen, kleine Kopfzeile mit Vorhaben-Titel + Icon-Chevron zwischen den beiden inneren Karten.
+- Titel = `titel_arbeitstitel` des Framings (Fallback: Titel des Sprints).
+- Innen zwei kompaktere Sub-Cards (Framing links, Sprint rechts), gleiche Struktur wie bisher, aber leichter (kleinerer Titel, kein doppelter Modus-Text).
+- Chevron/Pfeil-Icon zwischen den Sub-Cards verstärkt „wurde zu".
 
-```
-Deine bevorzugten externen KI-Tools:
-[✓] ChatGPT  [✓] Claude  [✓] Gemini  [ ] Perplexity  [ ] Copilot  [ ] Grok  [ ] Le Chat
-```
+## Fälle, die weiter separat bleiben
 
-Auswahl wird über `useExternalLlms()` in localStorage gespeichert und beeinflusst sofort alle anderen Schritte. Der bisherige Erklärtext bleibt, wird nur konsistent an die Auswahl angepasst.
+- **Framing ohne Sprint** → einzelne Framing-Card als eigene Gruppen-Card (Slot rechts zeigt Button „Sprint aus diesem Framing erzeugen", falls Framing abgeschlossen ist – ansonsten dezenter Platzhalter „Sprint entsteht nach Abschluss").
+- **Sprint ohne Framing** → eigene Reihe „Direkt gestartete Sprints" darunter, bisheriges Grid unverändert.
 
-### 3. Neue Komponente `ExternalLlmBar`
-`src/components/framing/ExternalLlmBar.tsx` — kompakte Leiste:
+## Bestehende Elemente
 
-```
-🔎 Externe KI-Hilfe:  [ChatGPT ↗]  [Claude ↗]  [Gemini ↗]
-```
+- Edit- und Löschen-Icons bleiben auf der Sprint-Sub-Card (Positionen wie aktuell, weiter links vom Aktiv-Badge).
+- Alle Links, Statuslogik, Delete-Zähler, Restart-Hinweis (`MAX_SPRINT_RESTARTS`) bleiben unverändert.
+- Farb-Tokens weiter aus `index.css` (`border-l-primary`, `bg-muted/30` für Gruppen-Hintergrund) – keine Hardcodes.
 
-- Jeder Button ist ein `<a href={url} target="_blank" rel="noopener noreferrer">` mit `ExternalLink`-Icon (Lucide).
-- Rendert nur die ausgewählten Tools aus dem Hook.
-- Wenn Auswahl leer: dezenter Hinweis „Im Intro-Schritt KI-Tools auswählen" + Link zum Intro.
+## Technische Umsetzung
 
-### 4. `ExternalLlmBar` in jeden Framing-Schritt einbauen
-In `FramingStepCard.tsx` direkt unter dem Step-Header (nach `arbeit`-Beschreibung, vor dem Inhalt) einfügen — für alle Varianten außer `intro` (dort ist die Auswahl-UI selbst).
-
-Optional: Tooltip am Icon mit dem empfohlenen Prompt-Rahmen aus dem Intro („Kontext + aktuelle Frage + 3–5 Stichpunkte").
-
-## Was NICHT passiert
-- Keine DB-Änderung (Auswahl bleibt clientseitig via localStorage — pro Browser/User).
-- Keine Änderung an Framing-Schritt-Inhalten oder KI-Vorschlags-Logik.
-- Keine Übernahme externer Antworten ins Tool (der User kopiert manuell wie bisher).
-- Farbregel „übernommene KI-Vorschläge bleiben blau/pink" bleibt unverändert.
-
-## Ergebnis
-- Intro: sichtbare Multi-Select für LLM-Präferenzen, Standard = ChatGPT + Claude + Gemini.
-- Jeder Schritt: klickbare Direkt-Links zu genau diesen Tools, jeweils in neuem Tab.
-- Ein-Klick-Weg vom Framing-Schritt zum Wunsch-LLM, ohne den Sprint-Tab zu verlieren.
+- Neue Hilfsstruktur `groupedItems` im Component: paart `framing` ↔ `sprint` via `framing.resulting_sprint_id`, sammelt „nur Framing" und „nur Sprint" separat.
+- Neue Sub-Komponenten (im selben File, klein): `VorhabenGroupCard`, `FramingSubCard`, `SprintSubCard`.
+- Keine Backend-/Datenänderungen; nur Presentation.
