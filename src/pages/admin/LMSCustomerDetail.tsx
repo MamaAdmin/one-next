@@ -210,29 +210,16 @@ const LMSCustomerDetail = () => {
           {/* Employees Card */}
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>Mitarbeiter</CardTitle>
-                  <CardDescription>
-                    Verwalten Sie die Mitarbeiter dieses Unternehmens
-                  </CardDescription>
-                </div>
-                <Button onClick={() => setIsInviteDialogOpen(true)}>
-                  Mitarbeiter einladen
-                </Button>
-              </div>
+              <CardTitle>Mitarbeiter</CardTitle>
+              <CardDescription>
+                Verwalten Sie die Mitarbeiter dieses Unternehmens
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <EmployeeList employees={employees} />
             </CardContent>
           </Card>
         </div>
-
-        <InviteUserDialog
-          open={isInviteDialogOpen}
-          onOpenChange={setIsInviteDialogOpen}
-          onInvite={sendInvitation}
-        />
       </main>
 
       <Footer isEditMode={false} />
