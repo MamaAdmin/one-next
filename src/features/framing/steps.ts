@@ -19,6 +19,7 @@ export interface FramingStepDef {
   title: string;
   frage: string;
   arbeit: string;
+  nutzen?: string;
   timeboxMin: number;
   variant: FramingVariant;
   nutztDatenAus: string[];
@@ -45,6 +46,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     frage: "Was ist der Kontext – und was ist ausdrücklich KEIN Sprint-Ziel?",
     arbeit:
       "Beschreibe kurz die Ausgangslage und grenze ab, was NICHT Gegenstand des Sprints sein soll.",
+    nutzen:
+      "Damit dein Team ab jetzt vom gleichen Ausgangspunkt startet und du später keine Diskussionen über den Scope neu aufmachen musst.",
     timeboxMin: 15,
     variant: "context-list",
     nutztDatenAus: [],
@@ -57,6 +60,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     frage: "Wo stehen wir heute, was ist bereits passiert – und was erwartet uns, wenn wir NICHTS tun?",
     arbeit:
       "Gegenwart (Warum jetzt?), Vergangenheit (bisher Versuchtes / Erfahrungen) und Zukunft (Standard-Zukunft + Wettbewerb, Trends, Chancen) sichtbar machen.",
+    nutzen:
+      "Damit klar wird, warum jetzt der richtige Zeitpunkt für diesen Sprint ist – und du erkennst, was passiert, wenn ihr nichts ändert.",
     timeboxMin: 15,
     variant: "two-fields",
     nutztDatenAus: ["1"],
@@ -67,6 +72,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "3. Stakeholder & Zielgruppe",
     frage: "Wer ist beteiligt, wer ist primäre Zielgruppe – wen parken wir?",
     arbeit: "Stakeholder sammeln, primäre Zielgruppe festlegen, sekundäre bewusst parken.",
+    nutzen:
+      "Damit du weißt, für wen du löst und wessen Meinung im Sprint zählt – bevor du dich in Details verlierst.",
     timeboxMin: 15,
     variant: "stakeholder",
     nutztDatenAus: ["1", "2"],
@@ -78,6 +85,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     frage: "Wind, Anker, Hafen, Eisberg – wo stehen wir?",
     arbeit:
       "Treiber (Wind), Hindernisse (Anker), Ziel (Hafen) und Risiken (Eisberg) zusammentragen.",
+    nutzen:
+      "Um Treiber, Bremsen, Ziel und Risiken in einem Bild zu sehen, statt sie über zehn Meetings verstreut zu sammeln.",
     timeboxMin: 30,
     variant: "sailboat",
     nutztDatenAus: ["1", "2", "3"],
@@ -89,6 +98,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     frage: "Was steckt wirklich dahinter? – 5 Whys",
     arbeit:
       "Ursachenkette mit 5 Whys vertiefen und die relevanten Ursachen als Liste festhalten. Die Cynefin-Einordnung passiert automatisch im nächsten Schritt.",
+    nutzen:
+      "Damit du am echten Problem arbeitest, nicht am Symptom – sonst löst der Sprint das Falsche.",
     timeboxMin: 15,
     variant: "five-whys",
     nutztDatenAus: ["1", "2", "3", "4"],
@@ -100,6 +111,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     frage: "Welche Ursachen sind einfach, kompliziert, komplex oder chaotisch – und adressierbar?",
     arbeit:
       "Die Ursachen aus Schritt 5 werden automatisch übernommen. Klassifikation und Adressierbarkeit bei Bedarf anpassen.",
+    nutzen:
+      "Damit du weißt, ob du einfach umsetzen, testen oder erst noch probieren musst – das bestimmt den weiteren Vorgehensmodus.",
     timeboxMin: 15,
     variant: "cynefin",
     nutztDatenAus: ["5"],
@@ -110,6 +123,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "7. Annahmen & Risiken",
     frage: "Welche Annahmen sind hoch-unsicher UND hoch-wirksam?",
     arbeit: "Annahmen sammeln und in 2×2-Matrix nach Unsicherheit × Einfluss einordnen.",
+    nutzen:
+      "Damit du erkennst, welche unsicheren Annahmen das ganze Vorhaben killen können – genau die musst du im Sprint testen.",
     timeboxMin: 20,
     variant: "assumptions",
     nutztDatenAus: ["1", "2", "3", "4", "5", "5b"],
@@ -120,6 +135,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "8. Erfolg & Constraints",
     frage: "Woran messen wir Erfolg in 5 Tagen – was ist gesetzt?",
     arbeit: "Messbares 5-Tages-Ergebnis definieren und harte Randbedingungen festhalten.",
+    nutzen:
+      "Damit am Ende des Sprints messbar ist, ob er sich gelohnt hat – und du weißt, was du nicht anfassen darfst.",
     timeboxMin: 20,
     variant: "success-constraints",
     nutztDatenAus: ["3", "4"],
@@ -130,6 +147,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "9. Scope-Cut & Sprint-Fragen",
     frage: "Was gehört rein, was raus – welche Entscheidungsfragen klärt der Sprint?",
     arbeit: "In/Out of Scope trennen und Sprint-Fragen als 'Können wir …?' formulieren.",
+    nutzen:
+      "Um den Sprint auf eine bearbeitbare Frage einzudampfen, statt fünf Themen halb zu bearbeiten.",
     timeboxMin: 25,
     variant: "scope-questions",
     nutztDatenAus: ["5", "5b", "6", "7"],
@@ -140,6 +159,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "10. Priorisierung (NUF)",
     frage: "Welche Challenge ist Neu, Nützlich und Machbar?",
     arbeit: "Sprint-Fragen nach Neuheit, Nutzen, Machbarkeit bewerten und Top-1 wählen.",
+    nutzen:
+      "Damit du auf die eine Frage fokussierst, die neu, nützlich und machbar ist – nicht auf die lauteste.",
     timeboxMin: 15,
     variant: "nuf",
     nutztDatenAus: ["8"],
@@ -150,6 +171,8 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "11. Entscheidung & Next Steps",
     frage: "Sprint-Go? Was muss vorher passieren?",
     arbeit: "Sprint-Go bestätigen und Pre-Sprint-To-dos festhalten.",
+    nutzen:
+      "Damit das Framing verbindlich in einen Sprint mündet und nicht als Dokument in der Ablage liegen bleibt.",
     timeboxMin: 15,
     variant: "next-steps",
     nutztDatenAus: ["1", "2", "3", "4", "5", "5b", "6", "7", "8", "9"],
