@@ -340,6 +340,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                     + Risiko hinzufügen
                   </Button>
                 ) : null}
+              </div>
               {!isLocked ? (
                 <Button
                   variant="outline"
