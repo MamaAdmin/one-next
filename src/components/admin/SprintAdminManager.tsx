@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAdminAllSprints, useAdminAllFramingSessions, type AdminSprintRow } from "@/hooks/useAdminSprints";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { Card, CardContent } from "@/components/ui/card";
@@ -43,6 +44,7 @@ function ownerLabel(row: AdminSprintRow) {
 export default function SprintAdminManager() {
   const { data, isLoading } = useAdminAllSprints();
   const { data: framingData, isLoading: framingLoading } = useAdminAllFramingSessions();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [modus, setModus] = useState<string>("all");
@@ -156,7 +158,11 @@ export default function SprintAdminManager() {
                 filtered.map((r) => {
                   const step = getStepDef(r.current_step);
                   return (
-                    <TableRow key={r.id}>
+                    <TableRow
+                      key={r.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => navigate(`/sprint/${r.id}`)}
+                    >
                       <TableCell className="font-medium">{r.titel}</TableCell>
                       <TableCell>
                         <div className="flex flex-col">
@@ -202,7 +208,10 @@ export default function SprintAdminManager() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => setSelected(r.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelected(r.id);
+                          }}
                         >
                           Details
                         </Button>
@@ -256,7 +265,15 @@ export default function SprintAdminManager() {
                   framingRows.map((r) => {
                     const step = FRAMING_STEPS.find((s) => s.index === r.current_step);
                     return (
-                      <TableRow key={r.id}>
+                      <TableRow
+                        key={r.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => navigate(
+                          r.resulting_sprint_id
+                            ? `/sprint/${r.resulting_sprint_id}`
+                            : `/sprint/framing/${r.id}`
+                        )}
+                      >
                         <TableCell className="font-medium">{r.titel_arbeitstitel}</TableCell>
                         <TableCell>
                           <div className="flex flex-col">
