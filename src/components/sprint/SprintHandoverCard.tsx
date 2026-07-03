@@ -95,7 +95,10 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               <Field label="Primäre Zielgruppe" value={sprint.zielgruppe} multiline />
               <Field label="Erfolgsmessung" value={sprint.erfolgsmessung} multiline />
             </div>
-            <Field label="Decider" value={sprint.decider} />
+            <div className="grid md:grid-cols-2 gap-4">
+              <Field label="Decider" value={sprint.decider} />
+              <Field label="Sprint Leader" value={sprint.sprint_leader} />
+            </div>
             <ListField label="Sprint-Fragen" items={sprint.sprint_fragen} />
             <ListField label="Identifizierte Risiken" items={sprint.risiken ?? []} />
 
