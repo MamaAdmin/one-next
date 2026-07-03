@@ -135,6 +135,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         zielgruppe: result.zielgruppe,
         erfolgsmessung: result.erfolgsmessung,
         sprint_fragen: result.sprintFragen,
+        risiken: result.risiken,
       });
       await updateSession.mutateAsync({
         status: "done",
