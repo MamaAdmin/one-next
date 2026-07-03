@@ -29,6 +29,23 @@ serve(async (req) => {
 
     console.log('Approving artifact:', { artifact_id, is_approved, user_id: user.id });
 
+    // Ownership check via bmad_sessions.created_by
+    const { data: artifactRow } = await supabase
+      .from('bmad_artifacts')
+      .select('id, session_id, bmad_sessions!inner(created_by)')
+      .eq('id', artifact_id)
+      .maybeSingle();
+
+    const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+    // deno-lint-ignore no-explicit-any
+    const ownerId = (artifactRow as any)?.bmad_sessions?.created_by;
+    if (!artifactRow || (ownerId !== user.id && !isAdmin)) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+
     // Update the artifact
     const { data: artifact, error: updateError } = await supabase
       .from('bmad_artifacts')
