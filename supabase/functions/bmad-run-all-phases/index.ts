@@ -57,7 +57,16 @@ serve(async (req) => {
 
     if (sessionError) throw sessionError;
 
+    // Ownership check
+    const { data: isAdmin } = await supabaseClient.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+    if (session.created_by !== user.id && !isAdmin) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     console.log('Starting all phases for session:', session_id);
+
 
     // Initialize progress tracking
     await supabaseClient
