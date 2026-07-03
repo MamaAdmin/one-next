@@ -158,7 +158,11 @@ export default function SprintAdminManager() {
                 filtered.map((r) => {
                   const step = getStepDef(r.current_step);
                   return (
-                    <TableRow key={r.id}>
+                    <TableRow
+                      key={r.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => navigate(`/sprint/${r.id}`)}
+                    >
                       <TableCell className="font-medium">{r.titel}</TableCell>
                       <TableCell>
                         <div className="flex flex-col">
@@ -204,7 +208,10 @@ export default function SprintAdminManager() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => setSelected(r.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelected(r.id);
+                          }}
                         >
                           Details
                         </Button>
