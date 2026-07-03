@@ -292,6 +292,54 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                   </Button>
                 ) : null}
               </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Identifizierte Risiken</Label>
+                {result.risiken.length ? (
+                  <ul className="space-y-2">
+                    {result.risiken.map((s, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <Input
+                          value={s}
+                          onChange={(e) => {
+                            const next = [...result.risiken];
+                            next[i] = e.target.value;
+                            setResult({ ...result, risiken: next });
+                          }}
+                          disabled={isLocked}
+                        />
+                        {!isLocked ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setResult({
+                                ...result,
+                                risiken: result.risiken.filter((_, j) => j !== i),
+                              })
+                            }
+                          >
+                            ✕
+                          </Button>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Noch keine Risiken erfasst.
+                  </p>
+                )}
+                {!isLocked ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      setResult({ ...result, risiken: [...result.risiken, ""] })
+                    }
+                  >
+                    + Risiko hinzufügen
+                  </Button>
+                ) : null}
               {!isLocked ? (
                 <Button
                   variant="outline"
