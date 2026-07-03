@@ -481,8 +481,98 @@ export default function SprintStepCard({
             Gedächtnis aufschreiben, was hängen geblieben ist. */}
 
 
+        {/* KI-Vorschläge zum Schritt */}
+        {step.variant !== "notes" && step.variant !== "map" ? (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                KI-Vorschläge
+              </h3>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSuggest}
+                disabled={suggestLoading}
+              >
+                {suggestLoading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4 mr-2" />
+                )}
+                {vorschlaege.length > 0 ? "Weitere generieren" : "KI-Vorschläge generieren"}
+              </Button>
+            </div>
+            {vorschlaege.length > 0 ? (
+              <div className="rounded-lg border border-accent/60 bg-accent-soft p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground">
+                    {vorschlaege.length} Vorschlag{vorschlaege.length === 1 ? "" : "e"} –
+                    einzeln übernehmen oder alle auf einmal.
+                  </p>
+                  <div className="flex gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        vorschlaege.forEach((v) => acceptVorschlag(v));
+                        toast({ title: "Alle Vorschläge übernommen" });
+                      }}
+                    >
+                      Alle übernehmen
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setVorschlaege([])}
+                    >
+                      Verwerfen
+                    </Button>
+                  </div>
+                </div>
+                <ul className="space-y-1.5">
+                  {vorschlaege.map((v, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 rounded-md border border-accent/60 bg-background/60 px-2.5 py-1.5 text-sm"
+                    >
+                      <span className="flex-1">{v}</span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-7"
+                        onClick={() => acceptVorschlag(v)}
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => dismissVorschlag(v)}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Noch keine KI-Vorschläge – oben Button klicken, um passende
+                Ideen zum aktuellen Schritt vorzuschlagen.
+              </p>
+            )}
+          </div>
+        ) : null}
+
         {/* 3. KI-Marktrecherche & Ranking */}
         {step.variant !== "notes" ? (
+
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h3 className="font-semibold text-lg">KI-Marktrecherche & Ranking</h3>
