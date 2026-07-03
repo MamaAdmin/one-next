@@ -55,7 +55,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
       : null;
   });
   const [signedOff, setSignedOff] = useState(isLocked);
-  const [decider, setDecider] = useState("");
+  const [decider, setDecider] = useState("Julia");
   const [recruitDone, setRecruitDone] = useState(isLocked);
   const [recruitNote, setRecruitNote] = useState("");
   const [busy, setBusy] = useState(false);
