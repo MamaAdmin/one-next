@@ -290,11 +290,40 @@ export default function SprintDashboard() {
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
+                    {s.status !== "done" ? (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Sprint löschen"
+                        disabled={!canDelete(s)}
+                        title={
+                          !canDelete(s)
+                            ? "Maximal 3 Neuanfänge – keine Löschung mehr möglich."
+                            : "Sprint löschen"
+                        }
+                        className="absolute top-3 right-11 h-8 w-8 text-destructive hover:text-destructive"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (canDelete(s)) setDeleting(s);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    ) : null}
                   </Card>
                 );
               })}
             </div>
           )}
+
+          {!isAdmin && sprints && sprints.length > 0 ? (
+            <p className="text-xs text-muted-foreground mt-4">
+              Hinweis: Du kannst laufende Sprints löschen und neu anfangen –
+              maximal {MAX_SPRINT_RESTARTS} Neuanfänge. Bereits genutzt:{" "}
+              {Math.min(deleteCount, MAX_SPRINT_RESTARTS)} / {MAX_SPRINT_RESTARTS}.
+            </p>
+          ) : null}
         </main>
 
         <Footer />
