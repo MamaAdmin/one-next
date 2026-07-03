@@ -358,10 +358,11 @@ export default function LMSToolboxEditor() {
                                 setFormData({ ...formData, external_url: e.target.value });
                                 handleFormChange();
                               }}
-                              placeholder="https://miro.com/app/board/..."
+                              placeholder="https://tool.example.com/board/..."
                             />
                             <p className="text-xs text-muted-foreground mt-1">
-                              Link zu Miro, Mural oder anderem Tool
+                              Link zum externen Tool
+
                             </p>
                           </div>
                         )}

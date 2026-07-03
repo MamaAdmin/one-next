@@ -23,8 +23,6 @@ project_id = "ookvxyctxmtcxowcwnij"
     verify_jwt = true
   [functions.create-participant]
     verify_jwt = true
-  [functions.export-to-miro]
-    verify_jwt = true
   [functions.generate-completion-certificate]
     verify_jwt = true
   [functions.generate-data-export]
