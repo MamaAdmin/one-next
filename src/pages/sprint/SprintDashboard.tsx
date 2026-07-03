@@ -5,27 +5,71 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Plus, Sparkles, Compass } from "lucide-react";
-import { useMySprints, useMySprintsCompletedSteps } from "@/hooks/useSprint";
+import { Pencil, Plus, Sparkles, Compass, Trash2 } from "lucide-react";
+import {
+  useMySprints,
+  useMySprintsCompletedSteps,
+  useMySprintDeleteCount,
+  useDeleteSprint,
+  MAX_SPRINT_RESTARTS,
+} from "@/hooks/useSprint";
 import { useMyFramingSessions } from "@/hooks/useFraming";
+import { useAdmin } from "@/hooks/useAdmin";
 import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { SEO } from "@/components/SEO";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import type { SprintRow } from "@/features/sprint/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 export default function SprintDashboard() {
   const { data: sprints, isLoading } = useMySprints();
   const { data: framingSessions } = useMyFramingSessions();
+  const { data: deleteCount = 0 } = useMySprintDeleteCount();
+  const { isAdmin } = useAdmin();
+  const deleteMut = useDeleteSprint();
   const sprintIds = (sprints ?? []).map((s) => s.id);
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
+  const [deleting, setDeleting] = useState<SprintRow | null>(null);
   const allFramings = framingSessions ?? [];
   const framingBySprintId = new Map(
     allFramings
       .filter((f) => f.resulting_sprint_id)
       .map((f) => [f.resulting_sprint_id as string, f]),
   );
+
+  const remainingRestarts = Math.max(0, MAX_SPRINT_RESTARTS - deleteCount);
+  const canDelete = (s: SprintRow) =>
+    s.status !== "done" && (isAdmin || remainingRestarts > 0);
+
+  const handleDelete = async () => {
+    if (!deleting) return;
+    try {
+      await deleteMut.mutateAsync({
+        sprintId: deleting.id,
+        incrementCounter: !isAdmin,
+      });
+      toast({ title: "Sprint gelöscht" });
+      setDeleting(null);
+    } catch (e) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  };
 
   const deriveCurrentStepKey = (sprintId: string, fallback: string): string => {
     const done = new Set(completedByStep?.[sprintId] ?? []);
@@ -246,11 +290,40 @@ export default function SprintDashboard() {
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
+                    {s.status !== "done" ? (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Sprint löschen"
+                        disabled={!canDelete(s)}
+                        title={
+                          !canDelete(s)
+                            ? "Maximal 3 Neuanfänge – keine Löschung mehr möglich."
+                            : "Sprint löschen"
+                        }
+                        className="absolute top-3 right-11 h-8 w-8 text-destructive hover:text-destructive"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (canDelete(s)) setDeleting(s);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    ) : null}
                   </Card>
                 );
               })}
             </div>
           )}
+
+          {!isAdmin && sprints && sprints.length > 0 ? (
+            <p className="text-xs text-muted-foreground mt-4">
+              Hinweis: Du kannst laufende Sprints löschen und neu anfangen –
+              maximal {MAX_SPRINT_RESTARTS} Neuanfänge. Bereits genutzt:{" "}
+              {Math.min(deleteCount, MAX_SPRINT_RESTARTS)} / {MAX_SPRINT_RESTARTS}.
+            </p>
+          ) : null}
         </main>
 
         <Footer />
@@ -263,6 +336,33 @@ export default function SprintDashboard() {
           onOpenChange={(o) => !o && setEditing(null)}
         />
       ) : null}
+
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sprint wirklich löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              „{deleting?.titel}" wird unwiderruflich gelöscht – inklusive aller Schritte und Inhalte.
+              {!isAdmin ? (
+                <>
+                  {" "}Danach hast du noch{" "}
+                  <strong>{Math.max(0, remainingRestarts - 1)} von {MAX_SPRINT_RESTARTS}</strong>{" "}
+                  Neuanfängen übrig.
+                </>
+              ) : null}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

@@ -2243,6 +2243,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          sprint_delete_count: number
           updated_at: string
         }
         Insert: {
@@ -2251,6 +2252,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          sprint_delete_count?: number
           updated_at?: string
         }
         Update: {
@@ -2259,6 +2261,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          sprint_delete_count?: number
           updated_at?: string
         }
         Relationships: []

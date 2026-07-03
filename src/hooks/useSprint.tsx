@@ -188,3 +188,60 @@ export function useUpdateSprint(sprintId: string) {
   });
 }
 
+export const MAX_SPRINT_RESTARTS = 3;
+
+export function useMySprintDeleteCount() {
+  return useQuery({
+    queryKey: ["profile", "sprint_delete_count"],
+    queryFn: async (): Promise<number> => {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      if (!uid) return 0;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("sprint_delete_count")
+        .eq("id", uid)
+        .maybeSingle();
+      if (error) throw error;
+      return (data as { sprint_delete_count?: number } | null)?.sprint_delete_count ?? 0;
+    },
+  });
+}
+
+export function useDeleteSprint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (args: { sprintId: string; incrementCounter: boolean }) => {
+      const { data: userData, error: userErr } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+      const uid = userData.user?.id;
+      if (!uid) throw new Error("Nicht angemeldet.");
+
+      const { error } = await supabase
+        .from(SPRINTS_TABLE)
+        .delete()
+        .eq("id", args.sprintId);
+      if (error) throw error;
+
+      if (args.incrementCounter) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("sprint_delete_count")
+          .eq("id", uid)
+          .maybeSingle();
+        const current =
+          (prof as { sprint_delete_count?: number } | null)?.sprint_delete_count ?? 0;
+        await supabase
+          .from("profiles")
+          .update({ sprint_delete_count: current + 1 })
+          .eq("id", uid);
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["sprints", "mine"] });
+      qc.invalidateQueries({ queryKey: ["profile", "sprint_delete_count"] });
+    },
+  });
+}
+
+
