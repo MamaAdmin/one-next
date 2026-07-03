@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { useCoursePurchase } from "@/hooks/useCoursePurchase";
-import { EnrollmentInvitationManager } from "@/components/lms/EnrollmentInvitationManager";
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
@@ -92,15 +92,6 @@ export default function LMSEnrollmentDashboard() {
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-32">
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Enrollment-Einladungen</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EnrollmentInvitationManager customerId={purchases[0]?.customer_id || ""} />
-            </CardContent>
-          </Card>
-          
           <Card>
         <CardHeader>
           <div className="flex items-center justify-between">

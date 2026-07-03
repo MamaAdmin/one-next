@@ -33,8 +33,6 @@ project_id = "ookvxyctxmtcxowcwnij"
     verify_jwt = true
   [functions.send-booking-to-n8n]
     verify_jwt = true
-  [functions.send-enrollment-invitation]
-    verify_jwt = true
   [functions.send-sprint-invitation]
     verify_jwt = true
   [functions.verify-course-purchase]

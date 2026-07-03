@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CompanyLogoUpload } from "@/components/company/CompanyLogoUpload";
 import { EmployeeList } from "@/components/company/EmployeeList";
-import { InviteUserDialog } from "@/components/company/InviteUserDialog";
+
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -27,9 +27,7 @@ const LMSCustomerDetail = () => {
     loading, 
     updateCustomer, 
     uploadLogo,
-    sendInvitation 
   } = useCustomerDetail(customerId);
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -212,29 +210,16 @@ const LMSCustomerDetail = () => {
           {/* Employees Card */}
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>Mitarbeiter</CardTitle>
-                  <CardDescription>
-                    Verwalten Sie die Mitarbeiter dieses Unternehmens
-                  </CardDescription>
-                </div>
-                <Button onClick={() => setIsInviteDialogOpen(true)}>
-                  Mitarbeiter einladen
-                </Button>
-              </div>
+              <CardTitle>Mitarbeiter</CardTitle>
+              <CardDescription>
+                Verwalten Sie die Mitarbeiter dieses Unternehmens
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <EmployeeList employees={employees} />
             </CardContent>
           </Card>
         </div>
-
-        <InviteUserDialog
-          open={isInviteDialogOpen}
-          onOpenChange={setIsInviteDialogOpen}
-          onInvite={sendInvitation}
-        />
       </main>
 
       <Footer isEditMode={false} />

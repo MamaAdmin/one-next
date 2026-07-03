@@ -138,64 +138,12 @@ export const useCustomerDetail = (customerId: string | undefined) => {
     }
   };
 
-  const sendInvitation = async (email: string, fullName: string) => {
-    try {
-      if (!customer) throw new Error("Kein Kunde geladen");
-
-      // Check if user already exists as participant
-      const { data: existing } = await supabase
-        .from("participants")
-        .select("id")
-        .eq("customer_id", customer.id)
-        .eq("email", email)
-        .maybeSingle();
-
-      if (existing) {
-        throw new Error("Benutzer ist bereits ein Mitarbeiter");
-      }
-
-      // Create invitation
-      const token = crypto.randomUUID();
-      const { data: { user: inviter } } = await supabase.auth.getUser();
-      if (!inviter) throw new Error("Nicht angemeldet");
-      const { error: inviteError } = await supabase
-        .from("user_invitations")
-        .insert({
-          customer_id: customer.id,
-          email,
-          full_name: fullName,
-          token,
-          invited_by: inviter.id,
-        });
-
-      if (inviteError) throw inviteError;
-
-      // Send invitation email via edge function
-      const { error: emailError } = await supabase.functions.invoke(
-        "send-enrollment-invitation",
-        {
-          body: { email, fullName, token, companyName: customer.company_name || customer.name },
-        }
-      );
-
-      if (emailError) throw emailError;
-
-      toast.success("Einladung gesendet");
-      await loadCustomerDetail();
-    } catch (error: any) {
-      console.error("Error sending invitation:", error);
-      toast.error(error.message || "Fehler beim Senden der Einladung");
-      throw error;
-    }
-  };
-
   return {
     customer,
     employees,
     loading,
     updateCustomer,
     uploadLogo,
-    sendInvitation,
     reload: loadCustomerDetail,
   };
 };
