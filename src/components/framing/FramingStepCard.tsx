@@ -24,6 +24,8 @@ import type {
 import { useFramingSuggest } from "@/hooks/useFraming";
 import { CanvasSection } from "./CanvasSection";
 import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
+import { ExternalLlmBar } from "./ExternalLlmBar";
+import { EXTERNAL_LLMS, useExternalLlms } from "@/features/framing/externalLlms";
 
 interface Props {
   sessionId: string;
@@ -188,6 +190,8 @@ export default function FramingStepCard({
 
           </div>
         </div>
+
+        {step.variant !== "intro" ? <ExternalLlmBar /> : null}
 
         <StepVariant
           step={step}
