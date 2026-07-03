@@ -118,7 +118,7 @@ export default function SprintDashboard() {
                   Typisch: „Wir wissen, dass etwas nicht rund läuft, aber nicht genau was."
                 </p>
                 <div className="pt-3 mt-auto">
-                  <Button asChild variant="outline" className="w-full">
+                  <Button asChild className="w-full bg-gradient-primary hover:opacity-90">
                     <Link to="/sprint/neu?mode=framing">
                       <Compass className="w-4 h-4 mr-2" />
                       Jetzt mit Problem Framing starten
