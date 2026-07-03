@@ -15,7 +15,7 @@ serve(async (req) => {
   try {
     const { sessionId, purchaseId } = await req.json();
 
-    if (!sessionId || !purchaseId) {
+    if (!sessionId || !purchaseId || typeof sessionId !== "string" || typeof purchaseId !== "string") {
       throw new Error("sessionId and purchaseId are required");
     }
 
@@ -56,6 +56,20 @@ serve(async (req) => {
 
     if (session.payment_status !== "paid") {
       throw new Error("Payment not completed");
+    }
+
+    // SECURITY: verify the Stripe session actually belongs to this purchase
+    const sessionPurchaseId = session.metadata?.purchase_id;
+    const sessionCustomerId = session.metadata?.customer_id;
+    if (!sessionPurchaseId || sessionPurchaseId !== purchaseId) {
+      console.warn("Purchase id mismatch on verify", {
+        sessionPurchaseId,
+        purchaseId,
+      });
+      throw new Error("Session does not belong to this purchase");
+    }
+    if (sessionCustomerId && purchase.customer_id && sessionCustomerId !== purchase.customer_id) {
+      throw new Error("Session customer mismatch");
     }
 
     // Update purchase status

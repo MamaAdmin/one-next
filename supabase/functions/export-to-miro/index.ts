@@ -13,12 +13,58 @@ serve(async (req) => {
   }
 
   try {
-    const { enrollmentId, moduleId } = await req.json();
+    // Require authenticated caller
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const token = authHeader.replace("Bearer ", "");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const callerId = userData.user.id;
+
+    const { enrollmentId, moduleId } = await req.json();
+    if (
+      !enrollmentId || typeof enrollmentId !== "string" ||
+      !moduleId || typeof moduleId !== "string"
+    ) {
+      throw new Error("enrollmentId and moduleId are required");
+    }
+
+    // Verify caller owns the enrollment (or is admin)
+    const { data: enrollment } = await supabase
+      .from("lms_course_enrollments")
+      .select("id, participant_id, participants!inner(user_id)")
+      .eq("id", enrollmentId)
+      .maybeSingle();
+
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: callerId,
+      _role: "admin",
+    });
+
+    // deno-lint-ignore no-explicit-any
+    const enrollmentUserId = (enrollment as any)?.participants?.user_id;
+    if (!enrollment || (enrollmentUserId !== callerId && !isAdmin)) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Fetch artifacts from database
     const { data: artifacts, error: fetchError } = await supabase
@@ -93,7 +139,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Export to Miro failed:", error);
     return new Response(
-      JSON.stringify({ error: String(error) }),
+      JSON.stringify({ error: "Export failed" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
 import { z } from "https://esm.sh/zod@3.23.8";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -23,6 +24,30 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Require authenticated caller
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const jwt = authHeader.replace("Bearer ", "");
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser(jwt);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const callerId = userData.user.id;
+
     const body = await req.json();
     const parsed = InvitationSchema.safeParse(body);
     if (!parsed.success) {
@@ -33,6 +58,28 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const { email, fullName, token, companyName } = parsed.data;
+
+    // Verify caller owns the invitation referenced by this token
+    const { data: invitation } = await supabase
+      .from("user_invitations")
+      .select("id, invited_by, customer_id, email")
+      .eq("token", token)
+      .maybeSingle();
+
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: callerId, _role: "admin" });
+    if (!invitation || (invitation.invited_by !== callerId && !isAdmin)) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    if (invitation.email !== email) {
+      return new Response(JSON.stringify({ error: "Email does not match invitation" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
 
     console.log("Sending invitation email to:", email);
 

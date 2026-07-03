@@ -13,23 +13,60 @@ serve(async (req) => {
   }
 
   try {
-    const { participantId } = await req.json();
-
-    if (!participantId) {
-      throw new Error("participantId is required");
+    // Require authenticated caller
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
+    const token = authHeader.replace("Bearer ", "");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    const { data: userData, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const callerId = userData.user.id;
+
+    const { participantId } = await req.json();
+    if (!participantId || typeof participantId !== "string") {
+      throw new Error("participantId is required");
+    }
+
     // Fetch participant data
     const { data: participant } = await supabase
       .from("participants")
       .select("*")
       .eq("id", participantId)
-      .single();
+      .maybeSingle();
+
+    if (!participant) {
+      return new Response(JSON.stringify({ error: "Not found" }), {
+        status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Ownership check: caller must be the participant, or an admin
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: callerId,
+      _role: "admin",
+    });
+    if (participant.user_id !== callerId && !isAdmin) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Fetch enrollments
     const { data: enrollments } = await supabase
@@ -103,7 +140,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Data export failed:", error);
     return new Response(
-      JSON.stringify({ error: String(error) }),
+      JSON.stringify({ error: "Export failed" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
