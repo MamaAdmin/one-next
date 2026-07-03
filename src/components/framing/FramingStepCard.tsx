@@ -191,7 +191,7 @@ export default function FramingStepCard({
           </div>
         </div>
 
-        {step.variant !== "intro" ? <ExternalLlmBar /> : null}
+        <ExternalLlmBar />
 
         <StepVariant
           step={step}
