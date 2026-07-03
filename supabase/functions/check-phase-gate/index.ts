@@ -18,12 +18,55 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Require authenticated caller
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const token = authHeader.replace("Bearer ", "");
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const callerId = userData.user.id;
+
     const { enrollment_id, phase_number }: PhaseGateCheck = await req.json();
+    if (!enrollment_id || typeof phase_number !== "number") {
+      throw new Error("enrollment_id and phase_number are required");
+    }
+
+    // Ownership check
+    const { data: enrollment } = await supabase
+      .from("lms_course_enrollments")
+      .select("id, participants!inner(user_id)")
+      .eq("id", enrollment_id)
+      .maybeSingle();
+
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: callerId,
+      _role: "admin",
+    });
+
+    // deno-lint-ignore no-explicit-any
+    const enrollmentUserId = (enrollment as any)?.participants?.user_id;
+    if (!enrollment || (enrollmentUserId !== callerId && !isAdmin)) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
 
     console.log("Checking phase gate:", { enrollment_id, phase_number });
 
@@ -59,6 +102,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (artifactsError) throw artifactsError;
 
+    // deno-lint-ignore no-explicit-any
     const uploadedModuleIds = artifacts?.map((a: any) => a.module_id) || [];
     const missingArtifacts = requiredArtifacts.filter(
       (reqId: string) => !uploadedModuleIds.includes(reqId)
@@ -94,10 +138,10 @@ const handler = async (req: Request): Promise<Response> => {
         headers: { "Content-Type": "application/json", ...corsHeaders },
       }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error in check-phase-gate:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Request failed" }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
