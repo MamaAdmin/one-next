@@ -44,6 +44,7 @@ function ownerLabel(row: AdminSprintRow) {
 export default function SprintAdminManager() {
   const { data, isLoading } = useAdminAllSprints();
   const { data: framingData, isLoading: framingLoading } = useAdminAllFramingSessions();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [modus, setModus] = useState<string>("all");
