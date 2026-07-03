@@ -60,6 +60,7 @@ export default function SprintStepCard({
     initial.mapZuordnung ?? {},
   );
   const [rankLoading, setRankLoading] = useState(false);
+  const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
 
@@ -182,7 +183,71 @@ export default function SprintStepCard({
     setEigenInput("");
   }
 
-  // KI-Vorschläge entfernt — nur noch Marktrecherche/Ranking.
+  async function handleSuggest() {
+    setSuggestLoading(true);
+    try {
+      const ctx = contextEntries.reduce<Record<string, unknown>>((acc, e) => {
+        acc[e.key] = e.value;
+        return acc;
+      }, {});
+      const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
+        body: {
+          sprint_id: sprint.id,
+          step_key: step.key,
+          step_frage: step.frage,
+          step_arbeit: step.arbeit,
+          context: ctx,
+        },
+      });
+      if (error) throw error;
+      const list = (data as { vorschlaege?: string[] })?.vorschlaege ?? [];
+      if (list.length === 0) {
+        toast({ title: "Keine Vorschläge erhalten", variant: "destructive" });
+        return;
+      }
+      setVorschlaege((prev) => {
+        const existing = new Set(prev.map((x) => x.trim().toLowerCase()));
+        const merged = [...prev];
+        for (const raw of list) {
+          const v = String(raw).trim();
+          if (!v) continue;
+          if (existing.has(v.toLowerCase())) continue;
+          if (
+            antworten.some((a) => a.trim().toLowerCase() === v.toLowerCase()) ||
+            eigene.some((a) => a.trim().toLowerCase() === v.toLowerCase())
+          )
+            continue;
+          merged.push(v);
+          existing.add(v.toLowerCase());
+        }
+        return merged;
+      });
+      toast({ title: `${list.length} KI-Vorschläge geladen` });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "KI-Vorschläge fehlgeschlagen", description: msg, variant: "destructive" });
+    } finally {
+      setSuggestLoading(false);
+    }
+  }
+
+  function acceptVorschlag(v: string) {
+    const val = v.trim();
+    if (!val) return;
+    if (
+      !eigene.some((e) => e.trim().toLowerCase() === val.toLowerCase()) &&
+      !antworten.some((a) => a.trim().toLowerCase() === val.toLowerCase())
+    ) {
+      setEigene((prev) => [...prev, val]);
+    }
+    setVorschlaege((prev) => prev.filter((x) => x !== v));
+  }
+
+  function dismissVorschlag(v: string) {
+    setVorschlaege((prev) => prev.filter((x) => x !== v));
+  }
+
+
 
 
   async function persist(completed: boolean) {
