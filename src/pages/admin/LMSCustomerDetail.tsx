@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CompanyLogoUpload } from "@/components/company/CompanyLogoUpload";
 import { EmployeeList } from "@/components/company/EmployeeList";
-import { InviteUserDialog } from "@/components/company/InviteUserDialog";
+
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 
