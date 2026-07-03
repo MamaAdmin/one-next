@@ -285,7 +285,7 @@ export default function SprintDashboard() {
                         variant="ghost"
                         size="icon"
                         aria-label="Sprint bearbeiten"
-                        className="absolute top-3 right-20 h-8 w-8"
+                        className="absolute top-3 right-16 h-8 w-8"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -305,7 +305,7 @@ export default function SprintDashboard() {
                               ? "Maximal 3 Neuanfänge – keine Löschung mehr möglich."
                               : "Sprint löschen"
                           }
-                          className="absolute top-3 right-11 h-8 w-8 text-destructive hover:text-destructive"
+                          className="absolute top-3 right-24 h-8 w-8 text-destructive hover:text-destructive"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
