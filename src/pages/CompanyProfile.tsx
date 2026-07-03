@@ -211,12 +211,6 @@ const CompanyProfile = () => {
         </div>
       </main>
       <Footer />
-
-      <InviteUserDialog
-        open={inviteDialogOpen}
-        onOpenChange={setInviteDialogOpen}
-        onInvite={handleInvite}
-      />
     </div>
   );
 };
