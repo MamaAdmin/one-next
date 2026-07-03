@@ -2438,6 +2438,8 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
               des Tools entstanden sind – du kuratierst sie bewusst.
             </li>
           </ul>
+
+          <ExternalLlmPicker />
         </div>
 
         {/* Block 4 – Farbcode */}
