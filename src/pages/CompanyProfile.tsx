@@ -18,8 +18,6 @@ import { toast } from "sonner";
 const CompanyProfile = () => {
   const navigate = useNavigate();
   const { company, employees, isAdmin, loading, updateCompany, uploadLogo } = useCompanyProfile();
-  const { createInvitation } = useInvitations(company?.id);
-  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [address, setAddress] = useState("");
