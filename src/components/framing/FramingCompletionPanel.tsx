@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Sparkles, Loader2, CheckCircle2 } from "lucide-react";
+import { Sparkles, Loader2, CheckCircle2, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import {
@@ -24,14 +24,26 @@ interface Props {
   steps: FramingStepRow[];
 }
 
+const RESULT_STORAGE_PREFIX = "framing-result-";
+
 export default function FramingCompletionPanel({ session, steps }: Props) {
   const navigate = useNavigate();
   const generate = useGenerateChallenge();
   const updateSession = useUpdateFramingSession(session.id);
   const createSprint = useCreateSprint();
 
-  const [result, setResult] = useState<ChallengeStatementResult | null>(
-    session.challenge_statement
+  const isLocked = session.status === "done";
+  const storageKey = `${RESULT_STORAGE_PREFIX}${session.id}`;
+
+  const [result, setResult] = useState<ChallengeStatementResult | null>(() => {
+    // Try localStorage first (has zielgruppe/erfolgsmessung/sprintFragen)
+    try {
+      const cached = localStorage.getItem(storageKey);
+      if (cached) return JSON.parse(cached) as ChallengeStatementResult;
+    } catch {
+      // ignore
+    }
+    return session.challenge_statement
       ? {
           titel: session.titel_arbeitstitel || "Sprint",
           challenge_statement: session.challenge_statement,
@@ -40,13 +52,25 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
           sprintFragen: [],
           risiken: [],
         }
-      : null,
-  );
-  const [signedOff, setSignedOff] = useState(false);
+      : null;
+  });
+  const [signedOff, setSignedOff] = useState(isLocked);
   const [decider, setDecider] = useState("");
-  const [recruitDone, setRecruitDone] = useState(false);
+  const [recruitDone, setRecruitDone] = useState(isLocked);
   const [recruitNote, setRecruitNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [autoTriggered, setAutoTriggered] = useState(false);
+
+  // Persist result to localStorage
+  useEffect(() => {
+    if (result) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(result));
+      } catch {
+        // ignore
+      }
+    }
+  }, [result, storageKey]);
 
   const step7 = steps.find((s) => s.step_key === "7")?.data as
     | { erfolgsmessung?: string; kiErfolgsmessung?: string[] }
@@ -84,11 +108,19 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
     }
   }
 
+  // Auto-generate on first mount if nothing exists yet and not locked
+  useEffect(() => {
+    if (!isLocked && !result && !autoTriggered && !generate.isPending) {
+      setAutoTriggered(true);
+      handleGenerate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function handleFinish() {
     if (!result) return;
     setBusy(true);
     try {
-      // Persist challenge statement first
       await updateSession.mutateAsync({
         challenge_statement: result.challenge_statement,
         titel_arbeitstitel: result.titel,
@@ -123,6 +155,18 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
 
   return (
     <div className="space-y-6">
+      {isLocked ? (
+        <Card className="border-primary/40 bg-primary/5">
+          <CardContent className="p-4 flex items-center gap-3 text-sm">
+            <Lock className="w-4 h-4 text-primary shrink-0" />
+            <span>
+              Workshop abgeschlossen. Die Definition of Done ist gesperrt und kann
+              nicht mehr verändert werden.
+            </span>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <Card className="border-none shadow-xl">
         <CardContent className="p-6 lg:p-8 space-y-6">
           <div>
@@ -136,7 +180,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
           {!result ? (
             <Button
               onClick={handleGenerate}
-              disabled={generate.isPending}
+              disabled={generate.isPending || isLocked}
               className="bg-gradient-primary hover:opacity-90"
             >
               {generate.isPending ? (
@@ -153,6 +197,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                 <Input
                   value={result.titel}
                   onChange={(e) => setResult({ ...result, titel: e.target.value })}
+                  disabled={isLocked}
                 />
               </div>
               <div className="space-y-2">
@@ -163,35 +208,104 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                   onChange={(e) =>
                     setResult({ ...result, challenge_statement: e.target.value })
                   }
+                  disabled={isLocked}
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label className="text-xs">Primäre Zielgruppe</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {result.zielgruppe || "—"}
-                  </p>
+                  <Textarea
+                    rows={2}
+                    value={result.zielgruppe}
+                    onChange={(e) =>
+                      setResult({ ...result, zielgruppe: e.target.value })
+                    }
+                    disabled={isLocked}
+                    placeholder="Wird bei Generierung befüllt …"
+                  />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label className="text-xs">Erfolgsmessung</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {result.erfolgsmessung || "—"}
-                  </p>
+                  <Textarea
+                    rows={2}
+                    value={result.erfolgsmessung}
+                    onChange={(e) =>
+                      setResult({ ...result, erfolgsmessung: e.target.value })
+                    }
+                    disabled={isLocked}
+                    placeholder="Wird bei Generierung befüllt …"
+                  />
                 </div>
               </div>
-              {result.sprintFragen.length ? (
-                <div>
-                  <Label className="text-xs">Sprint-Fragen</Label>
-                  <ul className="text-sm text-muted-foreground list-disc pl-5">
+              <div className="space-y-2">
+                <Label className="text-xs">Sprint-Fragen</Label>
+                {result.sprintFragen.length ? (
+                  <ul className="space-y-2">
                     {result.sprintFragen.map((s, i) => (
-                      <li key={i}>{s}</li>
+                      <li key={i} className="flex items-start gap-2">
+                        <Input
+                          value={s}
+                          onChange={(e) => {
+                            const next = [...result.sprintFragen];
+                            next[i] = e.target.value;
+                            setResult({ ...result, sprintFragen: next });
+                          }}
+                          disabled={isLocked}
+                        />
+                        {!isLocked ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setResult({
+                                ...result,
+                                sprintFragen: result.sprintFragen.filter(
+                                  (_, j) => j !== i,
+                                ),
+                              })
+                            }
+                          >
+                            ✕
+                          </Button>
+                        ) : null}
+                      </li>
                     ))}
                   </ul>
-                </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Noch keine Sprint-Fragen — bitte generieren.
+                  </p>
+                )}
+                {!isLocked ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      setResult({
+                        ...result,
+                        sprintFragen: [...result.sprintFragen, ""],
+                      })
+                    }
+                  >
+                    + Frage hinzufügen
+                  </Button>
+                ) : null}
+              </div>
+              {!isLocked ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGenerate}
+                  disabled={generate.isPending}
+                >
+                  {generate.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 mr-2" />
+                  )}
+                  Neu generieren
+                </Button>
               ) : null}
-              <Button variant="outline" size="sm" onClick={handleGenerate} disabled={generate.isPending}>
-                <Sparkles className="w-4 h-4 mr-2" /> Neu generieren
-              </Button>
             </div>
           )}
         </CardContent>
@@ -199,73 +313,93 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
 
       <Card className="border-none shadow-xl">
         <CardContent className="p-6 lg:p-8 space-y-4">
-          <h3 className="text-xl font-bold">Definition of Done</h3>
-          <ul className="space-y-3">
-            <Item
-              done={statementOk}
-              label="Challenge Statement bestätigt (Sign-off)"
-              extra={
-                result ? (
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox
-                      checked={signedOff}
-                      onCheckedChange={(v) => setSignedOff(!!v)}
-                    />
-                    Ich bestätige das Challenge Statement
-                  </label>
-                ) : (
-                  <span className="text-xs text-muted-foreground">
-                    Zuerst Challenge Statement generieren.
-                  </span>
-                )
-              }
-            />
-            <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt – eigene oder KI)" />
-            <Item done={measureOk} label="Messziel definiert (Schritt 7)" />
-            <Item
-              done={deciderOk}
-              label="Decider bestätigt"
-              extra={
-                <Input
-                  value={decider}
-                  onChange={(e) => setDecider(e.target.value)}
-                  placeholder="Name der Person, die entscheidet"
-                  className="max-w-sm"
-                />
-              }
-            />
-            <Item
-              done={recruitDone}
-              label="Rekrutierung ≥5 Testnutzer:innen angestoßen"
-              extra={
-                <div className="flex flex-col gap-2 md:flex-row md:items-center">
-                  <label className="flex items-center gap-2 text-sm">
-                    <Checkbox
-                      checked={recruitDone}
-                      onCheckedChange={(v) => setRecruitDone(!!v)}
-                    />
-                    Angestoßen
-                  </label>
-                  <Input
-                    value={recruitNote}
-                    onChange={(e) => setRecruitNote(e.target.value)}
-                    placeholder="Kurzer Vermerk (optional)"
-                    className="max-w-sm"
-                  />
-                </div>
-              }
-            />
-          </ul>
-
-          <div className="flex justify-end pt-4">
-            <Button
-              disabled={!allDone || busy}
-              onClick={handleFinish}
-              className="bg-gradient-primary hover:opacity-90"
-            >
-              {busy ? "Legt Sprint an …" : "Workshop abschließen & Sprint anlegen"}
-            </Button>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-bold">Definition of Done</h3>
+            {isLocked ? <Lock className="w-4 h-4 text-primary" /> : null}
           </div>
+          <fieldset disabled={isLocked} className="contents">
+            <ul className="space-y-3">
+              <Item
+                done={statementOk}
+                label="Challenge Statement bestätigt (Sign-off)"
+                extra={
+                  result ? (
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={signedOff}
+                        onCheckedChange={(v) => setSignedOff(!!v)}
+                        disabled={isLocked}
+                      />
+                      Ich bestätige das Challenge Statement
+                    </label>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">
+                      Zuerst Challenge Statement generieren.
+                    </span>
+                  )
+                }
+              />
+              <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt – eigene oder KI)" />
+              <Item done={measureOk} label="Messziel definiert (Schritt 7)" />
+              <Item
+                done={deciderOk}
+                label="Decider bestätigt"
+                extra={
+                  <Input
+                    value={decider}
+                    onChange={(e) => setDecider(e.target.value)}
+                    placeholder="Name der Person, die entscheidet"
+                    className="max-w-sm"
+                    disabled={isLocked}
+                  />
+                }
+              />
+              <Item
+                done={recruitDone}
+                label="Rekrutierung ≥5 Testnutzer:innen angestoßen"
+                extra={
+                  <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={recruitDone}
+                        onCheckedChange={(v) => setRecruitDone(!!v)}
+                        disabled={isLocked}
+                      />
+                      Angestoßen
+                    </label>
+                    <Input
+                      value={recruitNote}
+                      onChange={(e) => setRecruitNote(e.target.value)}
+                      placeholder="Kurzer Vermerk (optional)"
+                      className="max-w-sm"
+                      disabled={isLocked}
+                    />
+                  </div>
+                }
+              />
+            </ul>
+          </fieldset>
+
+          {!isLocked ? (
+            <div className="flex justify-end pt-4">
+              <Button
+                disabled={!allDone || busy}
+                onClick={handleFinish}
+                className="bg-gradient-primary hover:opacity-90"
+              >
+                {busy ? "Legt Sprint an …" : "Workshop abschließen & Sprint anlegen"}
+              </Button>
+            </div>
+          ) : session.resulting_sprint_id ? (
+            <div className="flex justify-end pt-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/sprint/${session.resulting_sprint_id}`)}
+              >
+                Zum Sprint
+              </Button>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </div>
