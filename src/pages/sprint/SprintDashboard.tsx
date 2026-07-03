@@ -336,6 +336,33 @@ export default function SprintDashboard() {
           onOpenChange={(o) => !o && setEditing(null)}
         />
       ) : null}
+
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sprint wirklich löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              „{deleting?.titel}" wird unwiderruflich gelöscht – inklusive aller Schritte und Inhalte.
+              {!isAdmin ? (
+                <>
+                  {" "}Danach hast du noch{" "}
+                  <strong>{Math.max(0, remainingRestarts - 1)} von {MAX_SPRINT_RESTARTS}</strong>{" "}
+                  Neuanfängen übrig.
+                </>
+              ) : null}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
