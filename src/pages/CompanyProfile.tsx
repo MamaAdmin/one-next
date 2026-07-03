@@ -10,11 +10,9 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CompanyLogoUpload } from "@/components/company/CompanyLogoUpload";
 import { EmployeeList } from "@/components/company/EmployeeList";
-import { InviteUserDialog } from "@/components/company/InviteUserDialog";
 import { useCompanyProfile } from "@/hooks/useCompanyProfile";
-import { useInvitations } from "@/hooks/useInvitations";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const CompanyProfile = () => {
