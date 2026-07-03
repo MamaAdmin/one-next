@@ -27,9 +27,7 @@ const LMSCustomerDetail = () => {
     loading, 
     updateCustomer, 
     uploadLogo,
-    sendInvitation 
   } = useCustomerDetail(customerId);
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
