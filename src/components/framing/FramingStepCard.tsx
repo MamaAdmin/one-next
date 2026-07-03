@@ -1884,12 +1884,32 @@ function VariantAssumptions({
   pendingBucket: string | null;
 }) {
   const annahmen = data.annahmen ?? [];
-  const [input, setInput] = useState("");
-  const add = () => {
-    if (!input.trim()) return;
-    patch({ annahmen: [...annahmen, { text: input.trim(), unsicherheit: 3, einfluss: 3 }] });
-    setInput("");
+  const [inputs, setInputs] = useState<Record<AssumptionBucket, string>>({
+    kritisch: "",
+    einflussreich: "",
+    unsicher: "",
+    gering: "",
+  });
+
+  const bucketOf = (u: number, e: number): AssumptionBucket => {
+    if (u >= 4 && e >= 4) return "kritisch";
+    if (u <= 3 && e >= 4) return "einflussreich";
+    if (u >= 4 && e <= 3) return "unsicher";
+    return "gering";
   };
+  const defaults: Record<AssumptionBucket, { unsicherheit: number; einfluss: number }> = {
+    kritisch: { unsicherheit: 5, einfluss: 5 },
+    einflussreich: { unsicherheit: 2, einfluss: 5 },
+    unsicher: { unsicherheit: 5, einfluss: 2 },
+    gering: { unsicherheit: 2, einfluss: 2 },
+  };
+  const addToBucket = (bucket: AssumptionBucket) => {
+    const text = inputs[bucket].trim();
+    if (!text) return;
+    patch({ annahmen: [...annahmen, { text, ...defaults[bucket] }] });
+    setInputs((s) => ({ ...s, [bucket]: "" }));
+  };
+
   const inline = (bucket: AssumptionBucket) => (
     <InlineSuggestions
       bucket={bucket}
@@ -1941,17 +1961,59 @@ function VariantAssumptions({
   return (
     <div className="space-y-6">
       <div className="grid gap-3 md:grid-cols-2">
-        {quadrants.map((q) => (
-          <div key={q.key} className={`rounded-md border p-3 ${q.bg} ${q.border}`}>
-            <div className="mb-1 text-sm font-semibold">{q.title}</div>
-            <div className="mb-2 text-xs text-muted-foreground">{q.subtitle}</div>
-            {inline(q.key)}
-          </div>
-        ))}
+        {quadrants.map((q) => {
+          const items = annahmen
+            .map((a, i) => ({ a, i }))
+            .filter(({ a }) => bucketOf(a.unsicherheit, a.einfluss) === q.key);
+          return (
+            <div key={q.key} className={`rounded-md border p-3 ${q.bg} ${q.border} space-y-2`}>
+              <div className="text-sm font-semibold">{q.title}</div>
+              <div className="text-xs text-muted-foreground">{q.subtitle}</div>
+              {items.length ? (
+                <ul className="space-y-1">
+                  {items.map(({ a, i }) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-1.5 rounded-md border bg-background/60 px-2 py-1 text-sm"
+                    >
+                      <span className="flex-1">{a.text}</span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6"
+                        onClick={() => patch({ annahmen: annahmen.filter((_, j) => j !== i) })}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <div className="flex gap-2">
+                <Input
+                  value={inputs[q.key]}
+                  onChange={(e) => setInputs((s) => ({ ...s, [q.key]: e.target.value }))}
+                  placeholder="Eigene Annahme …"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addToBucket(q.key);
+                    }
+                  }}
+                />
+                <Button variant="outline" size="icon" onClick={() => addToBucket(q.key)}>
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              {inline(q.key)}
+            </div>
+          );
+        })}
       </div>
 
-      <CanvasSection title="Annahmen (Unsicherheit / Einfluss je 1–5)">
+      <CanvasSection title="Feineinstellung (Unsicherheit / Einfluss je 1–5)">
         <div className="space-y-3">
+
           <p className="text-sm font-medium">Eigene Annahmen</p>
           <div className="flex gap-2">
             <Input
