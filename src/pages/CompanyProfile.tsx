@@ -101,17 +101,11 @@ const CompanyProfile = () => {
       <Navigation />
       <main className="flex-1 pt-24 pb-16 px-4">
         <div className="container max-w-4xl mx-auto space-y-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Unternehmensprofil</h1>
-              <p className="text-muted-foreground">
-                Verwalten Sie Ihr Unternehmen und Ihre Mitarbeiter
-              </p>
-            </div>
-            <Button onClick={() => setInviteDialogOpen(true)}>
-              <UserPlus className="w-4 h-4 mr-2" />
-              Mitarbeiter einladen
-            </Button>
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Unternehmensprofil</h1>
+            <p className="text-muted-foreground">
+              Verwalten Sie Ihr Unternehmen und Ihre Mitarbeiter
+            </p>
           </div>
 
           <Card>
