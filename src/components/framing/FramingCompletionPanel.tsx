@@ -130,7 +130,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         problemstellung: result.challenge_statement,
         modus: "solo",
         decider: decider.trim(),
-        sprint_leader: "",
+        sprint_leader: decider.trim(),
         challenge_statement: result.challenge_statement,
         zielgruppe: result.zielgruppe,
         erfolgsmessung: result.erfolgsmessung,
