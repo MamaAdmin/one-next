@@ -83,9 +83,6 @@ Deno.serve(async (req) => {
       })
       .join("\n\n");
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
-
     const systemPrompt =
       "Du bist Sprint-Coach in einem Design Sprint. Erstelle eine prägnante, fundierte Tageszusammenfassung auf Deutsch. Antworte AUSSCHLIESSLICH als JSON-Objekt mit den Feldern \"summary\" (string, 3–5 Sätze) und \"keyDecisions\" (Array aus 3–6 prägnanten Bulletpoints als Strings). Keine Markdown-Codefences.";
 
@@ -97,43 +94,32 @@ Ergebnisse der Schritte:
 
 ${ctx || "(keine Daten)"}`;
 
-    const aiResp = await fetch(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          response_format: { type: "json_object" },
-        }),
-      },
-    );
-
-    if (!aiResp.ok) {
-      const text = await aiResp.text();
-      return new Response(
-        JSON.stringify({ error: `AI gateway ${aiResp.status}: ${text}` }),
-        {
-          status: aiResp.status === 429 || aiResp.status === 402 ? aiResp.status : 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+    let aiContent = "{}";
+    try {
+      const result = await callGemini({
+        model: "gemini-2.5-flash",
+        json: true,
+        temperature: 0.6,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+      });
+      aiContent = result.content || "{}";
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "AI error";
+      return new Response(JSON.stringify({ error: msg }), {
+        status: geminiErrorStatus(e),
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    const aiJson = await aiResp.json();
-    const content = aiJson?.choices?.[0]?.message?.content ?? "{}";
     let parsed: { summary?: string; keyDecisions?: string[] } = {};
     try {
-      parsed = JSON.parse(content);
+      const cleaned = aiContent.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+      parsed = JSON.parse(cleaned);
     } catch {
-      parsed = { summary: String(content), keyDecisions: [] };
+      parsed = { summary: String(aiContent), keyDecisions: [] };
     }
 
     const result = {
