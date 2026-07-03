@@ -309,6 +309,15 @@ serve(async (req) => {
       throw new Error('Session not found');
     }
 
+    // Ownership check
+    const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+    if (session.created_by !== user.id && !isAdmin) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+
     // Fetch previous artifacts for context
     const { data: previousArtifacts } = await supabase
       .from('bmad_artifacts')
