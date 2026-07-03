@@ -17,6 +17,7 @@ import {
 import SprintStepCard from "@/components/sprint/SprintStepCard";
 import SprintDaySummary from "@/components/sprint/SprintDaySummary";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
+import SprintHandoverCard from "@/components/sprint/SprintHandoverCard";
 
 import type { SprintStepData } from "@/features/sprint/types";
 
@@ -212,6 +213,8 @@ export default function SprintWorkspace() {
 
           {/* Step card or One Pager */}
           <div className="space-y-6">
+            <SprintHandoverCard sprint={sprint} onEdit={() => setEditOpen(true)} />
+
             {summaryDay !== null ? (
               <SprintDaySummary
                 sprint={sprint}
