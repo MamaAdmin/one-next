@@ -14,6 +14,7 @@ export interface SprintRow {
   zielgruppe: string;
   erfolgsmessung: string;
   sprint_fragen: string[];
+  risiken?: string[];
   created_at: string;
   updated_at: string;
 }
