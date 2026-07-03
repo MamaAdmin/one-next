@@ -19,6 +19,7 @@ export interface FramingStepDef {
   title: string;
   frage: string;
   arbeit: string;
+  nutzen?: string;
   timeboxMin: number;
   variant: FramingVariant;
   nutztDatenAus: string[];
