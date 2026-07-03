@@ -89,37 +89,21 @@ export default function SprintDashboard() {
         <Navigation />
 
         <main className="flex-1 container mx-auto px-6 py-16 max-w-5xl">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-bold">
-                Meine{" "}
-                <span className="bg-gradient-primary bg-clip-text text-transparent">
-                  Design Sprints
-                </span>
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                Selbstgeführte Online Design Sprints – flexibel, mit KI-Unterstützung.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button asChild size="lg" variant="outline">
-                <Link to="/sprint/neu?mode=framing">
-                  <Compass className="w-5 h-5 mr-2" />
-                  Problem Herausarbeiten (Framing) (3–4 h)
-                </Link>
-              </Button>
-              <Button asChild size="lg" className="bg-gradient-primary hover:opacity-90">
-                <Link to="/sprint/neu">
-                  <Plus className="w-5 h-5 mr-2" />
-                  Neuen Sprint anlegen
-                </Link>
-              </Button>
-            </div>
+          <div className="mb-10">
+            <h1 className="text-4xl lg:text-5xl font-bold">
+              Meine{" "}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Design Sprints
+              </span>
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Selbstgeführte Online Design Sprints – flexibel, mit KI-Unterstützung.
+            </p>
           </div>
 
           <section className="mb-10 grid md:grid-cols-2 gap-4">
-            <Card className="border-l-4 border-l-primary">
-              <CardContent className="p-5 space-y-2">
+            <Card className="border-l-4 border-l-primary flex flex-col">
+              <CardContent className="p-5 space-y-2 flex-1 flex flex-col">
                 <div className="flex items-center gap-2">
                   <Compass className="w-5 h-5 text-primary" />
                   <h2 className="font-semibold">Starte mit Problem Framing (3–4 h)</h2>
@@ -133,10 +117,18 @@ export default function SprintDashboard() {
                 <p className="text-xs text-muted-foreground">
                   Typisch: „Wir wissen, dass etwas nicht rund läuft, aber nicht genau was."
                 </p>
+                <div className="pt-3 mt-auto">
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/sprint/neu?mode=framing">
+                      <Compass className="w-4 h-4 mr-2" />
+                      Jetzt mit Problem Framing starten
+                    </Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
-            <Card className="border-l-4 border-l-accent">
-              <CardContent className="p-5 space-y-2">
+            <Card className="border-l-4 border-l-accent flex flex-col">
+              <CardContent className="p-5 space-y-2 flex-1 flex flex-col">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-primary" />
                   <h2 className="font-semibold">Starte mit Design Sprint (8h)</h2>
@@ -149,6 +141,14 @@ export default function SprintDashboard() {
                 <p className="text-xs text-muted-foreground">
                   Typisch: „Wir wissen, was wir lösen wollen – jetzt brauchen wir eine Lösung."
                 </p>
+                <div className="pt-3 mt-auto">
+                  <Button asChild className="w-full bg-gradient-primary hover:opacity-90">
+                    <Link to="/sprint/neu">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Jetzt Design Sprint starten
+                    </Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </section>
