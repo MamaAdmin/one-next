@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { useCoursePurchase } from "@/hooks/useCoursePurchase";
-import { EnrollmentInvitationManager } from "@/components/lms/EnrollmentInvitationManager";
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
