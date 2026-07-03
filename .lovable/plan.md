@@ -1,51 +1,50 @@
-## Umstellung: KI-Kosten über Gemini API statt Lovable Gateway
+## End-to-End-Fluss Framing → Sprint: 2 Fixes
 
-Ziel: Alle KI-Aufrufe laufen direkt gegen `generativelanguage.googleapis.com` mit `GEMINI_API_KEY`. Kosten erscheinen im Google-Cloud-Dashboard, keine Lovable Credits mehr für KI. `GEMINI_API_KEY` ist bereits als Secret vorhanden.
+### Was ich geprüft habe
+- Alle 11 realen Framing-Schritte (`1`, `2`, `3`, `4`, `5`, `5b`, `6`, `7`, `8`, `9`, `10`) speichern konsistent in `framing_steps`.
+- `framing-generate-challenge` liest Session + alle `framing_steps` → an Gemini → liefert `titel`, `challenge_statement`, `zielgruppe`, `erfolgsmessung`, `sprintFragen`, `risiken`.
+- `FramingCompletionPanel.handleFinish` erzeugt Sprint mit `challenge_statement`, `zielgruppe`, `erfolgsmessung`, `sprint_fragen`. **`risiken` fehlt.**
 
-## Betroffene Edge Functions
+### Gefundene Lücken
 
-Bereits direkt (unverändert):
-- `sprint-ai-suggest`
-- `sprint-ai-rank`
+**1. `risiken` gehen beim Sprint-Anlegen verloren** – Fix: in Sprint übernehmen (deine Wahl).
 
-Umzustellen (aktuell Lovable Gateway → Gemini direkt):
-- `framing-ai-suggest` — Model `google/gemini-3-flash-preview` → `gemini-2.5-flash`
-- `framing-generate-challenge` — Model `google/gemini-3-flash-preview` → `gemini-2.5-flash`
-- `sprint-day-summary` — Model `google/gemini-2.5-flash` → `gemini-2.5-flash`
-- `bmad-run-phase` — Model konfigurierbar (`google/gemini-2.5-flash`/`pro`, teils `openai/gpt-5*`) → nur Gemini-Varianten mappen; OpenAI-Optionen aus der UI entfernen
+**2. Kontext-Sortierung ist lexikographisch** in beiden Edge-Functions (`framing-generate-challenge`, `framing-ai-suggest`):
+```
+1, 10, 2, 3, 4, 5, 5b, 6, 7, 8, 9  (Schritt 10 direkt hinter 1)
+```
+Alle Daten kommen an, aber die logische Kette im Prompt ist gebrochen.
 
-Nicht betroffen (kein KI-Aufruf, `LOVABLE_API_KEY` wird dort für Resend/Connector genutzt):
-- `process-email-queue`
-- `auth-email-hook`
+### Umsetzung
 
-## Technische Änderungen pro Function
+**Schema-Migration** (`sprints`-Tabelle):
+```sql
+ALTER TABLE public.sprints
+  ADD COLUMN risiken jsonb NOT NULL DEFAULT '[]'::jsonb;
+```
+Keine neuen RLS/Grants nötig (bestehende Policies decken die Spalte ab).
 
-1. Statt `POST https://ai.gateway.lovable.dev/v1/chat/completions` mit Header `Authorization: Bearer LOVABLE_API_KEY` und OpenAI-kompatiblem Body:
-   ```
-   POST https://generativelanguage.googleapis.com/v1beta/models/<MODEL>:generateContent?key=<GEMINI_API_KEY>
-   Body: { contents: [{ role, parts: [{ text }] }], systemInstruction?, generationConfig: { temperature, maxOutputTokens: 8192, responseMimeType?: "application/json" } }
-   ```
-2. Response-Parsing: `data.candidates[0].content.parts[0].text` (statt `data.choices[0].message.content`). `finishReason === "MAX_TOKENS"` behandeln (siehe Lovable-Stack-Overflow-Hinweis, `maxOutputTokens: 8192`).
-3. Strukturierte Ausgaben (`response_format: json_object`, Tool-Calls in `framing-ai-suggest`): auf Gemini umstellen mit `generationConfig.responseMimeType = "application/json"` + `responseSchema`, oder Tool-Calls über `tools: [{ functionDeclarations: [...] }]`. Für die aktuellen Use-Cases reicht `responseMimeType: application/json` + Schema im Prompt.
-4. Rollen-Mapping: OpenAI `system` → Gemini `systemInstruction`; `assistant` → `model`; `user` → `user`.
-5. Fehlerbehandlung: 429 (Quota) und 400 (Safety/Block) klar an die UI zurückgeben; Message- und Statuscodes unverändert lassen, damit Aufrufer weiter funktionieren.
-6. `LOVABLE_API_KEY`-Nutzung in diesen 4 Functions entfernen (in `process-email-queue`/`auth-email-hook` bleibt sie erhalten).
-7. Model-Auswahl in `src/pages/admin/BMADSessionDetail.tsx` und `bmad-create-session` auf reine Gemini-Werte reduzieren (`gemini-2.5-flash`, `gemini-2.5-pro`), OpenAI-Einträge entfernen. Default bleibt `gemini-2.5-flash`.
+**`src/hooks/useSprint.tsx`**
+- `CreateSprintInput`: `risiken?: string[]` ergänzen.
+- `SprintRow` / `SprintExtraRow`: `risiken: string[]` (bzw. wo `sprint_fragen` bereits typisiert ist).
 
-## Vorgehen
+**`src/components/framing/FramingCompletionPanel.tsx`**
+- `handleFinish`: `risiken: result.risiken` an `createSprint.mutateAsync` weitergeben.
+- UI: kompakte Liste „Identifizierte Risiken" oberhalb der Definition of Done, editierbar analog zu Sprint-Fragen (add/remove/edit), damit die User sie vor Sprint-Start prüfen können.
 
-1. Gemeinsamen Helper `supabase/functions/_shared/gemini.ts` anlegen (`callGemini({ model, systemInstruction, messages, json?, schema? })` inkl. Debug-Log für `finishReason` + `MAX_TOKENS`-Warnung).
-2. `framing-ai-suggest`, `framing-generate-challenge`, `sprint-day-summary`, `bmad-run-phase` auf diesen Helper umstellen.
-3. UI-Model-Auswahl (`BMADSessionDetail.tsx`, `bmad-create-session`) bereinigen.
-4. Nach Deployment: je einen Test-Aufruf pro Function und `edge_function_logs` prüfen; danach `ai_gateway_logs--list_ai_gateway_requests` prüfen — es sollten keine neuen KI-Calls mehr erscheinen.
+**`supabase/functions/framing-generate-challenge/index.ts`** und **`supabase/functions/framing-ai-suggest/index.ts`**
+- `buildContext`: Sortierung nach fester Index-Map ersetzen:
+```ts
+const ORDER: Record<string, number> = {
+  "1":1,"2":2,"3":3,"4":4,"5":5,"5b":6,"6":7,"7":8,"8":9,"9":10,"10":11,
+};
+const sorted = [...steps].sort(
+  (a, b) => (ORDER[a.step_key] ?? 99) - (ORDER[b.step_key] ?? 99)
+);
+```
 
-## Hinweise / Trade-offs
+**Anzeige im Sprint** (optional, aber sinnvoll): falls es bereits einen Ort gibt, an dem `challenge_statement`/`zielgruppe`/`erfolgsmessung` im Sprint-Workspace angezeigt werden, `risiken` dort ebenfalls einblenden. Wenn nicht vorhanden, überspringen — Daten sind dann zumindest persistiert und via Admin-Detailseite lesbar.
 
-- **Kosten sichtbar in Google Cloud**, aber Rate-Limits & Quota-Management liegen jetzt beim Google-Projekt (`Preisstufe 1` reicht für die aktuelle Nutzung). Falls Quotas erreicht werden, muss der Tier in Google Cloud erhöht werden.
-- **Kein automatisches Fallback** mehr auf andere Provider (der Lovable Gateway erlaubte OpenAI-Modelle). BMAD verliert die GPT-5-Optionen — bestätige, ob das ok ist oder ob GPT-5 als Option bleiben soll (dann müsste dort weiter der Gateway laufen).
-- Modell `gemini-3-flash-preview` existiert nur über den Lovable Gateway. Direkter Gemini-Aufruf nutzt `gemini-2.5-flash` (Google-nativer Name). Falls du explizit `gemini-3` willst, muss der Preview-Zugang in Google AI Studio verfügbar sein — sonst bei `2.5-flash` bleiben.
-- `GEMINI_API_KEY` ist bereits als Secret vorhanden — keine neue Secret-Anfrage nötig.
-
-Bestätige bitte:
-(a) Sollen die OpenAI-Optionen in BMAD wirklich entfernt werden, oder für BMAD weiter Lovable Gateway behalten?
-(b) `gemini-2.5-flash` als Default ok (statt `gemini-3-flash-preview`)?
+### Nicht verändert
+- `framing_sessions.challenge_statement` bleibt Text-Feld (nur `challenge_statement`-String), Rest liegt am Sprint.
+- Kein Datenverlust bei bereits abgeschlossenen Framings: neue Spalte hat Default `[]`, alte Sprints bekommen leere Risikoliste.

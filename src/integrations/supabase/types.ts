@@ -2681,6 +2681,7 @@ export type Database = {
           modus: string
           owner_id: string
           problemstellung: string
+          risiken: Json
           sprint_fragen: Json
           sprint_leader: string
           status: string
@@ -2698,6 +2699,7 @@ export type Database = {
           modus?: string
           owner_id: string
           problemstellung?: string
+          risiken?: Json
           sprint_fragen?: Json
           sprint_leader?: string
           status?: string
@@ -2715,6 +2717,7 @@ export type Database = {
           modus?: string
           owner_id?: string
           problemstellung?: string
+          risiken?: Json
           sprint_fragen?: Json
           sprint_leader?: string
           status?: string
