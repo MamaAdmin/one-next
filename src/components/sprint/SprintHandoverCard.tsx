@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import { Sparkles, ChevronDown, ChevronUp, CheckCircle2, Plus, X } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { useUpdateSprint } from "@/hooks/useSprint";
 import type { SprintRow } from "@/features/sprint/types";
 
 interface Props {
@@ -12,13 +16,38 @@ interface Props {
 
 const STORAGE_PREFIX = "sprint-handover-confirmed-";
 
+interface Draft {
+  challenge_statement: string;
+  zielgruppe: string;
+  erfolgsmessung: string;
+  decider: string;
+  sprint_leader: string;
+  sprint_fragen: string[];
+  risiken: string[];
+}
+
+function draftFromSprint(sprint: SprintRow): Draft {
+  return {
+    challenge_statement: sprint.challenge_statement ?? "",
+    zielgruppe: sprint.zielgruppe ?? "",
+    erfolgsmessung: sprint.erfolgsmessung ?? "",
+    decider: sprint.decider ?? "",
+    sprint_leader: sprint.sprint_leader ?? "",
+    sprint_fragen: sprint.sprint_fragen ?? [],
+    risiken: sprint.risiken ?? [],
+  };
+}
+
 /**
  * Zeigt beim ersten Öffnen eines Sprints die Übernahme aus dem Problem-Framing:
- * Titel, Problemstellung, Challenge Statement, Zielgruppe, Erfolgsmessung,
- * Sprint-Fragen und identifizierte Risiken. Nutzer:in bestätigt einmalig.
+ * Titel/Problemstellung (über den Basics-Dialog) plus alle darunter liegenden
+ * Felder inline editierbar (Challenge Statement, Zielgruppe, Erfolgsmessung,
+ * Decider, Sprint Leader, Sprint-Fragen, Risiken).
  */
 export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   const storageKey = `${STORAGE_PREFIX}${sprint.id}`;
+  const update = useUpdateSprint(sprint.id);
+
   const [confirmed, setConfirmed] = useState<boolean>(() => {
     try {
       return localStorage.getItem(storageKey) === "1";
@@ -27,6 +56,11 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
     }
   });
   const [open, setOpen] = useState(!confirmed);
+  const [draft, setDraft] = useState<Draft>(() => draftFromSprint(sprint));
+
+  useEffect(() => {
+    setDraft(draftFromSprint(sprint));
+  }, [sprint]);
 
   useEffect(() => {
     if (confirmed) {
@@ -38,6 +72,19 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
     }
   }, [confirmed, storageKey]);
 
+  const dirty = useMemo(() => {
+    const s = draftFromSprint(sprint);
+    return (
+      s.challenge_statement !== draft.challenge_statement ||
+      s.zielgruppe !== draft.zielgruppe ||
+      s.erfolgsmessung !== draft.erfolgsmessung ||
+      s.decider !== draft.decider ||
+      s.sprint_leader !== draft.sprint_leader ||
+      JSON.stringify(s.sprint_fragen) !== JSON.stringify(draft.sprint_fragen) ||
+      JSON.stringify(s.risiken) !== JSON.stringify(draft.risiken)
+    );
+  }, [sprint, draft]);
+
   const hasFramingData =
     !!sprint.challenge_statement?.trim() ||
     !!sprint.zielgruppe?.trim() ||
@@ -46,6 +93,33 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
     (sprint.risiken?.length ?? 0) > 0;
 
   if (!hasFramingData) return null;
+
+  async function handleSave() {
+    try {
+      await update.mutateAsync({
+        challenge_statement: draft.challenge_statement.trim(),
+        zielgruppe: draft.zielgruppe.trim(),
+        erfolgsmessung: draft.erfolgsmessung.trim(),
+        decider: draft.decider.trim(),
+        sprint_leader: draft.sprint_leader.trim(),
+        sprint_fragen: draft.sprint_fragen.map((v) => v.trim()).filter(Boolean),
+        risiken: draft.risiken.map((v) => v.trim()).filter(Boolean),
+      });
+      toast({ title: "Handover aktualisiert" });
+    } catch (e) {
+      toast({
+        title: "Speichern fehlgeschlagen",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  }
+
+  async function handleConfirm() {
+    if (dirty) await handleSave();
+    setConfirmed(true);
+    setOpen(false);
+  }
 
   return (
     <Card className="border-primary/30 bg-primary/5">
@@ -56,7 +130,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-lg font-bold">Handover aus dem Problem Framing</h3>
-                {confirmed ? (
+                {confirmed && !dirty ? (
                   <Badge variant="secondary" className="gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Bestätigt
@@ -68,7 +142,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                 )}
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
-                Alle Felder aus dem Framing wurden übernommen. Bitte einmal durchgehen und bestätigen.
+                Alle Felder aus dem Framing sind editierbar – anpassen und bestätigen.
               </p>
             </div>
           </div>
@@ -84,45 +158,106 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
 
         {open ? (
           <div className="space-y-4">
-            <Field label="Titel" value={sprint.titel} />
-            <Field label="Problemstellung" value={sprint.problemstellung} multiline />
-            <Field
+            {/* Titel & Problemstellung → Basics-Dialog */}
+            <div className="rounded-md border bg-background/60 p-3 space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1 flex-1 min-w-0">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Titel
+                  </div>
+                  <div className="text-sm font-medium">{sprint.titel}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground pt-2">
+                    Problemstellung
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap">{sprint.problemstellung}</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={onEdit}>
+                  Bearbeiten
+                </Button>
+              </div>
+            </div>
+
+            <EditField
               label="Challenge Statement"
-              value={sprint.challenge_statement}
-              multiline
+              value={draft.challenge_statement}
+              onChange={(v) => setDraft({ ...draft, challenge_statement: v })}
+              rows={4}
             />
+
             <div className="grid md:grid-cols-2 gap-4">
-              <Field label="Primäre Zielgruppe" value={sprint.zielgruppe} multiline />
-              <Field label="Erfolgsmessung" value={sprint.erfolgsmessung} multiline />
+              <EditField
+                label="Primäre Zielgruppe"
+                value={draft.zielgruppe}
+                onChange={(v) => setDraft({ ...draft, zielgruppe: v })}
+                rows={2}
+              />
+              <EditField
+                label="Erfolgsmessung"
+                value={draft.erfolgsmessung}
+                onChange={(v) => setDraft({ ...draft, erfolgsmessung: v })}
+                rows={2}
+              />
             </div>
+
             <div className="grid md:grid-cols-2 gap-4">
-              <Field label="Decider" value={sprint.decider} />
-              <Field label="Sprint Leader" value={sprint.sprint_leader} />
+              <EditFieldInput
+                label="Decider"
+                value={draft.decider}
+                onChange={(v) => setDraft({ ...draft, decider: v })}
+                placeholder="Wer entscheidet?"
+              />
+              <EditFieldInput
+                label="Sprint Leader"
+                value={draft.sprint_leader}
+                onChange={(v) => setDraft({ ...draft, sprint_leader: v })}
+                placeholder="Moderation / Timer"
+              />
             </div>
-            <ListField label="Sprint-Fragen" items={sprint.sprint_fragen} />
-            <ListField label="Identifizierte Risiken" items={sprint.risiken ?? []} />
+
+            <EditList
+              label="Sprint-Fragen"
+              items={draft.sprint_fragen}
+              onChange={(items) => setDraft({ ...draft, sprint_fragen: items })}
+              addLabel="+ Frage hinzufügen"
+              placeholder="Können wir …?"
+            />
+
+            <EditList
+              label="Identifizierte Risiken"
+              items={draft.risiken}
+              onChange={(items) => setDraft({ ...draft, risiken: items })}
+              addLabel="+ Risiko hinzufügen"
+              placeholder="Risiko …"
+            />
 
             <div className="flex flex-wrap gap-2 justify-end pt-2 border-t">
-              <Button variant="outline" size="sm" onClick={onEdit}>
-                Anpassen
-              </Button>
-              {!confirmed ? (
+              {dirty ? (
                 <Button
                   size="sm"
-                  className="bg-gradient-primary hover:opacity-90"
-                  onClick={() => {
-                    setConfirmed(true);
-                    setOpen(false);
-                  }}
+                  variant="outline"
+                  onClick={() => setDraft(draftFromSprint(sprint))}
+                  disabled={update.isPending}
                 >
-                  <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                  Übernahme bestätigen
+                  Zurücksetzen
                 </Button>
-              ) : (
-                <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
-                  Schließen
-                </Button>
-              )}
+              ) : null}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSave}
+                disabled={!dirty || update.isPending}
+              >
+                {update.isPending ? "Speichert …" : "Änderungen speichern"}
+              </Button>
+              <Button
+                size="sm"
+                className="bg-gradient-primary hover:opacity-90"
+                onClick={handleConfirm}
+                disabled={update.isPending}
+              >
+                <CheckCircle2 className="w-4 h-4 mr-1.5" />
+                {dirty ? "Speichern & bestätigen" : confirmed ? "Schließen" : "Übernahme bestätigen"}
+              </Button>
             </div>
           </div>
         ) : null}
@@ -131,47 +266,113 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   );
 }
 
-function Field({
+function EditField({
   label,
   value,
-  multiline,
+  onChange,
+  rows = 3,
 }: {
   label: string;
-  value?: string;
-  multiline?: boolean;
+  value: string;
+  onChange: (v: string) => void;
+  rows?: number;
 }) {
-  const empty = !value?.trim();
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </div>
-      {empty ? (
-        <div className="text-sm italic text-muted-foreground/70">— nicht gesetzt —</div>
-      ) : multiline ? (
-        <p className="text-sm whitespace-pre-wrap">{value}</p>
-      ) : (
-        <p className="text-sm font-medium">{value}</p>
-      )}
+      <Textarea
+        rows={rows}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="bg-background"
+      />
     </div>
   );
 }
 
-function ListField({ label, items }: { label: string; items: string[] }) {
+function EditFieldInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
+      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="bg-background"
+      />
+    </div>
+  );
+}
+
+function EditList({
+  label,
+  items,
+  onChange,
+  addLabel,
+  placeholder,
+}: {
+  label: string;
+  items: string[];
+  onChange: (items: string[]) => void;
+  addLabel: string;
+  placeholder?: string;
+}) {
+  return (
+    <div className="space-y-1.5">
       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </div>
       {items.length ? (
-        <ul className="text-sm space-y-1 list-disc pl-5">
+        <ul className="space-y-2">
           {items.map((v, i) => (
-            <li key={i}>{v}</li>
+            <li key={i} className="flex items-start gap-2">
+              <Input
+                value={v}
+                onChange={(e) => {
+                  const next = [...items];
+                  next[i] = e.target.value;
+                  onChange(next);
+                }}
+                placeholder={placeholder}
+                className="bg-background"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => onChange(items.filter((_, j) => j !== i))}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </li>
           ))}
         </ul>
       ) : (
-        <div className="text-sm italic text-muted-foreground/70">— nicht gesetzt —</div>
+        <p className="text-sm text-muted-foreground italic">— nicht gesetzt —</p>
       )}
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() => onChange([...items, ""])}
+      >
+        <Plus className="w-3.5 h-3.5 mr-1" />
+        {addLabel.replace(/^\+\s*/, "")}
+      </Button>
     </div>
   );
 }
