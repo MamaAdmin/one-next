@@ -60,6 +60,7 @@ export default function SprintStepCard({
     initial.mapZuordnung ?? {},
   );
   const [rankLoading, setRankLoading] = useState(false);
+  const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
 
@@ -182,7 +183,71 @@ export default function SprintStepCard({
     setEigenInput("");
   }
 
-  // KI-Vorschläge entfernt — nur noch Marktrecherche/Ranking.
+  async function handleSuggest() {
+    setSuggestLoading(true);
+    try {
+      const ctx = contextEntries.reduce<Record<string, unknown>>((acc, e) => {
+        acc[e.key] = e.value;
+        return acc;
+      }, {});
+      const { data, error } = await supabase.functions.invoke("sprint-ai-suggest", {
+        body: {
+          sprint_id: sprint.id,
+          step_key: step.key,
+          step_frage: step.frage,
+          step_arbeit: step.arbeit,
+          context: ctx,
+        },
+      });
+      if (error) throw error;
+      const list = (data as { vorschlaege?: string[] })?.vorschlaege ?? [];
+      if (list.length === 0) {
+        toast({ title: "Keine Vorschläge erhalten", variant: "destructive" });
+        return;
+      }
+      setVorschlaege((prev) => {
+        const existing = new Set(prev.map((x) => x.trim().toLowerCase()));
+        const merged = [...prev];
+        for (const raw of list) {
+          const v = String(raw).trim();
+          if (!v) continue;
+          if (existing.has(v.toLowerCase())) continue;
+          if (
+            antworten.some((a) => a.trim().toLowerCase() === v.toLowerCase()) ||
+            eigene.some((a) => a.trim().toLowerCase() === v.toLowerCase())
+          )
+            continue;
+          merged.push(v);
+          existing.add(v.toLowerCase());
+        }
+        return merged;
+      });
+      toast({ title: `${list.length} KI-Vorschläge geladen` });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "KI-Vorschläge fehlgeschlagen", description: msg, variant: "destructive" });
+    } finally {
+      setSuggestLoading(false);
+    }
+  }
+
+  function acceptVorschlag(v: string) {
+    const val = v.trim();
+    if (!val) return;
+    if (
+      !eigene.some((e) => e.trim().toLowerCase() === val.toLowerCase()) &&
+      !antworten.some((a) => a.trim().toLowerCase() === val.toLowerCase())
+    ) {
+      setEigene((prev) => [...prev, val]);
+    }
+    setVorschlaege((prev) => prev.filter((x) => x !== v));
+  }
+
+  function dismissVorschlag(v: string) {
+    setVorschlaege((prev) => prev.filter((x) => x !== v));
+  }
+
+
 
 
   async function persist(completed: boolean) {
@@ -416,8 +481,98 @@ export default function SprintStepCard({
             Gedächtnis aufschreiben, was hängen geblieben ist. */}
 
 
+        {/* KI-Vorschläge zum Schritt */}
+        {step.variant !== "notes" && step.variant !== "map" ? (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                KI-Vorschläge
+              </h3>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSuggest}
+                disabled={suggestLoading}
+              >
+                {suggestLoading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4 mr-2" />
+                )}
+                {vorschlaege.length > 0 ? "Weitere generieren" : "KI-Vorschläge generieren"}
+              </Button>
+            </div>
+            {vorschlaege.length > 0 ? (
+              <div className="rounded-lg border border-accent/60 bg-accent-soft p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground">
+                    {vorschlaege.length} Vorschlag{vorschlaege.length === 1 ? "" : "e"} –
+                    einzeln übernehmen oder alle auf einmal.
+                  </p>
+                  <div className="flex gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        vorschlaege.forEach((v) => acceptVorschlag(v));
+                        toast({ title: "Alle Vorschläge übernommen" });
+                      }}
+                    >
+                      Alle übernehmen
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setVorschlaege([])}
+                    >
+                      Verwerfen
+                    </Button>
+                  </div>
+                </div>
+                <ul className="space-y-1.5">
+                  {vorschlaege.map((v, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 rounded-md border border-accent/60 bg-background/60 px-2.5 py-1.5 text-sm"
+                    >
+                      <span className="flex-1">{v}</span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-7"
+                        onClick={() => acceptVorschlag(v)}
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => dismissVorschlag(v)}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Noch keine KI-Vorschläge – oben Button klicken, um passende
+                Ideen zum aktuellen Schritt vorzuschlagen.
+              </p>
+            )}
+          </div>
+        ) : null}
+
         {/* 3. KI-Marktrecherche & Ranking */}
         {step.variant !== "notes" ? (
+
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h3 className="font-semibold text-lg">KI-Marktrecherche & Ranking</h3>
