@@ -52,11 +52,20 @@ serve(async (req) => {
       throw new Error('Session not found');
     }
 
+    // Ownership check
+    const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+    if (session.created_by !== user.id && !isAdmin) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const currentPhaseIndex = PHASE_ORDER.indexOf(session.current_phase);
     
     if (currentPhaseIndex === -1) {
       throw new Error('Invalid current phase');
     }
+
 
     // Check if this is the last phase
     if (currentPhaseIndex === PHASE_ORDER.length - 1) {
