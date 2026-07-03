@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAdminAllSprints, useAdminAllFramingSessions, type AdminSprintRow } from "@/hooks/useAdminSprints";
 import { FRAMING_STEPS } from "@/features/framing/steps";
 import { Card, CardContent } from "@/components/ui/card";
