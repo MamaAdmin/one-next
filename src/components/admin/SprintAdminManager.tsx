@@ -265,7 +265,15 @@ export default function SprintAdminManager() {
                   framingRows.map((r) => {
                     const step = FRAMING_STEPS.find((s) => s.index === r.current_step);
                     return (
-                      <TableRow key={r.id}>
+                      <TableRow
+                        key={r.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => navigate(
+                          r.resulting_sprint_id
+                            ? `/sprint/${r.resulting_sprint_id}`
+                            : `/sprint/framing/${r.id}`
+                        )}
+                      >
                         <TableCell className="font-medium">{r.titel_arbeitstitel}</TableCell>
                         <TableCell>
                           <div className="flex flex-col">
