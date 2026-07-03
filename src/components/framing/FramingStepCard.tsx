@@ -186,7 +186,7 @@ export default function FramingStepCard({
               ) : null}
 
             </p>
-            <p className="text-xs text-muted-foreground mt-2">{step.arbeit}</p>
+            <p className="text-sm text-muted-foreground mt-2">{step.arbeit}</p>
 
             {step.nutzen ? (
               <div className="mt-3 flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
