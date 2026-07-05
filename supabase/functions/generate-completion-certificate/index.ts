@@ -20,12 +20,40 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Authenticate caller
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Access denied' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const token = authHeader.replace('Bearer ', '');
+
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+    const { data: authData, error: authError } = await authClient.auth.getUser(token);
+    if (authError || !authData?.user) {
+      return new Response(
+        JSON.stringify({ error: 'Access denied' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     const { enrollment_id }: CertificateRequest = await req.json();
+    if (!enrollment_id || typeof enrollment_id !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid enrollment_id' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     console.log("Generating certificate for enrollment:", enrollment_id);
 
@@ -35,6 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
       .select(`
         *,
         participants (
+          user_id,
           full_name,
           email
         ),
@@ -48,6 +77,26 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (enrollmentError) throw enrollmentError;
+
+    // Ownership check: caller must own the enrollment, or be admin
+    const isOwner = enrollment.participants?.user_id === authData.user.id;
+    let isAdmin = false;
+    if (!isOwner) {
+      const { data: roleRow } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', authData.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      isAdmin = !!roleRow;
+    }
+    if (!isOwner && !isAdmin) {
+      return new Response(
+        JSON.stringify({ error: 'Access denied' }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
 
     const participantName = enrollment.participants?.full_name || "Teilnehmer";
     const participantEmail = enrollment.participants?.email;
