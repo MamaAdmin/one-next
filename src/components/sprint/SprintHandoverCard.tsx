@@ -317,11 +317,13 @@ function EditField({
   value,
   onChange,
   rows = 3,
+  readOnly = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   rows?: number;
+  readOnly?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
@@ -332,7 +334,8 @@ function EditField({
         rows={rows}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-background"
+        readOnly={readOnly}
+        className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
       />
     </div>
   );
@@ -343,11 +346,13 @@ function EditFieldInput({
   value,
   onChange,
   placeholder,
+  readOnly = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  readOnly?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
@@ -358,7 +363,8 @@ function EditFieldInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-background"
+        readOnly={readOnly}
+        className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
       />
     </div>
   );
@@ -370,12 +376,14 @@ function EditList({
   onChange,
   addLabel,
   placeholder,
+  readOnly = false,
 }: {
   label: string;
   items: string[];
   onChange: (items: string[]) => void;
   addLabel: string;
   placeholder?: string;
+  readOnly?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
@@ -394,30 +402,35 @@ function EditList({
                   onChange(next);
                 }}
                 placeholder={placeholder}
-                className="bg-background"
+                readOnly={readOnly}
+                className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => onChange(items.filter((_, j) => j !== i))}
-              >
-                <X className="w-4 h-4" />
-              </Button>
+              {!readOnly ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onChange(items.filter((_, j) => j !== i))}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              ) : null}
             </li>
           ))}
         </ul>
       ) : (
         <p className="text-sm text-muted-foreground italic">— nicht gesetzt —</p>
       )}
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={() => onChange([...items, ""])}
-      >
-        <Plus className="w-3.5 h-3.5 mr-1" />
-        {addLabel.replace(/^\+\s*/, "")}
+      {!readOnly ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => onChange([...items, ""])}
+        >
+          <Plus className="w-3.5 h-3.5 mr-1" />
+          {addLabel.replace(/^\+\s*/, "")}
+
       </Button>
     </div>
   );
