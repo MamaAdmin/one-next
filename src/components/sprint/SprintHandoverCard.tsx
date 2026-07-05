@@ -60,7 +60,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
       return false;
     }
   });
-  const [open, setOpen] = useState(!confirmed);
+  const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<Draft>(() => draftFromSprint(sprint));
 
   useEffect(() => {
