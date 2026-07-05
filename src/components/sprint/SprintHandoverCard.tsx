@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ChevronDown, ChevronUp, CheckCircle2, Plus, X, Compass } from "lucide-react";
+import { Sparkles, ChevronDown, ChevronUp, CheckCircle2, Plus, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useUpdateSprint } from "@/hooks/useSprint";
 import { useFramingBySprint } from "@/hooks/useFraming";
