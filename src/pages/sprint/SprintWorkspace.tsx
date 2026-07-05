@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -17,7 +17,7 @@ import {
 import SprintStepCard from "@/components/sprint/SprintStepCard";
 import SprintDaySummary from "@/components/sprint/SprintDaySummary";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
-import SprintHandoverCard from "@/components/sprint/SprintHandoverCard";
+
 
 import type { SprintStepData } from "@/features/sprint/types";
 
@@ -45,6 +45,13 @@ export default function SprintWorkspace() {
   const steps = stepsQ.data ?? [];
   const currentKey = sprint?.current_step ?? "1.1";
   const currentDef = getStepDef(currentKey);
+
+  // Kickoff-Guard: bevor der Sprint startet, muss der Kickoff bestätigt sein.
+  useEffect(() => {
+    if (sprint && !sprint.kickoff_confirmed_at) {
+      navigate(`/sprint/${sprint.id}/kickoff`, { replace: true });
+    }
+  }, [sprint, navigate]);
 
   const currentRow = useMemo(
     () => steps.find((s) => s.step_key === currentKey),
@@ -213,9 +220,6 @@ export default function SprintWorkspace() {
 
           {/* Step card or One Pager */}
           <div className="space-y-6">
-            {currentKey === "1.1" ? (
-              <SprintHandoverCard sprint={sprint} onEdit={() => setEditOpen(true)} />
-            ) : null}
 
             {summaryDay !== null ? (
               <SprintDaySummary

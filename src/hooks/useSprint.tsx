@@ -84,7 +84,7 @@ export function useMySprintsCompletedSteps(sprintIds: string[]) {
 export interface CreateSprintInput {
   titel: string;
   problemstellung: string;
-  modus: "solo" | "team";
+  modus?: "team";
   decider: string;
   sprint_leader: string;
   challenge_statement?: string;
@@ -93,6 +93,7 @@ export interface CreateSprintInput {
   sprint_fragen?: string[];
   risiken?: string[];
 }
+
 
 export function useCreateSprint() {
   const qc = useQueryClient();
@@ -164,6 +165,25 @@ export function useSetCurrentStep(sprintId: string) {
     },
   });
 }
+
+export function useConfirmSprintKickoff(sprintId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from(SPRINTS_TABLE)
+        .update({ kickoff_confirmed_at: new Date().toISOString() })
+        .eq("id", sprintId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["sprints", sprintId] });
+      qc.invalidateQueries({ queryKey: ["sprints", "mine"] });
+    },
+  });
+}
+
+
 
 export interface UpdateSprintInput {
   titel?: string;

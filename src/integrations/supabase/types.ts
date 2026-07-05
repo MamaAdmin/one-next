@@ -2597,6 +2597,56 @@ export type Database = {
         }
         Relationships: []
       }
+      sprint_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          full_name: string
+          id: string
+          invited_by: string
+          role_type: string
+          sprint_id: string
+          status: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          invited_by: string
+          role_type: string
+          sprint_id: string
+          status?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          invited_by?: string
+          role_type?: string
+          sprint_id?: string
+          status?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sprint_invitations_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sprint_members: {
         Row: {
           created_at: string
@@ -2678,6 +2728,7 @@ export type Database = {
           decider: string
           erfolgsmessung: string
           id: string
+          kickoff_confirmed_at: string | null
           modus: string
           owner_id: string
           problemstellung: string
@@ -2696,6 +2747,7 @@ export type Database = {
           decider?: string
           erfolgsmessung?: string
           id?: string
+          kickoff_confirmed_at?: string | null
           modus?: string
           owner_id: string
           problemstellung?: string
@@ -2714,6 +2766,7 @@ export type Database = {
           decider?: string
           erfolgsmessung?: string
           id?: string
+          kickoff_confirmed_at?: string | null
           modus?: string
           owner_id?: string
           problemstellung?: string
@@ -2960,6 +3013,19 @@ export type Database = {
           question_type: string
           quiz_id: string
           sort_order: number
+        }[]
+      }
+      get_sprint_invitation_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          email: string
+          expires_at: string
+          full_name: string
+          id: string
+          role_type: string
+          sprint_id: string
+          sprint_title: string
+          status: string
         }[]
       }
       grade_quiz_attempt: {

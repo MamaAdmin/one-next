@@ -68,6 +68,9 @@ import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import SprintDashboard from "./pages/sprint/SprintDashboard";
 import SprintNew from "./pages/sprint/SprintNew";
 import SprintWorkspace from "./pages/sprint/SprintWorkspace";
+import SprintTeamSetup from "./pages/sprint/SprintTeamSetup";
+import SprintKickoff from "./pages/sprint/SprintKickoff";
+import AcceptSprintInvitation from "./pages/sprint/AcceptSprintInvitation";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
@@ -155,6 +158,9 @@ const App = () => (
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
           <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
           <Route path="/sprint/framing/:id" element={<RequireAuth><FramingWorkspace /></RequireAuth>} />
+          <Route path="/sprint/invite/:token" element={<AcceptSprintInvitation />} />
+          <Route path="/sprint/:id/team" element={<RequireAuth><SprintTeamSetup /></RequireAuth>} />
+          <Route path="/sprint/:id/kickoff" element={<RequireAuth><SprintKickoff /></RequireAuth>} />
           <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />

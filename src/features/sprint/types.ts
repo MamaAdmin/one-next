@@ -5,7 +5,7 @@ export interface SprintRow {
   owner_id: string;
   titel: string;
   problemstellung: string;
-  modus: "solo" | "team";
+  modus: "team" | "solo";
   decider: string;
   sprint_leader: string;
   current_step: string;
@@ -15,9 +15,47 @@ export interface SprintRow {
   erfolgsmessung: string;
   sprint_fragen: string[];
   risiken?: string[];
+  kickoff_confirmed_at: string | null;
   created_at: string;
   updated_at: string;
 }
+
+export const SPRINT_TEAM_ROLES = [
+  "decider",
+  "sprint_leader",
+  "finance",
+  "marketing",
+  "customer",
+  "tech",
+  "design",
+  "wildcard",
+  "viewer",
+] as const;
+export type SprintTeamRole = (typeof SPRINT_TEAM_ROLES)[number];
+
+export interface SprintMemberRow {
+  id: string;
+  sprint_id: string;
+  user_id: string | null;
+  email: string | null;
+  rolle: SprintTeamRole | string;
+  created_at: string;
+}
+
+export interface SprintInvitationRow {
+  id: string;
+  sprint_id: string;
+  email: string;
+  full_name: string;
+  role_type: SprintTeamRole;
+  token: string;
+  status: "pending" | "accepted" | "revoked" | "expired";
+  expires_at: string;
+  invited_by: string;
+  created_at: string;
+  accepted_at: string | null;
+}
+
 
 export interface SprintStepRow {
   id: string;

@@ -13,6 +13,7 @@ import {
   useUpdateFramingSession,
 } from "@/hooks/useFraming";
 import { useCreateSprint } from "@/hooks/useSprint";
+import { supabase } from "@/integrations/supabase/client";
 import type {
   ChallengeStatementResult,
   FramingSessionRow,
@@ -125,24 +126,52 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         challenge_statement: result.challenge_statement,
         titel_arbeitstitel: result.titel,
       });
-      const sprint = await createSprint.mutateAsync({
-        titel: result.titel,
-        problemstellung: result.challenge_statement,
-        modus: "solo",
-        decider: decider.trim(),
-        sprint_leader: decider.trim(),
-        challenge_statement: result.challenge_statement,
-        zielgruppe: result.zielgruppe,
-        erfolgsmessung: result.erfolgsmessung,
-        sprint_fragen: result.sprintFragen,
-        risiken: result.risiken,
-      });
-      await updateSession.mutateAsync({
-        status: "done",
-        resulting_sprint_id: sprint.id,
-      });
-      toast({ title: "Sprint angelegt", description: "Auf zum Tag 1 · Map." });
-      navigate(`/sprint/${sprint.id}`);
+
+      let sprintId = session.resulting_sprint_id ?? null;
+
+      if (sprintId) {
+        // Team-first flow: sprint already exists → update it.
+        const { error: upErr } = await supabase
+          .from("sprints")
+          .update({
+            titel: result.titel,
+            problemstellung: result.challenge_statement,
+            decider: decider.trim(),
+            sprint_leader: decider.trim(),
+            challenge_statement: result.challenge_statement,
+            zielgruppe: result.zielgruppe,
+            erfolgsmessung: result.erfolgsmessung,
+            sprint_fragen: result.sprintFragen,
+            risiken: result.risiken,
+          })
+          .eq("id", sprintId);
+        if (upErr) throw upErr;
+      } else {
+        const sprint = await createSprint.mutateAsync({
+          titel: result.titel,
+          problemstellung: result.challenge_statement,
+          modus: "team",
+          decider: decider.trim(),
+          sprint_leader: decider.trim(),
+          challenge_statement: result.challenge_statement,
+          zielgruppe: result.zielgruppe,
+          erfolgsmessung: result.erfolgsmessung,
+          sprint_fragen: result.sprintFragen,
+          risiken: result.risiken,
+        });
+        sprintId = sprint.id;
+        await updateSession.mutateAsync({
+          status: "done",
+          resulting_sprint_id: sprint.id,
+        });
+      }
+
+      if (session.status !== "done") {
+        await updateSession.mutateAsync({ status: "done" });
+      }
+
+      toast({ title: "Framing abgeschlossen", description: "Weiter zum Sprint-Kickoff." });
+      navigate(`/sprint/${sprintId}/kickoff`);
     } catch (e) {
       toast({
         title: "Sprint konnte nicht angelegt werden",
