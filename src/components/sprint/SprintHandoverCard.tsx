@@ -143,7 +143,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
             <Sparkles className="w-5 h-5 text-primary mt-0.5 shrink-0" />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-lg font-bold">Handover aus dem Problem Framing</h3>
+                <h3 className="text-lg font-bold">{title}</h3>
                 {confirmed && !dirty ? (
                   <Badge variant="secondary" className="gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -156,7 +156,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                 )}
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
-                Alle Felder aus dem Framing sind editierbar – anpassen und bestätigen.
+                {subtitle}
               </p>
             </div>
           </div>
