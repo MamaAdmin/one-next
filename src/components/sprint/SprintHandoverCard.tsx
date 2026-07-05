@@ -195,9 +195,11 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                     </>
                   ) : null}
                 </div>
-                <Button variant="outline" size="sm" onClick={onEdit}>
-                  Bearbeiten
-                </Button>
+                {!isConfirmed ? (
+                  <Button variant="outline" size="sm" onClick={onEdit}>
+                    Bearbeiten
+                  </Button>
+                ) : null}
               </div>
             </div>
 
@@ -207,6 +209,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               value={draft.challenge_statement}
               onChange={(v) => setDraft({ ...draft, challenge_statement: v })}
               rows={4}
+              readOnly={isConfirmed}
             />
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -215,12 +218,14 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                 value={draft.zielgruppe}
                 onChange={(v) => setDraft({ ...draft, zielgruppe: v })}
                 rows={2}
+                readOnly={isConfirmed}
               />
               <EditField
                 label="Erfolgsmessung"
                 value={draft.erfolgsmessung}
                 onChange={(v) => setDraft({ ...draft, erfolgsmessung: v })}
                 rows={2}
+                readOnly={isConfirmed}
               />
             </div>
 
@@ -230,12 +235,14 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                 value={draft.decider}
                 onChange={(v) => setDraft({ ...draft, decider: v })}
                 placeholder="Wer entscheidet?"
+                readOnly={isConfirmed}
               />
               <EditFieldInput
                 label="Sprint Leader"
                 value={draft.sprint_leader}
                 onChange={(v) => setDraft({ ...draft, sprint_leader: v })}
                 placeholder="Moderation / Timer"
+                readOnly={isConfirmed}
               />
             </div>
 
@@ -245,6 +252,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               onChange={(items) => setDraft({ ...draft, sprint_fragen: items })}
               addLabel="+ Frage hinzufügen"
               placeholder="Können wir …?"
+              readOnly={isConfirmed}
             />
 
             <EditList
@@ -253,36 +261,49 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               onChange={(items) => setDraft({ ...draft, risiken: items })}
               addLabel="+ Risiko hinzufügen"
               placeholder="Risiko …"
+              readOnly={isConfirmed}
             />
 
             <div className="flex flex-wrap gap-2 justify-end pt-2 border-t">
-              {dirty ? (
+              {isConfirmed ? (
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setDraft(draftFromSprint(sprint))}
-                  disabled={update.isPending}
+                  onClick={() => setConfirmed(false)}
                 >
-                  Zurücksetzen
+                  Erneut bearbeiten
                 </Button>
-              ) : null}
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleSave}
-                disabled={!dirty || update.isPending}
-              >
-                {update.isPending ? "Speichert …" : "Änderungen speichern"}
-              </Button>
-              <Button
-                size="sm"
-                className="bg-gradient-primary hover:opacity-90"
-                onClick={handleConfirm}
-                disabled={update.isPending}
-              >
-                <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                {dirty ? "Speichern & bestätigen" : confirmed ? "Schließen" : "Übernahme bestätigen"}
-              </Button>
+              ) : (
+                <>
+                  {dirty ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setDraft(draftFromSprint(sprint))}
+                      disabled={update.isPending}
+                    >
+                      Zurücksetzen
+                    </Button>
+                  ) : null}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleSave}
+                    disabled={!dirty || update.isPending}
+                  >
+                    {update.isPending ? "Speichert …" : "Änderungen speichern"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-gradient-primary hover:opacity-90"
+                    onClick={handleConfirm}
+                    disabled={update.isPending}
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1.5" />
+                    {dirty ? "Speichern & bestätigen" : "Übernahme bestätigen"}
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         ) : null}
@@ -296,11 +317,13 @@ function EditField({
   value,
   onChange,
   rows = 3,
+  readOnly = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   rows?: number;
+  readOnly?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
@@ -311,7 +334,8 @@ function EditField({
         rows={rows}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-background"
+        readOnly={readOnly}
+        className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
       />
     </div>
   );
@@ -322,11 +346,13 @@ function EditFieldInput({
   value,
   onChange,
   placeholder,
+  readOnly = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  readOnly?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
@@ -337,7 +363,8 @@ function EditFieldInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-background"
+        readOnly={readOnly}
+        className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
       />
     </div>
   );
@@ -349,12 +376,14 @@ function EditList({
   onChange,
   addLabel,
   placeholder,
+  readOnly = false,
 }: {
   label: string;
   items: string[];
   onChange: (items: string[]) => void;
   addLabel: string;
   placeholder?: string;
+  readOnly?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
@@ -373,31 +402,37 @@ function EditList({
                   onChange(next);
                 }}
                 placeholder={placeholder}
-                className="bg-background"
+                readOnly={readOnly}
+                className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => onChange(items.filter((_, j) => j !== i))}
-              >
-                <X className="w-4 h-4" />
-              </Button>
+              {!readOnly ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onChange(items.filter((_, j) => j !== i))}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              ) : null}
             </li>
           ))}
         </ul>
       ) : (
         <p className="text-sm text-muted-foreground italic">— nicht gesetzt —</p>
       )}
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={() => onChange([...items, ""])}
-      >
-        <Plus className="w-3.5 h-3.5 mr-1" />
-        {addLabel.replace(/^\+\s*/, "")}
+      {!readOnly ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => onChange([...items, ""])}
+        >
+          <Plus className="w-3.5 h-3.5 mr-1" />
+          {addLabel.replace(/^\+\s*/, "")}
+
       </Button>
+      ) : null}
     </div>
   );
 }
