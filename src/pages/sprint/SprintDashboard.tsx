@@ -13,7 +13,8 @@ import {
   useDeleteSprint,
   MAX_SPRINT_RESTARTS,
 } from "@/hooks/useSprint";
-import { useMyFramingSessions } from "@/hooks/useFraming";
+import { useMyFramingSessions, useDeleteFramingSession } from "@/hooks/useFraming";
+import type { FramingSessionRow } from "@/features/framing/types";
 import { useAdmin } from "@/hooks/useAdmin";
 import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
