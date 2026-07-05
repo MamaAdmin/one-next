@@ -12,7 +12,7 @@ import {
   useGenerateChallenge,
   useUpdateFramingSession,
 } from "@/hooks/useFraming";
-import { useCreateSprint, useUpdateSprint } from "@/hooks/useSprint";
+import { useCreateSprint } from "@/hooks/useSprint";
 import { supabase } from "@/integrations/supabase/client";
 import type {
   ChallengeStatementResult,
