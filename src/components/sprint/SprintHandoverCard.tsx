@@ -103,10 +103,10 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   if (!fromFraming) return null;
   if (!hasBasicsData) return null;
 
-  const title = fromFraming ? "Handover aus dem Problem Framing" : "Sprint-Basics prüfen";
-  const subtitle = fromFraming
-    ? "Alle Felder aus dem Framing sind editierbar – anpassen und bestätigen."
-    : "Zielfragen und Kontext für deinen Sprint – jetzt frisch eingeben oder ergänzen.";
+  const title = "Handover aus dem Problem Framing";
+  const subtitle =
+    "Nichts ist in Stein gemeißelt: Alle Ergebnisse aus dem Framing kannst du hier noch schärfen, anpassen und ergänzen – bevor der Sprint startet.";
+
 
   async function handleSave() {
     try {
