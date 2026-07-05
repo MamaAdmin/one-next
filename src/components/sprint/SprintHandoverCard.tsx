@@ -51,7 +51,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   const update = useUpdateSprint(sprint.id);
   const framingQ = useFramingBySprint(sprint.id);
   const fromFraming = !!framingQ.data;
-  const navigate = useNavigate();
+  
 
   const [confirmed, setConfirmed] = useState<boolean>(() => {
     try {
