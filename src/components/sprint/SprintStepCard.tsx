@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -63,6 +63,15 @@ export default function SprintStepCard({
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
+  const latestDataRef = useRef<SprintStepData>({
+    antworten,
+    vorschlaege,
+    eigene,
+    auswahl,
+    notes,
+    mapZuordnung,
+    aiRank,
+  });
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as SprintStepData;
@@ -74,7 +83,28 @@ export default function SprintStepCard({
     setNotes(d.notes ?? "");
     setMapZuordnung(d.mapZuordnung ?? {});
     setAiRank(d.aiRank);
+    latestDataRef.current = {
+      antworten: toAntwortenArray(d),
+      vorschlaege: d.vorschlaege ?? [],
+      eigene: d.eigene ?? [],
+      auswahl: d.auswahl ?? [],
+      notes: d.notes ?? "",
+      mapZuordnung: d.mapZuordnung ?? {},
+      aiRank: d.aiRank,
+    };
   }, [stepRow?.id]);
+
+  useEffect(() => {
+    latestDataRef.current = {
+      antworten,
+      vorschlaege,
+      eigene,
+      auswahl,
+      notes,
+      mapZuordnung,
+      aiRank,
+    };
+  }, [antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank]);
 
 
   const isSolo = sprint.modus === "solo";
@@ -97,7 +127,7 @@ export default function SprintStepCard({
       if (!d) return [];
       const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
       if (chosen) return chosen;
-      return toAntwortenArray(d);
+      return getStepItems(d);
     };
     return {
       customers: pick("1.5"),
@@ -231,20 +261,40 @@ export default function SprintStepCard({
     }
   }
 
+  function persistSnapshot(data: SprintStepData, completed = false) {
+    void onSave(data, { completed }).catch((e: unknown) => {
+      const msg = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "Speichern fehlgeschlagen", description: msg, variant: "destructive" });
+    });
+  }
+
   function acceptVorschlag(v: string) {
-    const val = v.trim();
-    if (!val) return;
-    if (
-      !eigene.some((e) => e.trim().toLowerCase() === val.toLowerCase()) &&
-      !antworten.some((a) => a.trim().toLowerCase() === val.toLowerCase())
-    ) {
-      setEigene((prev) => [...prev, val]);
-    }
-    setVorschlaege((prev) => prev.filter((x) => x !== v));
+    const next = buildAcceptedSuggestionsData(latestDataRef.current, [v]);
+    latestDataRef.current = next;
+    setEigene(next.eigene ?? []);
+    setVorschlaege(next.vorschlaege ?? []);
+    persistSnapshot(next);
+  }
+
+  function acceptAllVorschlaege() {
+    const current = latestDataRef.current;
+    if (!current.vorschlaege?.length) return;
+    const next = buildAcceptedSuggestionsData(current, current.vorschlaege);
+    latestDataRef.current = next;
+    setEigene(next.eigene ?? []);
+    setVorschlaege(next.vorschlaege ?? []);
+    persistSnapshot(next);
+    toast({ title: "Alle Vorschläge übernommen" });
   }
 
   function dismissVorschlag(v: string) {
-    setVorschlaege((prev) => prev.filter((x) => x !== v));
+    const next = {
+      ...latestDataRef.current,
+      vorschlaege: (latestDataRef.current.vorschlaege ?? []).filter((x) => x !== v),
+    };
+    latestDataRef.current = next;
+    setVorschlaege(next.vorschlaege ?? []);
+    persistSnapshot(next);
   }
 
 
@@ -253,10 +303,8 @@ export default function SprintStepCard({
   async function persist(completed: boolean) {
     setSaving(true);
     try {
-      await onSave(
-        { antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank },
-        { completed },
-      );
+      const data = latestDataRef.current;
+      await onSave(data, { completed });
       if (completed && onNext) onNext();
     } finally {
       setSaving(false);
@@ -515,10 +563,7 @@ export default function SprintStepCard({
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        vorschlaege.forEach((v) => acceptVorschlag(v));
-                        toast({ title: "Alle Vorschläge übernommen" });
-                      }}
+                      onClick={acceptAllVorschlaege}
                     >
                       Alle übernehmen
                     </Button>
@@ -840,7 +885,7 @@ function buildContextEntries(
     }
     const d = row.data as SprintStepData;
     const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
-    const antworten = toAntwortenArray(d);
+    const antworten = getStepItems(d);
     const value: Record<string, unknown> = {};
     if (antworten.length > 0) value.antworten = antworten;
     if (chosen) value.auswahl = chosen;
@@ -880,6 +925,44 @@ function toAntwortenArray(d: SprintStepData): string[] {
     return [d.antwort];
   }
   return [];
+}
+
+function getStepItems(d: SprintStepData): string[] {
+  return Array.from(
+    new Set(
+      [...toAntwortenArray(d), ...(d.eigene ?? [])]
+        .map((x) => x.trim())
+        .filter(Boolean),
+    ),
+  );
+}
+
+function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]): SprintStepData {
+  const acceptedValues = accepted.map((x) => x.trim()).filter(Boolean);
+  if (acceptedValues.length === 0) return data;
+
+  const nextEigene = [...(data.eigene ?? [])];
+  const existing = new Set(
+    [...toAntwortenArray(data), ...nextEigene].map((x) => x.trim().toLowerCase()).filter(Boolean),
+  );
+
+  for (const value of acceptedValues) {
+    const key = value.toLowerCase();
+    if (existing.has(key)) continue;
+    nextEigene.push(value);
+    existing.add(key);
+  }
+
+  const acceptedSet = new Set(acceptedValues.map((x) => x.toLowerCase()));
+  const nextVorschlaege = (data.vorschlaege ?? []).filter(
+    (x) => !acceptedSet.has(x.trim().toLowerCase()),
+  );
+
+  return {
+    ...data,
+    eigene: nextEigene,
+    vorschlaege: nextVorschlaege,
+  };
 }
 
 /* ------------------------- One-Pager Recap (Tag 1) ------------------------ */
