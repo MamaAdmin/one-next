@@ -49,6 +49,9 @@ function draftFromSprint(sprint: SprintRow): Draft {
 export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   const storageKey = `${STORAGE_PREFIX}${sprint.id}`;
   const update = useUpdateSprint(sprint.id);
+  const framingQ = useFramingBySprint(sprint.id);
+  const fromFraming = !!framingQ.data;
+  const navigate = useNavigate();
 
   const [confirmed, setConfirmed] = useState<boolean>(() => {
     try {
