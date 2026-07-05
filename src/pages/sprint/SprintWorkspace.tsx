@@ -213,7 +213,9 @@ export default function SprintWorkspace() {
 
           {/* Step card or One Pager */}
           <div className="space-y-6">
-            <SprintHandoverCard sprint={sprint} onEdit={() => setEditOpen(true)} />
+            {currentKey === "1.1" ? (
+              <SprintHandoverCard sprint={sprint} onEdit={() => setEditOpen(true)} />
+            ) : null}
 
             {summaryDay !== null ? (
               <SprintDaySummary
