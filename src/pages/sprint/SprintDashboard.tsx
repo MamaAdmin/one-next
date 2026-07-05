@@ -168,7 +168,7 @@ export default function SprintDashboard() {
               const isDone = f.status === "done";
               const isArchived = f.status === "archived";
               return (
-                <Card className="h-full hover:shadow-hover transition-shadow border-l-4 border-l-primary/60">
+                <Card className="h-full hover:shadow-hover transition-shadow border-l-4 border-l-primary/60 relative">
                   <Link to={`/sprint/framing/${f.id}`} className="block h-full">
                     <CardContent className="p-5 space-y-2">
                       <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-primary">
@@ -176,7 +176,7 @@ export default function SprintDashboard() {
                         Problem Framing
                       </div>
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-base font-semibold leading-tight">
+                        <h4 className="text-base font-semibold leading-tight pr-10">
                           {f.titel_arbeitstitel || "Ohne Titel"}
                         </h4>
                         <Badge
@@ -204,7 +204,24 @@ export default function SprintDashboard() {
                       )}
                     </CardContent>
                   </Link>
+                  {!isDone ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Problem Framing löschen"
+                      title="Problem Framing löschen"
+                      className="absolute top-3 right-3 h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDeletingFraming(f);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  ) : null}
                 </Card>
+
               );
             };
 
