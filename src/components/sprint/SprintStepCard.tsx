@@ -127,7 +127,7 @@ export default function SprintStepCard({
       if (!d) return [];
       const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
       if (chosen) return chosen;
-      return toAntwortenArray(d);
+      return getStepItems(d);
     };
     return {
       customers: pick("1.5"),
@@ -879,7 +879,7 @@ function buildContextEntries(
     }
     const d = row.data as SprintStepData;
     const chosen = d.auswahl && d.auswahl.length > 0 ? d.auswahl : null;
-    const antworten = toAntwortenArray(d);
+    const antworten = getStepItems(d);
     const value: Record<string, unknown> = {};
     if (antworten.length > 0) value.antworten = antworten;
     if (chosen) value.auswahl = chosen;
@@ -919,6 +919,16 @@ function toAntwortenArray(d: SprintStepData): string[] {
     return [d.antwort];
   }
   return [];
+}
+
+function getStepItems(d: SprintStepData): string[] {
+  return Array.from(
+    new Set(
+      [...toAntwortenArray(d), ...(d.eigene ?? [])]
+        .map((x) => x.trim())
+        .filter(Boolean),
+    ),
+  );
 }
 
 function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]): SprintStepData {
