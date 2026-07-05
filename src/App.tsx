@@ -158,6 +158,9 @@ const App = () => (
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
           <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
           <Route path="/sprint/framing/:id" element={<RequireAuth><FramingWorkspace /></RequireAuth>} />
+          <Route path="/sprint/invite/:token" element={<AcceptSprintInvitation />} />
+          <Route path="/sprint/:id/team" element={<RequireAuth><SprintTeamSetup /></RequireAuth>} />
+          <Route path="/sprint/:id/kickoff" element={<RequireAuth><SprintKickoff /></RequireAuth>} />
           <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
