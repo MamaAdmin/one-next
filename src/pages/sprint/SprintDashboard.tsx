@@ -74,6 +74,21 @@ export default function SprintDashboard() {
     }
   };
 
+  const handleDeleteFraming = async () => {
+    if (!deletingFraming) return;
+    try {
+      await deleteFramingMut.mutateAsync(deletingFraming.id);
+      toast({ title: "Problem Framing gelöscht" });
+      setDeletingFraming(null);
+    } catch (e) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  };
+
   const deriveCurrentStepKey = (sprintId: string, fallback: string): string => {
     const done = new Set(completedByStep?.[sprintId] ?? []);
     if (done.size === 0) return fallback;
