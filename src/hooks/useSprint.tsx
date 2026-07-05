@@ -124,12 +124,17 @@ export function useSaveStep(sprintId: string) {
       data: SprintStepData;
       completed?: boolean;
     }) => {
-      const payload = [
+      const payload: Array<{
+        sprint_id: string;
+        step_key: string;
+        data: Record<string, unknown>;
+        completed_at?: string;
+      }> = [
         {
           sprint_id: sprintId,
           step_key: args.step_key,
           data: args.data as unknown as Record<string, unknown>,
-          completed_at: args.completed ? new Date().toISOString() : null,
+          ...(args.completed ? { completed_at: new Date().toISOString() } : {}),
         },
       ];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
