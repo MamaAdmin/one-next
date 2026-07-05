@@ -921,6 +921,34 @@ function toAntwortenArray(d: SprintStepData): string[] {
   return [];
 }
 
+function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]): SprintStepData {
+  const acceptedValues = accepted.map((x) => x.trim()).filter(Boolean);
+  if (acceptedValues.length === 0) return data;
+
+  const nextEigene = [...(data.eigene ?? [])];
+  const existing = new Set(
+    [...toAntwortenArray(data), ...nextEigene].map((x) => x.trim().toLowerCase()).filter(Boolean),
+  );
+
+  for (const value of acceptedValues) {
+    const key = value.toLowerCase();
+    if (existing.has(key)) continue;
+    nextEigene.push(value);
+    existing.add(key);
+  }
+
+  const acceptedSet = new Set(acceptedValues.map((x) => x.toLowerCase()));
+  const nextVorschlaege = (data.vorschlaege ?? []).filter(
+    (x) => !acceptedSet.has(x.trim().toLowerCase()),
+  );
+
+  return {
+    ...data,
+    eigene: nextEigene,
+    vorschlaege: nextVorschlaege,
+  };
+}
+
 /* ------------------------- One-Pager Recap (Tag 1) ------------------------ */
 
 interface OnePagerRecapProps {
