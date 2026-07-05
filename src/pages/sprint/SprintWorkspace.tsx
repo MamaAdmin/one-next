@@ -46,6 +46,13 @@ export default function SprintWorkspace() {
   const currentKey = sprint?.current_step ?? "1.1";
   const currentDef = getStepDef(currentKey);
 
+  // Kickoff-Guard: bevor der Sprint startet, muss der Kickoff bestätigt sein.
+  useEffect(() => {
+    if (sprint && !sprint.kickoff_confirmed_at) {
+      navigate(`/sprint/${sprint.id}/kickoff`, { replace: true });
+    }
+  }, [sprint, navigate]);
+
   const currentRow = useMemo(
     () => steps.find((s) => s.step_key === currentKey),
     [steps, currentKey],
