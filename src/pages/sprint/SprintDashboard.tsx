@@ -43,6 +43,8 @@ export default function SprintDashboard() {
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [deleting, setDeleting] = useState<SprintRow | null>(null);
+  const [deletingFraming, setDeletingFraming] = useState<FramingSessionRow | null>(null);
+  const deleteFramingMut = useDeleteFramingSession();
   const allFramings = framingSessions ?? [];
   const framingBySprintId = new Map(
     allFramings
