@@ -1,21 +1,35 @@
-## Plan: KI-Antworten zuverlässig übernehmen
+## Ziel
 
-Ich behebe die Übernahme zentral in `SprintStepCard`, damit sie für alle Sprint-Phasen und Varianten gilt, die KI-Vorschläge nutzen.
+Nur noch **ein** Einstieg in den Design Sprint: jeder Nutzer startet zwingend über das Problem Framing. Der bisherige „Mein Problem ist klar → direkt Sprint" Pfad wird komplett entfernt.
 
-### 1. Übernahme-Logik robust machen
-- `acceptVorschlag` so anpassen, dass KI-Vorschläge sofort sauber in `eigene` übernommen und aus `vorschlaege` entfernt werden.
-- Duplikate weiterhin verhindern, aber ohne veraltete React-State-Werte.
-- `Alle übernehmen` nicht mehr über mehrfaches `setState` in einer Schleife ausführen, sondern als eine atomare Übernahme aller Vorschläge.
+## Änderungen
 
-### 2. Speichern beim schnellen Weiterklicken absichern
-- Das Problem entsteht vermutlich, wenn direkt nach „Übernehmen“ auf „Weiter“ geklickt wird: React-State ist dann noch nicht sicher aktualisiert.
-- Ich passe die Persistenz so an, dass immer der aktuell berechnete Stand gespeichert wird.
-- Optional: Nach Einzel-/Alle-Übernahme direkt zwischenspeichern, damit Vorschläge auch beim Phasenwechsel erhalten bleiben.
+### 1. `src/pages/sprint/SprintDashboard.tsx`
+- Zwei-Karten-Grid (Framing vs. Direkt-Sprint) entfernen.
+- Stattdessen **eine** Einstiegskarte über die volle Breite: „Neuen Sprint starten" mit Erklärung, dass jeder Sprint mit einem kurzen Problem Framing (ca. 3–4 h, 10 Schritte) beginnt. Button führt zu `/sprint/neu`.
+- Empty-State-Link „Ersten Sprint starten" bleibt auf `/sprint/neu`.
 
-### 3. Auswahl und Ranking konsistent halten
-- Übernommene KI-Antworten sollen danach in der Optionenliste für Auswahl/Ranking erscheinen.
-- Wenn ein übernommener Vorschlag entfernt wird, darf er nicht versehentlich aus User-Antworten gelöscht werden.
+### 2. `src/pages/sprint/SprintNew.tsx`
+- „Choose"-Screen und komplettes „clear"-Formular (Titel, Problemstellung, Challenge Statement, Zielgruppe, Erfolgsmessung, Sprint-Fragen, Modus, Decider, Sprint Leader, direkter `createSprint`-Flow) entfernen.
+- Seite wird auf das Framing-Arbeitstitel-Formular reduziert: Nutzer gibt einen Arbeitstitel ein → `createFraming` → Redirect zu `/sprint/framing/:id`.
+- Überschrift/Copy anpassen („Neuen Sprint starten" → beginnt mit Problem Framing).
+- `useCreateSprint`, `Select`, ungenutzte Icons/Imports und das `mode`-State-Handling entfernen; `?mode=…` Query wird ignoriert.
 
-### 4. End-to-end prüfen
-- Einen Sprint-Schritt mit KI-Vorschlägen testen: generieren → übernehmen → weiter → zurück → Daten noch vorhanden.
-- Zusätzlich einen späteren Schritt/Phase testen, damit der Fix nicht nur Tag 1 betrifft.
+### 3. `src/components/sprint/SprintHandoverCard.tsx`
+- Aufräumen: Da jeder neue Sprint aus Framing kommt, wird der `!fromFraming`-Zweig (Hinweisbox „Doch mit Problem-Framing starten") überflüssig und entfernt.
+- Bestehende Alt-Sprints ohne verknüpftes Framing zeigen die Karte weiterhin nicht (unverändertes Verhalten durch `if (!fromFraming) return null;`).
+
+### 4. `src/pages/UserProfile.tsx`
+- Link „/sprint/neu" behält Ziel, Label ggf. leicht angepasst („Neuen Sprint mit Problem Framing starten"), damit die Erwartung stimmt.
+
+## Was **nicht** angefasst wird
+
+- Datenbank / RLS / Tabellenschema (keine Migration nötig).
+- Bestehende Sprints und deren Workspace (`/sprint/:id`) bleiben unverändert nutzbar.
+- Direkt-Sprint-Erstellung via `useCreateSprint` bleibt im Hook erhalten (wird intern beim Framing-Abschluss weiter genutzt) – nur die UI-Route zum manuellen Anlegen fällt weg.
+
+## Nach der Umsetzung sichtbar
+
+- `/sprint`: eine einzige Startkarte, klarer Framing-First-Flow.
+- `/sprint/neu`: nur noch Arbeitstitel + Button „Problem Framing starten".
+- Handover-Card im Sprint zeigt nur noch den Framing-Kontext, ohne Alternativ-Hinweis.

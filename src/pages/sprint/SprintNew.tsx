@@ -1,57 +1,18 @@
 import { useState } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Compass, Rocket } from "lucide-react";
+import { Compass } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { useCreateSprint } from "@/hooks/useSprint";
 import { useCreateFramingSession } from "@/hooks/useFraming";
-import { z } from "zod";
-
-const schema = z.object({
-  titel: z.string().trim().min(3, "Bitte mindestens 3 Zeichen.").max(200),
-  problemstellung: z.string().trim().min(10, "Bitte beschreibe das Problem etwas genauer.").max(2000),
-  modus: z.enum(["solo", "team"]),
-  decider: z.string().trim().max(120).default(""),
-  sprint_leader: z.string().trim().max(120).default(""),
-  challenge_statement: z.string().trim().max(4000).default(""),
-  zielgruppe: z.string().trim().max(1000).default(""),
-  erfolgsmessung: z.string().trim().max(2000).default(""),
-  sprint_fragen: z.array(z.string().trim().max(500)).max(20).default([]),
-});
 
 export default function SprintNew() {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const create = useCreateSprint();
   const createFraming = useCreateFramingSession();
-  const [mode, setMode] = useState<"choose" | "clear" | "framing">(() => {
-    const m = params.get("mode");
-    if (m === "framing") return "framing";
-    if (m === "clear") return "clear";
-    return "choose";
-  });
-  const [titel, setTitel] = useState("");
-  const [problemstellung, setProblemstellung] = useState("");
-  const [modus, setModus] = useState<"solo" | "team">("solo");
-  const [decider, setDecider] = useState("");
-  const [sprintLeader, setSprintLeader] = useState("");
-  const [challengeStatement, setChallengeStatement] = useState("");
-  const [zielgruppe, setZielgruppe] = useState("");
-  const [erfolgsmessung, setErfolgsmessung] = useState("");
-  const [sprintFragenText, setSprintFragenText] = useState("");
   const [framingTitel, setFramingTitel] = useState("");
 
   async function startFraming(e: React.FormEvent) {
@@ -77,43 +38,6 @@ export default function SprintNew() {
     }
   }
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const parsed = schema.safeParse({
-      titel,
-      problemstellung,
-      modus,
-      decider,
-      sprint_leader: sprintLeader,
-      challenge_statement: challengeStatement,
-      zielgruppe,
-      erfolgsmessung,
-      sprint_fragen: sprintFragenText
-        .split("\n")
-        .map((s) => s.trim())
-        .filter(Boolean),
-    });
-    if (!parsed.success) {
-      toast({
-        title: "Bitte Eingaben prüfen",
-        description: parsed.error.errors[0]?.message ?? "Validierung fehlgeschlagen",
-        variant: "destructive",
-      });
-      return;
-    }
-    try {
-      const sprint = await create.mutateAsync(parsed.data);
-      toast({ title: "Sprint angelegt", description: "Los geht's mit Tag 1 · Map." });
-      navigate(`/sprint/${sprint.id}`);
-    } catch (e: unknown) {
-      toast({
-        title: "Konnte Sprint nicht anlegen",
-        description: e instanceof Error ? e.message : "Unbekannter Fehler",
-        variant: "destructive",
-      });
-    }
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -125,211 +49,33 @@ export default function SprintNew() {
 
         <h1 className="text-4xl font-bold mt-4 mb-2">
           Neuen{" "}
-          <span className="bg-gradient-primary bg-clip-text text-transparent">Sprint</span> anlegen
+          <span className="bg-gradient-primary bg-clip-text text-transparent">Sprint</span> starten
         </h1>
         <p className="text-muted-foreground mb-8">
-          Diese Angaben kommen in jeden Schritt als Kontext.
+          Jeder Sprint beginnt mit einem kurzen Problem Framing – 10 Schritte, ca. 3–4 Stunden.
+          Am Ende entsteht automatisch dein Sprint mit geschärfter Sprint-Frage.
         </p>
 
-        {mode === "choose" ? (
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
-            <button
-              type="button"
-              onClick={() => setMode("clear")}
-              className="text-left rounded-xl border-2 border-transparent bg-card p-6 shadow-lg hover:border-primary transition-colors"
-            >
-              <Rocket className="w-8 h-8 text-primary mb-3" />
-              <h2 className="text-xl font-semibold mb-1">Mein Problem ist klar</h2>
-              <p className="text-sm text-muted-foreground">
-                Titel & Problemstellung sind schon scharf – direkt Sprint starten.
-              </p>
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("framing")}
-              className="text-left rounded-xl border-2 border-transparent bg-card p-6 shadow-lg hover:border-primary transition-colors"
-            >
-              <Compass className="w-8 h-8 text-primary mb-3" />
-              <h2 className="text-xl font-semibold mb-1">Problem noch unscharf</h2>
-              <p className="text-sm text-muted-foreground">
-                Problem-Framing-Workshop (10 Schritte, 3–4 h) starten. Am Ende entsteht
-                automatisch ein Sprint mit vorbefüllter Problemstellung.
-              </p>
-            </button>
-          </div>
-        ) : null}
-
-        {mode === "framing" ? (
-          <Card className="border-none shadow-xl">
-            <CardContent className="p-8 space-y-6">
-              <form onSubmit={startFraming} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="ftitel">Arbeitstitel für den Workshop</Label>
-                  <Input
-                    id="ftitel"
-                    value={framingTitel}
-                    onChange={(e) => setFramingTitel(e.target.value)}
-                    placeholder="z. B. Warum springen Nutzer im Onboarding ab?"
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Kannst du später ändern. Am Ende wird daraus dein Sprint-Titel.
-                  </p>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <Button type="button" variant="ghost" onClick={() => setMode("choose")}>
-                    ← Zurück
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="bg-gradient-primary hover:opacity-90"
-                    disabled={createFraming.isPending}
-                  >
-                    {createFraming.isPending
-                      ? "Wird gestartet …"
-                      : "Problem-Framing starten"}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        ) : null}
-
-        {mode === "clear" ? (
         <Card className="border-none shadow-xl">
           <CardContent className="p-8">
-            <div className="mb-4">
-              <button
-                type="button"
-                onClick={() => setMode("choose")}
-                className="text-sm text-muted-foreground hover:underline"
-              >
-                ← Andere Option wählen
-              </button>
-            </div>
-            <form onSubmit={onSubmit} className="space-y-6">
-
+            <form onSubmit={startFraming} className="space-y-6">
+              <div className="flex items-center gap-2">
+                <Compass className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-semibold">Problem Framing starten</h2>
+              </div>
               <div className="space-y-2">
-                <Label htmlFor="titel">Sprint-Titel</Label>
+                <Label htmlFor="ftitel">Arbeitstitel für den Workshop</Label>
                 <Input
-                  id="titel"
-                  value={titel}
-                  onChange={(e) => setTitel(e.target.value)}
-                  placeholder="z. B. Onboarding neuer SaaS-Nutzer"
+                  id="ftitel"
+                  value={framingTitel}
+                  onChange={(e) => setFramingTitel(e.target.value)}
+                  placeholder="z. B. Warum springen Nutzer im Onboarding ab?"
                   required
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="problem">Problemstellung</Label>
-                <Textarea
-                  id="problem"
-                  value={problemstellung}
-                  onChange={(e) => setProblemstellung(e.target.value)}
-                  placeholder="Was ist das Problem oder die Chance, die ihr im Sprint anschaut?"
-                  rows={5}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="challenge">Challenge Statement <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
-                <Textarea
-                  id="challenge"
-                  value={challengeStatement}
-                  onChange={(e) => setChallengeStatement(e.target.value)}
-                  placeholder="Wir entwickeln … damit … ohne …"
-                  rows={4}
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="zielgruppe">Primäre Zielgruppe <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
-                  <Textarea
-                    id="zielgruppe"
-                    value={zielgruppe}
-                    onChange={(e) => setZielgruppe(e.target.value)}
-                    placeholder="Für wen lösen wir das Problem?"
-                    rows={3}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="erfolg">Erfolgsmessung <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
-                  <Textarea
-                    id="erfolg"
-                    value={erfolgsmessung}
-                    onChange={(e) => setErfolgsmessung(e.target.value)}
-                    placeholder="Woran erkennen wir Erfolg?"
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="fragen">Sprint-Fragen <span className="text-xs text-muted-foreground font-normal">(eine pro Zeile, optional)</span></Label>
-                <Textarea
-                  id="fragen"
-                  value={sprintFragenText}
-                  onChange={(e) => setSprintFragenText(e.target.value)}
-                  placeholder={"Können wir …?\nSind Nutzer bereit …?\nWird die Qualität …?"}
-                  rows={4}
-                />
-              </div>
-
-
-              <div className="space-y-2">
-                <Label htmlFor="modus">Modus</Label>
-                <Select value={modus} onValueChange={(v) => setModus(v as "solo" | "team")}>
-                  <SelectTrigger id="modus">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="solo">
-                      Solo – die KI ersetzt das Team
-                    </SelectItem>
-                    <SelectItem value="team" disabled>
-                      Team – folgt in Kürze
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
                 <p className="text-xs text-muted-foreground">
-                  Im Solo-Modus übernimmt die KI Teamabstimmungen und liefert Empfehlungen mit
-                  Begründung.
+                  Kannst du später ändern. Am Ende wird daraus dein Sprint-Titel.
                 </p>
               </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {modus === "solo" ? (
-                  <div className="space-y-2 md:col-span-2 rounded-lg border bg-muted/40 p-4 text-sm">
-                    <p>
-                      <span className="font-semibold">Decider:</span> Du – im Solo-Modus
-                      entscheidest du selbst, deine Auswahl gilt.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Label htmlFor="decider">Decider</Label>
-                    <Input
-                      id="decider"
-                      value={decider}
-                      onChange={(e) => setDecider(e.target.value)}
-                      placeholder="Wer entscheidet?"
-                    />
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <Label htmlFor="leader">Sprint Leader</Label>
-                  <Input
-                    id="leader"
-                    value={sprintLeader}
-                    onChange={(e) => setSprintLeader(e.target.value)}
-                    placeholder="Moderation / Timer"
-                  />
-                </div>
-              </div>
-
-
               <div className="flex justify-end gap-3 pt-2">
                 <Button type="button" variant="ghost" asChild>
                   <Link to="/sprint">Abbrechen</Link>
@@ -337,15 +83,14 @@ export default function SprintNew() {
                 <Button
                   type="submit"
                   className="bg-gradient-primary hover:opacity-90"
-                  disabled={create.isPending}
+                  disabled={createFraming.isPending}
                 >
-                  {create.isPending ? "Wird angelegt …" : "Sprint starten"}
+                  {createFraming.isPending ? "Wird gestartet …" : "Problem Framing starten"}
                 </Button>
               </div>
             </form>
           </CardContent>
         </Card>
-        ) : null}
       </main>
 
       <Footer />

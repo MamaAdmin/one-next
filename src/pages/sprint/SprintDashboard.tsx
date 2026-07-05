@@ -101,58 +101,31 @@ export default function SprintDashboard() {
             </p>
           </div>
 
-          <section className="mb-10 grid md:grid-cols-2 gap-4">
-            <Card className="border-l-4 border-l-primary flex flex-col">
-              <CardContent className="p-5 space-y-2 flex-1 flex flex-col">
+          <section className="mb-10">
+            <Card className="border-l-4 border-l-primary">
+              <CardContent className="p-6 space-y-3">
                 <div className="flex items-center gap-2">
                   <Compass className="w-5 h-5 text-primary" />
-                  <h2 className="font-semibold">Starte mit Problem Framing (3–4 h)</h2>
+                  <h2 className="font-semibold text-lg">Neuen Sprint starten</h2>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Wenn dein Problem noch <strong>unscharf</strong> ist: Zielgruppe, Kontext oder
-                  Erfolgskriterien sind unklar, es gibt viele Meinungen und keine gemeinsame
-                  Sicht. Das Framing schärft in 3–4 Stunden Ausgangslage, Stakeholder,
-                  Zielbild und leitet daraus eine konkrete Sprint-Frage ab.
+                  Jeder Sprint beginnt mit einem kurzen <strong>Problem Framing</strong>
+                  {" "}(10 Schritte, ca. 3–4 h). So schärfst du Zielgruppe, Kontext,
+                  Risiken und Zielfragen – am Ende entsteht automatisch dein Sprint mit
+                  vorbefülltem Challenge Statement und klaren Sprint-Fragen.
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  Typisch: „Wir wissen, dass etwas nicht rund läuft, aber nicht genau was."
-                </p>
-                <div className="pt-3 mt-auto">
-                  <Button asChild className="w-full bg-gradient-primary hover:opacity-90">
-                    <Link to="/sprint/neu?mode=framing">
+                <div className="pt-2">
+                  <Button asChild className="bg-gradient-primary hover:opacity-90">
+                    <Link to="/sprint/neu">
                       <Compass className="w-4 h-4 mr-2" />
-                      Jetzt mit Problem Framing starten
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-accent flex flex-col">
-              <CardContent className="p-5 space-y-2 flex-1 flex flex-col">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  <h2 className="font-semibold">Starte mit Design Sprint (8h)</h2>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Wenn du eine <strong>klare Sprint-Frage</strong> und definierte Zielgruppe
-                  hast. Der Sprint führt dich durch Map, Sketch, Decide, Prototype und Test –
-                  bis zu einem getesteten Prototyp mit echtem Nutzerfeedback.
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Typisch: „Wir wissen, was wir lösen wollen – jetzt brauchen wir eine Lösung."
-                </p>
-                <div className="pt-3 mt-auto">
-                  <Button asChild className="w-full bg-gradient-primary hover:opacity-90">
-                    <Link to="/sprint/neu?mode=clear">
-
-                      <Plus className="w-4 h-4 mr-2" />
-                      Jetzt Design Sprint starten
+                      Mit Problem Framing starten
                     </Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
           </section>
+
 
 
 

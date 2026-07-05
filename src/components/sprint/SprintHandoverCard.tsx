@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ChevronDown, ChevronUp, CheckCircle2, Plus, X, Compass } from "lucide-react";
+import { Sparkles, ChevronDown, ChevronUp, CheckCircle2, Plus, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useUpdateSprint } from "@/hooks/useSprint";
 import { useFramingBySprint } from "@/hooks/useFraming";
@@ -51,7 +51,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   const update = useUpdateSprint(sprint.id);
   const framingQ = useFramingBySprint(sprint.id);
   const fromFraming = !!framingQ.data;
-  const navigate = useNavigate();
+  
 
   const [confirmed, setConfirmed] = useState<boolean>(() => {
     try {
@@ -172,36 +172,8 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
 
         {open ? (
           <div className="space-y-4">
-            {!fromFraming ? (
-              <div className="rounded-md border border-dashed border-primary/40 bg-background/60 p-4 space-y-3">
-                <div className="flex items-start gap-2">
-                  <Compass className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                  <div className="space-y-1">
-                    <div className="text-sm font-semibold">Ist dein Problem wirklich schon scharf?</div>
-                    <p className="text-sm text-muted-foreground">
-                      Im Problem-Framing-Workshop (10 Schritte, ca. 3–4 h) schärfst du
-                      Zielgruppe, Ursachen, Risiken und Zielfragen – am Ende steht ein
-                      klares Challenge Statement, das direkt in einen neuen Sprint übergeht.
-                      Sinnvoll, wenn du dir noch unsicher bist, was genau ihr im Sprint lösen wollt.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-primary/40"
-                    onClick={() => navigate("/sprint/neu?mode=framing")}
-                  >
-                    <Compass className="w-4 h-4 mr-1.5" />
-                    Doch mit Problem-Framing starten
-                  </Button>
-                  <span className="text-xs text-muted-foreground self-center">
-                    Mein Problem ist klar → einfach unten ausfüllen und bestätigen.
-                  </span>
-                </div>
-              </div>
-            ) : null}
+
+
 
             {/* Titel & Problemstellung → Basics-Dialog */}
             <div className="rounded-md border bg-background/60 p-3 space-y-2">
