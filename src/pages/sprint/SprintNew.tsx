@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Compass, Users } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { useCreateFramingSession, useUpdateFramingSession } from "@/hooks/useFraming";
+import { useCreateFramingSession } from "@/hooks/useFraming";
 import { useCreateSprint } from "@/hooks/useSprint";
+import { supabase } from "@/integrations/supabase/client";
 
 type TeamAnswer = "yes" | "no";
 
