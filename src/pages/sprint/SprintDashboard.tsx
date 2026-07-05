@@ -143,7 +143,8 @@ export default function SprintDashboard() {
                 </p>
                 <div className="pt-3 mt-auto">
                   <Button asChild className="w-full bg-gradient-primary hover:opacity-90">
-                    <Link to="/sprint/neu">
+                    <Link to="/sprint/neu?mode=clear">
+
                       <Plus className="w-4 h-4 mr-2" />
                       Jetzt Design Sprint starten
                     </Link>
