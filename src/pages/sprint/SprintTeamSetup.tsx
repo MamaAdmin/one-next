@@ -67,9 +67,9 @@ export default function SprintTeamSetup() {
           </Badge>
           <h1 className="text-3xl font-bold">Team zusammenstellen</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl">
-            Lege fest, wer welche Rolle im Sprint übernimmt. Der Decider ist Pflicht. Weitere
-            Personen kannst du jederzeit nachziehen. Eine Person kann mehrere Rollen halten – dann
-            trage dich für jede Rolle einzeln ein.
+            Du bist der Moderator dieses Sprints und lädst dein Team per E-Mail ein. Ein Decider
+            wird empfohlen. Eine Person kann mehrere Rollen halten – dann trage sie für jede Rolle
+            einzeln ein.
           </p>
         </div>
 

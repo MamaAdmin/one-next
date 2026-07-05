@@ -27,11 +27,18 @@ interface RoleDef {
 
 const ROLES: RoleDef[] = [
   {
+    key: "moderator",
+    title: "Moderator",
+    description:
+      "Sprint-Owner. Lädt das Team ein, hält die Fäden zusammen und trägt (später) die Abrechnung. Wird automatisch beim Anlegen des Sprints gesetzt.",
+    required: true,
+  },
+  {
     key: "decider",
     title: "Decider",
     description:
-      "Die Person mit echter Entscheidungsbefugnis. Trifft die finalen Entscheidungen. Ohne Decider verliert der Sprint seine Verbindlichkeit.",
-    required: true,
+      "Die Person mit echter Entscheidungsbefugnis. Trifft die finalen Entscheidungen. Empfohlen, damit der Sprint verbindlich bleibt.",
+    recommended: true,
   },
   {
     key: "sprint_leader",
@@ -88,7 +95,7 @@ function useCurrentUserId() {
 
 interface Props {
   sprintId: string;
-  /** Wenn true: rötlicher Warnstil, solange Decider fehlt (Kickoff-Seite). */
+  /** Wenn true: Empfehlungs-Callout, solange Decider fehlt (Kickoff-Seite). */
   emphasizeDeciderMissing?: boolean;
 }
 
@@ -125,14 +132,14 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
   return (
     <div className="space-y-4">
       {emphasizeDeciderMissing && deciderMissing ? (
-        <Card className="border-destructive/40 bg-destructive/5">
+        <Card className="border-muted bg-muted/40">
           <CardContent className="p-4 flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
             <div className="text-sm">
-              <div className="font-semibold">Decider fehlt</div>
+              <div className="font-semibold">Empfehlung: Decider zuweisen</div>
               <p className="text-foreground/80 mt-1">
-                Ohne Decider verliert der Sprint seine Verbindlichkeit. Setze eine Person mit echter
-                Entscheidungsbefugnis ein, bevor der Sprint startet.
+                Ohne Decider fehlen dem Sprint verbindliche Entscheidungen. Weise idealerweise eine
+                Person mit echter Entscheidungsbefugnis zu – Pflicht ist es nicht.
               </p>
             </div>
           </CardContent>
@@ -143,18 +150,14 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
         {ROLES.map((role) => {
           const filled = byRole[role.key]?.members ?? [];
           const pending = byRole[role.key]?.invites ?? [];
-          const empty = filled.length === 0 && pending.length === 0;
-          const isDecider = role.key === "decider";
-          const alert = isDecider && empty;
+          const isModerator = role.key === "moderator";
           return (
             <Card
               key={role.key}
               className={
-                alert
-                  ? "border-destructive/40 bg-destructive/5"
-                  : filled.length > 0
-                    ? "border-primary/30 bg-primary/5"
-                    : ""
+                filled.length > 0
+                  ? "border-primary/30 bg-primary/5"
+                  : ""
               }
             >
               <CardContent className="p-4 space-y-3">
@@ -162,7 +165,9 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold">{role.title}</h3>
-                      {role.required ? (
+                      {isModerator ? (
+                        <Badge className="text-[10px]">Sprint-Owner</Badge>
+                      ) : role.required ? (
                         <Badge variant="destructive" className="text-[10px]">Pflicht</Badge>
                       ) : role.recommended ? (
                         <Badge variant="secondary" className="text-[10px]">Empfohlen</Badge>
@@ -188,15 +193,17 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                             {m.user_id === currentUserQ.data ? "Ich" : (m.email ?? "Teammitglied")}
                           </span>
                         </span>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => removeMember.mutate(m.id)}
-                          disabled={removeMember.isPending}
-                          aria-label="Entfernen"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
+                        {isModerator ? null : (
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => removeMember.mutate(m.id)}
+                            disabled={removeMember.isPending}
+                            aria-label="Entfernen"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
                       </li>
                     ))}
                     {pending.map((i) => (
@@ -243,36 +250,38 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                   </ul>
                 )}
 
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() =>
-                      addSelf
-                        .mutateAsync(role.key)
-                        .then(() => toast({ title: `Rolle übernommen: ${role.title}` }))
-                        .catch((e) =>
-                          toast({
-                            title: "Konnte Rolle nicht übernehmen",
-                            description: e instanceof Error ? e.message : String(e),
-                            variant: "destructive",
-                          }),
-                        )
-                    }
-                    disabled={addSelf.isPending}
-                  >
-                    <User className="w-3.5 h-3.5 mr-1.5" />
-                    Ich übernehme das
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setInviteRole(role.key)}
-                  >
-                    <UserPlus className="w-3.5 h-3.5 mr-1.5" />
-                    Person einladen
-                  </Button>
-                </div>
+                {isModerator ? null : (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        addSelf
+                          .mutateAsync(role.key)
+                          .then(() => toast({ title: `Rolle übernommen: ${role.title}` }))
+                          .catch((e) =>
+                            toast({
+                              title: "Konnte Rolle nicht übernehmen",
+                              description: e instanceof Error ? e.message : String(e),
+                              variant: "destructive",
+                            }),
+                          )
+                      }
+                      disabled={addSelf.isPending}
+                    >
+                      <User className="w-3.5 h-3.5 mr-1.5" />
+                      Ich übernehme das
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setInviteRole(role.key)}
+                    >
+                      <UserPlus className="w-3.5 h-3.5 mr-1.5" />
+                      Person einladen
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           );

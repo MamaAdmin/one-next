@@ -21,6 +21,7 @@ export interface SprintRow {
 }
 
 export const SPRINT_TEAM_ROLES = [
+  "moderator",
   "decider",
   "sprint_leader",
   "finance",

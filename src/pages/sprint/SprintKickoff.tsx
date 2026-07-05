@@ -51,14 +51,14 @@ export default function SprintKickoff() {
     );
   }
 
-  const hasDecider = members.some((m) => m.rolle === "decider");
+  const hasModerator = members.some((m) => m.rolle === "moderator");
   const handoverConfirmed = sprint.challenge_statement.trim().length > 0 && sprint.decider.trim().length > 0;
-  const canStart = hasDecider && handoverConfirmed;
+  const canStart = hasModerator && handoverConfirmed;
 
   const blockedReason = !handoverConfirmed
     ? "Bestätige zuerst den Handover aus dem Problem Framing."
-    : !hasDecider
-      ? "Setze einen Decider ein, bevor der Sprint startet."
+    : !hasModerator
+      ? "Moderator fehlt – bitte Seite neu laden."
       : null;
 
   async function handleStart() {
@@ -91,8 +91,8 @@ export default function SprintKickoff() {
           </Badge>
           <h1 className="text-3xl font-bold">Sprint-Kickoff: Outcome & Team</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl">
-            Prüfe das Ergebnis aus dem Problem Framing und stelle euer Team endgültig auf. Sobald
-            Decider gesetzt und Handover bestätigt ist, kann der Sprint starten.
+            Du bist der Moderator dieses Sprints. Prüfe das Ergebnis aus dem Problem Framing, lade
+            dein Team ein und starte den Sprint, sobald der Handover bestätigt ist.
           </p>
         </div>
 
