@@ -37,9 +37,12 @@ export default function SprintNew() {
   const [params] = useSearchParams();
   const create = useCreateSprint();
   const createFraming = useCreateFramingSession();
-  const [mode, setMode] = useState<"choose" | "clear" | "framing">(() =>
-    params.get("mode") === "framing" ? "framing" : "choose",
-  );
+  const [mode, setMode] = useState<"choose" | "clear" | "framing">(() => {
+    const m = params.get("mode");
+    if (m === "framing") return "framing";
+    if (m === "clear") return "clear";
+    return "choose";
+  });
   const [titel, setTitel] = useState("");
   const [problemstellung, setProblemstellung] = useState("");
   const [modus, setModus] = useState<"solo" | "team">("solo");
