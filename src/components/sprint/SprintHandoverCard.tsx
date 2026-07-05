@@ -136,11 +136,11 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
   }
 
   return (
-    <Card className="border-primary/30 bg-primary/5">
+    <Card className="border-destructive/40 bg-destructive/5">
       <CardContent className="p-5 space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-2">
-            <Sparkles className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+            <Sparkles className="w-5 h-5 text-destructive mt-0.5 shrink-0" />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-lg font-bold">{title}</h3>
@@ -150,12 +150,12 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                     Bestätigt
                   </Badge>
                 ) : (
-                  <Badge className="bg-primary text-primary-foreground">
-                    Bitte prüfen
+                  <Badge className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Noch schärfen
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <p className="text-sm text-foreground/80 mt-1 leading-relaxed">
                 {subtitle}
               </p>
             </div>
