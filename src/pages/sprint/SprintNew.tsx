@@ -23,8 +23,6 @@ export default function SprintNew() {
   const [teamAnswer, setTeamAnswer] = useState<TeamAnswer>("no");
   const [busy, setBusy] = useState(false);
 
-  const updateFramingRef = useUpdateFramingSession("");
-
   async function startFlow(e: React.FormEvent) {
     e.preventDefault();
     const titel = framingTitel.trim();
@@ -50,23 +48,11 @@ export default function SprintNew() {
           sprint_leader: "",
         });
         // Link framing → sprint so completion updates instead of duplicating.
-        // Bypass typed hook to avoid dynamic hook-per-id.
-        await (updateFramingRef.mutateAsync as unknown as (
-          _: unknown,
-        ) => Promise<unknown>).call(
-          {
-            mutateAsync: async () => {
-              // no-op fallback
-            },
-          },
-          {},
-        );
-        // Direct update because useUpdateFramingSession is bound to an id at hook time.
-        const { supabase } = await import("@/integrations/supabase/client");
         await supabase
           .from("framing_sessions")
           .update({ resulting_sprint_id: sprint.id })
           .eq("id", framing.id);
+
 
         toast({
           title: "Sprint angelegt",
