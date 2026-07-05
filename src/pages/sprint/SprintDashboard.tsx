@@ -13,7 +13,8 @@ import {
   useDeleteSprint,
   MAX_SPRINT_RESTARTS,
 } from "@/hooks/useSprint";
-import { useMyFramingSessions } from "@/hooks/useFraming";
+import { useMyFramingSessions, useDeleteFramingSession } from "@/hooks/useFraming";
+import type { FramingSessionRow } from "@/features/framing/types";
 import { useAdmin } from "@/hooks/useAdmin";
 import { getStepDef, SPRINT_STEPS } from "@/features/sprint/steps";
 import { FRAMING_STEPS } from "@/features/framing/steps";
@@ -42,6 +43,8 @@ export default function SprintDashboard() {
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [deleting, setDeleting] = useState<SprintRow | null>(null);
+  const [deletingFraming, setDeletingFraming] = useState<FramingSessionRow | null>(null);
+  const deleteFramingMut = useDeleteFramingSession();
   const allFramings = framingSessions ?? [];
   const framingBySprintId = new Map(
     allFramings
@@ -62,6 +65,21 @@ export default function SprintDashboard() {
       });
       toast({ title: "Sprint gelöscht" });
       setDeleting(null);
+    } catch (e) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteFraming = async () => {
+    if (!deletingFraming) return;
+    try {
+      await deleteFramingMut.mutateAsync(deletingFraming.id);
+      toast({ title: "Problem Framing gelöscht" });
+      setDeletingFraming(null);
     } catch (e) {
       toast({
         title: "Löschen fehlgeschlagen",
@@ -150,7 +168,7 @@ export default function SprintDashboard() {
               const isDone = f.status === "done";
               const isArchived = f.status === "archived";
               return (
-                <Card className="h-full hover:shadow-hover transition-shadow border-l-4 border-l-primary/60">
+                <Card className="h-full hover:shadow-hover transition-shadow border-l-4 border-l-primary/60 relative">
                   <Link to={`/sprint/framing/${f.id}`} className="block h-full">
                     <CardContent className="p-5 space-y-2">
                       <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-primary">
@@ -158,7 +176,7 @@ export default function SprintDashboard() {
                         Problem Framing
                       </div>
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-base font-semibold leading-tight">
+                        <h4 className="text-base font-semibold leading-tight pr-10">
                           {f.titel_arbeitstitel || "Ohne Titel"}
                         </h4>
                         <Badge
@@ -186,7 +204,24 @@ export default function SprintDashboard() {
                       )}
                     </CardContent>
                   </Link>
+                  {!isDone ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Problem Framing löschen"
+                      title="Problem Framing löschen"
+                      className="absolute top-3 right-3 h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDeletingFraming(f);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  ) : null}
                 </Card>
+
               );
             };
 
@@ -439,6 +474,31 @@ export default function SprintDashboard() {
             <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={!!deletingFraming}
+        onOpenChange={(o) => !o && setDeletingFraming(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Problem Framing wirklich löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              „{deletingFraming?.titel_arbeitstitel || "Ohne Titel"}" wird unwiderruflich
+              gelöscht – inklusive aller Antworten und Zwischenstände. Diese Aktion kann
+              nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteFraming}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Löschen

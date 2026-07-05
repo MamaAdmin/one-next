@@ -93,6 +93,18 @@ export function useCreateFramingSession() {
   });
 }
 
+export function useDeleteFramingSession() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { error } = await supabase.from(SESSIONS).delete().eq("id", sessionId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["framing", "mine"] }),
+  });
+}
+
+
 export function useSaveFramingStep(sessionId: string) {
   const qc = useQueryClient();
   return useMutation({
