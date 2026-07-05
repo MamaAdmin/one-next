@@ -27,11 +27,18 @@ interface RoleDef {
 
 const ROLES: RoleDef[] = [
   {
+    key: "moderator",
+    title: "Moderator",
+    description:
+      "Sprint-Owner. Lädt das Team ein, hält die Fäden zusammen und trägt (später) die Abrechnung. Wird automatisch beim Anlegen des Sprints gesetzt.",
+    required: true,
+  },
+  {
     key: "decider",
     title: "Decider",
     description:
-      "Die Person mit echter Entscheidungsbefugnis. Trifft die finalen Entscheidungen. Ohne Decider verliert der Sprint seine Verbindlichkeit.",
-    required: true,
+      "Die Person mit echter Entscheidungsbefugnis. Trifft die finalen Entscheidungen. Empfohlen, damit der Sprint verbindlich bleibt.",
+    recommended: true,
   },
   {
     key: "sprint_leader",
