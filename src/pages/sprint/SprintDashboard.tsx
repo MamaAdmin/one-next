@@ -481,6 +481,31 @@ export default function SprintDashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog
+        open={!!deletingFraming}
+        onOpenChange={(o) => !o && setDeletingFraming(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Problem Framing wirklich löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              „{deletingFraming?.titel_arbeitstitel || "Ohne Titel"}" wird unwiderruflich
+              gelöscht – inklusive aller Antworten und Zwischenstände. Diese Aktion kann
+              nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteFraming}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
