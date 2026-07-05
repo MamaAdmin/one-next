@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintRow, SprintStepRow, SprintStepData } from "@/features/sprint/types";
+import type { Json } from "@/integrations/supabase/types";
 
 const SPRINTS_TABLE = "sprints";
 const STEPS_TABLE = "sprint_steps";
@@ -127,20 +128,19 @@ export function useSaveStep(sprintId: string) {
       const payload: Array<{
         sprint_id: string;
         step_key: string;
-        data: Record<string, unknown>;
+        data: Json;
         completed_at?: string;
       }> = [
         {
           sprint_id: sprintId,
           step_key: args.step_key,
-          data: args.data as unknown as Record<string, unknown>,
+          data: args.data as unknown as Json,
           ...(args.completed ? { completed_at: new Date().toISOString() } : {}),
         },
       ];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await supabase
         .from(STEPS_TABLE)
-        .upsert(payload as any, { onConflict: "sprint_id,step_key" });
+        .upsert(payload, { onConflict: "sprint_id,step_key" });
       if (error) throw error;
     },
     onSuccess: () => {
