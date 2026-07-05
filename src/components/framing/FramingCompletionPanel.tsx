@@ -128,7 +128,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
       const sprint = await createSprint.mutateAsync({
         titel: result.titel,
         problemstellung: result.challenge_statement,
-        modus: "solo",
+        modus: "team",
         decider: decider.trim(),
         sprint_leader: decider.trim(),
         challenge_statement: result.challenge_statement,
@@ -141,8 +141,8 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         status: "done",
         resulting_sprint_id: sprint.id,
       });
-      toast({ title: "Sprint angelegt", description: "Auf zum Tag 1 · Map." });
-      navigate(`/sprint/${sprint.id}`);
+      toast({ title: "Sprint angelegt", description: "Weiter zum Kickoff: Outcome und Team." });
+      navigate(`/sprint/${sprint.id}/kickoff`);
     } catch (e) {
       toast({
         title: "Sprint konnte nicht angelegt werden",
