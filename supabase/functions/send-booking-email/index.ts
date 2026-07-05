@@ -64,8 +64,17 @@ serve(async (req) => {
       );
     }
 
-    const { to, type, data } = parsed.data;
-    console.log(`Sending ${type} email to ${to}`);
+    const { type, data } = parsed.data;
+    // Force recipient to the authenticated user's own email to prevent spam/phishing abuse
+    const callerEmail = authData.user.email;
+    if (!callerEmail) {
+      return new Response(
+        JSON.stringify({ error: 'Access denied' }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const to = callerEmail;
+    console.log(`Sending ${type} email to authenticated user`);
 
     let subject = "";
     let html = "";
