@@ -432,6 +432,7 @@ function EditList({
           {addLabel.replace(/^\+\s*/, "")}
 
       </Button>
+      ) : null}
     </div>
   );
 }
