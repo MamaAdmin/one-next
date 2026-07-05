@@ -40,6 +40,21 @@ export function useFramingSession(id: string | undefined) {
   });
 }
 
+export function useFramingBySprint(sprintId: string | undefined) {
+  return useQuery({
+    queryKey: ["framing", "by-sprint", sprintId],
+    enabled: !!sprintId,
+    queryFn: async (): Promise<FramingSessionRow | null> => {
+      const { data, error } = await supabase
+        .from(SESSIONS)
+        .select("*")
+        .eq("resulting_sprint_id", sprintId!)
+        .maybeSingle();
+      if (error) throw error;
+      return (data as unknown as FramingSessionRow) ?? null;
+    },
+  });
+
 export function useFramingSteps(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["framing-steps", sessionId],
