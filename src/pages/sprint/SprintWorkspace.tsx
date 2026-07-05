@@ -17,7 +17,7 @@ import {
 import SprintStepCard from "@/components/sprint/SprintStepCard";
 import SprintDaySummary from "@/components/sprint/SprintDaySummary";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
-import SprintHandoverCard from "@/components/sprint/SprintHandoverCard";
+
 
 import type { SprintStepData } from "@/features/sprint/types";
 
