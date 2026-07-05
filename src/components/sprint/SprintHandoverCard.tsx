@@ -151,7 +151,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                   </Badge>
                 ) : (
                   <Badge className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                    Noch schärfen
+                    Bitte prüfen
                   </Badge>
                 )}
               </div>
