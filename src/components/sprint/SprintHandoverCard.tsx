@@ -135,12 +135,14 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
     setOpen(false);
   }
 
+  const isConfirmed = confirmed && !dirty;
+
   return (
-    <Card className="border-destructive/40 bg-destructive/5">
+    <Card className={isConfirmed ? "border-border bg-card" : "border-destructive/40 bg-destructive/5"}>
       <CardContent className="p-5 space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-2">
-            <Sparkles className="w-5 h-5 text-destructive mt-0.5 shrink-0" />
+            <Sparkles className={`w-5 h-5 mt-0.5 shrink-0 ${isConfirmed ? "text-primary" : "text-destructive"}`} />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-lg font-bold">{title}</h3>
