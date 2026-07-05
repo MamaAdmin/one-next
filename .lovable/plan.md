@@ -1,50 +1,76 @@
-## End-to-End-Fluss Framing → Sprint: 2 Fixes
 
-### Was ich geprüft habe
-- Alle 11 realen Framing-Schritte (`1`, `2`, `3`, `4`, `5`, `5b`, `6`, `7`, `8`, `9`, `10`) speichern konsistent in `framing_steps`.
-- `framing-generate-challenge` liest Session + alle `framing_steps` → an Gemini → liefert `titel`, `challenge_statement`, `zielgruppe`, `erfolgsmessung`, `sprintFragen`, `risiken`.
-- `FramingCompletionPanel.handleFinish` erzeugt Sprint mit `challenge_statement`, `zielgruppe`, `erfolgsmessung`, `sprint_fragen`. **`risiken` fehlt.**
+## Was ich beim Durchspielen gefunden habe
 
-### Gefundene Lücken
+Wenn man den Sprint aktuell von Schritt 1.1 bis 5.4 durchgeht, gibt es **zwei Klassen von Problemen**, die einen echten End-to-End-Durchlauf verhindern:
 
-**1. `risiken` gehen beim Sprint-Anlegen verloren** – Fix: in Sprint übernehmen (deine Wahl).
-
-**2. Kontext-Sortierung ist lexikographisch** in beiden Edge-Functions (`framing-generate-challenge`, `framing-ai-suggest`):
+### 1. „Weiter"-Button blockiert unnötig hart
+In `SprintStepCard.tsx` ist der Weiter-Button so verdrahtet:
 ```
-1, 10, 2, 3, 4, 5, 5b, 6, 7, 8, 9  (Schritt 10 direkt hinter 1)
+disabled = saving || (typeof step.stimmenLimit === "number" && auswahl.length !== step.stimmenLimit)
 ```
-Alle Daten kommen an, aber die logische Kette im Prompt ist gebrochen.
+Damit muss der Nutzer bei jedem Schritt mit `stimmenLimit` **exakt** so viele Optionen auswählen wie das Limit vorgibt. Das betrifft: 1.1 (2), 1.2 (3), 1.3 (4), 1.4 (5), 1.5 (3), 1.6 (1), 1.7 (1), 2.1 (4), 3.2 (3), 3.3 (1), 5.3 (5).
+Reales Verhalten im Solo-Sprint: man landet ständig in Sackgassen (z. B. „ich habe nur 1 gute HMW, will aber trotzdem weiter"). Auch für Team ist das laut Design Sprint-Buch eine **Obergrenze**, keine Pflichtmenge.
 
-### Umsetzung
+### 2. 12 von 27 Schritten haben keine eigene UI
+Für alle Varianten außer `checkbox-list`, `map` und `notes` zeigt `SprintWorkspace.tsx` heute nur einen Platzhalter „Spezialansicht folgt" und darunter den generischen Checkbox-Renderer. Das führt bei diesen Schritten zu unbrauchbarer/irreführender UX:
 
-**Schema-Migration** (`sprints`-Tabelle):
-```sql
-ALTER TABLE public.sprints
-  ADD COLUMN risiken jsonb NOT NULL DEFAULT '[]'::jsonb;
-```
-Keine neuen RLS/Grants nötig (bestehende Policies decken die Spalte ab).
+| Schritt | Variante | Was fehlt |
+|---|---|---|
+| 1.6, 1.7 | flow-3-steps | 3 Karten „Entdecken → Lernen → Starten" / Kernerfahrung |
+| 1.9 | form | Felder Interviewer/Recruiter/Ort/Bedarf/Video-Link |
+| 1.10, 1.11, 3.5, 3.6, 5.4 | table | Tabelle mit Zeilen/Spalten |
+| 2.3 | ideas | Freies Sammelfeld inkl. Doodles/Headlines |
+| 2.4 | crazy8s | 8 Skizzen-Slots mit Timer |
+| 2.5 | sketches | Solution Sketches (Upload/Bild + Titel) |
+| 3.1 | heatmap | Punkte auf Skizzen setzen |
+| 3.4 | storyboard | 6+ Panels als Flow |
+| 4.1 | prototype | Storyboard-Screens + KI-Textvorschläge je Screen |
+| 5.1 | scorecard | Kunden × Hypothesen-Matrix (grün/rot) |
+| 5.2 | choice | „Bauen" ↔ „Mehr lernen" 2-Buttons-Entscheidung, ggf. neuen Sprint seeden |
+| 5.3 | hot-takes | Sticky-Sammlung + Voting |
 
-**`src/hooks/useSprint.tsx`**
-- `CreateSprintInput`: `risiken?: string[]` ergänzen.
-- `SprintRow` / `SprintExtraRow`: `risiken: string[]` (bzw. wo `sprint_fragen` bereits typisiert ist).
+Bei `2.2` (notes) sind KI-Vorschläge & Ranking bewusst aus — das lassen wir.
 
-**`src/components/framing/FramingCompletionPanel.tsx`**
-- `handleFinish`: `risiken: result.risiken` an `createSprint.mutateAsync` weitergeben.
-- UI: kompakte Liste „Identifizierte Risiken" oberhalb der Definition of Done, editierbar analog zu Sprint-Fragen (add/remove/edit), damit die User sie vor Sprint-Start prüfen können.
+## Umsetzung in 3 kleinen Schritten
 
-**`supabase/functions/framing-generate-challenge/index.ts`** und **`supabase/functions/framing-ai-suggest/index.ts`**
-- `buildContext`: Sortierung nach fester Index-Map ersetzen:
-```ts
-const ORDER: Record<string, number> = {
-  "1":1,"2":2,"3":3,"4":4,"5":5,"5b":6,"6":7,"7":8,"8":9,"9":10,"10":11,
-};
-const sorted = [...steps].sort(
-  (a, b) => (ORDER[a.step_key] ?? 99) - (ORDER[b.step_key] ?? 99)
-);
-```
+### Schritt A – Weiter-Blocker entschärfen (schnell, hoher Impact)
+In `SprintStepCard.tsx`:
+- `stimmenLimit` wieder als **Obergrenze** behandeln, nicht als Pflichtzahl.
+- Weiter-Button: `disabled` nur, wenn `saving`.
+- Zusätzlich weiche Warnung anzeigen, wenn `auswahl.length > step.stimmenLimit` (aktuell durch `toggleAuswahl` schon technisch verhindert) oder wenn `auswahl.length === 0` und der Schritt nicht Variante `notes`/`prototype` ist (Hinweis, keine Sperre).
+- Bei den echten „genau 1"-Schritten (1.6, 1.7, 3.3, 5.2) bleibt die 1er-Limitierung durch `stimmenLimit=1` erhalten — aber der Weiter-Button lässt auch 0 durch (Nutzer kann bewusst überspringen).
 
-**Anzeige im Sprint** (optional, aber sinnvoll): falls es bereits einen Ort gibt, an dem `challenge_statement`/`zielgruppe`/`erfolgsmessung` im Sprint-Workspace angezeigt werden, `risiken` dort ebenfalls einblenden. Wenn nicht vorhanden, überspringen — Daten sind dann zumindest persistiert und via Admin-Detailseite lesbar.
+Damit wird der bestehende Ablauf sofort end-to-end klickbar.
 
-### Nicht verändert
-- `framing_sessions.challenge_statement` bleibt Text-Feld (nur `challenge_statement`-String), Rest liegt am Sprint.
-- Kein Datenverlust bei bereits abgeschlossenen Framings: neue Spalte hat Default `[]`, alte Sprints bekommen leere Risikoliste.
+### Schritt B – Einheitliches „Freitext-Sammel"-Fallback für einfache Varianten
+Für Varianten, deren Kern eine strukturierte Liste ist, aber die noch keine Custom-UI haben, einen kleinen gemeinsamen Renderer bauen, damit KI-Vorschläge + „Deine Antworten" + optional Ranking überall funktionieren:
+
+- `ideas` (2.3), `crazy8s` (2.4), `sketches` (2.5), `hot-takes` (5.3) → gleicher Sticky-Note-Renderer wie heute, aber ohne den „Spezialansicht folgt"-Banner und mit passenden Labels (z. B. „Skizzen-Idee", „Crazy-8-Slot 1..8", „Hot Take").
+- `heatmap` (3.1): jede Skizzen-Idee bekommt einen Zähler „Punkte", Nutzer klickt +/– statt Checkbox-Voting. Ergebnis wird als `heatmapPunkte` in `SprintStepData` gespeichert.
+- `storyboard` (3.4) und `prototype` (4.1): geordnete Panel-Liste (6+ Karten mit Titel + Beschreibung), Reihenfolge per Buttons hoch/runter. KI-Vorschläge pro Panel via bestehende `sprint-ai-suggest`-Funktion.
+
+### Schritt C – Strukturierte Spezialansichten
+Für die stark strukturierten Schritte einen dedizierten Renderer:
+
+- **`flow-3-steps` (1.6, 1.7)**: drei Textfelder „Entdecken · Lernen · Starten" bzw. „Schritt 1 · 2 · 3", jedes Feld einzeln KI-vorgeschlagen. Gespeichert als `flow: {step1, step2, step3}`.
+- **`form` (1.9)**: fünf beschriftete Inputs.
+- **`table` (1.10, 1.11, 3.5, 3.6, 5.4)**: einfache Zeilen-Editor-Tabelle mit vordefinierten Spalten pro Schritt (Konfig zentral in `steps.ts` ergänzen). Speichern als `table: {columns, rows}`.
+- **`scorecard` (5.1)**: Matrix „Kunde × Hypothese" mit 3 Zuständen (grün/rot/leer).
+- **`choice` (5.2)**: zwei große Buttons; „Mehr lernen" bereitet Werte für einen Folge-Sprint vor (nur UI-Trigger, echtes Seeding als Folge-Ticket).
+
+Alle neuen Varianten schreiben in ein neues optionales Feld `structured` auf `SprintStepData` (Typ pro Variante), damit `SprintDaySummary` und die Kontext-Panels sie später konsistent lesen können. `antworten`/`auswahl` bleiben für den generischen Weg unangetastet — also keine Migration nötig.
+
+### Schritt D – Verifikation
+Nach den Änderungen einen kompletten Solo-Sprint durchklicken (1.1 → 5.4) und für jeden Schritt prüfen:
+1. Antworten schreiben ✔
+2. KI-Vorschläge generieren + übernehmen ✔ (außer `notes`)
+3. Auswahl treffen und speichern ✔
+4. „Weiter" führt zum nächsten Schritt ohne Sackgasse ✔
+5. One Pager (Tag 1–5) zeigt die Daten korrekt.
+
+## Reihenfolge & Umfang
+- Schritt A ist eine ~10-Zeilen-Änderung und macht den kompletten Sprint sofort durchklickbar. Nur damit ist der Report „end-to-end funktioniert" ehrlich einlösbar.
+- Schritt B & C sind der eigentliche Feature-Ausbau. Falls du die zeitlich splitten willst, sag mir welche Varianten dir zuerst wichtig sind — ansonsten baue ich sie in obiger Reihenfolge.
+
+## Rückfrage
+Sollen wir zuerst nur **Schritt A** (Weiter-Blocker entschärfen, sofort spielbarer Sprint) umsetzen und den Rest in einem Folge-Turn, oder soll ich A + B + C in einem Rutsch bauen (größere Änderung)?

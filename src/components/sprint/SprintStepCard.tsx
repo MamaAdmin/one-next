@@ -784,21 +784,17 @@ export default function SprintStepCard({
               <Button
                 className="bg-gradient-primary hover:opacity-90"
                 onClick={() => persist(true)}
-                disabled={
-                  saving ||
-                  (typeof step.stimmenLimit === "number" &&
-                    auswahl.length !== step.stimmenLimit)
-                }
+                disabled={saving}
               >
                 {saving ? "Speichert …" : onNext ? "Weiter" : "Sprint abschließen"}
               </Button>
             </div>
-            {typeof step.stimmenLimit === "number" &&
-            auswahl.length !== step.stimmenLimit ? (
+            {typeof step.stimmenLimit === "number" && auswahl.length === 0 &&
+            step.variant !== "notes" && step.variant !== "prototype" ? (
               <p className="text-xs text-muted-foreground">
-                Bitte genau {step.stimmenLimit}{" "}
-                {step.stimmenLimit === 1 ? "Option" : "Optionen"} auswählen, um
-                weiterzugehen ({auswahl.length}/{step.stimmenLimit}).
+                Empfehlung: bis zu {step.stimmenLimit}{" "}
+                {step.stimmenLimit === 1 ? "Option" : "Optionen"} auswählen.
+                Du kannst auch ohne Auswahl weitergehen.
               </p>
             ) : null}
           </div>
