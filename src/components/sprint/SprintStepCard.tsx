@@ -288,7 +288,13 @@ export default function SprintStepCard({
   }
 
   function dismissVorschlag(v: string) {
-    setVorschlaege((prev) => prev.filter((x) => x !== v));
+    const next = {
+      ...latestDataRef.current,
+      vorschlaege: (latestDataRef.current.vorschlaege ?? []).filter((x) => x !== v),
+    };
+    latestDataRef.current = next;
+    setVorschlaege(next.vorschlaege ?? []);
+    persistSnapshot(next);
   }
 
 
