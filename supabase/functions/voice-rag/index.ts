@@ -1,5 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -47,20 +49,43 @@ serve(async (req) => {
   const rateLimitKey = getRateLimitKey(req);
 
   try {
-    // Check rate limit
-    if (!checkRateLimit(rateLimitKey)) {
-      console.warn(`⚠️ Rate limit exceeded for ${rateLimitKey}`);
+    // Require authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({ error: 'Access denied', code: 'UNAUTHORIZED' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const authClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+    const { data: authData, error: authError } = await authClient.auth.getUser(token);
+    if (authError || !authData?.user) {
+      return new Response(
+        JSON.stringify({ error: 'Access denied', code: 'UNAUTHORIZED' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use authenticated user id as rate limit key
+    const rateLimitUserKey = authData.user.id;
+    if (!checkRateLimit(rateLimitUserKey)) {
+      console.warn(`⚠️ Rate limit exceeded for user ${rateLimitUserKey}`);
+      return new Response(
+        JSON.stringify({
           error: 'Rate limit exceeded. Please try again in a minute.',
           code: 'RATE_LIMIT_EXCEEDED'
         }),
-        { 
-          status: 429, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
+
 
     // Validate request
     if (req.method !== 'POST') {

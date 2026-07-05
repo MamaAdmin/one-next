@@ -38,7 +38,7 @@ project_id = "ookvxyctxmtcxowcwnij"
   [functions.verify-course-purchase]
     verify_jwt = true
   [functions.voice-rag]
-    verify_jwt = false
+    verify_jwt = true
 
 [functions.admin-invite-user]
 verify_jwt = true
