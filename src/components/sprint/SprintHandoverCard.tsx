@@ -97,11 +97,11 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
     (sprint.sprint_fragen?.length ?? 0) > 0 ||
     (sprint.risiken?.length ?? 0) > 0;
 
-  // Für Sprints, die aus dem Framing entstanden sind, blenden wir die Karte nur ein,
-  // wenn tatsächlich Daten übergeben wurden. Sprints ohne Framing zeigen die Karte
-  // immer, damit der/die Nutzer:in Zielfragen frisch pflegen kann.
-  if (fromFraming && !hasBasicsData) return null;
+  // Karte nur bei Sprints anzeigen, die aus dem Problem-Framing entstanden sind
+  // und tatsächlich Daten übernommen haben.
   if (framingQ.isLoading) return null;
+  if (!fromFraming) return null;
+  if (!hasBasicsData) return null;
 
   const title = fromFraming ? "Handover aus dem Problem Framing" : "Sprint-Basics prüfen";
   const subtitle = fromFraming
