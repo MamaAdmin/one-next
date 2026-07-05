@@ -90,14 +90,23 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
     );
   }, [sprint, draft]);
 
-  const hasFramingData =
+  const hasBasicsData =
     !!sprint.challenge_statement?.trim() ||
     !!sprint.zielgruppe?.trim() ||
     !!sprint.erfolgsmessung?.trim() ||
     (sprint.sprint_fragen?.length ?? 0) > 0 ||
     (sprint.risiken?.length ?? 0) > 0;
 
-  if (!hasFramingData) return null;
+  // Für Sprints, die aus dem Framing entstanden sind, blenden wir die Karte nur ein,
+  // wenn tatsächlich Daten übergeben wurden. Sprints ohne Framing zeigen die Karte
+  // immer, damit der/die Nutzer:in Zielfragen frisch pflegen kann.
+  if (fromFraming && !hasBasicsData) return null;
+  if (framingQ.isLoading) return null;
+
+  const title = fromFraming ? "Handover aus dem Problem Framing" : "Sprint-Basics prüfen";
+  const subtitle = fromFraming
+    ? "Alle Felder aus dem Framing sind editierbar – anpassen und bestätigen."
+    : "Zielfragen und Kontext für deinen Sprint – jetzt frisch eingeben oder ergänzen.";
 
   async function handleSave() {
     try {
