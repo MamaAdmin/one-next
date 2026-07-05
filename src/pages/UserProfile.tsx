@@ -225,7 +225,7 @@ const UserProfile = () => {
                       <Button asChild className="bg-gradient-primary hover:opacity-90">
                         <Link to="/sprint/neu">
                           <Plus className="w-4 h-4 mr-2" />
-                          Neuen Sprint starten
+                          Mit Problem Framing starten
                         </Link>
                       </Button>
                     </div>
