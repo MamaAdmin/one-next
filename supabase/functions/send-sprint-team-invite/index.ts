@@ -127,7 +127,7 @@ serve(async (req) => {
     `;
 
     const { error: emailErr } = await resend.emails.send({
-      from: "one-next Sprint <onboarding@resend.dev>",
+      from: "one-next Sprint <noreply@one-next.com>",
       to: [invitation.email],
       subject: `Einladung: ${sprint.titel} · Rolle ${roleLabel}`,
       html,
