@@ -1,7 +1,7 @@
 import type { ComponentType } from 'npm:react@18.3.1'
 import { template as sprintTeamInvite } from './sprint-team-invite.tsx'
 
-export interface TemplateEntry<TProps extends Record<string, unknown> = Record<string, unknown>> {
+export interface TemplateEntry<TProps = Record<string, unknown>> {
   component: ComponentType<TProps>
   subject: string | ((data: TProps) => string)
   displayName?: string
@@ -9,6 +9,6 @@ export interface TemplateEntry<TProps extends Record<string, unknown> = Record<s
   to?: string
 }
 
-export const TEMPLATES: Record<string, TemplateEntry> = {
+export const TEMPLATES: Record<string, TemplateEntry<unknown>> = {
   'sprint-team-invite': sprintTeamInvite,
 }
