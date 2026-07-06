@@ -41,12 +41,6 @@ const ROLES: RoleDef[] = [
     recommended: true,
   },
   {
-    key: "sprint_leader",
-    title: "Sprint Leader",
-    description: "Hält den Sprint organisatorisch auf Kurs. Die KI übernimmt die Moderation.",
-    recommended: true,
-  },
-  {
     key: "finance",
     title: "Finance Expert",
     description: "Kennt Geschäftsmodell und Budget.",
