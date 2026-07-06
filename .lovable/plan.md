@@ -1,49 +1,52 @@
 
-# Moderator als Sprint-Owner und Pflichtrolle
+## Ziel
 
-Der Moderator ist der zentrale Sprint-Owner: er erstellt den Sprint, lädt Mitglieder ein, alle greifen über seinen Account zu, und er ist später auch der Zahler. Der Decider bleibt eine wichtige Empfehlung, ist aber nicht mehr blockierend.
+Drei Korrekturen an der Sprint-Team-Ansicht (`SprintKickoff` / `SprintTeamSetup` / `TeamRoleGrid`).
 
-## Änderungen
+## 1. Eingeladene Personen wieder sichtbar
 
-### 1. Rollenmodell
-- Neue Rolle **`moderator`** ergänzt (zusätzlich zu `decider`, `sprint_leader`, `finance`, `marketing`, `customer`, `tech`, `design`, `wildcard`).
-- Beim Erstellen eines Sprints wird der eingeloggte User automatisch als `moderator` in `sprint_members` eingetragen (zusätzlich zu `owner_id` auf `sprints`).
-- `sprint_leader` als Default für den Ersteller entfällt — der Ersteller ist der Moderator.
-- Nur der Moderator kann Einladungen versenden und Rollen zuweisen (Berechtigungslogik in `useSprintTeam` + `send-sprint-team-invite` prüfen).
+Aktuell zeigt `TeamRoleGrid` nur Einladungen mit `status === "pending"`. Nachdem wir die Mailinfrastruktur umgestellt haben, kommen Einladungen offenbar nicht mehr in der Liste an – wahrscheinlich weil der Status nach dem Versand anders belegt ist oder die Query den Datensatz nicht mehr lädt.
 
-### 2. Kickoff-Gate (`SprintKickoff.tsx`)
-- Bedingung für „Sprint starten" ändert sich:
-  - Handover bestätigt **UND**
-  - **Moderator ist gesetzt** (durch Ersteller automatisch erfüllt, aber Check bleibt für Robustheit).
-- Decider wird **nicht mehr** als Pflicht geprüft. Statt Blocker eine gelbe Empfehlungs-Info: „Empfohlen: Weise einen Decider zu, damit Entscheidungen im Sprint verbindlich getroffen werden können." (nicht blockierend).
-- Moderator-Kachel im `TeamRoleGrid` visuell hervorgehoben (z. B. Badge „Sprint-Owner", nicht entfernbar/übertragbar in v1).
+Maßnahmen:
+- In `useSprintInvitations` alle Einladungen laden (nicht implizit gefiltert) und im Grid alles anzeigen, das **nicht** `accepted` oder `revoked` ist (also `pending` und ggf. `expired`).
+- Status als kleines Badge sichtbar machen (`Eingeladen`, `Abgelaufen`).
+- Debug-Check: einmal per `supabase--read_query` prüfen, ob die zuletzt versendeten Invites tatsächlich in `sprint_invitations` liegen und welchen Status sie haben, damit wir die Filterlogik korrekt setzen.
 
-### 3. Einladungs-Flow
-- `InviteMemberDialog` und `send-sprint-team-invite`: Absender-Text und Copy anpassen — Einladung erfolgt „durch den Moderator". Empfangs-Mail nennt den Moderator namentlich als Einladenden.
-- `accept-sprint-team-invite`: eingeladener User wird `sprint_members`-Eintrag mit gewählter Rolle, aber ohne Ownership. Zugriff läuft weiterhin über RLS auf Basis Sprint-Membership — funktional teilen sich damit alle den Sprint des Moderators (keine Datenkopie).
+## 2. Sprint-Start nur durch den Moderator
 
-### 4. UI-Copy
-- `SprintKickoff`: Überschrift der Team-Sektion „Team & Rollen" mit Hinweistext: „Du bist der Moderator dieses Sprints. Du lädst dein Team ein und behältst die Kontrolle über Sprint und (später) Abrechnung."
-- Decider-Warnung → Empfehlungs-Callout (Ton, Farbe: `bg-muted`, kein `destructive`).
+In `src/pages/sprint/SprintKickoff.tsx` hängt `canStart` nur an `hasModerator && handoverConfirmed`. Damit könnte jedes Teammitglied, das die Kickoff-Seite öffnet, den Sprint starten.
 
-### 5. Payment-Vorbereitung (nur Vorbereitung, kein Payment-Code)
-- Kommentar/TODO in `SprintNew`/`SprintKickoff`: künftige Zahlungsverantwortung ist an `sprints.owner_id` (Moderator) gekoppelt. Keine Änderung am Schema jetzt nötig, da `owner_id` bereits existiert.
+Maßnahmen:
+- Aktuellen User laden (bereits vorhanden via `supabase.auth.getUser`).
+- `isOwner = currentUserId === sprint.owner_id`.
+- `canStart = isOwner && hasModerator && handoverConfirmed`.
+- Wenn nicht Owner: Start-Button disabled + Hinweistext „Nur der Moderator kann den Sprint starten."
+- Analog in `SprintTeamSetup` den „Weiter zum Problem Framing"-Button für Nicht-Moderatoren deaktivieren (optional, konsistent).
+
+## 3. Wildcard: mehrere Personen erlaubt, mit Maximal-Hinweis
+
+Design-Sprint-Regel: max. 7 Personen im Raum. Wildcard soll mehrere Einladungen erlauben, andere Rollen bleiben wie gehabt.
+
+Maßnahmen in `TeamRoleGrid.tsx`:
+- Rollen-Definition um `multi?: boolean` erweitern; nur `wildcard` bekommt `multi: true`.
+- Für Nicht-Multi-Rollen: „Person einladen" ausblenden, sobald bereits ein Member **oder** ein Pending-Invite existiert (verhindert Doppelt-Einladungen, macht die aktuelle Sichtbarkeitsanomalie sofort klar).
+- Für Wildcard: „Person einladen" bleibt immer sichtbar; kleiner Hinweistext unter der Karte:
+  „Design Sprints funktionieren am besten mit maximal 7 Personen im Team. Prüfe die Gesamtzahl bevor du weitere Wildcards einlädst."
+- Zusätzlich eine dezente Gesamtzähler-Zeile oben im Grid: „Team aktuell X von 7 empfohlen." (Members + Pending-Invites summiert). Bei >7 orange eingefärbt, keine harte Sperre.
 
 ## Technische Details
 
-**Migration:**
-- Kein neues Feld nötig. Es reicht, den Moderator als `sprint_members`-Eintrag mit `rolle = 'moderator'` beim Sprint-Erstellen zu setzen. Ergänzung in `SprintNew.tsx` nach `insert` auf `sprints`.
-- Bestehende Sprints ohne Moderator-Zeile: Migration ergänzt für jeden Sprint einen `sprint_members`-Eintrag `(sprint_id, user_id = owner_id, rolle = 'moderator')` per `ON CONFLICT DO NOTHING`.
+- Betroffene Dateien:
+  - `src/hooks/useSprintTeam.tsx` – Filterlogik/Status-Rückgabe unverändert lassen; Query liefert schon alle Rows, nur das Grid filtert. Reine Frontend-Änderung.
+  - `src/components/sprint/TeamRoleGrid.tsx` – Filter erweitern, Status-Badge, Multi-Logik, Wildcard-Hinweis, Teamzähler.
+  - `src/pages/sprint/SprintKickoff.tsx` – Owner-Check + Button-Gating + Hinweistext.
+  - `src/pages/sprint/SprintTeamSetup.tsx` – Owner-Check (optional).
+- Kein DB-Schema-Change, keine Migration, keine Edge-Function-Änderung.
+- Vor der Umsetzung ein `supabase--read_query` auf `sprint_invitations` für den aktuellen Sprint, um Status der fehlenden Einladung zu verifizieren.
 
-**Frontend-Dateien:**
-- `src/pages/sprint/SprintNew.tsx` — nach Sprint-Insert Moderator in `sprint_members` schreiben.
-- `src/pages/sprint/SprintKickoff.tsx` — Gate-Logik: Decider-Check entfernen, durch Moderator-Check ersetzen; Empfehlungs-Callout für Decider.
-- `src/components/sprint/TeamRoleGrid.tsx` — Moderator-Rolle rendern, Badge „Sprint-Owner", nicht entfernbar; Decider-Kachel als „empfohlen" statt „Pflicht".
-- `src/hooks/useSprintTeam.tsx` — `canInvite` / `canAssignRoles` = nur wenn eingeloggter User `moderator` (oder `owner_id === auth.uid()`).
-- `src/components/sprint/InviteMemberDialog.tsx` — Copy-Update.
-- `supabase/functions/send-sprint-team-invite/index.ts` — Prüfung: nur Moderator darf einladen; E-Mail-Copy erwähnt Moderator-Namen.
+## Verifikation
 
-## Nicht Teil dieses Plans
-- Übertragung der Moderator-Rolle an eine andere Person.
-- Payment-Integration selbst.
-- Mehrere Moderatoren pro Sprint.
+- Preview öffnen als Moderator: alle bisher versendeten Einladungen erscheinen im Grid mit Status-Badge.
+- Wildcard-Karte erlaubt wiederholtes „Person einladen"; Hinweis + Teamzähler sichtbar.
+- Andere Rollen: Einladen-Button verschwindet nach erster Einladung.
+- Als Nicht-Owner (simuliert): Start-Button disabled, Hinweistext sichtbar.
