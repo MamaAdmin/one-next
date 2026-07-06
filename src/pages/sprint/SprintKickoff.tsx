@@ -60,7 +60,7 @@ export default function SprintKickoff() {
   });
   const isOwner = !!currentUserQ.data && currentUserQ.data === sprint.owner_id;
   const hasModerator = members.some((m) => m.rolle === "moderator");
-  const handoverConfirmed = sprint.challenge_statement.trim().length > 0 && sprint.decider.trim().length > 0;
+  const handoverConfirmed = sprint.challenge_statement.trim().length > 0;
   const canStart = isOwner && hasModerator && handoverConfirmed;
 
   const blockedReason = !isOwner
