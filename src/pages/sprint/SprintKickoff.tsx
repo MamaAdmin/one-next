@@ -12,6 +12,8 @@ import { useSprintMembers } from "@/hooks/useSprintTeam";
 import SprintHandoverCard from "@/components/sprint/SprintHandoverCard";
 import { TeamRoleGrid } from "@/components/sprint/TeamRoleGrid";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function SprintKickoff() {
   const { id } = useParams<{ id: string }>();
