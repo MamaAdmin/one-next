@@ -23,6 +23,7 @@ interface RoleDef {
   description: string;
   required?: boolean;
   recommended?: boolean;
+  multi?: boolean;
 }
 
 const ROLES: RoleDef[] = [
@@ -72,9 +73,13 @@ const ROLES: RoleDef[] = [
   {
     key: "wildcard",
     title: "Wildcard",
-    description: "Außenstehende Perspektive für unkonventionelle Impulse.",
+    description:
+      "Außenstehende Perspektive für unkonventionelle Impulse. Mehrere Wildcards sind möglich – achte auf die empfohlene Teamgröße.",
+    multi: true,
   },
 ];
+
+const RECOMMENDED_TEAM_SIZE = 7;
 
 function useCurrentUserId() {
   return useQuery({
