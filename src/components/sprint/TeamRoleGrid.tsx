@@ -119,14 +119,17 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
       (map[m.rolle] ??= { members: [], invites: [] }).members.push(m);
     }
     for (const i of invites) {
-      if (i.status === "pending") {
-        (map[i.role_type] ??= { members: [], invites: [] }).invites.push(i);
-      }
+      if (i.status === "accepted" || i.status === "revoked") continue;
+      (map[i.role_type] ??= { members: [], invites: [] }).invites.push(i);
     }
     return map;
   }, [members, invites]);
 
   const deciderMissing = (byRole.decider?.members.length ?? 0) === 0;
+  const teamCount =
+    members.length +
+    invites.filter((i) => i.status !== "accepted" && i.status !== "revoked").length;
+  const teamOverLimit = teamCount > RECOMMENDED_TEAM_SIZE;
 
   return (
     <div className="space-y-4">
