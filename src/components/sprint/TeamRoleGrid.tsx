@@ -148,11 +148,28 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
         </Card>
       ) : null}
 
+      <div
+        className={`text-xs rounded-md border px-3 py-2 ${
+          teamOverLimit
+            ? "border-orange-300 bg-orange-50 text-orange-900"
+            : "border-muted bg-muted/30 text-muted-foreground"
+        }`}
+      >
+        Team aktuell <span className="font-semibold">{teamCount}</span> von{" "}
+        {RECOMMENDED_TEAM_SIZE} empfohlenen Personen
+        {teamOverLimit
+          ? " – Design Sprints funktionieren am besten mit maximal 7 Personen im Raum."
+          : "."}
+      </div>
+
       <div className="grid md:grid-cols-2 gap-4">
         {ROLES.map((role) => {
           const filled = byRole[role.key]?.members ?? [];
           const pending = byRole[role.key]?.invites ?? [];
           const isModerator = role.key === "moderator";
+          const slotTaken = filled.length > 0 || pending.length > 0;
+          const canInviteMore = role.multi || !slotTaken;
+          const canTakeSelf = role.multi || filled.length === 0;
           return (
             <Card
               key={role.key}
