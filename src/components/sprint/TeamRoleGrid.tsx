@@ -269,38 +269,48 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                   </ul>
                 )}
 
-                {isModerator ? null : (
+                {isModerator || (!canTakeSelf && !canInviteMore) ? null : (
                   <div className="flex flex-wrap gap-2 pt-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() =>
-                        addSelf
-                          .mutateAsync(role.key)
-                          .then(() => toast({ title: `Rolle übernommen: ${role.title}` }))
-                          .catch((e) =>
-                            toast({
-                              title: "Konnte Rolle nicht übernehmen",
-                              description: e instanceof Error ? e.message : String(e),
-                              variant: "destructive",
-                            }),
-                          )
-                      }
-                      disabled={addSelf.isPending}
-                    >
-                      <User className="w-3.5 h-3.5 mr-1.5" />
-                      Ich übernehme das
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setInviteRole(role.key)}
-                    >
-                      <UserPlus className="w-3.5 h-3.5 mr-1.5" />
-                      Person einladen
-                    </Button>
+                    {canTakeSelf ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          addSelf
+                            .mutateAsync(role.key)
+                            .then(() => toast({ title: `Rolle übernommen: ${role.title}` }))
+                            .catch((e) =>
+                              toast({
+                                title: "Konnte Rolle nicht übernehmen",
+                                description: e instanceof Error ? e.message : String(e),
+                                variant: "destructive",
+                              }),
+                            )
+                        }
+                        disabled={addSelf.isPending}
+                      >
+                        <User className="w-3.5 h-3.5 mr-1.5" />
+                        Ich übernehme das
+                      </Button>
+                    ) : null}
+                    {canInviteMore ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setInviteRole(role.key)}
+                      >
+                        <UserPlus className="w-3.5 h-3.5 mr-1.5" />
+                        {role.multi && slotTaken ? "Weitere Person einladen" : "Person einladen"}
+                      </Button>
+                    ) : null}
                   </div>
                 )}
+                {role.multi ? (
+                  <p className="text-[11px] text-muted-foreground italic">
+                    Mehrere Einladungen möglich. Empfohlen: maximal {RECOMMENDED_TEAM_SIZE}{" "}
+                    Personen im gesamten Sprint-Team.
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
           );
