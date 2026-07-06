@@ -35,6 +35,16 @@ project_id = "ookvxyctxmtcxowcwnij"
     verify_jwt = true
   [functions.send-sprint-invitation]
     verify_jwt = true
+  [functions.send-sprint-team-invite]
+    verify_jwt = true
+  [functions.send-transactional-email]
+    verify_jwt = true
+  [functions.preview-transactional-email]
+    verify_jwt = false
+  [functions.handle-email-unsubscribe]
+    verify_jwt = false
+  [functions.handle-email-suppression]
+    verify_jwt = false
   [functions.verify-course-purchase]
     verify_jwt = true
   [functions.voice-rag]

@@ -72,6 +72,7 @@ import SprintTeamSetup from "./pages/sprint/SprintTeamSetup";
 import SprintKickoff from "./pages/sprint/SprintKickoff";
 import AcceptSprintInvitation from "./pages/sprint/AcceptSprintInvitation";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
+import Unsubscribe from "./pages/Unsubscribe";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
 
@@ -153,6 +154,7 @@ const App = () => (
           <Route path="/kurse" element={<Kurse />} />
           <Route path="/kurse/:slug" element={<KursDetail />} />
           <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/impressum" element={<Impressum />} />
           {/* Online Design Sprint (auth required) */}
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />

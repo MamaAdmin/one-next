@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-import { Resend } from "https://esm.sh/resend@2.0.0";
 import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
@@ -14,8 +13,8 @@ const BodySchema = z.object({
 });
 
 const ROLE_LABEL: Record<string, string> = {
+  moderator: "Moderator",
   decider: "Decider",
-  sprint_leader: "Sprint Leader",
   finance: "Finance Expert",
   marketing: "Marketing Expert",
   customer: "Customer Expert",
@@ -41,13 +40,6 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const resendKey = Deno.env.get("RESEND_API_KEY");
-    if (!resendKey) {
-      return new Response(JSON.stringify({ error: "RESEND_API_KEY missing" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
 
     const authClient = createClient(supabaseUrl, anonKey);
     const { data: userData, error: userErr } = await authClient.auth.getUser(jwt);
@@ -96,45 +88,33 @@ serve(async (req) => {
       });
     }
 
-    const resend = new Resend(resendKey);
     const inviteUrl = `${parsed.data.origin}/sprint/invite/${invitation.token}`;
     const roleLabel = ROLE_LABEL[invitation.role_type] ?? invitation.role_type;
     const greetingName = invitation.full_name || invitation.email;
 
-    const html = `
-      <div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111827;">
-        <h1 style="font-size:22px;margin:0 0 16px;">Einladung zum Sprint</h1>
-        <p style="margin:0 0 12px;">Hallo ${greetingName},</p>
-        <p style="margin:0 0 12px;">
-          du wurdest als <strong>${roleLabel}</strong> zum Sprint
-          <strong>„${sprint.titel}"</strong> eingeladen.
-        </p>
-        <p style="margin:0 0 20px;">Klicke auf den Button, um beizutreten:</p>
-        <p style="margin:24px 0;">
-          <a href="${inviteUrl}" style="background:#111827;color:#ffffff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">
-            Einladung annehmen
-          </a>
-        </p>
-        <p style="margin:24px 0 8px;font-size:13px;color:#6b7280;">
-          Der Link ist 14 Tage gültig. Falls der Button nicht funktioniert:<br />
-          <a href="${inviteUrl}" style="color:#374151;">${inviteUrl}</a>
-        </p>
-        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
-        <p style="margin:0;font-size:12px;color:#9ca3af;">
-          one-next – Ihr Partner für individuelle KI-Entwicklung.
-        </p>
-      </div>
-    `;
-
-    const { error: emailErr } = await resend.emails.send({
-      from: "one-next Sprint <noreply@notify.one-next.com>",
-      to: [invitation.email],
-      subject: `Einladung: ${sprint.titel} · Rolle ${roleLabel}`,
-      html,
+    const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        templateName: "sprint-team-invite",
+        recipientEmail: invitation.email,
+        idempotencyKey: `sprint-team-invite-${invitation.id}`,
+        templateData: {
+          fullName: greetingName,
+          roleLabel,
+          sprintTitle: sprint.titel,
+          inviteUrl,
+        },
+      }),
     });
 
-    if (emailErr) {
-      return new Response(JSON.stringify({ error: emailErr.message }), {
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      return new Response(JSON.stringify({ error: errorText || "Email could not be queued" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
