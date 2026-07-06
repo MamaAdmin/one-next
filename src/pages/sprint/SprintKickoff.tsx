@@ -53,15 +53,23 @@ export default function SprintKickoff() {
     );
   }
 
+  const currentUserQ = useQuery({
+    queryKey: ["auth", "current-user-id"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
+    staleTime: 60_000,
+  });
+  const isOwner = !!currentUserQ.data && currentUserQ.data === sprint.owner_id;
   const hasModerator = members.some((m) => m.rolle === "moderator");
   const handoverConfirmed = sprint.challenge_statement.trim().length > 0 && sprint.decider.trim().length > 0;
-  const canStart = hasModerator && handoverConfirmed;
+  const canStart = isOwner && hasModerator && handoverConfirmed;
 
-  const blockedReason = !handoverConfirmed
-    ? "Bestätige zuerst den Handover aus dem Problem Framing."
-    : !hasModerator
-      ? "Moderator fehlt – bitte Seite neu laden."
-      : null;
+  const blockedReason = !isOwner
+    ? "Nur der Moderator kann den Sprint starten."
+    : !handoverConfirmed
+      ? "Bestätige zuerst den Handover aus dem Problem Framing."
+      : !hasModerator
+        ? "Moderator fehlt – bitte Seite neu laden."
+        : null;
 
   async function handleStart() {
     if (!canStart) return;
