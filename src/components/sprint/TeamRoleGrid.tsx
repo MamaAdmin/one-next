@@ -231,8 +231,11 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                           <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
                           <span className="truncate">
                             {i.full_name || i.email}{" "}
-                            <Badge variant="outline" className="ml-1 text-[10px]">
-                              Eingeladen
+                            <Badge
+                              variant={i.status === "expired" ? "destructive" : "outline"}
+                              className="ml-1 text-[10px]"
+                            >
+                              {i.status === "expired" ? "Abgelaufen" : "Eingeladen"}
                             </Badge>
                           </span>
                         </span>
