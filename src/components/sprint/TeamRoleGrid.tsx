@@ -23,6 +23,7 @@ interface RoleDef {
   description: string;
   required?: boolean;
   recommended?: boolean;
+  multi?: boolean;
 }
 
 const ROLES: RoleDef[] = [
@@ -72,9 +73,13 @@ const ROLES: RoleDef[] = [
   {
     key: "wildcard",
     title: "Wildcard",
-    description: "Außenstehende Perspektive für unkonventionelle Impulse.",
+    description:
+      "Außenstehende Perspektive für unkonventionelle Impulse. Mehrere Wildcards sind möglich – achte auf die empfohlene Teamgröße.",
+    multi: true,
   },
 ];
+
+const RECOMMENDED_TEAM_SIZE = 7;
 
 function useCurrentUserId() {
   return useQuery({
@@ -114,14 +119,17 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
       (map[m.rolle] ??= { members: [], invites: [] }).members.push(m);
     }
     for (const i of invites) {
-      if (i.status === "pending") {
-        (map[i.role_type] ??= { members: [], invites: [] }).invites.push(i);
-      }
+      if (i.status === "accepted" || i.status === "revoked") continue;
+      (map[i.role_type] ??= { members: [], invites: [] }).invites.push(i);
     }
     return map;
   }, [members, invites]);
 
   const deciderMissing = (byRole.decider?.members.length ?? 0) === 0;
+  const teamCount =
+    members.length +
+    invites.filter((i) => i.status !== "accepted" && i.status !== "revoked").length;
+  const teamOverLimit = teamCount > RECOMMENDED_TEAM_SIZE;
 
   return (
     <div className="space-y-4">
@@ -140,11 +148,28 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
         </Card>
       ) : null}
 
+      <div
+        className={`text-xs rounded-md border px-3 py-2 ${
+          teamOverLimit
+            ? "border-orange-300 bg-orange-50 text-orange-900"
+            : "border-muted bg-muted/30 text-muted-foreground"
+        }`}
+      >
+        Team aktuell <span className="font-semibold">{teamCount}</span> von{" "}
+        {RECOMMENDED_TEAM_SIZE} empfohlenen Personen
+        {teamOverLimit
+          ? " – Design Sprints funktionieren am besten mit maximal 7 Personen im Raum."
+          : "."}
+      </div>
+
       <div className="grid md:grid-cols-2 gap-4">
         {ROLES.map((role) => {
           const filled = byRole[role.key]?.members ?? [];
           const pending = byRole[role.key]?.invites ?? [];
           const isModerator = role.key === "moderator";
+          const slotTaken = filled.length > 0 || pending.length > 0;
+          const canInviteMore = role.multi || !slotTaken;
+          const canTakeSelf = role.multi || filled.length === 0;
           return (
             <Card
               key={role.key}
@@ -206,8 +231,11 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                           <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
                           <span className="truncate">
                             {i.full_name || i.email}{" "}
-                            <Badge variant="outline" className="ml-1 text-[10px]">
-                              Eingeladen
+                            <Badge
+                              variant={i.status === "expired" ? "destructive" : "outline"}
+                              className="ml-1 text-[10px]"
+                            >
+                              {i.status === "expired" ? "Abgelaufen" : "Eingeladen"}
                             </Badge>
                           </span>
                         </span>
@@ -244,38 +272,48 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                   </ul>
                 )}
 
-                {isModerator ? null : (
+                {isModerator || (!canTakeSelf && !canInviteMore) ? null : (
                   <div className="flex flex-wrap gap-2 pt-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() =>
-                        addSelf
-                          .mutateAsync(role.key)
-                          .then(() => toast({ title: `Rolle übernommen: ${role.title}` }))
-                          .catch((e) =>
-                            toast({
-                              title: "Konnte Rolle nicht übernehmen",
-                              description: e instanceof Error ? e.message : String(e),
-                              variant: "destructive",
-                            }),
-                          )
-                      }
-                      disabled={addSelf.isPending}
-                    >
-                      <User className="w-3.5 h-3.5 mr-1.5" />
-                      Ich übernehme das
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setInviteRole(role.key)}
-                    >
-                      <UserPlus className="w-3.5 h-3.5 mr-1.5" />
-                      Person einladen
-                    </Button>
+                    {canTakeSelf ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          addSelf
+                            .mutateAsync(role.key)
+                            .then(() => toast({ title: `Rolle übernommen: ${role.title}` }))
+                            .catch((e) =>
+                              toast({
+                                title: "Konnte Rolle nicht übernehmen",
+                                description: e instanceof Error ? e.message : String(e),
+                                variant: "destructive",
+                              }),
+                            )
+                        }
+                        disabled={addSelf.isPending}
+                      >
+                        <User className="w-3.5 h-3.5 mr-1.5" />
+                        Ich übernehme das
+                      </Button>
+                    ) : null}
+                    {canInviteMore ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setInviteRole(role.key)}
+                      >
+                        <UserPlus className="w-3.5 h-3.5 mr-1.5" />
+                        {role.multi && slotTaken ? "Weitere Person einladen" : "Person einladen"}
+                      </Button>
+                    ) : null}
                   </div>
                 )}
+                {role.multi ? (
+                  <p className="text-[11px] text-muted-foreground italic">
+                    Mehrere Einladungen möglich. Empfohlen: maximal {RECOMMENDED_TEAM_SIZE}{" "}
+                    Personen im gesamten Sprint-Team.
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
           );
