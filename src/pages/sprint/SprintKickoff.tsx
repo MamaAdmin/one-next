@@ -58,11 +58,6 @@ export default function SprintKickoff() {
     );
   }
 
-  const currentUserQ = useQuery({
-    queryKey: ["auth", "current-user-id"],
-    queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
-    staleTime: 60_000,
-  });
   const isOwner = !!currentUserQ.data && currentUserQ.data === sprint.owner_id;
   const hasModerator = members.some((m) => m.rolle === "moderator");
   const handoverConfirmed = sprint.challenge_statement.trim().length > 0;
