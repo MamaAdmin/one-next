@@ -23,7 +23,7 @@ export interface FramingStepRow {
   updated_at: string;
 }
 
-export type Cynefin = "einfach" | "kompliziert" | "komplex" | "chaotisch";
+
 
 export interface FramingStepData {
   // Step 1
@@ -73,7 +73,7 @@ export interface FramingStepData {
   kiEisberg?: string[];
   // Step 5
   fiveWhys?: string[];
-  ursachen?: Array<{ text: string; cynefin: Cynefin; adressierbar: boolean }>;
+  ursachen?: Array<{ text: string; adressierbar: boolean }>;
   // Step 5 – Übernommene KI-Vorschläge (getrennt von User-Eingaben)
   kiFiveWhys?: string[];
   kiUrsachen?: string[];

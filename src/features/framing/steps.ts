@@ -26,7 +26,7 @@ export interface FramingStepDef {
 }
 
 // Hinweis: `key` bleibt stabil (Datenmigration-freundlich), `index` wird für die
-// Navigation verwendet. Nach Schritt 5 wurde `5b` (Cynefin) eingeschoben.
+// Navigation verwendet.
 export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "intro",
