@@ -871,10 +871,6 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "eisberg" || tag === "iceberg") return "eisberg";
   if (tag === "why" || tag === "warum") return "why";
   if (tag === "ursache" || tag === "cause") return "ursache";
-  if (tag === "komplex" || tag === "complex") return "komplex";
-  if (tag === "kompliziert" || tag === "complicated") return "kompliziert";
-  if (tag === "chaotisch" || tag === "chaotic") return "chaotisch";
-  if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") return "einfach";
   if (tag === "kritisch" || tag === "critical") return "kritisch";
   if (tag === "unsicher" || tag === "uncertain") return "unsicher";
   if (tag === "einflussreich" || tag === "impactful" || tag === "high-impact") return "einflussreich";
