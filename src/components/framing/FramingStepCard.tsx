@@ -556,7 +556,7 @@ function applySuggestion(
     case "nuf":
       data.nufBewertungen = [
         ...(data.nufBewertungen ?? []),
-        { text, neuheit: 3, nutzen: 3, machbarkeit: 3 },
+        { text, neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: true },
       ];
       return;
     case "next-steps":
@@ -1908,7 +1908,7 @@ function VariantNuf({
           {bew.map((r, i) => {
             const sum = r.neuheit + r.nutzen + r.machbarkeit;
             const isTop = data.top1Challenge === r.text;
-            const isKi = (data.kiSprintFragen ?? []).includes(r.text);
+            const isKi = r.isKi === true || (data.kiSprintFragen ?? []).includes(r.text);
             const base = isKi
               ? "border-accent/60 bg-accent-soft"
               : "";
@@ -1989,12 +1989,12 @@ function VariantNuf({
               patch({
                 nufBewertungen: [
                   ...bew,
-                  { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3 },
+                  { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: false },
                 ],
               })
             }
           >
-            <Plus className="w-4 h-4 mr-1" /> Challenge hinzufügen
+            <Plus className="w-4 h-4 mr-1" /> Eigene Sprint-Frage hinzufügen
           </Button>
         </div>
       </CanvasSection>
