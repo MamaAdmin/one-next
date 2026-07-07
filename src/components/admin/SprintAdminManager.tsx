@@ -319,6 +319,75 @@ export default function SprintAdminManager() {
         </Card>
       </section>
 
+      <section className="space-y-4">
+        <h3 className="text-lg font-semibold">Gelöschte Sprints ({deletedSprints.length})</h3>
+        <p className="text-sm text-muted-foreground">
+          Von Nutzer:innen gelöschte Sprints. Als Admin kannst du sie wiederherstellen.
+        </p>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Titel</TableHead>
+                  <TableHead>Ersteller</TableHead>
+                  <TableHead>Gelöscht am</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {deletedSprints.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                      Keine gelöschten Sprints.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  deletedSprints.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-medium">{r.titel}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span>{ownerLabel(r)}</span>
+                          {r.owner?.email && r.owner.full_name ? (
+                            <span className="text-xs text-muted-foreground">{r.owner.email}</span>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">{fmtDate(r.deleted_at)}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={restoreMut.isPending}
+                          onClick={async () => {
+                            try {
+                              await restoreMut.mutateAsync(r.id);
+                              toast({ title: "Sprint wiederhergestellt" });
+                            } catch (e) {
+                              toast({
+                                title: "Wiederherstellen fehlgeschlagen",
+                                description: e instanceof Error ? e.message : "Unbekannter Fehler",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          <RotateCcw className="h-4 w-4 mr-1.5" />
+                          Wiederherstellen
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </section>
+
+
+
 
       <SprintAdminDetail
         sprintId={selected}
