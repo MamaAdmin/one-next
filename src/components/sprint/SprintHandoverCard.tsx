@@ -229,22 +229,6 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <EditFieldInput
-                label="Decider"
-                value={draft.decider}
-                onChange={(v) => setDraft({ ...draft, decider: v })}
-                placeholder="Wer entscheidet?"
-                readOnly={isConfirmed}
-              />
-              <EditFieldInput
-                label="Sprint Leader"
-                value={draft.sprint_leader}
-                onChange={(v) => setDraft({ ...draft, sprint_leader: v })}
-                placeholder="Moderation / Timer"
-                readOnly={isConfirmed}
-              />
-            </div>
 
             <EditList
               label="Sprint-Fragen"
