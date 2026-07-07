@@ -1404,7 +1404,7 @@ function VariantFiveWhys({
   const addUrsache = (text: string) => {
     if (!text.trim()) return;
     patch({
-      ursachen: [...ursachen, { text: text.trim(), cynefin: "kompliziert", adressierbar: true }],
+      ursachen: [...ursachen, { text: text.trim(), adressierbar: true }],
     });
   };
   const [ursacheInput, setUrsacheInput] = useState("");
