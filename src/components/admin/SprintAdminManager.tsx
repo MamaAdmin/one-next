@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAdminAllSprints, useAdminAllFramingSessions, type AdminSprintRow } from "@/hooks/useAdminSprints";
+import { useAdminAllSprints, useAdminAllFramingSessions, useRestoreSprint, type AdminSprintRow } from "@/hooks/useAdminSprints";
 import { FRAMING_STEPS } from "@/features/framing/steps";
+import { toast } from "@/hooks/use-toast";
+import { RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +45,9 @@ function ownerLabel(row: AdminSprintRow) {
 
 export default function SprintAdminManager() {
   const { data, isLoading } = useAdminAllSprints();
+  const { data: deletedSprints = [] } = useAdminAllSprints({ deletedOnly: true });
   const { data: framingData, isLoading: framingLoading } = useAdminAllFramingSessions();
+  const restoreMut = useRestoreSprint();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
