@@ -19,8 +19,8 @@ import { FRAMING_STEPS, type FramingStepDef } from "@/features/framing/steps";
 import type {
   FramingStepData,
   FramingStepRow,
-  Cynefin,
 } from "@/features/framing/types";
+
 import { useFramingSuggest } from "@/hooks/useFraming";
 import { CanvasSection } from "./CanvasSection";
 import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
