@@ -5,12 +5,12 @@ export type FramingVariant =
   | "stakeholder" // 3
   | "sailboat" // 4
   | "five-whys" // 5  – Root Cause (5 Whys + Ursachen sammeln)
-  | "cynefin" // 5b – Cynefin-Klassifikation (auto-generiert aus 5)
   | "assumptions" // 6
   | "success-constraints" // 7
   | "scope-questions" // 8
   | "nuf" // 9
   | "next-steps"; // 10
+
 
 
 export interface FramingStepDef {
