@@ -23,7 +23,7 @@ export interface FramingStepRow {
   updated_at: string;
 }
 
-export type Cynefin = "einfach" | "kompliziert" | "komplex" | "chaotisch";
+
 
 export interface FramingStepData {
   // Step 1
