@@ -834,13 +834,12 @@ type SailboatBucket = "wind" | "anker" | "hafen" | "eisberg";
 
 type FiveWhysBucket = "why" | "ursache";
 
-type CynefinBucket = "komplex" | "kompliziert" | "chaotisch" | "einfach";
-
 type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
 type SuccessBucket = "erfolg" | "constraint";
 type ScopeBucket = "inscope" | "outscope" | "sprintfrage";
 
-type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | CynefinBucket | AssumptionBucket | SuccessBucket | ScopeBucket;
+type SuggestionBucket = TwoFieldsBucket | StakeholderBucket | KickoffBucket | SailboatBucket | FiveWhysBucket | AssumptionBucket | SuccessBucket | ScopeBucket;
+
 
 function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   const m = raw.match(/^\[([^\]]+)\]/);
