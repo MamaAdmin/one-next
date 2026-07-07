@@ -491,7 +491,20 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                 Zum Sprint
               </Button>
             </div>
-          ) : null}
+          ) : (
+            <div className="flex flex-col items-end gap-2 pt-4">
+              <p className="text-xs text-muted-foreground">
+                Kein verknüpfter Sprint vorhanden. Lege jetzt einen neuen Sprint aus diesem Framing an.
+              </p>
+              <Button
+                disabled={busy || !result}
+                onClick={handleFinish}
+                className="bg-gradient-primary hover:opacity-90"
+              >
+                {busy ? "Legt Sprint an …" : "Sprint aus Framing erzeugen"}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
