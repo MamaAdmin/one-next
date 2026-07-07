@@ -81,7 +81,7 @@ export default function FramingStepCard({
           step.variant === "context-list" ||
           step.variant === "sailboat" ||
           step.variant === "five-whys" ||
-          step.variant === "cynefin" ||
+         
           step.variant === "assumptions" ||
           step.variant === "success-constraints" ||
           step.variant === "scope-questions") &&
@@ -196,7 +196,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "assumptions" && step.variant !== "success-constraints" ? (
             <Button
               type="button"
               variant="outline"
