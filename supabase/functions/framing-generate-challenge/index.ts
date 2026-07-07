@@ -108,7 +108,7 @@ function buildContext(session: any, steps: any[]): string {
   const lines: string[] = [];
   lines.push(`Arbeitstitel: ${session.titel_arbeitstitel || "—"}`);
   if (session.kontext) lines.push(`Kontext: ${session.kontext}`);
-  const ORDER: Record<string, number> = { "1":1,"2":2,"3":3,"4":4,"5":5,"5b":6,"6":7,"7":8,"8":9,"9":10,"10":11 };
+  const ORDER: Record<string, number> = { "1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,"10":10 };
   const sorted = [...steps].sort((a, b) => (ORDER[a.step_key] ?? 99) - (ORDER[b.step_key] ?? 99));
   for (const s of sorted) {
     lines.push(`\n--- Schritt ${s.step_key} ---\n${JSON.stringify(s.data)}`);

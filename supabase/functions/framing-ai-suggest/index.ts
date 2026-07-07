@@ -12,8 +12,8 @@ const STEP_META: Record<string, { title: string; task: string }> = {
   "2": { title: "Gegenwart, Vergangenheit & Zukunft", task: "Schlage Punkte zu allen sechs Kategorien vor: Gegenwart (warum jetzt / aktuelle Dringlichkeit), Vergangenheit (was wurde früher versucht / Erfahrungen), Zukunft (Standard-Zukunft – was passiert ohne Handeln), Wettbewerb (was machen Vergleichbare), Trends (für/gegen die Idee) und Chancen (Opportunities). Gib GENAU 3 Punkte je Kategorie (insgesamt 18 Items). Prefixe JEDES Item mit einem der Tags: '[Gegenwart]', '[Vergangenheit]', '[Zukunft]', '[Wettbewerb]', '[Trends]', '[Chancen]'." },
   "3": { title: "Stakeholder & Zielgruppe", task: "Schlage Punkte zu vier Kategorien vor: Stakeholder/Zielgruppen (potenzielle primäre/sekundäre Gruppen), Geparkt (Gruppen, die bewusst NICHT im Sprint-Fokus sind), Heute (wie die Zielgruppe das Problem heute löst / aktuelle Workarounds/Tools), PainGain (welchen Pain lindern wir – welchen Gain schaffen wir aus Sicht der Zielgruppe). Gib GENAU 3 Punkte je Kategorie (insgesamt 12 Items). Prefixe JEDES Item mit einem der Tags: '[Stakeholder]', '[Geparkt]', '[Heute]', '[PainGain]'." },
   "4": { title: "Smart Sailboat", task: "Schlage Einträge für Wind (Treiber), Anker (Hindernisse), Hafen (Ziel), Eisberg (Risiken) vor. Gib eine gemischte Liste, jeweils prefixed mit '[Wind]', '[Anker]', '[Hafen]', '[Eisberg]'." },
-  "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor (nur Text, keine Cynefin-Einordnung – die passiert im nächsten Schritt automatisch)." },
-  "5b": { title: "Cynefin-Einordnung", task: "Schlage für die Ursachen aus Schritt 5 plausible Cynefin-Kategorien (einfach/kompliziert/komplex/chaotisch) inkl. kurzer Begründung vor. Format je Item: 'Ursache — [Kategorie]: Begründung'." },
+  "5": { title: "Root Cause (5 Whys)", task: "Schlage tiefere 'Warum?'-Ebenen und adressierbare Ursachen vor." },
+
   "6": { title: "Annahmen & Risiken", task: "Schlage kritische Annahmen zum Framing vor, verteilt auf 4 Quadranten der 2×2-Matrix (Unsicherheit × Einfluss): Kritisch (hoch/hoch), Einflussreich (niedrige Unsicherheit / hoher Einfluss), Unsicher (hohe Unsicherheit / niedriger Einfluss), Gering (niedrig/niedrig). Gib GENAU 3 Punkte je Quadrant (insgesamt 12 Items). Prefixe JEDES Item mit '[Kritisch]', '[Einflussreich]', '[Unsicher]' oder '[Gering]'." },
   "7": { title: "Erfolg & Constraints", task: "Schlage Punkte zu zwei Kategorien vor: Erfolg (messbare Erfolgskriterien, in 5 Tagen prüfbar – z. B. Zahlen, Signale, Nutzertests) und Constraint (harte Randbedingungen, die gesetzt sind – z. B. Budget, Technik, Zeit, Recht/Compliance, Team). Gib GENAU 3 Punkte je Kategorie (insgesamt 6 Items) auf Deutsch. Prefixe JEDES Item mit '[Erfolg]' oder '[Constraint]'." },
   "8": { title: "Scope-Cut & Sprint-Fragen", task: "Schlage Punkte zu drei Kategorien vor: InScope (was gehört klar in den Sprint-Fokus – konkrete Themen, Deliverables, Aktivitäten), OutScope (was wird bewusst ausgeklammert – typische Abgrenzungen, Nice-to-haves, Folgeprojekte) und Sprintfrage (Decision Questions als 'Können wir …?'-Fragen, in 5 Tagen entscheidbar). Gib GENAU 3 Punkte je Kategorie (insgesamt 9 Items) auf Deutsch. Prefixe JEDES Item mit '[InScope]', '[OutScope]' oder '[Sprintfrage]'." },
@@ -149,21 +149,6 @@ Deno.serve(async (req) => {
       };
     }
 
-    const CYNEFIN_BUCKETS: Record<string, string> = {
-      komplex: "Komplex (Ursache/Wirkung erst rückblickend erkennbar – emergente Praktiken)",
-      kompliziert: "Kompliziert (analytisch lösbar mit Fachwissen – gute Praktiken)",
-      chaotisch: "Chaotisch (keine erkennbare Kausalität – schnell handeln)",
-      einfach: "Einfach/Klar (offensichtliche Ursache/Wirkung – bewährte Praktiken)",
-    };
-    const cynefinTag: Record<string, string> = {
-      komplex: "[Komplex]", kompliziert: "[Kompliziert]", chaotisch: "[Chaotisch]", einfach: "[Einfach]",
-    };
-    if (step_key === "5b" && field && CYNEFIN_BUCKETS[field]) {
-      meta = {
-        title: meta.title,
-        task: `Schlage GENAU 3 adressierbare Ursachen vor, die in die Cynefin-Domäne ${CYNEFIN_BUCKETS[field]} passen. Keine anderen Domänen. Prefixe JEDES Item mit '${cynefinTag[field]}'.`,
-      };
-    }
     const ASSUMPTION_BUCKETS: Record<string, string> = {
       kritisch: "Kritisch (hohe Unsicherheit UND hoher Einfluss – sofort testen)",
       einflussreich: "Einflussreich (niedrige Unsicherheit, hoher Einfluss – belastbare Annahmen mit Hebel)",
@@ -266,7 +251,7 @@ function buildContext(session: any, steps: any[], currentKey: string): string {
   const lines: string[] = [];
   lines.push(`Arbeitstitel: ${session.titel_arbeitstitel || "—"}`);
   if (session.kontext) lines.push(`Kontext: ${session.kontext}`);
-  const ORDER: Record<string, number> = { "1":1,"2":2,"3":3,"4":4,"5":5,"5b":6,"6":7,"7":8,"8":9,"9":10,"10":11 };
+  const ORDER: Record<string, number> = { "1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,"10":10 };
   const sorted = [...steps].sort((a, b) => (ORDER[a.step_key] ?? 99) - (ORDER[b.step_key] ?? 99));
   for (const s of sorted) {
     if (s.step_key === currentKey) continue;

@@ -5,12 +5,12 @@ export type FramingVariant =
   | "stakeholder" // 3
   | "sailboat" // 4
   | "five-whys" // 5  – Root Cause (5 Whys + Ursachen sammeln)
-  | "cynefin" // 5b – Cynefin-Klassifikation (auto-generiert aus 5)
   | "assumptions" // 6
   | "success-constraints" // 7
   | "scope-questions" // 8
   | "nuf" // 9
   | "next-steps"; // 10
+
 
 
 export interface FramingStepDef {
@@ -97,7 +97,7 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     title: "5. Root Cause (5 Whys)",
     frage: "Was steckt wirklich dahinter? – 5 Whys",
     arbeit:
-      "Ursachenkette mit 5 Whys vertiefen und die relevanten Ursachen als Liste festhalten. Die Cynefin-Einordnung passiert automatisch im nächsten Schritt.",
+      "Ursachenkette mit 5 Whys vertiefen und die relevanten Ursachen als Liste festhalten.",
     nutzen:
       "Damit du am echten Problem arbeitest, nicht am Symptom – sonst löst der Sprint das Falsche.",
     timeboxMin: 15,
@@ -105,34 +105,21 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     nutztDatenAus: ["1", "2", "3", "4"],
   },
   {
-    key: "5b",
-    index: 6,
-    title: "6. Cynefin-Einordnung",
-    frage: "Welche Ursachen sind einfach, kompliziert, komplex oder chaotisch – und adressierbar?",
-    arbeit:
-      "Die Ursachen aus Schritt 5 werden automatisch übernommen. Klassifikation und Adressierbarkeit bei Bedarf anpassen.",
-    nutzen:
-      "Damit du weißt, ob du einfach umsetzen, testen oder erst noch probieren musst – das bestimmt den weiteren Vorgehensmodus.",
-    timeboxMin: 15,
-    variant: "cynefin",
-    nutztDatenAus: ["5"],
-  },
-  {
     key: "6",
-    index: 7,
-    title: "7. Annahmen & Risiken",
+    index: 6,
+    title: "6. Annahmen & Risiken",
     frage: "Welche Annahmen sind hoch-unsicher UND hoch-wirksam?",
     arbeit: "Annahmen sammeln und in 2×2-Matrix nach Unsicherheit × Einfluss einordnen.",
     nutzen:
       "Damit du erkennst, welche unsicheren Annahmen das ganze Vorhaben killen können – genau die musst du im Sprint testen.",
     timeboxMin: 20,
     variant: "assumptions",
-    nutztDatenAus: ["1", "2", "3", "4", "5", "5b"],
+    nutztDatenAus: ["1", "2", "3", "4", "5"],
   },
   {
     key: "7",
-    index: 8,
-    title: "8. Erfolg & Constraints",
+    index: 7,
+    title: "7. Erfolg & Constraints",
     frage: "Woran messen wir Erfolg in 5 Tagen – was ist gesetzt?",
     arbeit: "Messbares 5-Tages-Ergebnis definieren und harte Randbedingungen festhalten.",
     nutzen:
@@ -143,20 +130,20 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   },
   {
     key: "8",
-    index: 9,
-    title: "9. Scope-Cut & Sprint-Fragen",
+    index: 8,
+    title: "8. Scope-Cut & Sprint-Fragen",
     frage: "Was gehört rein, was raus – welche Entscheidungsfragen klärt der Sprint?",
     arbeit: "In/Out of Scope trennen und Sprint-Fragen als 'Können wir …?' formulieren.",
     nutzen:
       "Um den Sprint auf eine bearbeitbare Frage einzudampfen, statt fünf Themen halb zu bearbeiten.",
     timeboxMin: 25,
     variant: "scope-questions",
-    nutztDatenAus: ["5", "5b", "6", "7"],
+    nutztDatenAus: ["5", "6", "7"],
   },
   {
     key: "9",
-    index: 10,
-    title: "10. Priorisierung (NUF)",
+    index: 9,
+    title: "9. Priorisierung (NUF)",
     frage: "Welche Challenge ist Neu, Nützlich und Machbar?",
     arbeit: "Sprint-Fragen nach Neuheit, Nutzen, Machbarkeit bewerten und Top-1 wählen.",
     nutzen:
@@ -167,15 +154,16 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   },
   {
     key: "10",
-    index: 11,
-    title: "11. Entscheidung & Next Steps",
+    index: 10,
+    title: "10. Entscheidung & Next Steps",
     frage: "Sprint-Go? Was muss vorher passieren?",
     arbeit: "Sprint-Go bestätigen und Pre-Sprint-To-dos festhalten.",
     nutzen:
       "Damit das Framing verbindlich in einen Sprint mündet und nicht als Dokument in der Ablage liegen bleibt.",
     timeboxMin: 15,
     variant: "next-steps",
-    nutztDatenAus: ["1", "2", "3", "4", "5", "5b", "6", "7", "8", "9"],
+    nutztDatenAus: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+
   },
 ];
 

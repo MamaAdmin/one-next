@@ -59,36 +59,8 @@ export default function FramingStepCard({
     setVorschlaege(d.vorschlaege ?? []);
   }, [stepRow?.id]);
 
-  // Auto-Seed für Cynefin-Schritt: übernimmt Ursachen aus Schritt 5 (Root Cause),
-  // falls hier noch keine erfasst sind. So entsteht die Cynefin-Klassifikation
-  // automatisch aus dem vorherigen Schritt.
-  useEffect(() => {
-    if (step.variant !== "cynefin") return;
-    const own = (stepRow?.data ?? {}) as FramingStepData;
-    if ((own.ursachen ?? []).length > 0) return;
-    const rootStep = allSteps.find((s) => s.step_key === "5");
-    const rootData = (rootStep?.data ?? {}) as FramingStepData;
-    const seeded: FramingStepData["ursachen"] = [];
-    for (const u of rootData.ursachen ?? []) {
-      if (u?.text?.trim()) {
-        seeded.push({
-          text: u.text,
-          cynefin: u.cynefin ?? "kompliziert",
-          adressierbar: u.adressierbar ?? true,
-        });
-      }
-    }
-    // Fallback: letzte Antwort aus den 5 Whys als Ursache übernehmen
-    if (seeded.length === 0) {
-      const lastWhy = [...(rootData.fiveWhys ?? [])].reverse().find((w) => w?.trim());
-      if (lastWhy) {
-        seeded.push({ text: lastWhy, cynefin: "kompliziert", adressierbar: true });
-      }
-    }
-    if (seeded.length > 0) {
-      setData((prev) => ({ ...prev, ursachen: seeded }));
-    }
-  }, [step.variant, stepRow?.id, allSteps]);
+
+
 
   function patch(p: Partial<FramingStepData>) {
     setData((prev) => ({ ...prev, ...p }));
@@ -109,7 +81,7 @@ export default function FramingStepCard({
           step.variant === "context-list" ||
           step.variant === "sailboat" ||
           step.variant === "five-whys" ||
-          step.variant === "cynefin" ||
+         
           step.variant === "assumptions" ||
           step.variant === "success-constraints" ||
           step.variant === "scope-questions") &&
@@ -224,7 +196,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
+        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
@@ -294,7 +266,7 @@ export default function FramingStepCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
-          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "cynefin" && step.variant !== "assumptions" && step.variant !== "success-constraints" ? (
+          {step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "assumptions" && step.variant !== "success-constraints" ? (
             <Button
               type="button"
               variant="outline"
@@ -408,18 +380,6 @@ function StepVariant({
     case "five-whys":
       return (
         <VariantFiveWhys
-          data={data}
-          patch={patch}
-          suggestions={suggestions}
-          onAcceptSuggestion={onAcceptSuggestion}
-          onDismissSuggestion={onDismissSuggestion}
-          onLoadSuggestions={onLoadSuggestions}
-          pendingBucket={pendingBucket}
-        />
-      );
-    case "cynefin":
-      return (
-        <VariantCynefin
           data={data}
           patch={patch}
           suggestions={suggestions}
@@ -553,20 +513,6 @@ function applySuggestion(
         if (total >= 5) return;
         data.kiFiveWhys = pushUnique(data.kiFiveWhys, value);
       }
-      return;
-    }
-    case "cynefin": {
-      const m = text.match(/^\[(Komplex|Complex|Kompliziert|Complicated|Chaotisch|Chaotic|Einfach|Klar|Clear|Simple)\]\s*(.+)$/i);
-      const tag = m ? m[1].toLowerCase() : "kompliziert";
-      const value = m ? m[2].trim() : text;
-      let cyn: Cynefin = "kompliziert";
-      if (tag === "komplex" || tag === "complex") cyn = "komplex";
-      else if (tag === "chaotisch" || tag === "chaotic") cyn = "chaotisch";
-      else if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") cyn = "einfach";
-      data.ursachen = [
-        ...(data.ursachen ?? []),
-        { text: value, cynefin: cyn, adressierbar: true },
-      ];
       return;
     }
     case "assumptions": {

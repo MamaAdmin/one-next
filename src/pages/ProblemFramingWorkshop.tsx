@@ -287,7 +287,7 @@ const ProblemFramingWorkshop = () => {
                 { title: "'Warum jetzt?' & Default Future", time: "15'", desc: "Was passiert, wenn Sie nichts tun? (kurz, wirkungsorientiert)" },
                 { title: "Stakeholder & Zielgruppe", time: "15'", desc: "Primäre Zielgruppe festlegen (sekundäre parken)" },
                 { title: "Smart Sailboat", time: "30'", desc: "Treiber/Wind, Anker/Hindernisse, Hafen/Ziel, Eisberg/Risiken – gemeinsames Bild der Lage" },
-                { title: "Root Cause & Komplexität", time: "20'", desc: "5 Whys + Cynefin Light – Welche Ursachen sind adressierbar?" },
+                { title: "Root Cause", time: "20'", desc: "5 Whys – Welche Ursachen sind adressierbar?" },
                 { title: "Annahmen & Risiken", time: "20'", desc: "Assumption Mapping – Annahmen nach Unsicherheit × Einfluss priorisieren" },
                 { title: "Erfolg & Constraints", time: "20'", desc: "Messbares 5-Tage-Ergebnis, harte Randbedingungen (Compliance, Systeme, Daten)" },
                 { title: "Scope-Cut & Sprint-Fragen", time: "25'", desc: "In Scope / Out of Scope, Formulierung der Sprint-Fragen (Decision Questions)" },
