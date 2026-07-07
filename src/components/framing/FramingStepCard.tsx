@@ -59,36 +59,8 @@ export default function FramingStepCard({
     setVorschlaege(d.vorschlaege ?? []);
   }, [stepRow?.id]);
 
-  // Auto-Seed für Cynefin-Schritt: übernimmt Ursachen aus Schritt 5 (Root Cause),
-  // falls hier noch keine erfasst sind. So entsteht die Cynefin-Klassifikation
-  // automatisch aus dem vorherigen Schritt.
-  useEffect(() => {
-    if (step.variant !== "cynefin") return;
-    const own = (stepRow?.data ?? {}) as FramingStepData;
-    if ((own.ursachen ?? []).length > 0) return;
-    const rootStep = allSteps.find((s) => s.step_key === "5");
-    const rootData = (rootStep?.data ?? {}) as FramingStepData;
-    const seeded: FramingStepData["ursachen"] = [];
-    for (const u of rootData.ursachen ?? []) {
-      if (u?.text?.trim()) {
-        seeded.push({
-          text: u.text,
-          cynefin: u.cynefin ?? "kompliziert",
-          adressierbar: u.adressierbar ?? true,
-        });
-      }
-    }
-    // Fallback: letzte Antwort aus den 5 Whys als Ursache übernehmen
-    if (seeded.length === 0) {
-      const lastWhy = [...(rootData.fiveWhys ?? [])].reverse().find((w) => w?.trim());
-      if (lastWhy) {
-        seeded.push({ text: lastWhy, cynefin: "kompliziert", adressierbar: true });
-      }
-    }
-    if (seeded.length > 0) {
-      setData((prev) => ({ ...prev, ursachen: seeded }));
-    }
-  }, [step.variant, stepRow?.id, allSteps]);
+
+
 
   function patch(p: Partial<FramingStepData>) {
     setData((prev) => ({ ...prev, ...p }));
