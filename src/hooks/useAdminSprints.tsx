@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintRow, SprintStepRow } from "@/features/sprint/types";
 
@@ -28,14 +28,19 @@ async function fetchProfiles(ids: string[]): Promise<Record<string, AdminSprintP
   return map;
 }
 
-export function useAdminAllSprints() {
+export function useAdminAllSprints(options?: { deletedOnly?: boolean }) {
+  const deletedOnly = !!options?.deletedOnly;
   return useQuery({
-    queryKey: ["admin", "sprints", "all"],
+    queryKey: ["admin", "sprints", "all", deletedOnly ? "deleted" : "active"],
     queryFn: async (): Promise<AdminSprintRow[]> => {
-      const { data: sprints, error } = await supabase
+      let query = supabase
         .from("sprints")
         .select("*")
         .order("created_at", { ascending: false });
+      query = deletedOnly
+        ? query.not("deleted_at", "is", null)
+        : query.is("deleted_at", null);
+      const { data: sprints, error } = await query;
       if (error) throw error;
 
       const rows = (sprints ?? []) as unknown as SprintRow[];
@@ -56,6 +61,23 @@ export function useAdminAllSprints() {
         owner: profiles[r.owner_id] ?? null,
         member_count: counts[r.id] ?? 0,
       }));
+    },
+  });
+}
+
+export function useRestoreSprint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (sprintId: string) => {
+      const { error } = await supabase
+        .from("sprints")
+        .update({ deleted_at: null })
+        .eq("id", sprintId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "sprints"] });
+      qc.invalidateQueries({ queryKey: ["sprints", "mine"] });
     },
   });
 }
