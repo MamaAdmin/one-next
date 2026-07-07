@@ -129,6 +129,19 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
 
       let sprintId = session.resulting_sprint_id ?? null;
 
+      // Verify the linked sprint still exists and isn't soft-deleted.
+      // If it was deleted, unlink and fall through to create a fresh sprint.
+      if (sprintId) {
+        const { data: existing } = await supabase
+          .from("sprints")
+          .select("id,deleted_at")
+          .eq("id", sprintId)
+          .maybeSingle();
+        if (!existing || (existing as { deleted_at: string | null }).deleted_at) {
+          sprintId = null;
+        }
+      }
+
       if (sprintId) {
         // Team-first flow: sprint already exists → update it.
         const { error: upErr } = await supabase
