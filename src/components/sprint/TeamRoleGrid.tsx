@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle2, Mail, Trash2, User, UserPlus } from "lucide-react";
+import { CheckCircle2, Mail, Trash2, User, UserPlus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import {
   useSprintInvitations,
@@ -33,13 +33,6 @@ const ROLES: RoleDef[] = [
     description:
       "Sprint-Owner. Lädt das Team ein, hält die Fäden zusammen und trägt (später) die Abrechnung. Wird automatisch beim Anlegen des Sprints gesetzt.",
     required: true,
-  },
-  {
-    key: "decider",
-    title: "Decider",
-    description:
-      "Die Person mit echter Entscheidungsbefugnis. Trifft die finalen Entscheidungen. Empfohlen, damit der Sprint verbindlich bleibt.",
-    recommended: true,
   },
   {
     key: "finance",
@@ -125,7 +118,6 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
     return map;
   }, [members, invites]);
 
-  const deciderMissing = (byRole.decider?.members.length ?? 0) === 0;
   const teamCount =
     members.length +
     invites.filter((i) => i.status !== "accepted" && i.status !== "revoked").length;
@@ -133,20 +125,7 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
 
   return (
     <div className="space-y-4">
-      {emphasizeDeciderMissing && deciderMissing ? (
-        <Card className="border-muted bg-muted/40">
-          <CardContent className="p-4 flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-            <div className="text-sm">
-              <div className="font-semibold">Empfehlung: Decider zuweisen</div>
-              <p className="text-foreground/80 mt-1">
-                Ohne Decider fehlen dem Sprint verbindliche Entscheidungen. Weise idealerweise eine
-                Person mit echter Entscheidungsbefugnis zu – Pflicht ist es nicht.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : null}
+
 
       <div
         className={`text-xs rounded-md border px-3 py-2 ${
