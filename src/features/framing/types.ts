@@ -94,7 +94,7 @@ export interface FramingStepData {
   kiOutOfScope?: string[];
   kiSprintFragen?: string[];
   // Step 9
-  nufBewertungen?: Array<{ text: string; neuheit: number; nutzen: number; machbarkeit: number }>;
+  nufBewertungen?: Array<{ text: string; neuheit: number; nutzen: number; machbarkeit: number; isKi?: boolean }>;
   top1Challenge?: string;
   // Step 10
   sprintGo?: boolean;
