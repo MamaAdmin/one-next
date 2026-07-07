@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAdminAllSprints, useAdminAllFramingSessions, type AdminSprintRow } from "@/hooks/useAdminSprints";
+import { useAdminAllSprints, useAdminAllFramingSessions, useRestoreSprint, type AdminSprintRow } from "@/hooks/useAdminSprints";
 import { FRAMING_STEPS } from "@/features/framing/steps";
+import { toast } from "@/hooks/use-toast";
+import { RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +45,9 @@ function ownerLabel(row: AdminSprintRow) {
 
 export default function SprintAdminManager() {
   const { data, isLoading } = useAdminAllSprints();
+  const { data: deletedSprints = [] } = useAdminAllSprints({ deletedOnly: true });
   const { data: framingData, isLoading: framingLoading } = useAdminAllFramingSessions();
+  const restoreMut = useRestoreSprint();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
@@ -314,6 +318,75 @@ export default function SprintAdminManager() {
           </CardContent>
         </Card>
       </section>
+
+      <section className="space-y-4">
+        <h3 className="text-lg font-semibold">Gelöschte Sprints ({deletedSprints.length})</h3>
+        <p className="text-sm text-muted-foreground">
+          Von Nutzer:innen gelöschte Sprints. Als Admin kannst du sie wiederherstellen.
+        </p>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Titel</TableHead>
+                  <TableHead>Ersteller</TableHead>
+                  <TableHead>Gelöscht am</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {deletedSprints.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                      Keine gelöschten Sprints.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  deletedSprints.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-medium">{r.titel}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span>{ownerLabel(r)}</span>
+                          {r.owner?.email && r.owner.full_name ? (
+                            <span className="text-xs text-muted-foreground">{r.owner.email}</span>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">{fmtDate(r.deleted_at)}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={restoreMut.isPending}
+                          onClick={async () => {
+                            try {
+                              await restoreMut.mutateAsync(r.id);
+                              toast({ title: "Sprint wiederhergestellt" });
+                            } catch (e) {
+                              toast({
+                                title: "Wiederherstellen fehlgeschlagen",
+                                description: e instanceof Error ? e.message : "Unbekannter Fehler",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          <RotateCcw className="h-4 w-4 mr-1.5" />
+                          Wiederherstellen
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </section>
+
+
 
 
       <SprintAdminDetail

@@ -16,6 +16,7 @@ export interface SprintRow {
   sprint_fragen: string[];
   risiken?: string[];
   kickoff_confirmed_at: string | null;
+  deleted_at?: string | null;
   created_at: string;
   updated_at: string;
 }
