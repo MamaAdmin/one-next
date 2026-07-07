@@ -1429,7 +1429,7 @@ function VariantFiveWhys({
 
       <CanvasSection title="Adressierbare Ursachen">
         <p className="text-xs text-muted-foreground">
-          Nur Ursachen sammeln – die Cynefin-Einordnung erfolgt automatisch im nächsten Schritt.
+          Ursachen als kurze Nominalphrasen erfassen.
         </p>
         <div className="flex gap-2 mt-2">
           <Input
