@@ -167,14 +167,19 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
           const filled = byRole[role.key]?.members ?? [];
           const pending = byRole[role.key]?.invites ?? [];
           const isModerator = role.key === "moderator";
-          const slotTaken = filled.length > 0 || pending.length > 0;
+          const ownerId = sprintOwnerQ.data;
+          const ownerAlreadyInFilled = ownerId
+            ? filled.some((m) => m.user_id === ownerId)
+            : false;
+          const showSyntheticOwner = isModerator && !!ownerId && !ownerAlreadyInFilled;
+          const slotTaken = filled.length > 0 || pending.length > 0 || showSyntheticOwner;
           const canInviteMore = role.multi || !slotTaken;
-          const canTakeSelf = role.multi || filled.length === 0;
+          const canTakeSelf = role.multi || (!slotTaken && !isModerator);
           return (
             <Card
               key={role.key}
               className={
-                filled.length > 0
+                filled.length > 0 || showSyntheticOwner
                   ? "border-primary/30 bg-primary/5"
                   : ""
               }
@@ -200,10 +205,20 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                   </div>
                 </div>
 
-                {filled.length === 0 && pending.length === 0 ? (
+                {filled.length === 0 && pending.length === 0 && !showSyntheticOwner ? (
                   <p className="text-xs italic text-muted-foreground">— noch offen —</p>
                 ) : (
                   <ul className="space-y-1.5">
+                    {showSyntheticOwner ? (
+                      <li className="flex items-center justify-between gap-2 text-sm">
+                        <span className="flex items-center gap-2 min-w-0">
+                          <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                          <span className="truncate">
+                            {ownerId === currentUserQ.data ? "Ich" : "Sprint-Owner"}
+                          </span>
+                        </span>
+                      </li>
+                    ) : null}
                     {filled.map((m) => (
                       <li key={m.id} className="flex items-center justify-between gap-2 text-sm">
                         <span className="flex items-center gap-2 min-w-0">
