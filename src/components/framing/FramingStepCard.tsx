@@ -389,18 +389,6 @@ function StepVariant({
           pendingBucket={pendingBucket}
         />
       );
-    case "cynefin":
-      return (
-        <VariantCynefin
-          data={data}
-          patch={patch}
-          suggestions={suggestions}
-          onAcceptSuggestion={onAcceptSuggestion}
-          onDismissSuggestion={onDismissSuggestion}
-          onLoadSuggestions={onLoadSuggestions}
-          pendingBucket={pendingBucket}
-        />
-      );
     case "assumptions":
       return (
         <VariantAssumptions
