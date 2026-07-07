@@ -1908,7 +1908,7 @@ function VariantNuf({
           {bew.map((r, i) => {
             const sum = r.neuheit + r.nutzen + r.machbarkeit;
             const isTop = data.top1Challenge === r.text;
-            const isKi = (data.kiSprintFragen ?? []).includes(r.text);
+            const isKi = r.isKi === true || (data.kiSprintFragen ?? []).includes(r.text);
             const base = isKi
               ? "border-accent/60 bg-accent-soft"
               : "";
