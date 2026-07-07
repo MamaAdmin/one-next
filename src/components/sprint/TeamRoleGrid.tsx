@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle2, Mail, Trash2, User, UserPlus } from "lucide-react";
+import { CheckCircle2, Mail, Trash2, User, UserPlus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import {
   useSprintInvitations,
