@@ -171,10 +171,14 @@ export default function SprintDashboard() {
             }
             const loneSprints = (sprints ?? []).filter((s) => !pairedSprintIds.has(s.id));
 
-            const renderFramingSub = (f: typeof allFramings[number]) => {
+            const renderFramingSub = (
+              f: typeof allFramings[number],
+              opts: { hasVisibleSprint: boolean } = { hasVisibleSprint: false },
+            ) => {
               const fStep = FRAMING_STEPS.find((s) => s.index === f.current_step);
               const isDone = f.status === "done";
               const isArchived = f.status === "archived";
+              const canDeleteFraming = !opts.hasVisibleSprint;
               return (
                 <Card className="h-full hover:shadow-hover transition-shadow border-l-4 border-l-primary/60 relative">
                   <Link to={`/sprint/framing/${f.id}`} className="block h-full">
@@ -212,22 +216,25 @@ export default function SprintDashboard() {
                       )}
                     </CardContent>
                   </Link>
-                  {!isDone ? (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Problem Framing löschen"
-                      title="Problem Framing löschen"
-                      className="absolute top-3 right-3 h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setDeletingFraming(f);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  ) : null}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Problem Framing löschen"
+                    disabled={!canDeleteFraming}
+                    title={
+                      canDeleteFraming
+                        ? "Problem Framing löschen"
+                        : "Erst den zugehörigen Sprint löschen, dann kann dieses Framing entfernt werden."
+                    }
+                    className="absolute top-3 right-3 h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (canDeleteFraming) setDeletingFraming(f);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </Card>
 
               );
