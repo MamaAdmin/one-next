@@ -556,7 +556,7 @@ function applySuggestion(
     case "nuf":
       data.nufBewertungen = [
         ...(data.nufBewertungen ?? []),
-        { text, neuheit: 3, nutzen: 3, machbarkeit: 3 },
+        { text, neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: true },
       ];
       return;
     case "next-steps":
