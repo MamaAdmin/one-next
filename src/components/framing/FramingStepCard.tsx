@@ -515,20 +515,6 @@ function applySuggestion(
       }
       return;
     }
-    case "cynefin": {
-      const m = text.match(/^\[(Komplex|Complex|Kompliziert|Complicated|Chaotisch|Chaotic|Einfach|Klar|Clear|Simple)\]\s*(.+)$/i);
-      const tag = m ? m[1].toLowerCase() : "kompliziert";
-      const value = m ? m[2].trim() : text;
-      let cyn: Cynefin = "kompliziert";
-      if (tag === "komplex" || tag === "complex") cyn = "komplex";
-      else if (tag === "chaotisch" || tag === "chaotic") cyn = "chaotisch";
-      else if (tag === "einfach" || tag === "klar" || tag === "clear" || tag === "simple") cyn = "einfach";
-      data.ursachen = [
-        ...(data.ursachen ?? []),
-        { text: value, cynefin: cyn, adressierbar: true },
-      ];
-      return;
-    }
     case "assumptions": {
       const m = text.match(/^\[(Kritisch|Unsicher|Einflussreich|Gering)\]\s*(.+)$/i);
       const tag = m ? m[1].toLowerCase() : "";
