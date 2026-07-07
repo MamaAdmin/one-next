@@ -382,7 +382,7 @@ export default function SprintDashboard() {
                           </span>
                         </div>
                         <div className="grid md:grid-cols-[1fr_auto_1fr] items-stretch gap-3">
-                          {renderFramingSub(framing)}
+                          {renderFramingSub(framing, { hasVisibleSprint: true })}
                           <div className="hidden md:flex items-center justify-center text-muted-foreground">
                             <ChevronRight className="h-6 w-6" />
                           </div>
