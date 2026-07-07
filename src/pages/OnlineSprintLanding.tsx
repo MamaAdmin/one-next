@@ -35,7 +35,7 @@ const OnlineSprintLanding = () => {
   }, {
     icon: Target,
     title: "Phase 1: Problem Framing",
-    description: "Cynefin Framework zur Einordnung, Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
+    description: "Smart Sailboat für Ziele & Hindernisse, Challenge Priorisierung"
   }, {
     icon: Map,
     title: "Phase 2: Map",
