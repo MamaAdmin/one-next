@@ -73,7 +73,7 @@ export interface FramingStepData {
   kiEisberg?: string[];
   // Step 5
   fiveWhys?: string[];
-  ursachen?: Array<{ text: string; cynefin: Cynefin; adressierbar: boolean }>;
+  ursachen?: Array<{ text: string; adressierbar: boolean }>;
   // Step 5 – Übernommene KI-Vorschläge (getrennt von User-Eingaben)
   kiFiveWhys?: string[];
   kiUrsachen?: string[];
