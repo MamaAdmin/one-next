@@ -35,6 +35,13 @@ const ROLES: RoleDef[] = [
     required: true,
   },
   {
+    key: "decider",
+    title: "Decider",
+    description:
+      "Die Person mit echter Entscheidungsbefugnis. Trifft die finalen Entscheidungen. Empfohlen, damit der Sprint verbindlich bleibt.",
+    recommended: true,
+  },
+  {
     key: "finance",
     title: "Finance Expert",
     description: "Kennt Geschäftsmodell und Budget.",

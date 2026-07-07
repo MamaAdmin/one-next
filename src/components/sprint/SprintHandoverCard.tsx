@@ -229,22 +229,6 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <EditFieldInput
-                label="Decider"
-                value={draft.decider}
-                onChange={(v) => setDraft({ ...draft, decider: v })}
-                placeholder="Wer entscheidet?"
-                readOnly={isConfirmed}
-              />
-              <EditFieldInput
-                label="Sprint Leader"
-                value={draft.sprint_leader}
-                onChange={(v) => setDraft({ ...draft, sprint_leader: v })}
-                placeholder="Moderation / Timer"
-                readOnly={isConfirmed}
-              />
-            </div>
 
             <EditList
               label="Sprint-Fragen"
@@ -341,34 +325,6 @@ function EditField({
   );
 }
 
-function EditFieldInput({
-  label,
-  value,
-  onChange,
-  placeholder,
-  readOnly = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  readOnly?: boolean;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
-      />
-    </div>
-  );
-}
 
 function EditList({
   label,
