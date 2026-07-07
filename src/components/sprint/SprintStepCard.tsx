@@ -878,6 +878,15 @@ function buildContextEntries(
       });
       continue;
     }
+    if (ref === "sprint.sprint_fragen") {
+      const fragen = sprint.sprint_fragen ?? [];
+      entries.push({
+        key: ref,
+        label: "Sprint-Fragen (aus Framing)",
+        value: fragen.length > 0 ? fragen : "(keine übernommen)",
+      });
+      continue;
+    }
     const row = byKey.get(ref);
     if (!row) {
       entries.push({ key: ref, label: `Schritt ${ref}`, value: "(noch nicht ausgefüllt)" });

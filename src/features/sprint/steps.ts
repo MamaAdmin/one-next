@@ -62,7 +62,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     entscheidung:
       "Decider wählt das am besten formulierte Ziel. Kurze Diskussion, nicht am Wortlaut feilen, max. 5 Min.",
     stimmenLimit: 2,
-    nutztDatenAus: ["sprint.titel", "sprint.problemstellung"],
+    nutztDatenAus: ["sprint.titel", "sprint.problemstellung", "sprint.sprint_fragen"],
   },
   {
     key: "1.2",
@@ -104,7 +104,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     abstimmung: "Stille Abstimmung, 5 Stimmen pro Person.",
     entscheidung: "Decider wählt die Top 3–7 HMWs.",
     stimmenLimit: 5,
-    nutztDatenAus: ["1.1", "1.2", "1.3"],
+    nutztDatenAus: ["1.1", "1.2", "1.3", "sprint.sprint_fragen"],
   },
   {
     key: "1.5",
@@ -366,7 +366,7 @@ export const SPRINT_STEPS: SprintStepDef[] = [
     frage: "Wie bewerten wir die Tests?",
     arbeit:
       "Mit 3+ Kunden testen, die zum Zielprofil (1.10) passen (optional 4–5). Pro Frage je Kunde bewerten: grün = ja, rot = nein, „vielleicht“ vermeiden. Ablauf: (1) Ansehen & abstimmen, (2) schnelle Recaps + Decider, (3) Conclusions.",
-    nutztDatenAus: ["3.2", "1.3", "1.8", "1.11", "1.10"],
+    nutztDatenAus: ["3.2", "1.3", "1.8", "1.11", "1.10", "sprint.sprint_fragen"],
     variant: "scorecard",
   },
   {
