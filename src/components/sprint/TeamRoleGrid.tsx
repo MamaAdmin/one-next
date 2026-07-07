@@ -106,11 +106,25 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
   const resendInvite = useResendSprintInvitation(sprintId);
   const revokeInvite = useRevokeSprintInvitation(sprintId);
   const currentUserQ = useCurrentUserId();
+  const sprintOwnerQ = useQuery({
+    queryKey: ["sprint", sprintId, "owner"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sprints")
+        .select("owner_id")
+        .eq("id", sprintId)
+        .maybeSingle();
+      if (error) throw error;
+      return (data as { owner_id: string } | null)?.owner_id ?? null;
+    },
+    staleTime: 60_000,
+  });
 
   const [inviteRole, setInviteRole] = useState<SprintTeamRole | null>(null);
 
   const members = membersQ.data ?? [];
   const invites = invitesQ.data ?? [];
+
 
   const byRole = useMemo(() => {
     const map: Record<string, { members: typeof members; invites: typeof invites }> = {};
