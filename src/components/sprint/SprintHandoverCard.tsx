@@ -325,34 +325,6 @@ function EditField({
   );
 }
 
-function EditFieldInput({
-  label,
-  value,
-  onChange,
-  placeholder,
-  readOnly = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  readOnly?: boolean;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        className={`bg-background ${readOnly ? "cursor-default opacity-80" : ""}`}
-      />
-    </div>
-  );
-}
 
 function EditList({
   label,
