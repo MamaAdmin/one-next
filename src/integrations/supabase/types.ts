@@ -2726,6 +2726,7 @@ export type Database = {
           created_at: string
           current_step: string
           decider: string
+          deleted_at: string | null
           erfolgsmessung: string
           id: string
           kickoff_confirmed_at: string | null
@@ -2745,6 +2746,7 @@ export type Database = {
           created_at?: string
           current_step?: string
           decider?: string
+          deleted_at?: string | null
           erfolgsmessung?: string
           id?: string
           kickoff_confirmed_at?: string | null
@@ -2764,6 +2766,7 @@ export type Database = {
           created_at?: string
           current_step?: string
           decider?: string
+          deleted_at?: string | null
           erfolgsmessung?: string
           id?: string
           kickoff_confirmed_at?: string | null
