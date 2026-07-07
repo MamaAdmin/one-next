@@ -15,6 +15,7 @@ export function useMySprints() {
       const { data, error } = await supabase
         .from(SPRINTS_TABLE)
         .select("*")
+        .is("deleted_at", null)
         .order("updated_at", { ascending: false });
       if (error) throw error;
       return (data as unknown as SprintRow[]) ?? [];
@@ -246,7 +247,7 @@ export function useDeleteSprint() {
 
       const { error } = await supabase
         .from(SPRINTS_TABLE)
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq("id", args.sprintId);
       if (error) throw error;
 
