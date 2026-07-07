@@ -251,6 +251,13 @@ export function useDeleteSprint() {
         .eq("id", args.sprintId);
       if (error) throw error;
 
+      // Unlink any framing sessions that pointed to this sprint so a new sprint
+      // can be created from the framing again.
+      await supabase
+        .from("framing_sessions")
+        .update({ resulting_sprint_id: null })
+        .eq("resulting_sprint_id", args.sprintId);
+
       if (args.incrementCounter) {
         const { data: prof } = await supabase
           .from("profiles")
