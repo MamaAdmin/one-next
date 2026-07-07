@@ -267,6 +267,23 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
             </Button>
           ) : (
             <div className="space-y-4">
+              {!isLocked ? (
+                <div className="flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleGenerate}
+                    disabled={generate.isPending}
+                  >
+                    {generate.isPending ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    )}
+                    Challenge Statement neu generieren
+                  </Button>
+                </div>
+              ) : null}
               <div className="space-y-2">
                 <Label>Arbeitstitel für den Sprint</Label>
                 <Input
