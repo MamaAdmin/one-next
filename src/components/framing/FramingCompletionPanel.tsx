@@ -196,16 +196,48 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
     }
   }
 
+  async function handleReopen() {
+    setBusy(true);
+    try {
+      await updateSession.mutateAsync({ status: "active" });
+      // Reset local UI state so the checklist becomes editable again.
+      setSignedOff(false);
+      setRecruitDone(false);
+      toast({
+        title: "Workshop wieder geöffnet",
+        description: "Definition of Done ist wieder editierbar.",
+      });
+    } catch (e) {
+      toast({
+        title: "Konnte nicht wieder geöffnet werden",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       {isLocked ? (
         <Card className="border-primary/40 bg-primary/5">
-          <CardContent className="p-4 flex items-center gap-3 text-sm">
-            <Lock className="w-4 h-4 text-primary shrink-0" />
-            <span>
-              Workshop abgeschlossen. Die Definition of Done ist gesperrt und kann
-              nicht mehr verändert werden.
-            </span>
+          <CardContent className="p-4 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <Lock className="w-4 h-4 text-primary shrink-0" />
+              <span>
+                Workshop abgeschlossen. Die Definition of Done ist gesperrt und kann
+                nicht mehr verändert werden.
+              </span>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleReopen}
+              disabled={busy}
+            >
+              Workshop wieder öffnen
+            </Button>
           </CardContent>
         </Card>
       ) : null}
