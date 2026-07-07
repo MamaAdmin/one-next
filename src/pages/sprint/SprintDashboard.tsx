@@ -43,6 +43,7 @@ export default function SprintDashboard() {
   const { data: completedByStep } = useMySprintsCompletedSteps(sprintIds);
   const [editing, setEditing] = useState<SprintRow | null>(null);
   const [deleting, setDeleting] = useState<SprintRow | null>(null);
+  const [confirmingFinalDelete, setConfirmingFinalDelete] = useState<SprintRow | null>(null);
   const [deletingFraming, setDeletingFraming] = useState<FramingSessionRow | null>(null);
   const deleteFramingMut = useDeleteFramingSession();
   const allFramings = framingSessions ?? [];
@@ -57,13 +58,20 @@ export default function SprintDashboard() {
     s.status !== "done" && (isAdmin || remainingRestarts > 0);
 
   const handleDelete = async () => {
-    if (!deleting) return;
+    const target = confirmingFinalDelete;
+    if (!target) return;
     try {
       await deleteMut.mutateAsync({
-        sprintId: deleting.id,
+        sprintId: target.id,
         incrementCounter: !isAdmin,
       });
-      toast({ title: "Sprint gelöscht" });
+      toast({
+        title: "Sprint gelöscht",
+        description: isAdmin
+          ? "Als Admin kannst du ihn im Admin-Bereich wiederherstellen."
+          : undefined,
+      });
+      setConfirmingFinalDelete(null);
       setDeleting(null);
     } catch (e) {
       toast({
@@ -473,10 +481,43 @@ export default function SprintDashboard() {
           <AlertDialogFooter>
             <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
+              onClick={() => {
+                if (deleting) {
+                  setConfirmingFinalDelete(deleting);
+                  setDeleting(null);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Weiter
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={!!confirmingFinalDelete}
+        onOpenChange={(o) => !o && setConfirmingFinalDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Wirklich endgültig löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Letzte Sicherheitsabfrage: „{confirmingFinalDelete?.titel}" wird jetzt gelöscht.
+              {isAdmin ? (
+                <> Als Admin kannst du den Sprint im Admin-Bereich wiederherstellen.</>
+              ) : (
+                <> Nur ein Admin kann den Sprint danach noch wiederherstellen.</>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Löschen
+              Endgültig löschen
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
