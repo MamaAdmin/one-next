@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Sparkles, Target } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Maximize2, Minimize2, Sparkles, Target } from "lucide-react";
+
 
 export interface StakeholderPosition {
   x: number; // 0..1
