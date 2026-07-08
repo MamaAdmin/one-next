@@ -2012,15 +2012,6 @@ function VariantNextSteps({
   const todos = data.preSprintTodos ?? [];
   return (
     <div className="space-y-6">
-      <CanvasSection title="Sprint-Go?">
-        <label className="flex items-center gap-3">
-          <Checkbox
-            checked={!!data.sprintGo}
-            onCheckedChange={(v) => patch({ sprintGo: !!v })}
-          />
-          <span className="font-medium">Sprint freigeben</span>
-        </label>
-      </CanvasSection>
       <CanvasSection title="Pre-Sprint-To-dos">
         <div className="space-y-2">
           <p className="text-sm font-medium">Eigene Anmerkungen</p>
