@@ -178,6 +178,16 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         }
       }
 
+      const mergedSprintFragen = [
+        ...result.sprintFragen,
+        ...ownSprintFragen,
+      ]
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+      const mergedRisiken = [...result.risiken, ...ownRisiken]
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
       if (sprintId) {
         // Team-first flow: sprint already exists → update it.
         const { error: upErr } = await supabase
@@ -190,8 +200,8 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
             challenge_statement: result.challenge_statement,
             zielgruppe: result.zielgruppe,
             erfolgsmessung: result.erfolgsmessung,
-            sprint_fragen: result.sprintFragen,
-            risiken: result.risiken,
+            sprint_fragen: mergedSprintFragen,
+            risiken: mergedRisiken,
           })
           .eq("id", sprintId);
         if (upErr) throw upErr;
@@ -205,8 +215,8 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
           challenge_statement: result.challenge_statement,
           zielgruppe: result.zielgruppe,
           erfolgsmessung: result.erfolgsmessung,
-          sprint_fragen: result.sprintFragen,
-          risiken: result.risiken,
+          sprint_fragen: mergedSprintFragen,
+          risiken: mergedRisiken,
         });
         sprintId = sprint.id;
         await updateSession.mutateAsync({
