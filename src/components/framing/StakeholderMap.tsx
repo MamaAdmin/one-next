@@ -118,21 +118,64 @@ export function StakeholderMap({
   );
 
   const primaryKey = primary?.trim() ?? "";
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!fullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFullscreen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [fullscreen]);
 
   return (
-    <div className="hidden lg:flex flex-col gap-2">
+    <div
+      className={
+        fullscreen
+          ? "fixed inset-0 z-50 bg-background p-6 lg:p-10 flex flex-col gap-3"
+          : "hidden lg:flex flex-col gap-2"
+      }
+    >
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span className="font-medium text-foreground">Stakeholder-Map</span>
-        <span>Ziehen zum Positionieren</span>
+        <div className="flex items-center gap-3">
+          <span>Ziehen zum Positionieren</span>
+          <button
+            type="button"
+            onClick={() => setFullscreen((v) => !v)}
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+            title={fullscreen ? "Vollbild verlassen" : "Vollbild"}
+          >
+            {fullscreen ? (
+              <>
+                <Minimize2 className="w-3.5 h-3.5" /> Schließen
+              </>
+            ) : (
+              <>
+                <Maximize2 className="w-3.5 h-3.5" /> Vollbild
+              </>
+            )}
+          </button>
+        </div>
       </div>
-      <div className="relative">
+      <div className={fullscreen ? "relative flex-1 min-h-0" : "relative"}>
         {/* Y-axis label */}
         <div className="absolute -left-6 top-1/2 -translate-y-1/2 -rotate-90 text-[10px] uppercase tracking-wider text-muted-foreground whitespace-nowrap">
           Einfluss: niedrig → hoch
         </div>
         <div
           ref={containerRef}
-          className="relative w-full aspect-[4/3] min-h-[420px] rounded-lg border-2 border-dashed border-border bg-muted/30 overflow-hidden select-none"
+          className={
+            fullscreen
+              ? "relative w-full h-full rounded-lg border-2 border-dashed border-border bg-muted/30 overflow-hidden select-none"
+              : "relative w-full aspect-[4/3] min-h-[420px] rounded-lg border-2 border-dashed border-border bg-muted/30 overflow-hidden select-none"
+          }
         >
           {/* Guides */}
           <div className="absolute inset-y-0 left-1/2 w-px bg-border/60" />
@@ -193,5 +236,6 @@ export function StakeholderMap({
     </div>
   );
 }
+
 
 export default StakeholderMap;
