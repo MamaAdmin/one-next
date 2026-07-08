@@ -50,6 +50,7 @@ export interface FramingStepData {
   stakeholder?: string[];
   primaereZielgruppe?: string;
   sekundaerGeparkt?: string[];
+  stakeholderPositions?: Record<string, { x: number; y: number }>;
   // Step 3 – Canvas: Customer-Present/Past/Pain
   kundeHeuteLoesung?: string;
   kundeVersuchePast?: Array<{ text: string; ergebnis: "worked" | "didnt-work" }>;

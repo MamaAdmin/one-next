@@ -1,30 +1,70 @@
 ## Ziel
 
-Im Abschluss-Schritt („Abschluss & Challenge Statement") sollen KI-generierte Sprint-Fragen und Risiken **blau** (accent-Style) dargestellt werden – analog zu allen anderen Framing-Schritten. Zusätzlich sollen darunter **separate Eingabemasken** stehen, in denen Nutzer eigene Sprint-Fragen und Risiken (neutral, nicht blau) ergänzen können.
+In Framing-Schritt 3 („Stakeholder & Zielgruppe") kommt im Desktop-Layout eine visuelle Stakeholder-Map dazu. Nutzer positionieren Stakeholder auf einer 2-Achsen-Fläche (Einfluss × Betroffenheit), Zielgruppe = Zentrum. Die bestehende Listen-UI bleibt erhalten – die Map ist eine zusätzliche Ansicht.
 
-Die Schritte 1–9 zeigen KI-Antworten bereits blau (`border-accent/60 bg-accent-soft` via `AcceptedKiList` bzw. NUF-Karte) – dort ist nichts zu ändern.
+## Layout
 
-## Umsetzung in `src/components/framing/FramingCompletionPanel.tsx`
+Auf Desktop (`lg:` breakpoint) split-view innerhalb `CanvasSection "Stakeholder & Zielgruppe"`:
 
-**1. State erweitern**
-- Neue lokale State-Arrays: `ownSprintFragen: string[]` und `ownRisiken: string[]`.
-- Beide werden zusammen mit `result` in `localStorage` unter `framing-result-<sessionId>` persistiert (erweitertes Payload-Objekt), damit nichts verloren geht.
+```text
++---------------------------+--------------------------------+
+| Liste (bestehend)         |  Stakeholder-Map               |
+| - ListEditor              |  ┌──────────────────────────┐  |
+| - AcceptedKiList (blau)   |  │        hoher Einfluss    │  |
+| - KI-Vorschläge inline    |  │                          │  |
+| - Primäre Zielgruppe      |  │   ● Karl                 │  |
+|                           |  │        ⊙ (Zielgruppe)    │  |
+|                           |  │              ● Anna      │  |
+|                           |  │        niedrig           │  |
+|                           |  └──────────────────────────┘  |
+|                           |  wenig betroffen ── stark      |
++---------------------------+--------------------------------+
+```
 
-**2. Sprint-Fragen-Sektion (aktuell Zeilen 332–385)**
-- Aufteilen in zwei Blöcke:
-  - **„KI-Vorschläge"** – rendert `result.sprintFragen` als blaue Karten im Stil von `AcceptedKiList` (border-accent/60 + bg-accent-soft, Sparkles-Icon). Editierbar bleibt (Textarea mit `bg-background/60`), Entfernen via ✕.
-  - **„Eigene Sprint-Fragen"** – rendert `ownSprintFragen` mit normalen (neutralen) Inputs + „+ Eigene Frage hinzufügen"-Button.
+Auf Mobile/Tablet: nur Liste (Map ausgeblendet, Positionen bleiben persistiert).
 
-**3. Risiken-Sektion (aktuell Zeilen 386–434)**
-- Analog aufteilen in blaue KI-Liste (`result.risiken`) und neutrale eigene Liste (`ownRisiken`) mit „+ Eigenes Risiko hinzufügen"-Button.
+## Verhalten
 
-**4. Speichern beim Sprint-Anlegen (`handleFinish`, Zeilen 121–197)**
-- Beim Update/Insert in `sprints`: `sprint_fragen: [...result.sprintFragen, ...ownSprintFragen]` und `risiken: [...result.risiken, ...ownRisiken]` (beide Trim + Leere entfernen).
+- Jeder Stakeholder (eigene + KI-übernommene) erscheint als Chip auf der Map.
+- **Neue Stakeholder** landen automatisch mittig-außen auf einer Spirale (kein Overlap).
+- **Drag** verschiebt den Chip; Position wird relativ (0–1 auf beiden Achsen) gespeichert.
+- **Zentrum (⊙)** markiert die primäre Zielgruppe – hervorgehoben, nicht draggable (Position fix Mitte).
+- Achsenbeschriftung: X = „Betroffenheit" (wenig → stark), Y = „Einfluss" (niedrig → hoch).
+- Chips für KI-Stakeholder in accent-Farbe (blau, konsistent mit AcceptedKiList), eigene neutral.
+- Entfernen eines Stakeholders aus der Liste entfernt auch Position.
 
-**5. Reset-Verhalten**
-- Beim erneuten Generieren wird nur `result` überschrieben; `ownSprintFragen`/`ownRisiken` bleiben erhalten.
-- Beim „Workshop wieder öffnen" bleiben die eigenen Einträge ebenfalls bestehen.
+## Datenmodell
 
-## Nicht betroffen
-- `FramingStepCard.tsx`, alle Steps 1–9 (bereits blau).
-- Datenbank / Edge Function (`framing-generate-challenge`) – Payload-Struktur bleibt gleich.
+Neues Feld in `FramingStepData` (`src/features/framing/types.ts`):
+
+```ts
+stakeholderPositions?: Record<string, { x: number; y: number }>;
+// key = Stakeholder-Name (identisch zu Einträgen in stakeholder / kiStakeholder)
+// x, y = 0..1 relativ zur Map-Fläche
+```
+
+Kein Backend-Migration nötig – `data` ist bereits JSONB.
+
+## Komponenten
+
+- **Neu:** `src/components/framing/StakeholderMap.tsx`
+  - Props: `stakeholder: string[]`, `kiStakeholder: string[]`, `primary: string`, `positions`, `onPositionsChange`
+  - Pure HTML/CSS Drag (Pointer Events) – keine neue Dependency (react-flow/dnd-kit unnötig für diesen Scope).
+  - Aspect-Ratio 4:3, `min-h-[420px]`, gestrichelter Border, Achsen-Labels als kleine Muted-Texte.
+
+- **Angepasst:** `src/components/framing/FramingStepCard.tsx`
+  - `renderStakeholder`-Block (ab Zeile 1173) wird zu `<div className="grid lg:grid-cols-2 gap-6">…`, links Liste, rechts `<StakeholderMap />`.
+  - Positions werden aus `data.stakeholderPositions` gelesen, Updates via `patch({ stakeholderPositions: … })`.
+  - Beim Entfernen aus `stakeholder`/`kiStakeholder`: gleichzeitig Position purgen.
+
+## Nicht Teil dieses Schritts
+
+- Realtime-Collab / Multi-User-Cursor.
+- Verbindungslinien zwischen Stakeholdern.
+- Export als Bild.
+- Ähnliche visuelle Ansichten für andere Framing-Schritte (Problem-Baum etc.).
+
+## Verifikation
+
+- `bunx tsgo --noEmit`
+- Visuelle Prüfung im Desktop-Preview: Stakeholder hinzufügen → Chip erscheint → Drag speichert → Reload behält Position → Entfernen aus Liste entfernt Chip.

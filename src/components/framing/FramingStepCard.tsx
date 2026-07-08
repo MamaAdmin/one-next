@@ -23,6 +23,7 @@ import type {
 
 import { useFramingSuggest } from "@/hooks/useFraming";
 import { CanvasSection } from "./CanvasSection";
+import { StakeholderMap } from "./StakeholderMap";
 import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
 import { ExternalLlmBar } from "./ExternalLlmBar";
 import { EXTERNAL_LLMS, useExternalLlms } from "@/features/framing/externalLlms";
@@ -1173,35 +1174,61 @@ function VariantStakeholder({
   return (
     <div className="space-y-6">
       <CanvasSection title="Stakeholder & Zielgruppe">
-        <ListEditor
-          label="Eigene Anmerkungen – Stakeholder / potenzielle Zielgruppen"
-          items={stakeholder}
-          onChange={(v) => patch({ stakeholder: v })}
-        />
-        <AcceptedKiList
-          items={data.kiStakeholder ?? []}
-          onRemove={(i) => removeKi("kiStakeholder", i)}
-        />
-        {inline("stakeholder")}
-        <div className="space-y-2 mt-4">
-          <Label>Primäre Zielgruppe</Label>
-          <Select
-            value={data.primaereZielgruppe ?? ""}
-            onValueChange={(v) => patch({ primaereZielgruppe: v })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Aus Stakeholdern wählen …" />
-            </SelectTrigger>
-            <SelectContent>
-              {[...stakeholder, ...(data.kiStakeholder ?? [])].map((s, i) => (
-                <SelectItem key={`${s}-${i}`} value={s}>
-                  {s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <ListEditor
+              label="Eigene Anmerkungen – Stakeholder / potenzielle Zielgruppen"
+              items={stakeholder}
+              onChange={(v) => {
+                const kept = new Set([...(v ?? []), ...(data.kiStakeholder ?? [])].map((n) => n.trim()));
+                const nextPositions: Record<string, { x: number; y: number }> = {};
+                Object.entries(data.stakeholderPositions ?? {}).forEach(([k, val]) => {
+                  if (kept.has(k)) nextPositions[k] = val;
+                });
+                patch({ stakeholder: v, stakeholderPositions: nextPositions });
+              }}
+            />
+            <AcceptedKiList
+              items={data.kiStakeholder ?? []}
+              onRemove={(i) => {
+                const arr = data.kiStakeholder ?? [];
+                const removed = arr[i];
+                const nextArr = arr.filter((_, j) => j !== i);
+                const nextPositions = { ...(data.stakeholderPositions ?? {}) };
+                if (removed) delete nextPositions[removed.trim()];
+                patch({ kiStakeholder: nextArr, stakeholderPositions: nextPositions });
+              }}
+            />
+            {inline("stakeholder")}
+            <div className="space-y-2 mt-4">
+              <Label>Primäre Zielgruppe</Label>
+              <Select
+                value={data.primaereZielgruppe ?? ""}
+                onValueChange={(v) => patch({ primaereZielgruppe: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Aus Stakeholdern wählen …" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...stakeholder, ...(data.kiStakeholder ?? [])].map((s, i) => (
+                    <SelectItem key={`${s}-${i}`} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <StakeholderMap
+            stakeholder={stakeholder}
+            kiStakeholder={data.kiStakeholder ?? []}
+            primary={data.primaereZielgruppe}
+            positions={data.stakeholderPositions ?? {}}
+            onPositionsChange={(next) => patch({ stakeholderPositions: next })}
+          />
         </div>
       </CanvasSection>
+
 
       <CanvasSection title="Sekundäre Gruppen – bewusst geparkt">
         <ListEditor
