@@ -37,10 +37,15 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const storageKey = `${RESULT_STORAGE_PREFIX}${session.id}`;
 
   const [result, setResult] = useState<ChallengeStatementResult | null>(() => {
-    // Try localStorage first (has zielgruppe/erfolgsmessung/sprintFragen)
     try {
       const cached = localStorage.getItem(storageKey);
-      if (cached) return JSON.parse(cached) as ChallengeStatementResult;
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === "object" && "result" in parsed) {
+          return parsed.result as ChallengeStatementResult;
+        }
+        return parsed as ChallengeStatementResult;
+      }
     } catch {
       // ignore
     }
@@ -55,6 +60,34 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         }
       : null;
   });
+  const [ownSprintFragen, setOwnSprintFragen] = useState<string[]>(() => {
+    try {
+      const cached = localStorage.getItem(storageKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === "object" && Array.isArray(parsed.ownSprintFragen)) {
+          return parsed.ownSprintFragen as string[];
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  });
+  const [ownRisiken, setOwnRisiken] = useState<string[]>(() => {
+    try {
+      const cached = localStorage.getItem(storageKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === "object" && Array.isArray(parsed.ownRisiken)) {
+          return parsed.ownRisiken as string[];
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  });
   const [signedOff, setSignedOff] = useState(isLocked);
   const [decider, setDecider] = useState("Julia");
   const [recruitDone, setRecruitDone] = useState(isLocked);
@@ -62,16 +95,19 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const [busy, setBusy] = useState(false);
   const [autoTriggered, setAutoTriggered] = useState(false);
 
-  // Persist result to localStorage
+  // Persist result + own additions to localStorage
   useEffect(() => {
     if (result) {
       try {
-        localStorage.setItem(storageKey, JSON.stringify(result));
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ result, ownSprintFragen, ownRisiken }),
+        );
       } catch {
         // ignore
       }
     }
-  }, [result, storageKey]);
+  }, [result, ownSprintFragen, ownRisiken, storageKey]);
 
   const step7 = steps.find((s) => s.step_key === "7")?.data as
     | { erfolgsmessung?: string; kiErfolgsmessung?: string[] }
