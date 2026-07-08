@@ -23,6 +23,7 @@ import type {
 
 import { useFramingSuggest } from "@/hooks/useFraming";
 import { CanvasSection } from "./CanvasSection";
+import { StakeholderMap } from "./StakeholderMap";
 import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
 import { ExternalLlmBar } from "./ExternalLlmBar";
 import { EXTERNAL_LLMS, useExternalLlms } from "@/features/framing/externalLlms";
