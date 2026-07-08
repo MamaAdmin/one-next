@@ -37,10 +37,15 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const storageKey = `${RESULT_STORAGE_PREFIX}${session.id}`;
 
   const [result, setResult] = useState<ChallengeStatementResult | null>(() => {
-    // Try localStorage first (has zielgruppe/erfolgsmessung/sprintFragen)
     try {
       const cached = localStorage.getItem(storageKey);
-      if (cached) return JSON.parse(cached) as ChallengeStatementResult;
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === "object" && "result" in parsed) {
+          return parsed.result as ChallengeStatementResult;
+        }
+        return parsed as ChallengeStatementResult;
+      }
     } catch {
       // ignore
     }
@@ -55,6 +60,34 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         }
       : null;
   });
+  const [ownSprintFragen, setOwnSprintFragen] = useState<string[]>(() => {
+    try {
+      const cached = localStorage.getItem(storageKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === "object" && Array.isArray(parsed.ownSprintFragen)) {
+          return parsed.ownSprintFragen as string[];
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  });
+  const [ownRisiken, setOwnRisiken] = useState<string[]>(() => {
+    try {
+      const cached = localStorage.getItem(storageKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === "object" && Array.isArray(parsed.ownRisiken)) {
+          return parsed.ownRisiken as string[];
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  });
   const [signedOff, setSignedOff] = useState(isLocked);
   const [decider, setDecider] = useState("Julia");
   const [recruitDone, setRecruitDone] = useState(isLocked);
@@ -62,16 +95,19 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const [busy, setBusy] = useState(false);
   const [autoTriggered, setAutoTriggered] = useState(false);
 
-  // Persist result to localStorage
+  // Persist result + own additions to localStorage
   useEffect(() => {
     if (result) {
       try {
-        localStorage.setItem(storageKey, JSON.stringify(result));
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ result, ownSprintFragen, ownRisiken }),
+        );
       } catch {
         // ignore
       }
     }
-  }, [result, storageKey]);
+  }, [result, ownSprintFragen, ownRisiken, storageKey]);
 
   const step7 = steps.find((s) => s.step_key === "7")?.data as
     | { erfolgsmessung?: string; kiErfolgsmessung?: string[] }
@@ -142,6 +178,16 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
         }
       }
 
+      const mergedSprintFragen = [
+        ...result.sprintFragen,
+        ...ownSprintFragen,
+      ]
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+      const mergedRisiken = [...result.risiken, ...ownRisiken]
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
       if (sprintId) {
         // Team-first flow: sprint already exists → update it.
         const { error: upErr } = await supabase
@@ -154,8 +200,8 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
             challenge_statement: result.challenge_statement,
             zielgruppe: result.zielgruppe,
             erfolgsmessung: result.erfolgsmessung,
-            sprint_fragen: result.sprintFragen,
-            risiken: result.risiken,
+            sprint_fragen: mergedSprintFragen,
+            risiken: mergedRisiken,
           })
           .eq("id", sprintId);
         if (upErr) throw upErr;
@@ -169,8 +215,8 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
           challenge_statement: result.challenge_statement,
           zielgruppe: result.zielgruppe,
           erfolgsmessung: result.erfolgsmessung,
-          sprint_fragen: result.sprintFragen,
-          risiken: result.risiken,
+          sprint_fragen: mergedSprintFragen,
+          risiken: mergedRisiken,
         });
         sprintId = sprint.id;
         await updateSession.mutateAsync({
@@ -329,108 +375,200 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label className="text-xs">Sprint-Fragen</Label>
+
+                {/* KI-Vorschläge (blau) */}
                 {result.sprintFragen.length ? (
-                  <ul className="space-y-2">
-                    {result.sprintFragen.map((s, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <Input
-                          value={s}
-                          onChange={(e) => {
-                            const next = [...result.sprintFragen];
-                            next[i] = e.target.value;
-                            setResult({ ...result, sprintFragen: next });
-                          }}
-                          disabled={isLocked}
-                        />
-                        {!isLocked ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              setResult({
-                                ...result,
-                                sprintFragen: result.sprintFragen.filter(
-                                  (_, j) => j !== i,
-                                ),
-                              })
-                            }
-                          >
-                            ✕
-                          </Button>
-                        ) : null}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-foreground/80">
+                      <Sparkles className="w-3.5 h-3.5" /> KI-Vorschläge
+                    </div>
+                    <ul className="space-y-2">
+                      {result.sprintFragen.map((s, i) => (
+                        <li
+                          key={`ki-${i}`}
+                          className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5"
+                        >
+                          <Input
+                            value={s}
+                            className="bg-background/60"
+                            onChange={(e) => {
+                              const next = [...result.sprintFragen];
+                              next[i] = e.target.value;
+                              setResult({ ...result, sprintFragen: next });
+                            }}
+                            disabled={isLocked}
+                          />
+                          {!isLocked ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setResult({
+                                  ...result,
+                                  sprintFragen: result.sprintFragen.filter(
+                                    (_, j) => j !== i,
+                                  ),
+                                })
+                              }
+                            >
+                              ✕
+                            </Button>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Noch keine Sprint-Fragen — bitte generieren.
+                    Noch keine KI-Sprint-Fragen — bitte generieren.
                   </p>
                 )}
-                {!isLocked ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setResult({
-                        ...result,
-                        sprintFragen: [...result.sprintFragen, ""],
-                      })
-                    }
-                  >
-                    + Frage hinzufügen
-                  </Button>
-                ) : null}
+
+                {/* Eigene Sprint-Fragen */}
+                <div className="space-y-1.5">
+                  <div className="text-xs font-medium text-foreground/80">
+                    Eigene Sprint-Fragen
+                  </div>
+                  {ownSprintFragen.length ? (
+                    <ul className="space-y-2">
+                      {ownSprintFragen.map((s, i) => (
+                        <li key={`own-${i}`} className="flex items-start gap-2">
+                          <Input
+                            value={s}
+                            placeholder="Eigene Sprint-Frage …"
+                            onChange={(e) => {
+                              const next = [...ownSprintFragen];
+                              next[i] = e.target.value;
+                              setOwnSprintFragen(next);
+                            }}
+                            disabled={isLocked}
+                          />
+                          {!isLocked ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setOwnSprintFragen(
+                                  ownSprintFragen.filter((_, j) => j !== i),
+                                )
+                              }
+                            >
+                              ✕
+                            </Button>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {!isLocked ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setOwnSprintFragen([...ownSprintFragen, ""])
+                      }
+                    >
+                      + Eigene Frage hinzufügen
+                    </Button>
+                  ) : null}
+                </div>
               </div>
-              <div className="space-y-2">
+
+              <div className="space-y-3">
                 <Label className="text-xs">Identifizierte Risiken</Label>
+
+                {/* KI-Vorschläge (blau) */}
                 {result.risiken.length ? (
-                  <ul className="space-y-2">
-                    {result.risiken.map((s, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <Input
-                          value={s}
-                          onChange={(e) => {
-                            const next = [...result.risiken];
-                            next[i] = e.target.value;
-                            setResult({ ...result, risiken: next });
-                          }}
-                          disabled={isLocked}
-                        />
-                        {!isLocked ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              setResult({
-                                ...result,
-                                risiken: result.risiken.filter((_, j) => j !== i),
-                              })
-                            }
-                          >
-                            ✕
-                          </Button>
-                        ) : null}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-foreground/80">
+                      <Sparkles className="w-3.5 h-3.5" /> KI-Vorschläge
+                    </div>
+                    <ul className="space-y-2">
+                      {result.risiken.map((s, i) => (
+                        <li
+                          key={`ki-${i}`}
+                          className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-2.5 py-1.5"
+                        >
+                          <Input
+                            value={s}
+                            className="bg-background/60"
+                            onChange={(e) => {
+                              const next = [...result.risiken];
+                              next[i] = e.target.value;
+                              setResult({ ...result, risiken: next });
+                            }}
+                            disabled={isLocked}
+                          />
+                          {!isLocked ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setResult({
+                                  ...result,
+                                  risiken: result.risiken.filter((_, j) => j !== i),
+                                })
+                              }
+                            >
+                              ✕
+                            </Button>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Noch keine Risiken erfasst.
+                    Noch keine KI-Risiken erfasst.
                   </p>
                 )}
-                {!isLocked ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setResult({ ...result, risiken: [...result.risiken, ""] })
-                    }
-                  >
-                    + Risiko hinzufügen
-                  </Button>
-                ) : null}
+
+                {/* Eigene Risiken */}
+                <div className="space-y-1.5">
+                  <div className="text-xs font-medium text-foreground/80">
+                    Eigene Risiken
+                  </div>
+                  {ownRisiken.length ? (
+                    <ul className="space-y-2">
+                      {ownRisiken.map((s, i) => (
+                        <li key={`own-${i}`} className="flex items-start gap-2">
+                          <Input
+                            value={s}
+                            placeholder="Eigenes Risiko …"
+                            onChange={(e) => {
+                              const next = [...ownRisiken];
+                              next[i] = e.target.value;
+                              setOwnRisiken(next);
+                            }}
+                            disabled={isLocked}
+                          />
+                          {!isLocked ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setOwnRisiken(ownRisiken.filter((_, j) => j !== i))
+                              }
+                            >
+                              ✕
+                            </Button>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {!isLocked ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setOwnRisiken([...ownRisiken, ""])}
+                    >
+                      + Eigenes Risiko hinzufügen
+                    </Button>
+                  ) : null}
+                </div>
               </div>
               {!isLocked ? (
                 <Button
