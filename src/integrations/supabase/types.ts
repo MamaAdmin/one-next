@@ -370,6 +370,48 @@ export type Database = {
         }
         Relationships: []
       }
+      bookshelf_books: {
+        Row: {
+          address: string
+          author: string | null
+          available_from: string
+          available_until: string | null
+          cover_image_url: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          author?: string | null
+          available_from?: string
+          available_until?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          author?: string | null
+          available_from?: string
+          available_until?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string

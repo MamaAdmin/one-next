@@ -126,7 +126,9 @@ const Navigation = () => {
               Kurse
             </Link>
 
-            
+            <Link to="/buecherschrank" className="text-foreground hover:text-primary transition-colors">
+              Bücherschrank
+            </Link>
 
 
 
@@ -259,6 +261,14 @@ const Navigation = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Kurse
+              </Link>
+
+              <Link
+                to="/buecherschrank"
+                className="block py-2 px-4 hover:bg-accent rounded-md font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Bücherschrank
               </Link>
 
               {user ? (

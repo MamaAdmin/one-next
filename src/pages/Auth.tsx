@@ -46,6 +46,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
@@ -115,6 +116,27 @@ const Auth = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}${redirectTo}`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error.message || "Die Anmeldung mit Google ist fehlgeschlagen",
+        variant: "destructive",
+      });
+      setGoogleLoading(false);
+    }
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -161,6 +183,43 @@ const Auth = () => {
       <Navigation />
       <main className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-md mx-auto">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full mb-4"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+          >
+            <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="#4285F4"
+                d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.42 3.58v2.98h3.93c2.3-2.12 3.51-5.24 3.51-8.8z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.93-2.98c-1.09.73-2.48 1.16-4 1.16-3.07 0-5.67-2.07-6.6-4.86H1.34v3.06C3.32 21.3 7.35 24 12 24z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.4 14.41c-.24-.73-.38-1.5-.38-2.41s.14-1.68.38-2.41V6.53H1.34C.49 8.21 0 10.05 0 12s.49 3.79 1.34 5.47l4.06-3.06z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 4.75c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.94 1.19 15.24 0 12 0 7.35 0 3.32 2.7 1.34 6.53l4.06 3.06c.93-2.79 3.53-4.84 6.6-4.84z"
+              />
+            </svg>
+            {googleLoading ? "Weiterleitung..." : "Mit Google anmelden"}
+          </Button>
+
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">oder mit E-Mail</span>
+            </div>
+          </div>
+
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Anmelden</TabsTrigger>

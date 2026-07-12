@@ -73,6 +73,7 @@ import SprintKickoff from "./pages/sprint/SprintKickoff";
 import AcceptSprintInvitation from "./pages/sprint/AcceptSprintInvitation";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import Unsubscribe from "./pages/Unsubscribe";
+import Bookshelf from "./pages/Bookshelf";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
 
@@ -156,6 +157,7 @@ const App = () => (
           <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/impressum" element={<Impressum />} />
+          <Route path="/buecherschrank" element={<Bookshelf />} />
           {/* Online Design Sprint (auth required) */}
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
           <Route path="/sprint/neu" element={<RequireAuth><SprintNew /></RequireAuth>} />
