@@ -1225,6 +1225,30 @@ function VariantStakeholder({
             primary={data.primaereZielgruppe}
             positions={data.stakeholderPositions ?? {}}
             onPositionsChange={(next) => patch({ stakeholderPositions: next })}
+            onAddStakeholder={(name) => {
+              const trimmed = name.trim();
+              if (!trimmed) return;
+              const exists = [...stakeholder, ...(data.kiStakeholder ?? [])]
+                .map((s) => s.trim().toLowerCase())
+                .includes(trimmed.toLowerCase());
+              if (exists) return;
+              patch({ stakeholder: [...stakeholder, trimmed] });
+            }}
+            onRemoveStakeholder={(name, isKi) => {
+              const nextPositions = { ...(data.stakeholderPositions ?? {}) };
+              delete nextPositions[name];
+              if (isKi) {
+                patch({
+                  kiStakeholder: (data.kiStakeholder ?? []).filter((s) => s.trim() !== name),
+                  stakeholderPositions: nextPositions,
+                });
+              } else {
+                patch({
+                  stakeholder: stakeholder.filter((s) => s.trim() !== name),
+                  stakeholderPositions: nextPositions,
+                });
+              }
+            }}
           />
         </div>
       </CanvasSection>
