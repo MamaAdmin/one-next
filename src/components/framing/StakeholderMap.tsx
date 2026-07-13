@@ -279,7 +279,11 @@ export function StakeholderMap({
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
-                className={`group absolute flex flex-col items-center justify-center min-w-[100px] max-w-[150px] px-2.5 py-2.5 rounded-sm text-base font-semibold shadow-md cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
+                className={`group absolute flex flex-col items-center justify-center cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
+                  fullscreen
+                    ? "min-w-[100px] max-w-[150px] px-2.5 py-2.5 rounded-sm text-base font-semibold shadow-md"
+                    : "min-w-[80px] max-w-[220px] px-3 py-2 rounded-full text-base font-medium shadow-sm"
+                } ${
                   isKi
                     ? "bg-accent-soft text-accent-soft-foreground border border-accent/30"
                     : "bg-secondary text-secondary-foreground border border-border/60"
@@ -287,19 +291,25 @@ export function StakeholderMap({
                 style={{
                   left: `${pos.x * 100}%`,
                   top: `${pos.y * 100}%`,
-                  transform: `translate(-50%, -50%) rotate(${noteRotation(name)}deg)`,
+                  transform: fullscreen
+                    ? `translate(-50%, -50%) rotate(${noteRotation(name)}deg)`
+                    : "translate(-50%, -50%)",
                 }}
                 title={name}
               >
-                {/* Kleines Tape oben */}
-                <div
-                  className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-7 h-2 rounded-sm opacity-60 ${
-                    isKi ? "bg-accent/30" : "bg-primary/20"
-                  }`}
-                />
+                {fullscreen ? (
+                  /* Kleines Tape oben */
+                  <div
+                    className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-7 h-2 rounded-sm opacity-60 ${
+                      isKi ? "bg-accent/30" : "bg-primary/20"
+                    }`}
+                  />
+                ) : null}
                 <div className="flex items-start gap-1.5 w-full">
                   {isKi ? <Sparkles className="w-4 h-4 shrink-0 opacity-80 mt-0.5" /> : null}
-                  <span className="flex-1 break-words text-left leading-tight line-clamp-3">{name}</span>
+                  <span className={`flex-1 break-words text-left leading-tight ${fullscreen ? "line-clamp-3" : "line-clamp-2"}`}>
+                    {name}
+                  </span>
                 </div>
                 {onRemoveStakeholder ? (
                   <button
