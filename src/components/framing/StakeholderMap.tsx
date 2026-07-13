@@ -26,6 +26,15 @@ function spiralPosition(index: number): StakeholderPosition {
   return { x, y };
 }
 
+function noteRotation(name: string): number {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash << 5) - hash + name.charCodeAt(i);
+    hash |= 0;
+  }
+  return (Math.abs(hash) % 13) - 6; // -6..6 degrees
+}
+
 export function StakeholderMap({
   stakeholder,
   kiStakeholder,
@@ -258,7 +267,7 @@ export function StakeholderMap({
             )}
           </div>
 
-          {/* Chips */}
+          {/* Post-it Stakeholder */}
           {allNames.map(({ name, isKi }) => {
             if (name === primaryKey) return null;
             const pos = positions[name];
@@ -270,20 +279,28 @@ export function StakeholderMap({
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
-                className={`group absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 pl-3 pr-2.5 py-2 rounded-full text-base font-medium shadow-md cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
+                className={`group absolute flex flex-col items-center justify-center min-w-[100px] max-w-[150px] px-2.5 py-2.5 rounded-sm text-base font-semibold shadow-md cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
                   isKi
-                    ? "border-2 border-accent/70 bg-accent-soft text-accent-soft-foreground"
-                    : "border-2 border-primary/40 bg-background text-foreground"
+                    ? "bg-accent-soft text-accent-soft-foreground border border-accent/30"
+                    : "bg-secondary text-secondary-foreground border border-border/60"
                 }`}
-                style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%` }}
+                style={{
+                  left: `${pos.x * 100}%`,
+                  top: `${pos.y * 100}%`,
+                  transform: `translate(-50%, -50%) rotate(${noteRotation(name)}deg)`,
+                }}
                 title={name}
               >
-                {isKi ? (
-                  <Sparkles className="w-4 h-4 shrink-0" />
-                ) : (
-                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 bg-primary`} />
-                )}
-                <span className="max-w-[220px] truncate">{name}</span>
+                {/* Kleines Tape oben */}
+                <div
+                  className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-7 h-2 rounded-sm opacity-60 ${
+                    isKi ? "bg-accent/30" : "bg-primary/20"
+                  }`}
+                />
+                <div className="flex items-start gap-1.5 w-full">
+                  {isKi ? <Sparkles className="w-4 h-4 shrink-0 opacity-80 mt-0.5" /> : null}
+                  <span className="flex-1 break-words text-left leading-tight line-clamp-3">{name}</span>
+                </div>
                 {onRemoveStakeholder ? (
                   <button
                     type="button"
@@ -292,10 +309,10 @@ export function StakeholderMap({
                       e.stopPropagation();
                       onRemoveStakeholder(name, isKi);
                     }}
-                    className="ml-0.5 w-5 h-5 inline-flex items-center justify-center rounded-full text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground transition-all"
+                    className="absolute -top-2 -right-2 w-5 h-5 inline-flex items-center justify-center rounded-full bg-background border border-border text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all shadow-sm"
                     title="Entfernen"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-3 h-3" />
                   </button>
                 ) : null}
               </div>
