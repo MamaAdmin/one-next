@@ -272,7 +272,7 @@ export function StakeholderMap({
                 onPointerCancel={handlePointerUp}
                 className={`group absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 pl-3 pr-2.5 py-2 rounded-full text-base font-medium shadow-md cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
                   isKi
-                    ? "border-2 border-accent/70 bg-accent-soft text-accent-foreground"
+                    ? "border-2 border-accent/70 bg-accent-soft text-accent-soft-foreground"
                     : "border-2 border-primary/40 bg-background text-foreground"
                 }`}
                 style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%` }}
