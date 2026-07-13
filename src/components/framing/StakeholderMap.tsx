@@ -151,14 +151,14 @@ export function StakeholderMap({
           : "hidden lg:flex flex-col gap-2"
       }
     >
-      <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
-        <span className="font-semibold text-sm text-foreground">Stakeholder-Map</span>
+      <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
+        <span className="font-semibold text-base text-foreground">Stakeholder-Map</span>
         <div className="flex items-center gap-3">
           <span className="hidden sm:inline">Chips ziehen zum Positionieren</span>
           <button
             type="button"
             onClick={() => setFullscreen((v) => !v)}
-            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
             title={fullscreen ? "Vollbild verlassen" : "Vollbild"}
           >
             {fullscreen ? (
@@ -200,9 +200,9 @@ export function StakeholderMap({
         </div>
       ) : null}
 
-      <div className={fullscreen ? "relative flex-1 min-h-0 pl-8 pr-2" : "relative pl-6"}>
+      <div className={fullscreen ? "relative flex-1 min-h-0 pl-10 pr-2" : "relative pl-8"}>
         {/* Y-axis label */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-sm font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
           Einfluss: niedrig → hoch
         </div>
         <div
@@ -222,16 +222,16 @@ export function StakeholderMap({
           </div>
 
           {/* Quadrant labels */}
-          <div className="absolute top-2 left-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
+          <div className="absolute top-3 left-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
             Informieren
           </div>
-          <div className="absolute top-2 right-3 text-[10px] font-semibold uppercase tracking-wider text-primary/70 pointer-events-none">
+          <div className="absolute top-3 right-4 text-sm font-semibold uppercase tracking-wider text-primary/70 pointer-events-none">
             Eng einbinden
           </div>
-          <div className="absolute bottom-6 left-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
+          <div className="absolute bottom-8 left-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
             Minimal beobachten
           </div>
-          <div className="absolute bottom-6 right-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
+          <div className="absolute bottom-8 right-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
             Zufriedenstellen
           </div>
 
@@ -244,15 +244,15 @@ export function StakeholderMap({
             className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none"
             style={{ left: "50%", top: "50%" }}
           >
-            <div className="relative flex items-center justify-center w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20">
-              <Target className="w-7 h-7" />
+            <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20">
+              <Target className="w-8 h-8" />
             </div>
             {primaryKey ? (
-              <span className="mt-2 text-sm font-semibold text-primary bg-background/90 px-2.5 py-1 rounded-md shadow-sm border border-primary/30">
+              <span className="mt-2 text-base font-semibold text-primary bg-background/90 px-3 py-1.5 rounded-md shadow-sm border border-primary/30">
                 {primaryKey}
               </span>
             ) : (
-              <span className="mt-2 text-xs text-muted-foreground bg-background/90 px-2 py-0.5 rounded">
+              <span className="mt-2 text-sm text-muted-foreground bg-background/90 px-2.5 py-1 rounded">
                 Zielgruppe wählen
               </span>
             )}
@@ -270,7 +270,7 @@ export function StakeholderMap({
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
-                className={`group absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 pl-2.5 pr-2 py-1.5 rounded-full text-sm font-medium shadow-md cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
+                className={`group absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 pl-3 pr-2.5 py-2 rounded-full text-base font-medium shadow-md cursor-grab active:cursor-grabbing touch-none transition-all hover:shadow-lg hover:scale-105 ${
                   isKi
                     ? "border-2 border-accent/70 bg-accent-soft text-accent-foreground"
                     : "border-2 border-primary/40 bg-background text-foreground"
@@ -279,11 +279,11 @@ export function StakeholderMap({
                 title={name}
               >
                 {isKi ? (
-                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                  <Sparkles className="w-4 h-4 shrink-0" />
                 ) : (
-                  <span className={`w-2 h-2 rounded-full shrink-0 bg-primary`} />
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 bg-primary`} />
                 )}
-                <span className="max-w-[180px] truncate">{name}</span>
+                <span className="max-w-[220px] truncate">{name}</span>
                 {onRemoveStakeholder ? (
                   <button
                     type="button"
@@ -292,10 +292,10 @@ export function StakeholderMap({
                       e.stopPropagation();
                       onRemoveStakeholder(name, isKi);
                     }}
-                    className="ml-0.5 w-4 h-4 inline-flex items-center justify-center rounded-full text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground transition-all"
+                    className="ml-0.5 w-5 h-5 inline-flex items-center justify-center rounded-full text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground transition-all"
                     title="Entfernen"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 ) : null}
               </div>
@@ -303,7 +303,7 @@ export function StakeholderMap({
           })}
         </div>
         {/* X-axis label */}
-        <div className="mt-2 flex justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="mt-3 flex justify-between text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           <span>wenig betroffen</span>
           <span className="text-foreground">Betroffenheit →</span>
           <span>stark betroffen</span>
