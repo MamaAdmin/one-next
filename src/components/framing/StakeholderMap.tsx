@@ -151,14 +151,14 @@ export function StakeholderMap({
           : "hidden lg:flex flex-col gap-2"
       }
     >
-      <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
-        <span className="font-semibold text-sm text-foreground">Stakeholder-Map</span>
+      <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
+        <span className="font-semibold text-base text-foreground">Stakeholder-Map</span>
         <div className="flex items-center gap-3">
           <span className="hidden sm:inline">Chips ziehen zum Positionieren</span>
           <button
             type="button"
             onClick={() => setFullscreen((v) => !v)}
-            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
             title={fullscreen ? "Vollbild verlassen" : "Vollbild"}
           >
             {fullscreen ? (
