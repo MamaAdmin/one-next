@@ -200,9 +200,9 @@ export function StakeholderMap({
         </div>
       ) : null}
 
-      <div className={fullscreen ? "relative flex-1 min-h-0 pl-8 pr-2" : "relative pl-6"}>
+      <div className={fullscreen ? "relative flex-1 min-h-0 pl-10 pr-2" : "relative pl-8"}>
         {/* Y-axis label */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-sm font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
           Einfluss: niedrig → hoch
         </div>
         <div
@@ -222,16 +222,16 @@ export function StakeholderMap({
           </div>
 
           {/* Quadrant labels */}
-          <div className="absolute top-2 left-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
+          <div className="absolute top-3 left-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
             Informieren
           </div>
-          <div className="absolute top-2 right-3 text-[10px] font-semibold uppercase tracking-wider text-primary/70 pointer-events-none">
+          <div className="absolute top-3 right-4 text-sm font-semibold uppercase tracking-wider text-primary/70 pointer-events-none">
             Eng einbinden
           </div>
-          <div className="absolute bottom-6 left-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
+          <div className="absolute bottom-8 left-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
             Minimal beobachten
           </div>
-          <div className="absolute bottom-6 right-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
+          <div className="absolute bottom-8 right-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/70 pointer-events-none">
             Zufriedenstellen
           </div>
 
