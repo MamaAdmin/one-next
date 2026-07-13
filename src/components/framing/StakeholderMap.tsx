@@ -303,7 +303,7 @@ export function StakeholderMap({
           })}
         </div>
         {/* X-axis label */}
-        <div className="mt-2 flex justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="mt-3 flex justify-between text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           <span>wenig betroffen</span>
           <span className="text-foreground">Betroffenheit →</span>
           <span>stark betroffen</span>
