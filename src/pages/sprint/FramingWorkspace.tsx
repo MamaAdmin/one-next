@@ -26,6 +26,18 @@ export default function FramingWorkspace() {
   const saveStep = useSaveFramingStep(id ?? "");
   const setCurrent = useSetFramingCurrentStep(id ?? "");
   const [showCompletion, setShowCompletion] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  function afterNavAction() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      setNavOpen(false);
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 
   const session = sessionQ.data;
   const steps = stepsQ.data ?? [];
