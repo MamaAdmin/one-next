@@ -81,7 +81,7 @@ export default function SprintNew() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
 
-      <main className="flex-1 container mx-auto px-6 py-16 max-w-2xl">
+      <main className="flex-1 w-full px-6 py-16">
         <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
           ← Zur Sprint-Übersicht
         </Link>
