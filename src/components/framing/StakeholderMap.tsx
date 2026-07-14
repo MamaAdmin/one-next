@@ -167,7 +167,7 @@ export function StakeholderMap({
           <button
             type="button"
             onClick={() => setFullscreen((v) => !v)}
-            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-sm font-medium text-primary hover:bg-primary/20 transition-colors"
             title={fullscreen ? "Vollbild verlassen" : "Vollbild"}
           >
             {fullscreen ? (
