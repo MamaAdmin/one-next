@@ -242,7 +242,7 @@ export default function FramingWorkspace() {
             </nav>
           </aside>
 
-          <div className="space-y-6">
+          <div ref={contentRef} className="space-y-6 scroll-mt-20">
             {showCompletion ? (
               <FramingCompletionPanel session={session} steps={steps} />
             ) : (
