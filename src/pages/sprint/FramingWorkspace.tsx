@@ -74,6 +74,7 @@ export default function FramingWorkspace() {
   async function goTo(idx: number) {
     setShowCompletion(false);
     await setCurrent.mutateAsync(idx);
+    afterNavAction();
   }
 
   async function handleNext() {
