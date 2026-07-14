@@ -114,7 +114,7 @@ export default function SprintDashboard() {
       <div className="min-h-screen flex flex-col">
         <Navigation />
 
-        <main className="flex-1 container mx-auto px-6 py-16 max-w-5xl">
+        <main className="flex-1 w-full px-6 py-16">
           <div className="mb-10">
             <h1 className="text-4xl lg:text-5xl font-bold">
               Meine{" "}
