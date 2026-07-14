@@ -74,10 +74,10 @@ const FeedbackWidget = () => {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
         aria-label="Feedback geben"
       >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? <X className="h-5 w-5 sm:h-5 sm:w-5 lg:h-6 lg:w-6" /> : <MessageCircle className="h-5 w-5 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />}
       </button>
 
       {open && (
