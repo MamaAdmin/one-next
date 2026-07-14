@@ -246,7 +246,7 @@ export default function SprintWorkspace() {
           </aside>
 
           {/* Step card or One Pager */}
-          <div className="space-y-6">
+          <div ref={contentRef} className="space-y-6 scroll-mt-20">
 
             {summaryDay !== null ? (
               <SprintDaySummary
