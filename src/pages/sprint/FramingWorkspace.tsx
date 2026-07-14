@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info } from "lucide-react";
+import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info, ChevronDown } from "lucide-react";
 import {
   useFramingSession,
   useFramingSteps,
@@ -26,6 +26,18 @@ export default function FramingWorkspace() {
   const saveStep = useSaveFramingStep(id ?? "");
   const setCurrent = useSetFramingCurrentStep(id ?? "");
   const [showCompletion, setShowCompletion] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  function afterNavAction() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      setNavOpen(false);
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 
   const session = sessionQ.data;
   const steps = stepsQ.data ?? [];
@@ -62,6 +74,7 @@ export default function FramingWorkspace() {
   async function goTo(idx: number) {
     setShowCompletion(false);
     await setCurrent.mutateAsync(idx);
+    afterNavAction();
   }
 
   async function handleNext() {
@@ -157,8 +170,21 @@ export default function FramingWorkspace() {
         </div>
 
         <div className="grid md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr] gap-6 lg:gap-8">
-          <aside className="md:sticky md:top-24 md:self-start">
-            <nav className="space-y-1">
+          <aside className="md:sticky md:top-24 md:self-start space-y-3">
+            <button
+              type="button"
+              onClick={() => setNavOpen((o) => !o)}
+              className="lg:hidden w-full flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm"
+              aria-expanded={navOpen}
+            >
+              <span className="truncate">
+                {showCompletion
+                  ? "Abschluss · Challenge Statement"
+                  : `Schritt ${currentDef.index}: ${currentDef.title}`}
+              </span>
+              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
+            </button>
+            <nav className={`space-y-1 ${navOpen ? "block" : "hidden"} lg:block`}>
               {FRAMING_STEPS.map((def) => {
                 const row = steps.find((s) => s.step_key === def.key);
                 const done = !!row?.completed_at;
@@ -200,7 +226,7 @@ export default function FramingWorkspace() {
 
               <button
                 type="button"
-                onClick={() => setShowCompletion(true)}
+                onClick={() => { setShowCompletion(true); afterNavAction(); }}
                 disabled={completedCount < 10}
                 className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors mt-2 ${
                   showCompletion
@@ -216,7 +242,7 @@ export default function FramingWorkspace() {
             </nav>
           </aside>
 
-          <div className="space-y-6">
+          <div ref={contentRef} className="space-y-6 scroll-mt-20">
             {showCompletion ? (
               <FramingCompletionPanel session={session} steps={steps} />
             ) : (

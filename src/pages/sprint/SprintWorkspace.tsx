@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, FileText, Pencil } from "lucide-react";
+import { CheckCircle2, Circle, Dot, FileText, Pencil, ChevronDown } from "lucide-react";
 import { useSprint, useSprintSteps, useSaveStep, useSetCurrentStep } from "@/hooks/useSprint";
 import {
   SPRINT_STEPS,
@@ -39,6 +39,18 @@ export default function SprintWorkspace() {
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  function afterNavAction() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      setNavOpen(false);
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 
 
   const sprint = sprintQ.data;
@@ -98,10 +110,12 @@ export default function SprintWorkspace() {
   async function goTo(stepKey: string) {
     setSummaryDay(null);
     await setCurrentStep.mutateAsync(stepKey);
+    afterNavAction();
   }
 
   function openSummary(day: number) {
     setSummaryDay(day);
+    afterNavAction();
   }
 
   const nextKey = getNextStepKey(currentKey);
@@ -149,8 +163,21 @@ export default function SprintWorkspace() {
               </button>
             </div>
 
+            <button
+              type="button"
+              onClick={() => setNavOpen((o) => !o)}
+              className="lg:hidden w-full flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm"
+              aria-expanded={navOpen}
+            >
+              <span className="truncate">
+                {summaryDay !== null
+                  ? `One Pager · Tag ${summaryDay}`
+                  : `${currentDef.day}. ${currentDef.title}`}
+              </span>
+              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
+            </button>
 
-            <nav className="space-y-4">
+            <nav className={`space-y-4 ${navOpen ? "block" : "hidden"} lg:block`}>
               {DAYS.map((d) => {
                 const dayStepDefs = SPRINT_STEPS.filter((s) => s.day === d.day);
                 return (
@@ -219,7 +246,7 @@ export default function SprintWorkspace() {
           </aside>
 
           {/* Step card or One Pager */}
-          <div className="space-y-6">
+          <div ref={contentRef} className="space-y-6 scroll-mt-20">
 
             {summaryDay !== null ? (
               <SprintDaySummary
