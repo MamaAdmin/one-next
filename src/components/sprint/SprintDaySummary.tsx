@@ -130,7 +130,7 @@ export default function SprintDaySummary({ sprint, day, allSteps }: Props) {
 
   return (
     <Card className="border-2 border-primary/30 shadow-xl">
-      <CardContent className="p-6 lg:p-10 space-y-6">
+      <CardContent className="p-4 sm:p-6 lg:p-10 space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
@@ -159,7 +159,7 @@ export default function SprintDaySummary({ sprint, day, allSteps }: Props) {
         {/* Printable page */}
         <div
           ref={pageRef}
-          className="bg-white text-slate-900 rounded-lg p-8 space-y-6"
+          className="bg-white text-slate-900 rounded-lg p-4 sm:p-6 lg:p-8 space-y-6"
           style={{ minHeight: "auto" }}
         >
           {/* Header */}
