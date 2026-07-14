@@ -39,6 +39,18 @@ export default function SprintWorkspace() {
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  function afterNavAction() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      setNavOpen(false);
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 
 
   const sprint = sprintQ.data;
