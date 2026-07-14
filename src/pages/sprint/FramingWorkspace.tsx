@@ -226,7 +226,7 @@ export default function FramingWorkspace() {
 
               <button
                 type="button"
-                onClick={() => setShowCompletion(true)}
+                onClick={() => { setShowCompletion(true); afterNavAction(); }}
                 disabled={completedCount < 10}
                 className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors mt-2 ${
                   showCompletion
