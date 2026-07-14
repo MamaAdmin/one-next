@@ -163,8 +163,21 @@ export default function SprintWorkspace() {
               </button>
             </div>
 
+            <button
+              type="button"
+              onClick={() => setNavOpen((o) => !o)}
+              className="lg:hidden w-full flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm"
+              aria-expanded={navOpen}
+            >
+              <span className="truncate">
+                {summaryDay !== null
+                  ? `One Pager · Tag ${summaryDay}`
+                  : `${currentDef.day}. ${currentDef.title}`}
+              </span>
+              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
+            </button>
 
-            <nav className="space-y-4">
+            <nav className={`space-y-4 ${navOpen ? "block" : "hidden"} lg:block`}>
               {DAYS.map((d) => {
                 const dayStepDefs = SPRINT_STEPS.filter((s) => s.day === d.day);
                 return (
