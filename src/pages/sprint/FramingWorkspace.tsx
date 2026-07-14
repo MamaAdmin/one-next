@@ -113,7 +113,7 @@ export default function FramingWorkspace() {
     <div className="min-h-screen flex flex-col bg-muted/20">
       <Navigation />
 
-      <main className="flex-1 w-full px-6 py-10 lg:py-16">
+      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-16">
         <div className="mb-6">
           <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
             ← Sprint-Übersicht
@@ -121,7 +121,7 @@ export default function FramingWorkspace() {
           <div className="flex flex-wrap items-end justify-between gap-4 mt-2">
             <div>
               <Badge variant="secondary" className="mb-1">Problem-Framing-Workshop</Badge>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-2xl sm:text-3xl font-bold break-words">
                 {session.titel_arbeitstitel || "Ohne Titel"}
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -156,8 +156,8 @@ export default function FramingWorkspace() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-[240px_1fr] gap-8">
-          <aside className="lg:sticky lg:top-24 lg:self-start">
+        <div className="grid md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr] gap-6 lg:gap-8">
+          <aside className="md:sticky md:top-24 md:self-start">
             <nav className="space-y-1">
               {FRAMING_STEPS.map((def) => {
                 const row = steps.find((s) => s.step_key === def.key);

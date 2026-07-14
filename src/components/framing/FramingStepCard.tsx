@@ -126,14 +126,14 @@ export default function FramingStepCard({
 
   return (
     <Card className="border-none shadow-xl">
-      <CardContent className="p-6 lg:p-8 space-y-6">
+      <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <Badge variant="secondary" className="mb-2">
               Timebox {step.timeboxMin} Min · Schritt {step.index} von {realStepCount}
             </Badge>
 
-            <h2 className="text-2xl font-bold">{step.title}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold">{step.title}</h2>
             <p className="text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
               <span>{step.frage}</span>
               {step.variant === "nuf" ? (

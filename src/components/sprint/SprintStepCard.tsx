@@ -406,7 +406,7 @@ export default function SprintStepCard({
 
   return (
     <Card className="border-none shadow-xl">
-      <CardContent className="p-8 lg:p-12 space-y-8">
+      <CardContent className="p-4 sm:p-6 lg:p-12 space-y-6 sm:space-y-8">
         {/* Progress + Day */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <Badge variant="outline" className="text-sm">
@@ -426,8 +426,8 @@ export default function SprintStepCard({
 
         {/* 1. Frage */}
         <div className="space-y-2">
-          <h2 className="text-3xl lg:text-4xl font-bold">{step.title}</h2>
-          <p className="text-xl text-muted-foreground">{step.frage}</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">{step.title}</h2>
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground">{step.frage}</p>
         </div>
 
         {/* 2. Anweisungsblock */}
