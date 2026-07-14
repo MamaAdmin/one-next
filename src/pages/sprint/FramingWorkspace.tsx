@@ -113,7 +113,7 @@ export default function FramingWorkspace() {
     <div className="min-h-screen flex flex-col bg-muted/20">
       <Navigation />
 
-      <main className="flex-1 container mx-auto px-6 py-10 lg:py-16">
+      <main className="flex-1 w-full px-6 py-10 lg:py-16">
         <div className="mb-6">
           <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
             ← Sprint-Übersicht

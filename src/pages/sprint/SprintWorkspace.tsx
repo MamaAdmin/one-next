@@ -111,7 +111,7 @@ export default function SprintWorkspace() {
     <div className="min-h-screen flex flex-col bg-muted/20">
       <Navigation />
 
-      <main className="flex-1 container mx-auto px-6 py-10 lg:py-16">
+      <main className="flex-1 w-full px-6 py-10 lg:py-16">
         <div className="grid lg:grid-cols-[280px_1fr] gap-8">
           {/* Side-Nav */}
           <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
