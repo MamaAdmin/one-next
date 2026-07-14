@@ -110,10 +110,12 @@ export default function SprintWorkspace() {
   async function goTo(stepKey: string) {
     setSummaryDay(null);
     await setCurrentStep.mutateAsync(stepKey);
+    afterNavAction();
   }
 
   function openSummary(day: number) {
     setSummaryDay(day);
+    afterNavAction();
   }
 
   const nextKey = getNextStepKey(currentKey);
