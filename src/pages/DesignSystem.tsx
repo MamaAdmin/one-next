@@ -1,6 +1,6 @@
 import { ColorTokens } from "@/components/design/ColorTokens";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 
 const DesignSystem = () => {
