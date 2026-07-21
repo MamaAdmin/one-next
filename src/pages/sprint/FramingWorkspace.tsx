@@ -207,10 +207,25 @@ export default function FramingWorkspace() {
               <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
             </button>
             <nav className={`space-y-1 ${navOpen ? "block" : "hidden"} lg:block`}>
+              <button
+                type="button"
+                onClick={openTeamView}
+                className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors ${
+                  showTeam
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "hover:bg-muted"
+                }`}
+              >
+                <Users className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                <span>
+                  <span className="text-xs text-muted-foreground block">Vor dem Start</span>
+                  Team-Konstellation
+                </span>
+              </button>
               {FRAMING_STEPS.map((def) => {
                 const row = steps.find((s) => s.step_key === def.key);
                 const done = !!row?.completed_at;
-                const isCurrent = def.key === currentDef.key && !showCompletion;
+                const isCurrent = def.key === currentDef.key && !showCompletion && !showTeam;
                 const isIntro = def.variant === "intro";
                 return (
                   <button
