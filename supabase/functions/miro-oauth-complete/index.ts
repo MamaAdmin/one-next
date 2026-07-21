@@ -23,7 +23,9 @@ async function verifyState(state: string, userId: string, secret: string): Promi
   } catch {
     return false;
   }
-  const [uid, _nonce, tsStr] = payload.split(".");
+  const parts = payload.split(".");
+  if (parts.length !== 4) return false;
+  const [uid, _nonce, tsStr, _originB64] = parts;
   if (uid !== userId) return false;
   const ts = Number(tsStr);
   if (!ts || Date.now() - ts > 15 * 60 * 1000) return false;
