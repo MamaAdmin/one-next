@@ -1,4 +1,6 @@
 // Returns a Miro OAuth authorize URL for the current user.
+// Uses a stable Edge-Function callback so only one redirect URI has to be
+// registered in the Miro app, regardless of preview/production origin.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const MIRO_AUTH_URL = "https://miro.com/oauth/authorize";
@@ -7,6 +9,23 @@ function envRequired(name: string): string {
   const v = Deno.env.get(name);
   if (!v) throw new Error(`Missing env: ${name}`);
   return v;
+}
+
+function isAllowedOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname;
+    return (
+      host === "one-next.com" ||
+      host === "www.one-next.com" ||
+      host === "one-next.lovable.app" ||
+      host.endsWith(".lovable.app") ||
+      host.endsWith(".lovableproject.com")
+    );
+  } catch {
+    return false;
+  }
 }
 
 function getUserId(req: Request): Promise<string> {
