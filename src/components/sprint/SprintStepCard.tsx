@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
 import type { SprintRow, SprintStepData, SprintStepRow } from "@/features/sprint/types";
 import { MAP_LANES } from "@/features/sprint/types";
+import Crazy8sMiro from "@/components/sprint/Crazy8sMiro";
 import {
   Select,
   SelectContent,
@@ -461,6 +462,28 @@ export default function SprintStepCard({
           ) : null}
 
         </div>
+
+        {/* 2a. Miro-Board für Crazy 8s */}
+        {step.variant === "crazy8s" ? (
+          <Crazy8sMiro
+            sprint={sprint}
+            stepKey={step.key}
+            onImportedItems={(items) => {
+              setAntworten((prev) => {
+                const existing = new Set(prev.map((x) => x.trim().toLowerCase()));
+                const merged = [...prev];
+                for (const raw of items) {
+                  const v = String(raw).trim();
+                  if (!v) continue;
+                  if (existing.has(v.toLowerCase())) continue;
+                  merged.push(v);
+                  existing.add(v.toLowerCase());
+                }
+                return merged;
+              });
+            }}
+          />
+        ) : null}
 
         {/* 2b. Deine Antworten auf die Frage */}
         <div className="space-y-4 rounded-lg border-2 border-accent/40 bg-accent-soft p-5">
