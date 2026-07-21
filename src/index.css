@@ -73,7 +73,7 @@ All colors MUST be HSL.
     --brand-primary-foreground: 36 30% 96%;
     --brand-secondary: 32 18% 88%;
     --brand-secondary-foreground: 25 15% 18%;
-    --brand-accent: 208 26% 48%;
+    --brand-accent: 210 28% 32%;
     --brand-accent-foreground: 36 30% 96%;
     --brand-background: 36 28% 94%;
     --brand-background-foreground: 25 15% 14%;
@@ -84,7 +84,7 @@ All colors MUST be HSL.
     --neutral-200: 34 22% 90%;
     --neutral-300: 32 18% 84%;
     --neutral-400: 30 14% 74%;
-    --neutral-500: 28 12% 58%;
+    --neutral-500: 25 12% 40%;
     --neutral-600: 25 10% 45%;
     --neutral-700: 25 12% 32%;
     --neutral-800: 25 14% 22%;
@@ -104,13 +104,13 @@ All colors MUST be HSL.
     /* Text */
     --text-default: 25 15% 14%;
     --text-muted: 25 10% 40%;
-    --text-placeholder: 30 14% 60%;
+    --text-placeholder: 25 12% 48%;
     --text-on-dark: 36 22% 92%;
     --text-on-primary: 36 30% 96%;
     --text-on-accent: 36 30% 96%;
 
     /* Semantic feedback */
-    --success: 145 35% 38%;
+    --success: 145 38% 34%;
     --success-foreground: 36 30% 96%;
     --success-soft: 145 30% 92%;
     --success-soft-foreground: 145 35% 22%;
@@ -128,11 +128,11 @@ All colors MUST be HSL.
     --error-soft-foreground: 8 55% 28%;
     --error-strong: 8 65% 32%;
 
-    --info: 208 26% 48%;
+    --info: 210 28% 32%;
     --info-foreground: 36 30% 96%;
-    --info-soft: 208 30% 92%;
+    --info-soft: 210 30% 92%;
     --info-soft-foreground: 210 30% 24%;
-    --info-strong: 210 32% 32%;
+    --info-strong: 210 32% 26%;
   }
 
   .dark {
