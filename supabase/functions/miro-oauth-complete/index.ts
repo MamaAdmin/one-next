@@ -74,6 +74,12 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (redirectUri !== expectedRedirectUri()) {
+      return new Response(JSON.stringify({ error: "invalid_redirect_uri" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const secret = envRequired("SUPABASE_SERVICE_ROLE_KEY");
     const ok = await verifyState(state, userId, secret);
