@@ -55,3 +55,15 @@ verify_jwt = true
 
 [functions.verify-course-registration]
 verify_jwt = false
+
+[functions.miro-oauth-start]
+verify_jwt = true
+
+[functions.miro-oauth-complete]
+verify_jwt = true
+
+[functions.miro-create-crazy8-board]
+verify_jwt = true
+
+[functions.miro-fetch-board-items]
+verify_jwt = true

@@ -72,6 +72,7 @@ import SprintTeamSetup from "./pages/sprint/SprintTeamSetup";
 import SprintKickoff from "./pages/sprint/SprintKickoff";
 import AcceptSprintInvitation from "./pages/sprint/AcceptSprintInvitation";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
+import MiroCallback from "./pages/MiroCallback";
 import Unsubscribe from "./pages/Unsubscribe";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
@@ -164,6 +165,7 @@ const App = () => (
           <Route path="/sprint/:id/team" element={<RequireAuth><SprintTeamSetup /></RequireAuth>} />
           <Route path="/sprint/:id/kickoff" element={<RequireAuth><SprintKickoff /></RequireAuth>} />
           <Route path="/sprint/:id" element={<RequireAuth><SprintWorkspace /></RequireAuth>} />
+          <Route path="/miro/callback" element={<MiroCallback />} />
           {/* Dynamic page template routes */}
           <Route path="/:slug" element={<DynamicPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

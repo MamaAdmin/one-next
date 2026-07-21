@@ -2006,6 +2006,48 @@ export type Database = {
         }
         Relationships: []
       }
+      miro_connections: {
+        Row: {
+          access_token: string
+          created_at: string
+          id: string
+          miro_name: string | null
+          miro_team_id: string | null
+          miro_user_id: string | null
+          refresh_token: string
+          scope: string | null
+          token_expires_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          id?: string
+          miro_name?: string | null
+          miro_team_id?: string | null
+          miro_user_id?: string | null
+          refresh_token: string
+          scope?: string | null
+          token_expires_at: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          miro_name?: string | null
+          miro_team_id?: string | null
+          miro_user_id?: string | null
+          refresh_token?: string
+          scope?: string | null
+          token_expires_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       navigation_items: {
         Row: {
           created_at: string | null
@@ -2675,6 +2717,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "sprint_members_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sprint_miro_boards: {
+        Row: {
+          board_id: string
+          board_url: string
+          created_at: string
+          created_by: string
+          embed_url: string
+          id: string
+          sprint_id: string
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          board_id: string
+          board_url: string
+          created_at?: string
+          created_by: string
+          embed_url: string
+          id?: string
+          sprint_id: string
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          board_id?: string
+          board_url?: string
+          created_at?: string
+          created_by?: string
+          embed_url?: string
+          id?: string
+          sprint_id?: string
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sprint_miro_boards_sprint_id_fkey"
             columns: ["sprint_id"]
             isOneToOne: false
             referencedRelation: "sprints"
