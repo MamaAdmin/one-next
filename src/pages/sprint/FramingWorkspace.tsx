@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info, ChevronDown } from "lucide-react";
+import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info, ChevronDown, Users } from "lucide-react";
 import {
   useFramingSession,
   useFramingSteps,
@@ -16,11 +16,12 @@ import {
 import { FRAMING_STEPS, FRAMING_TOTAL_MIN, getFramingStepByIndex } from "@/features/framing/steps";
 import FramingStepCard from "@/components/framing/FramingStepCard";
 import FramingCompletionPanel from "@/components/framing/FramingCompletionPanel";
+import FramingTeamGate from "@/components/framing/FramingTeamGate";
 import type { FramingStepData } from "@/features/framing/types";
 
 export default function FramingWorkspace() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const sessionQ = useFramingSession(id);
   const stepsQ = useFramingSteps(id);
   const saveStep = useSaveFramingStep(id ?? "");
@@ -28,6 +29,7 @@ export default function FramingWorkspace() {
   const [showCompletion, setShowCompletion] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const showTeam = searchParams.get("view") === "team";
 
   function afterNavAction() {
     if (typeof window === "undefined") return;
@@ -71,7 +73,24 @@ export default function FramingWorkspace() {
     await saveStep.mutateAsync({ step_key: currentDef.key, data, completed: opts?.completed });
   }
 
+  function clearTeamView() {
+    if (searchParams.get("view") === "team") {
+      const next = new URLSearchParams(searchParams);
+      next.delete("view");
+      setSearchParams(next, { replace: true });
+    }
+  }
+
+  function openTeamView() {
+    const next = new URLSearchParams(searchParams);
+    next.set("view", "team");
+    setSearchParams(next, { replace: true });
+    setShowCompletion(false);
+    afterNavAction();
+  }
+
   async function goTo(idx: number) {
+    clearTeamView();
     setShowCompletion(false);
     await setCurrent.mutateAsync(idx);
     afterNavAction();
@@ -178,17 +197,34 @@ export default function FramingWorkspace() {
               aria-expanded={navOpen}
             >
               <span className="truncate">
-                {showCompletion
-                  ? "Abschluss · Challenge Statement"
-                  : `Schritt ${currentDef.index}: ${currentDef.title}`}
+                {showTeam
+                  ? "Team-Konstellation"
+                  : showCompletion
+                    ? "Abschluss · Challenge Statement"
+                    : `Schritt ${currentDef.index}: ${currentDef.title}`}
               </span>
               <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
             </button>
             <nav className={`space-y-1 ${navOpen ? "block" : "hidden"} lg:block`}>
+              <button
+                type="button"
+                onClick={openTeamView}
+                className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors ${
+                  showTeam
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "hover:bg-muted"
+                }`}
+              >
+                <Users className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                <span>
+                  <span className="text-xs text-muted-foreground block">Vor dem Start</span>
+                  Team-Konstellation
+                </span>
+              </button>
               {FRAMING_STEPS.map((def) => {
                 const row = steps.find((s) => s.step_key === def.key);
                 const done = !!row?.completed_at;
-                const isCurrent = def.key === currentDef.key && !showCompletion;
+                const isCurrent = def.key === currentDef.key && !showCompletion && !showTeam;
                 const isIntro = def.variant === "intro";
                 return (
                   <button
@@ -226,7 +262,7 @@ export default function FramingWorkspace() {
 
               <button
                 type="button"
-                onClick={() => { setShowCompletion(true); afterNavAction(); }}
+                onClick={() => { clearTeamView(); setShowCompletion(true); afterNavAction(); }}
                 disabled={completedCount < 10}
                 className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors mt-2 ${
                   showCompletion
@@ -243,7 +279,15 @@ export default function FramingWorkspace() {
           </aside>
 
           <div ref={contentRef} className="space-y-6 scroll-mt-20">
-            {showCompletion ? (
+            {showTeam ? (
+              <FramingTeamGate
+                sprintId={session.resulting_sprint_id ?? null}
+                onContinue={() => {
+                  clearTeamView();
+                  goTo(session.current_step && session.current_step > 0 ? session.current_step : 1);
+                }}
+              />
+            ) : showCompletion ? (
               <FramingCompletionPanel session={session} steps={steps} />
             ) : (
               <>
