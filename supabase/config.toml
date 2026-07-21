@@ -62,6 +62,9 @@ verify_jwt = true
 [functions.miro-oauth-complete]
 verify_jwt = true
 
+[functions.miro-oauth-callback]
+verify_jwt = false
+
 [functions.miro-create-crazy8-board]
 verify_jwt = true
 
