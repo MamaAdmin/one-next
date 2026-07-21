@@ -1,4 +1,6 @@
 // Returns a Miro OAuth authorize URL for the current user.
+// Uses a stable Edge-Function callback so only one redirect URI has to be
+// registered in the Miro app, regardless of preview/production origin.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const MIRO_AUTH_URL = "https://miro.com/oauth/authorize";
@@ -7,6 +9,23 @@ function envRequired(name: string): string {
   const v = Deno.env.get(name);
   if (!v) throw new Error(`Missing env: ${name}`);
   return v;
+}
+
+function isAllowedOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname;
+    return (
+      host === "one-next.com" ||
+      host === "www.one-next.com" ||
+      host === "one-next.lovable.app" ||
+      host.endsWith(".lovable.app") ||
+      host.endsWith(".lovableproject.com")
+    );
+  } catch {
+    return false;
+  }
 }
 
 function getUserId(req: Request): Promise<string> {
@@ -27,9 +46,9 @@ function getUserId(req: Request): Promise<string> {
   })();
 }
 
-async function signState(userId: string, secret: string): Promise<string> {
+async function signState(userId: string, origin: string, secret: string): Promise<string> {
   const nonce = crypto.randomUUID();
-  const payload = `${userId}.${nonce}.${Date.now()}`;
+  const payload = `${userId}.${nonce}.${Date.now()}.${btoa(origin)}`;
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
@@ -48,16 +67,16 @@ Deno.serve(async (req) => {
     const userId = await getUserId(req);
     const body = await req.json().catch(() => ({}));
     const origin = typeof body?.origin === "string" ? body.origin : req.headers.get("origin");
-    if (!origin) {
-      return new Response(JSON.stringify({ error: "missing_origin" }), {
+    if (!origin || !isAllowedOrigin(origin)) {
+      return new Response(JSON.stringify({ error: "invalid_origin" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     const clientId = envRequired("MIRO_CLIENT_ID");
     const secret = envRequired("SUPABASE_SERVICE_ROLE_KEY");
-    const state = await signState(userId, secret);
-    const redirectUri = `${origin}/miro/callback`;
+    const state = await signState(userId, origin, secret);
+    const redirectUri = `${envRequired("SUPABASE_URL")}/functions/v1/miro-oauth-callback`;
     const params = new URLSearchParams({
       response_type: "code",
       client_id: clientId,

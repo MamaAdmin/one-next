@@ -16,6 +16,7 @@ export default function MiroCallback() {
       const url = new URL(window.location.href);
       const code = url.searchParams.get("code");
       const state = url.searchParams.get("state");
+      const redirectUri = url.searchParams.get("redirect_uri");
       const errParam = url.searchParams.get("error");
       if (errParam) {
         setStatus("error");
@@ -23,13 +24,12 @@ export default function MiroCallback() {
         window.opener?.postMessage({ type: "miro-oauth", ok: false, error: errParam }, window.location.origin);
         return;
       }
-      if (!code || !state) {
+      if (!code || !state || !redirectUri) {
         setStatus("error");
-        setMessage("Ungültige Antwort von Miro (code oder state fehlt).");
+        setMessage("Ungültige Antwort von Miro (code, state oder redirect_uri fehlt).");
         window.opener?.postMessage({ type: "miro-oauth", ok: false, error: "missing_params" }, window.location.origin);
         return;
       }
-      const redirectUri = `${window.location.origin}/miro/callback`;
       const { data, error } = await supabase.functions.invoke("miro-oauth-complete", {
         body: { code, state, redirect_uri: redirectUri },
       });
