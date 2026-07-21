@@ -74,6 +74,7 @@ import AcceptSprintInvitation from "./pages/sprint/AcceptSprintInvitation";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import MiroCallback from "./pages/MiroCallback";
 import Unsubscribe from "./pages/Unsubscribe";
+import DesignSystem from "./pages/DesignSystem";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
 
