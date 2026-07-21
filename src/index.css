@@ -61,6 +61,78 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 25 15% 18%;
     --sidebar-border: 30 14% 82%;
     --sidebar-ring: 208 26% 48%;
+
+    /* =========================================================
+       Corporate Design Token System
+       Brand · Neutral · Surface · Text · Semantic
+       All values are HSL. Map through tailwind.config.ts.
+       ========================================================= */
+
+    /* Brand */
+    --brand-primary: 210 28% 26%;
+    --brand-primary-foreground: 36 30% 96%;
+    --brand-secondary: 32 18% 88%;
+    --brand-secondary-foreground: 25 15% 18%;
+    --brand-accent: 210 28% 32%;
+    --brand-accent-foreground: 36 30% 96%;
+    --brand-background: 36 28% 94%;
+    --brand-background-foreground: 25 15% 14%;
+
+    /* Neutral — warm grey scale, cream to charcoal */
+    --neutral-50:  36 30% 98%;
+    --neutral-100: 36 28% 94%;
+    --neutral-200: 34 22% 90%;
+    --neutral-300: 32 18% 84%;
+    --neutral-400: 30 14% 74%;
+    --neutral-500: 25 12% 40%;
+    --neutral-600: 25 10% 45%;
+    --neutral-700: 25 12% 32%;
+    --neutral-800: 25 14% 22%;
+    --neutral-900: 25 15% 14%;
+    --neutral-950: 24 18% 10%;
+
+    /* Surface */
+    --surface-default: 36 30% 97%;
+    --surface-default-foreground: 25 15% 14%;
+    --surface-elevated: 36 28% 98%;
+    --surface-elevated-foreground: 25 15% 14%;
+    --surface-overlay: 36 30% 100%;
+    --surface-overlay-foreground: 25 15% 14%;
+    --surface-sunken: 34 22% 90%;
+    --surface-sunken-foreground: 25 15% 18%;
+
+    /* Text */
+    --text-default: 25 15% 14%;
+    --text-muted: 25 10% 40%;
+    --text-placeholder: 25 12% 38%;
+    --text-on-dark: 36 22% 92%;
+    --text-on-primary: 36 30% 96%;
+    --text-on-accent: 36 30% 96%;
+
+    /* Semantic feedback */
+    --success: 145 38% 34%;
+    --success-foreground: 36 30% 96%;
+    --success-soft: 145 30% 92%;
+    --success-soft-foreground: 145 35% 22%;
+    --success-strong: 145 40% 28%;
+
+    --warning: 38 70% 48%;
+    --warning-foreground: 25 15% 14%;
+    --warning-soft: 38 60% 92%;
+    --warning-soft-foreground: 38 70% 28%;
+    --warning-strong: 38 80% 38%;
+
+    --error: 8 55% 42%;
+    --error-foreground: 36 30% 96%;
+    --error-soft: 8 45% 92%;
+    --error-soft-foreground: 8 55% 28%;
+    --error-strong: 8 65% 32%;
+
+    --info: 210 28% 32%;
+    --info-foreground: 36 30% 96%;
+    --info-soft: 210 30% 92%;
+    --info-soft-foreground: 210 30% 24%;
+    --info-strong: 210 32% 26%;
   }
 
   .dark {
@@ -113,6 +185,72 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 36 22% 92%;
     --sidebar-border: 210 14% 22%;
     --sidebar-ring: 208 40% 62%;
+
+    /* Corporate Design Token System — dark mode */
+    --brand-primary: 36 22% 92%;
+    --brand-primary-foreground: 210 20% 10%;
+    --brand-secondary: 210 15% 18%;
+    --brand-secondary-foreground: 36 22% 92%;
+    --brand-accent: 208 40% 62%;
+    --brand-accent-foreground: 210 25% 12%;
+    --brand-background: 210 20% 10%;
+    --brand-background-foreground: 36 22% 92%;
+
+    /* Neutral — inverted for dark surfaces */
+    --neutral-50:  210 18% 12%;
+    --neutral-100: 210 18% 14%;
+    --neutral-200: 210 16% 18%;
+    --neutral-300: 210 14% 26%;
+    --neutral-400: 210 12% 38%;
+    --neutral-500: 210 10% 52%;
+    --neutral-600: 34 12% 62%;
+    --neutral-700: 34 14% 74%;
+    --neutral-800: 36 18% 86%;
+    --neutral-900: 36 22% 92%;
+    --neutral-950: 36 24% 96%;
+
+    /* Surface */
+    --surface-default: 210 18% 13%;
+    --surface-default-foreground: 36 22% 92%;
+    --surface-elevated: 210 16% 16%;
+    --surface-elevated-foreground: 36 22% 92%;
+    --surface-overlay: 210 18% 20%;
+    --surface-overlay-foreground: 36 22% 92%;
+    --surface-sunken: 210 20% 10%;
+    --surface-sunken-foreground: 36 22% 92%;
+
+    /* Text */
+    --text-default: 36 22% 92%;
+    --text-muted: 34 12% 68%;
+    --text-placeholder: 210 10% 52%;
+    --text-on-dark: 36 22% 92%;
+    --text-on-primary: 210 20% 10%;
+    --text-on-accent: 210 25% 12%;
+
+    /* Semantic feedback — lifted for dark */
+    --success: 145 45% 52%;
+    --success-foreground: 210 20% 10%;
+    --success-soft: 210 18% 16%;
+    --success-soft-foreground: 145 45% 72%;
+    --success-strong: 145 50% 62%;
+
+    --warning: 42 80% 58%;
+    --warning-foreground: 210 20% 10%;
+    --warning-soft: 210 18% 16%;
+    --warning-soft-foreground: 42 80% 68%;
+    --warning-strong: 42 85% 68%;
+
+    --error: 8 65% 52%;
+    --error-foreground: 36 22% 92%;
+    --error-soft: 210 18% 16%;
+    --error-soft-foreground: 8 65% 72%;
+    --error-strong: 8 70% 62%;
+
+    --info: 208 40% 62%;
+    --info-foreground: 210 25% 12%;
+    --info-soft: 210 18% 16%;
+    --info-soft-foreground: 208 45% 84%;
+    --info-strong: 208 50% 72%;
   }
 }
 

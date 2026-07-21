@@ -1,75 +1,62 @@
-# Umbau: Framing → Team → Sprint
+## Ziel
+Die bestehende one-next-Palette (warmes Creme, Schieferblau, Taupe, Charcoal) wird zu einem vollständigen, skalierbaren Corporate-Design-Farbsystem ausgebaut. Alle Farben landen als semantische CSS-Variablen in `src/index.css` und als Tailwind-Tokens in `tailwind.config.ts`, damit sie im gesamten Projekt konsistent verwendet werden können.
 
-Ziel: Der Design Sprint entsteht ausschließlich beim Abschluss des Problem Framings. Das Framing wird vom Moderator (Ersteller) gestartet, und die Team-Konstellation ist immer die erste Seite. Steht das Team bereits, wird es beim Sprint-Start nicht erneut abgefragt; fehlt es, holt der Kickoff es nach.
+## Aktueller Stand (bestätigt durch Code-Read)
+- `src/index.css` enthält bereits eine erste Token-Ebene: `--background`, `--foreground`, `--primary`, `--secondary`, `--accent`, `--muted`, `--destructive`, `--border`, `--ring` usw.
+- `tailwind.config.ts` mapped diese Tokens auf `colors` und `backgroundImage`/`boxShadow`.
+- Es fehlt aber ein systematisches Corporate-Design-Set: keine klaren Brand-Primär-/Sekundär-/Tertiär-Farben, keine ausgewachsene Neutral-Skala, keine semantischen Status- und Feedback-Farben.
 
-## Neuer End-to-End-Flow
+## Schritte
 
-```text
-/sprint/neu
-  → Framing-Session anlegen (owner = Moderator)     ← KEIN Sprint mehr an dieser Stelle
-  → redirect: /sprint/framing/:id  (Schritt "Team")
-       ├─ Team-Konstellation (TeamRoleGrid)         ← neuer Pflicht-Erststep
-       │   • Moderator = Ersteller (fix, nicht änderbar)
-       │   • Rollen + E-Mail-Einladungen (wie heute im Sprint)
-       │   • "Weiter" nur wenn Moderator gesetzt
-       └─ Steps 1–10 (Problem Framing wie bisher)
-  → FramingCompletionPanel.handleFinish()
-       • erzeugt jetzt IMMER frisch den Sprint
-       • kopiert framing_team_members → sprint_members
-       • setzt framing_sessions.resulting_sprint_id
-       → /sprint/:id/kickoff
-            • Team ist vorbefüllt → nur Handover + "Sprint starten"
-            • Ist das Team leer (Alt-Sessions/Edge-Case): Kickoff zeigt
-              TeamRoleGrid erneut als Pflichtblock vor dem Start
-```
+### 1. Farbstrategie definieren
+Auf Basis der gewählten Richtung **Cream & Slate** entwickeln wir:
+- **Brand-Primär**: Tiefes Schieferblau (bestehendes `--primary`)
+- **Brand-Sekundär**: Warmes Taupe/Stone (bestehendes `--secondary`)
+- **Brand-Akzent**: Dusty Slate Blue (bestehendes `--accent`)
+- **Brand-Hintergrund**: Warmes Cremeweiß (bestehendes `--background`)
+- **Neutral-Skala**: 10–12 Abstufungen von Creme bis Charcoal
+- **Semantische Farben**: Erfolg, Warnung, Fehler, Info – jeweils in HSL und auf die bestehende Palette abgestimmt
+- **Dunkelmodus**: Gegenentwurf für alle neuen Tokens
 
-## Wesentliche Änderungen
+### 2. Token-Architektur in `src/index.css` erweitern
+- Neue Variablen ergänzen, ohne bestehende zu zerstören (Abwärtskompatibilität):
+  - `--brand-primary`, `--brand-secondary`, `--brand-accent`
+  - `--neutral-50` … `--neutral-950`
+  - `--success`, `--warning`, `--error`, `--info` (inkl. `-foreground`, `-soft`, `-strong`)
+  - `--surface-default`, `--surface-elevated`, `--surface-overlay`
+  - `--text-default`, `--text-muted`, `--text-placeholder`, `--text-on-dark`
+- Bestehende Tokens bleiben erhalten und werden auf die neuen Brand-Tokens abgebildet, wo sinnvoll.
 
-### 1. `SprintNew.tsx` — keine Sprint-Vorab-Erzeugung mehr
-- „Team steht schon?"-Abfrage entfällt komplett.
-- Nach Anlegen der Framing-Session direkt weiter zu `/sprint/framing/:id`.
-- `SprintTeamSetup.tsx` und Route `/sprint/:id/team` werden nicht mehr aus diesem Pfad angesprungen (Datei/Route bleiben zunächst bestehen, aber ohne Einstiegspunkt).
+### 3. Tailwind-Config erweitern
+- Neue Farb-Keys in `theme.extend.colors` ergänzen:
+  - `brand.primary`, `brand.secondary`, `brand.accent`
+  - `neutral.*`
+  - `success`, `warning`, `error`, `info`
+  - `surface.*`, `text.*`
+- Sicherstellen, dass alle neuen Werte auf `hsl(var(--...))` verweisen.
 
-### 2. Team-Konstellation als Framing-Schritt „team"
-- `FRAMING_STEPS` in `src/features/framing/steps.ts` bekommt einen neuen ersten inhaltlichen Eintrag `team` vor dem heutigen Schritt „1 – Kick-off & Zielbild".
-- `FramingWorkspace.tsx` rendert für diesen Step eine neue Komponente `FramingTeamStep`, die `TeamRoleGrid` einbindet — aber gegen Framing-Team-Daten statt `sprint_members`.
-- Fortschritt ist blockiert, solange kein Moderator gesetzt ist (Moderator = `framing_sessions.owner_id`, wird beim Öffnen automatisch als Karte angezeigt und ist nicht löschbar).
+### 4. Kontrast & Accessibility prüfen
+- Für jede neu definierte Vordergrundfarbe auf den entsprechenden Hintergründen prüfen, ob WCAG-AA-Kontrast erreicht wird.
+- Ggf. Anpassungen an HSL-Lightness vornehmen, bis alle Kombinationen AA-konform sind.
 
-### 3. Team-Daten am Framing statt am Sprint
-- Neue Tabelle `framing_team_members` (Spiegel von `sprint_members`, aber `session_id` statt `sprint_id`).
-  - Spalten: `id, session_id, user_id nullable, email, full_name, rolle, created_at`.
-  - RLS analog `sprint_members` über `is_framing_member` / `can_edit_framing`.
-  - GRANT SELECT/INSERT/UPDATE/DELETE authenticated, ALL service_role.
-- Bestehende `sprint_invitations`-Logik wird generalisiert oder gespiegelt in `framing_invitations` (Einladungs-Mails via bestehende `send-sprint-team-invite`-Infrastruktur, angepasst auf Framing-Kontext & Landing auf Framing statt Sprint).
-- Nicht angerührt: `framing_members` (Viewer/Editor-Sharing) — bleibt wie es ist.
+### 5. Interne Referenz erstellen
+- Neues Komponente/Seite `src/components/design/ColorTokens.tsx` oder `src/pages/DesignSystem.tsx` anlegen.
+- Zeigt alle Brand-, Neutral- und Semantik-Farben mit Namen, HSL-Wert und Vordergrund-Kontrast.
+- Nicht öffentlich verlinken; dient als interne Dokumentation im Preview.
 
-### 4. Sprint-Erzeugung nur noch am Framing-Ende
-- `FramingCompletionPanel.handleFinish()`
-  - Immer neuer Sprint-Insert (Vorab-Sprint entfällt, weil unter Punkt 1 nie mehr erzeugt).
-  - Direkt nach Insert (nach Trigger `add_sprint_moderator`) Kopie: alle Zeilen aus `framing_team_members` → `sprint_members` (Moderator-Zeile via Trigger bereits vorhanden, wird per Upsert nicht doppelt eingefügt).
-  - `framing_sessions.resulting_sprint_id` wie bisher setzen.
-- „Sprint aus Framing erzeugen"-Button im Dashboard bleibt, führt weiter ins Framing (dort dann Abschluss).
+### 6. Migration der hartcodierten Farben (optional, falls im Scope gewünscht)
+- Suche nach `text-white`, `bg-black`, `bg-[#...]`, `text-blue-600` etc. im `src/`-Code.
+- Ersetzen durch semantische Tokens aus dem neuen System.
+- Hinweis: Das passiert nur, wenn du es explizit willst; sonst bleiben bestehende hartcodierte Utility-Klassen unverändert.
 
-### 5. Kickoff verhält sich fallweise
-- `SprintKickoff.tsx`: wenn `sprint_members` bereits Rollen enthält (Regelfall aus Framing-Übernahme) → nur Handover + „Sprint starten" wie heute.
-- Wenn leer (Alt-Sprints oder Edge-Case) → TeamRoleGrid als Pflichtblock, Start bleibt gesperrt bis Moderator vorhanden.
+## Deliverables
+- Erweiterte `src/index.css` mit vollständigem semantischen Token-Set
+- Erweiterte `tailwind.config.ts` mit neuen Farb-Keys
+- Interne Farbreferenz-Komponente/Seite
+- Kurze Dokumentation der Farbregeln (z. B. im Projekt-Memory)
 
-### 6. „Moderator startet Framing"
-- Da die Framing-Session mit `owner_id = auth.uid()` angelegt wird, ist der Ersteller technisch Moderator. Die UI benennt das explizit: im Team-Step ist die Moderator-Karte vorbelegt und nicht entfernbar; andere User (per Einladung) sehen die Session read-only bzw. als Mitglied entsprechend `framing_members.rolle`.
-- Kein zusätzliches Route-Gating nötig — `RequireAuth` genügt, weil Framing-Ownership über RLS geregelt bleibt.
+## Nicht im Scope
+- Keine Änderung an Layout, Typografie oder Komponenten-Logik
+- Keine öffentliche Design-System-Landingpage (nur interne Referenz)
 
-## Datenmodell — Migration
-
-- `CREATE TABLE public.framing_team_members (...)` inkl. `GRANT` + RLS + Policies analog `sprint_members`.
-- Optional (Phase 2): `framing_invitations` analog `sprint_invitations`, sonst Wiederverwendung mit zusätzlichem `session_id`-Feld.
-- Keine Änderung an `sprints`, `sprint_members`, `framing_sessions` außer dass `resulting_sprint_id` weiterhin genutzt wird.
-
-## Nicht Teil dieses Umbaus
-
-- Kein Zusammenlegen von `framing_members` (Sharing) und `framing_team_members` (Sprint-Team) — bewusst getrennte Konzepte.
-- Miro bleibt ausgeblendet wie zuletzt.
-- `SprintTeamSetup.tsx` wird nicht gelöscht, nur nicht mehr verlinkt (Aufräumen kann später erfolgen).
-
-## Offene Frage (bitte kurz bestätigen, sonst nehme ich die Standardannahme)
-
-- **Standardannahme**: Alt-Framings ohne Team-Step landen beim Öffnen weiterhin direkt auf ihrem alten Step; der neue „team"-Step wird nur für ab jetzt neu erstellte Sessions erzwungen. → OK so, oder soll der Team-Step auch für bestehende offene Sessions Pflicht werden?
+Sobald du den Plan freigibst, baue ich das Token-System Schritt für Schritt um.

@@ -74,6 +74,98 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        /* Corporate Design Token System */
+        brand: {
+          primary: {
+            DEFAULT: "hsl(var(--brand-primary))",
+            foreground: "hsl(var(--brand-primary-foreground))",
+          },
+          secondary: {
+            DEFAULT: "hsl(var(--brand-secondary))",
+            foreground: "hsl(var(--brand-secondary-foreground))",
+          },
+          accent: {
+            DEFAULT: "hsl(var(--brand-accent))",
+            foreground: "hsl(var(--brand-accent-foreground))",
+          },
+          background: {
+            DEFAULT: "hsl(var(--brand-background))",
+            foreground: "hsl(var(--brand-background-foreground))",
+          },
+        },
+        neutral: {
+          50: "hsl(var(--neutral-50))",
+          100: "hsl(var(--neutral-100))",
+          200: "hsl(var(--neutral-200))",
+          300: "hsl(var(--neutral-300))",
+          400: "hsl(var(--neutral-400))",
+          500: "hsl(var(--neutral-500))",
+          600: "hsl(var(--neutral-600))",
+          700: "hsl(var(--neutral-700))",
+          800: "hsl(var(--neutral-800))",
+          900: "hsl(var(--neutral-900))",
+          950: "hsl(var(--neutral-950))",
+        },
+        surface: {
+          DEFAULT: "hsl(var(--surface-default))",
+          foreground: "hsl(var(--surface-default-foreground))",
+          elevated: {
+            DEFAULT: "hsl(var(--surface-elevated))",
+            foreground: "hsl(var(--surface-elevated-foreground))",
+          },
+          overlay: {
+            DEFAULT: "hsl(var(--surface-overlay))",
+            foreground: "hsl(var(--surface-overlay-foreground))",
+          },
+          sunken: {
+            DEFAULT: "hsl(var(--surface-sunken))",
+            foreground: "hsl(var(--surface-sunken-foreground))",
+          },
+        },
+        text: {
+          DEFAULT: "hsl(var(--text-default))",
+          muted: "hsl(var(--text-muted))",
+          placeholder: "hsl(var(--text-placeholder))",
+          "on-dark": "hsl(var(--text-on-dark))",
+          "on-primary": "hsl(var(--text-on-primary))",
+          "on-accent": "hsl(var(--text-on-accent))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+          soft: {
+            DEFAULT: "hsl(var(--success-soft))",
+            foreground: "hsl(var(--success-soft-foreground))",
+          },
+          strong: "hsl(var(--success-strong))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+          soft: {
+            DEFAULT: "hsl(var(--warning-soft))",
+            foreground: "hsl(var(--warning-soft-foreground))",
+          },
+          strong: "hsl(var(--warning-strong))",
+        },
+        error: {
+          DEFAULT: "hsl(var(--error))",
+          foreground: "hsl(var(--error-foreground))",
+          soft: {
+            DEFAULT: "hsl(var(--error-soft))",
+            foreground: "hsl(var(--error-soft-foreground))",
+          },
+          strong: "hsl(var(--error-strong))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+          soft: {
+            DEFAULT: "hsl(var(--info-soft))",
+            foreground: "hsl(var(--info-soft-foreground))",
+          },
+          strong: "hsl(var(--info-strong))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

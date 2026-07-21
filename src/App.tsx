@@ -74,6 +74,7 @@ import AcceptSprintInvitation from "./pages/sprint/AcceptSprintInvitation";
 import FramingWorkspace from "./pages/sprint/FramingWorkspace";
 import MiroCallback from "./pages/MiroCallback";
 import Unsubscribe from "./pages/Unsubscribe";
+import DesignSystem from "./pages/DesignSystem";
 import RequireAuth from "./components/sprint/RequireAuth";
 import FeedbackWidget from "./components/FeedbackWidget";
 
@@ -128,6 +129,8 @@ const App = () => (
           <Route path="/admin/lms/toolbox/:toolId" element={<LMSToolboxEditor />} />
           <Route path="/admin/bmad/sessions" element={<BMADSessionDashboard />} />
           <Route path="/admin/kurse" element={<PublicCourseDashboard />} />
+          {/* Internal design reference — not linked from navigation */}
+          <Route path="/admin/design-system" element={<DesignSystem />} />
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
             <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
             <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
