@@ -104,7 +104,7 @@ All colors MUST be HSL.
     /* Text */
     --text-default: 25 15% 14%;
     --text-muted: 25 10% 40%;
-    --text-placeholder: 25 12% 48%;
+    --text-placeholder: 25 12% 38%;
     --text-on-dark: 36 22% 92%;
     --text-on-primary: 36 30% 96%;
     --text-on-accent: 36 30% 96%;
