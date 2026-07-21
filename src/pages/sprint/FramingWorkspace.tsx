@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ import type { FramingStepData } from "@/features/framing/types";
 
 export default function FramingWorkspace() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const sessionQ = useFramingSession(id);
   const stepsQ = useFramingSteps(id);
