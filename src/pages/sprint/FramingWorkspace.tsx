@@ -74,7 +74,24 @@ export default function FramingWorkspace() {
     await saveStep.mutateAsync({ step_key: currentDef.key, data, completed: opts?.completed });
   }
 
+  function clearTeamView() {
+    if (searchParams.get("view") === "team") {
+      const next = new URLSearchParams(searchParams);
+      next.delete("view");
+      setSearchParams(next, { replace: true });
+    }
+  }
+
+  function openTeamView() {
+    const next = new URLSearchParams(searchParams);
+    next.set("view", "team");
+    setSearchParams(next, { replace: true });
+    setShowCompletion(false);
+    afterNavAction();
+  }
+
   async function goTo(idx: number) {
+    clearTeamView();
     setShowCompletion(false);
     await setCurrent.mutateAsync(idx);
     afterNavAction();
