@@ -6,21 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Compass, Users } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useCreateFramingSession } from "@/hooks/useFraming";
 import { useCreateSprint } from "@/hooks/useSprint";
 import { supabase } from "@/integrations/supabase/client";
 
-type TeamAnswer = "yes" | "no";
-
 export default function SprintNew() {
   const navigate = useNavigate();
   const createFraming = useCreateFramingSession();
   const createSprint = useCreateSprint();
   const [framingTitel, setFramingTitel] = useState("");
-  const [teamAnswer, setTeamAnswer] = useState<TeamAnswer>("no");
   const [busy, setBusy] = useState(false);
 
   async function startFlow(e: React.FormEvent) {
@@ -38,34 +34,27 @@ export default function SprintNew() {
     try {
       const framing = await createFraming.mutateAsync({ titel_arbeitstitel: titel });
 
-      if (teamAnswer === "yes") {
-        // Pre-create sprint so team can be assigned before framing.
-        const sprint = await createSprint.mutateAsync({
-          titel,
-          problemstellung: "",
-          modus: "team",
-          decider: "",
-          sprint_leader: "",
-        });
-        // Link framing → sprint so completion updates instead of duplicating.
-        await supabase
-          .from("framing_sessions")
-          .update({ resulting_sprint_id: sprint.id })
-          .eq("id", framing.id);
+      // Sprint wird als „Team-Container" sofort vorangelegt, damit die Team-
+      // Konstellation (Rollen, Einladungen) über sprint_members verwaltet werden
+      // kann. Der Sprint bleibt für den Nutzer ausgeblendet, bis das Framing
+      // abgeschlossen ist — dann wird er im Dashboard sichtbar.
+      const sprint = await createSprint.mutateAsync({
+        titel,
+        problemstellung: "",
+        modus: "team",
+        decider: "",
+        sprint_leader: "",
+      });
+      await supabase
+        .from("framing_sessions")
+        .update({ resulting_sprint_id: sprint.id })
+        .eq("id", framing.id);
 
-
-        toast({
-          title: "Sprint angelegt",
-          description: "Stell dein Team zusammen, bevor das Framing startet.",
-        });
-        navigate(`/sprint/${sprint.id}/team`);
-      } else {
-        toast({
-          title: "Problem Framing gestartet",
-          description: "10 Schritte · ca. 3–4 Stunden.",
-        });
-        navigate(`/sprint/framing/${framing.id}`);
-      }
+      toast({
+        title: "Problem Framing gestartet",
+        description: "Starte mit der Team-Konstellation.",
+      });
+      navigate(`/sprint/framing/${framing.id}?view=team`);
     } catch (e) {
       toast({
         title: "Konnte nicht gestartet werden",
@@ -92,8 +81,10 @@ export default function SprintNew() {
             <span className="bg-gradient-primary bg-clip-text text-transparent">Sprint</span> starten
           </h1>
           <p className="text-muted-foreground mb-8">
-            Jeder Sprint beginnt mit einem Problem Framing – 10 Schritte, ca. 3–4 Stunden. Am Ende
-            entsteht der Sprint mit geschärfter Sprint-Frage.
+            Als <strong>Moderator</strong> startest du das Problem Framing. Erste Seite ist immer die
+            Team-Konstellation — du lädst dein Team per E-Mail ein. Anschließend führt euch das
+            Framing in 10 Schritten (ca. 3–4 Stunden) zum Challenge Statement. Der Design Sprint
+            entsteht erst mit Abschluss des Framings.
           </p>
 
           <Card className="border-none shadow-xl">
@@ -118,43 +109,12 @@ export default function SprintNew() {
                   </p>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-primary" />
-                    <Label>Steht dein Team schon?</Label>
-                  </div>
-                  <RadioGroup
-                    value={teamAnswer}
-                    onValueChange={(v) => setTeamAnswer(v as TeamAnswer)}
-                    className="space-y-2"
-                  >
-                    <label
-                      htmlFor="team-yes"
-                      className="flex items-start gap-3 rounded-lg border p-3 cursor-pointer hover:bg-muted/40"
-                    >
-                      <RadioGroupItem value="yes" id="team-yes" className="mt-0.5" />
-                      <div>
-                        <div className="font-medium">Ja, das Team steht</div>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          Wir stellen zuerst die Rollen zusammen (Decider, Experten). Danach startet
-                          das Problem Framing.
-                        </p>
-                      </div>
-                    </label>
-                    <label
-                      htmlFor="team-no"
-                      className="flex items-start gap-3 rounded-lg border p-3 cursor-pointer hover:bg-muted/40"
-                    >
-                      <RadioGroupItem value="no" id="team-no" className="mt-0.5" />
-                      <div>
-                        <div className="font-medium">Noch nicht</div>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          Wir starten direkt mit dem Framing. Das Team stellst du danach beim
-                          Kickoff zusammen.
-                        </p>
-                      </div>
-                    </label>
-                  </RadioGroup>
+                <div className="rounded-lg border bg-muted/30 p-3 text-xs text-muted-foreground flex gap-2">
+                  <Users className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>
+                    Du bist automatisch <strong>Moderator</strong> dieses Vorhabens. Der Account
+                    liegt bei dir, alle eingeladenen Personen arbeiten auf deinem Vorhaben.
+                  </span>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-2">
@@ -166,11 +126,7 @@ export default function SprintNew() {
                     className="bg-gradient-primary hover:opacity-90"
                     disabled={busy}
                   >
-                    {busy
-                      ? "Wird gestartet …"
-                      : teamAnswer === "yes"
-                        ? "Team zusammenstellen"
-                        : "Problem Framing starten"}
+                    {busy ? "Wird gestartet …" : "Problem Framing starten"}
                   </Button>
                 </div>
               </form>
