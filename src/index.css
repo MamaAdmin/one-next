@@ -185,6 +185,72 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 36 22% 92%;
     --sidebar-border: 210 14% 22%;
     --sidebar-ring: 208 40% 62%;
+
+    /* Corporate Design Token System — dark mode */
+    --brand-primary: 36 22% 92%;
+    --brand-primary-foreground: 210 20% 10%;
+    --brand-secondary: 210 15% 18%;
+    --brand-secondary-foreground: 36 22% 92%;
+    --brand-accent: 208 40% 62%;
+    --brand-accent-foreground: 210 25% 12%;
+    --brand-background: 210 20% 10%;
+    --brand-background-foreground: 36 22% 92%;
+
+    /* Neutral — inverted for dark surfaces */
+    --neutral-50:  210 18% 12%;
+    --neutral-100: 210 18% 14%;
+    --neutral-200: 210 16% 18%;
+    --neutral-300: 210 14% 26%;
+    --neutral-400: 210 12% 38%;
+    --neutral-500: 210 10% 52%;
+    --neutral-600: 34 12% 62%;
+    --neutral-700: 34 14% 74%;
+    --neutral-800: 36 18% 86%;
+    --neutral-900: 36 22% 92%;
+    --neutral-950: 36 24% 96%;
+
+    /* Surface */
+    --surface-default: 210 18% 13%;
+    --surface-default-foreground: 36 22% 92%;
+    --surface-elevated: 210 16% 16%;
+    --surface-elevated-foreground: 36 22% 92%;
+    --surface-overlay: 210 18% 20%;
+    --surface-overlay-foreground: 36 22% 92%;
+    --surface-sunken: 210 20% 10%;
+    --surface-sunken-foreground: 36 22% 92%;
+
+    /* Text */
+    --text-default: 36 22% 92%;
+    --text-muted: 34 12% 68%;
+    --text-placeholder: 210 10% 52%;
+    --text-on-dark: 36 22% 92%;
+    --text-on-primary: 210 20% 10%;
+    --text-on-accent: 210 25% 12%;
+
+    /* Semantic feedback — lifted for dark */
+    --success: 145 45% 52%;
+    --success-foreground: 210 20% 10%;
+    --success-soft: 210 18% 16%;
+    --success-soft-foreground: 145 45% 72%;
+    --success-strong: 145 50% 62%;
+
+    --warning: 42 80% 58%;
+    --warning-foreground: 210 20% 10%;
+    --warning-soft: 210 18% 16%;
+    --warning-soft-foreground: 42 80% 68%;
+    --warning-strong: 42 85% 68%;
+
+    --error: 8 65% 52%;
+    --error-foreground: 36 22% 92%;
+    --error-soft: 210 18% 16%;
+    --error-soft-foreground: 8 65% 72%;
+    --error-strong: 8 70% 62%;
+
+    --info: 208 40% 62%;
+    --info-foreground: 210 25% 12%;
+    --info-soft: 210 18% 16%;
+    --info-soft-foreground: 208 45% 84%;
+    --info-strong: 208 50% 72%;
   }
 }
 
