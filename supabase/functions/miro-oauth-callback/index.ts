@@ -95,7 +95,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const redirectUri = `${url.origin}/functions/v1/miro-oauth-callback`;
+    const redirectUri = `${envRequired("SUPABASE_URL")}/functions/v1/miro-oauth-callback`;
     const target = new URL(`${decoded.origin}/miro/callback`);
     target.searchParams.set("code", code);
     target.searchParams.set("state", state);
