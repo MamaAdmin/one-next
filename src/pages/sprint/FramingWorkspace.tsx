@@ -280,7 +280,15 @@ export default function FramingWorkspace() {
           </aside>
 
           <div ref={contentRef} className="space-y-6 scroll-mt-20">
-            {showCompletion ? (
+            {showTeam ? (
+              <FramingTeamGate
+                sprintId={session.resulting_sprint_id ?? null}
+                onContinue={() => {
+                  clearTeamView();
+                  goTo(session.current_step && session.current_step > 0 ? session.current_step : 1);
+                }}
+              />
+            ) : showCompletion ? (
               <FramingCompletionPanel session={session} steps={steps} />
             ) : (
               <>
