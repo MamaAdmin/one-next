@@ -46,9 +46,9 @@ function getUserId(req: Request): Promise<string> {
   })();
 }
 
-async function signState(userId: string, secret: string): Promise<string> {
+async function signState(userId: string, origin: string, secret: string): Promise<string> {
   const nonce = crypto.randomUUID();
-  const payload = `${userId}.${nonce}.${Date.now()}`;
+  const payload = `${userId}.${nonce}.${Date.now()}.${btoa(origin)}`;
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
