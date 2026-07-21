@@ -10,6 +10,10 @@ function envRequired(name: string): string {
   return v;
 }
 
+function expectedRedirectUri(): string {
+  return `${envRequired("SUPABASE_URL")}/functions/v1/miro-oauth-callback`;
+}
+
 async function verifyState(state: string, userId: string, secret: string): Promise<boolean> {
   const [payloadB64, sigB64] = state.split(".");
   if (!payloadB64 || !sigB64) return false;
