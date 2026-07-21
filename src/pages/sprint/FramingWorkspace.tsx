@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info, ChevronDown } from "lucide-react";
+import { CheckCircle2, Circle, Dot, Timer, Play, Pause, RotateCcw, Flag, Info, ChevronDown, Users } from "lucide-react";
 import {
   useFramingSession,
   useFramingSteps,
@@ -16,11 +16,13 @@ import {
 import { FRAMING_STEPS, FRAMING_TOTAL_MIN, getFramingStepByIndex } from "@/features/framing/steps";
 import FramingStepCard from "@/components/framing/FramingStepCard";
 import FramingCompletionPanel from "@/components/framing/FramingCompletionPanel";
+import FramingTeamGate from "@/components/framing/FramingTeamGate";
 import type { FramingStepData } from "@/features/framing/types";
 
 export default function FramingWorkspace() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const sessionQ = useFramingSession(id);
   const stepsQ = useFramingSteps(id);
   const saveStep = useSaveFramingStep(id ?? "");
@@ -28,6 +30,7 @@ export default function FramingWorkspace() {
   const [showCompletion, setShowCompletion] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const showTeam = searchParams.get("view") === "team";
 
   function afterNavAction() {
     if (typeof window === "undefined") return;
