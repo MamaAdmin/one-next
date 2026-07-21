@@ -198,9 +198,11 @@ export default function FramingWorkspace() {
               aria-expanded={navOpen}
             >
               <span className="truncate">
-                {showCompletion
-                  ? "Abschluss · Challenge Statement"
-                  : `Schritt ${currentDef.index}: ${currentDef.title}`}
+                {showTeam
+                  ? "Team-Konstellation"
+                  : showCompletion
+                    ? "Abschluss · Challenge Statement"
+                    : `Schritt ${currentDef.index}: ${currentDef.title}`}
               </span>
               <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
             </button>
