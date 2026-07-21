@@ -67,16 +67,16 @@ Deno.serve(async (req) => {
     const userId = await getUserId(req);
     const body = await req.json().catch(() => ({}));
     const origin = typeof body?.origin === "string" ? body.origin : req.headers.get("origin");
-    if (!origin) {
-      return new Response(JSON.stringify({ error: "missing_origin" }), {
+    if (!origin || !isAllowedOrigin(origin)) {
+      return new Response(JSON.stringify({ error: "invalid_origin" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     const clientId = envRequired("MIRO_CLIENT_ID");
     const secret = envRequired("SUPABASE_SERVICE_ROLE_KEY");
-    const state = await signState(userId, secret);
-    const redirectUri = `${origin}/miro/callback`;
+    const state = await signState(userId, origin, secret);
+    const redirectUri = `${envRequired("SUPABASE_URL")}/functions/v1/miro-oauth-callback`;
     const params = new URLSearchParams({
       response_type: "code",
       client_id: clientId,
