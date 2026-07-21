@@ -60,7 +60,7 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.miro-oauth-complete]
-verify_jwt = true
+verify_jwt = false
 
 [functions.miro-oauth-callback]
 verify_jwt = false
