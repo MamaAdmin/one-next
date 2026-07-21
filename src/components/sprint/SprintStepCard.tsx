@@ -463,8 +463,8 @@ export default function SprintStepCard({
 
         </div>
 
-        {/* 2a. Miro-Board für Crazy 8s */}
-        {step.variant === "crazy8s" ? (
+        {/* 2a. Miro-Board für Crazy 8s – vorübergehend ausgeblendet, Code bleibt erhalten */}
+        {false && step.variant === "crazy8s" ? (
           <Crazy8sMiro
             sprint={sprint}
             stepKey={step.key}
