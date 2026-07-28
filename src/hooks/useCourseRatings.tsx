@@ -28,18 +28,18 @@ export const useCourseRatings = (courseId?: string) => {
 
     try {
       setLoading(true);
-      
-      // Load all ratings for course
-      const { data: ratingsData, error: ratingsError } = await supabase
-        .from("lms_course_ratings")
+
+      // Load public (anonymized) ratings for course display — no participant_id exposed
+      const { data: ratingsData, error: ratingsError } = await (supabase as any)
+        .from("lms_course_ratings_public")
         .select("*")
         .eq("course_id", courseId)
         .order("created_at", { ascending: false });
 
       if (ratingsError) throw ratingsError;
-      setRatings(ratingsData || []);
+      setRatings((ratingsData || []) as CourseRating[]);
 
-      // Load user's rating if logged in
+      // Load user's own rating (participant_id only visible to the owner)
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: participant } = await supabase
@@ -49,10 +49,13 @@ export const useCourseRatings = (courseId?: string) => {
           .maybeSingle();
 
         if (participant) {
-          const userRatingData = ratingsData?.find(
-            (r) => r.participant_id === participant.id
-          );
-          setUserRating(userRatingData || null);
+          const { data: ownRating } = await supabase
+            .from("lms_course_ratings")
+            .select("*")
+            .eq("course_id", courseId)
+            .eq("participant_id", participant.id)
+            .maybeSingle();
+          setUserRating((ownRating as CourseRating) || null);
         }
       }
     } catch (error) {
@@ -62,6 +65,7 @@ export const useCourseRatings = (courseId?: string) => {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     loadRatings();

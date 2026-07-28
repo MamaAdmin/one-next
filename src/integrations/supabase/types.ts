@@ -3014,6 +3014,45 @@ export type Database = {
       }
     }
     Views: {
+      lms_course_ratings_public: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          id: string | null
+          rating: number | null
+          review_text: string | null
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          rating?: number | null
+          review_text?: string | null
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          rating?: number | null
+          review_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lms_course_ratings_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lms_course_ratings_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "lms_courses_with_stats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lms_courses_with_stats: {
         Row: {
           author_avatar: string | null
