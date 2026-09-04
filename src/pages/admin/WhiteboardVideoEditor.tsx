@@ -79,7 +79,7 @@ const WhiteboardVideoEditor = () => {
       setProject(loaded);
       setTitle(loaded.title);
       setTopic(loaded.topic);
-      setVoice(loaded.voice || "Charlotte");
+      setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
       setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
       setKieVideoUrl(loaded.video_url);
     };
@@ -140,13 +140,15 @@ const WhiteboardVideoEditor = () => {
   const runImages = async () => {
     setWorking("images");
     try {
-      const next = [...scenes];
-      for (let i = 0; i < next.length; i++) {
-        const prompt = next[i].imagePrompt || next[i].heading;
-        if (!prompt) continue;
-        next[i] = { ...next[i], imageUrl: await generateImage(prompt) };
-        setScenes([...next]);
-      }
+      const base = [...scenes];
+      const next = await Promise.all(
+        base.map(async (scene) => {
+          const prompt = scene.imagePrompt || scene.heading;
+          if (!prompt) return scene;
+          return { ...scene, imageUrl: await generateImage(prompt) };
+        }),
+      );
+      setScenes(next);
       await save({ scenes: next });
       toast({ title: "Zeichnungen erstellt" });
     } catch (error) {
@@ -163,13 +165,15 @@ const WhiteboardVideoEditor = () => {
   const runVoices = async () => {
     setWorking("voices");
     try {
-      const next = [...scenes];
-      for (let i = 0; i < next.length; i++) {
-        if (!next[i].narration.trim()) continue;
-        const url = await generateVoice(next[i].narration, voice);
-        next[i] = { ...next[i], audioUrl: url, durationInSeconds: estimateDuration(next[i]) };
-        setScenes([...next]);
-      }
+      const base = [...scenes];
+      const next = await Promise.all(
+        base.map(async (scene) => {
+          if (!scene.narration.trim()) return scene;
+          const url = await generateVoice(scene.narration, voice);
+          return { ...scene, audioUrl: url, durationInSeconds: estimateDuration(scene) };
+        }),
+      );
+      setScenes(next);
       await save({ scenes: next });
       toast({ title: "Sprecherstimme erstellt" });
     } catch (error) {
