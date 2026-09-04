@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.get_own_course_rating(uuid) FROM public, anon;

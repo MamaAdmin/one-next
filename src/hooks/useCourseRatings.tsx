@@ -39,24 +39,15 @@ export const useCourseRatings = (courseId?: string) => {
       if (ratingsError) throw ratingsError;
       setRatings((ratingsData || []) as CourseRating[]);
 
-      // Load user's own rating (participant_id only visible to the owner)
+      // Load user's own rating via security-definer RPC (participant_id is column-restricted)
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: participant } = await supabase
-          .from("participants")
-          .select("id")
-          .eq("user_id", user.id)
-          .maybeSingle();
+        const { data: ownRatingRows, error: ownRatingError } = await (supabase as any)
+          .rpc("get_own_course_rating", { p_course_id: courseId });
 
-        if (participant) {
-          const { data: ownRating } = await supabase
-            .from("lms_course_ratings")
-            .select("*")
-            .eq("course_id", courseId)
-            .eq("participant_id", participant.id)
-            .maybeSingle();
-          setUserRating((ownRating as CourseRating) || null);
-        }
+        if (ownRatingError) throw ownRatingError;
+        const ownRating = Array.isArray(ownRatingRows) ? ownRatingRows[0] : ownRatingRows;
+        setUserRating((ownRating as CourseRating) || null);
       }
     } catch (error) {
       console.error("Error loading ratings:", error);
