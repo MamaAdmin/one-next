@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { z } from "https://esm.sh/zod@3.23.8";
+import { sendTemplateEmail } from "../_shared/transactional-email-templates/send-email.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
