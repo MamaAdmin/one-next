@@ -15,31 +15,85 @@ const passwordSchema = z
   .min(8, "Das Passwort muss mindestens 8 Zeichen lang sein")
   .regex(/[A-Z]/, "Das Passwort muss mindestens einen Großbuchstaben enthalten")
   .regex(/[a-z]/, "Das Passwort muss mindestens einen Kleinbuchstaben enthalten")
-  .regex(/[0-9]/, "Das Passwort muss mindestens eine Zahl enthalten");
+  .regex(/[0-9]/, "Das Passwort muss mindestens eine Zahl enthalten")
+  .regex(/[^A-Za-z0-9]/, "Das Passwort muss mindestens ein Sonderzeichen enthalten");
+
+const PASSWORD_HINT =
+  "Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben, Zahl und Sonderzeichen";
+
+const translateError = (message: string) => {
+  const m = message.toLowerCase();
+  if (m.includes("should be different") || m.includes("same as the old")) {
+    return "Das neue Passwort muss sich vom bisherigen unterscheiden";
+  }
+  if (m.includes("expired") || m.includes("invalid")) {
+    return "Der Link ist abgelaufen oder ungültig. Bitte fordern Sie einen neuen an.";
+  }
+  if (m.includes("weak") || m.includes("pwned") || m.includes("compromised")) {
+    return "Dieses Passwort ist unsicher. Bitte wählen Sie ein anderes.";
+  }
+  if (m.includes("session") || m.includes("auth")) {
+    return "Ihre Sitzung ist nicht mehr gültig. Bitte fordern Sie einen neuen Link an.";
+  }
+  return message;
+};
+
+type Status = "checking" | "ready" | "invalid";
 
 export default function UpdatePassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [hasValidToken, setHasValidToken] = useState(false);
+  const [status, setStatus] = useState<Status>("checking");
+  const [linkError, setLinkError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if we have a recovery token
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setHasValidToken(true);
-      } else {
-        toast.error("Ungültiger oder abgelaufener Reset-Link", {
-          description: "Bitte fordern Sie einen neuen Link zum Zurücksetzen an",
-        });
-        navigate("/password-reset");
-      }
+    let active = true;
+    let timer: ReturnType<typeof setTimeout>;
+
+    // Fehler kommen entweder als Query- oder als Hash-Parameter zurück
+    const query = new URLSearchParams(window.location.search);
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const err = query.get("error_description") || query.get("error") ||
+      hash.get("error_description") || hash.get("error");
+
+    if (err) {
+      setLinkError(translateError(decodeURIComponent(err.replace(/\+/g, " "))));
+      setStatus("invalid");
+      return;
+    }
+
+    const markReady = () => {
+      if (!active) return;
+      active = false;
+      clearTimeout(timer);
+      setStatus("ready");
     };
 
-    checkSession();
-  }, [navigate]);
+    // Der Link aus der E-Mail wird erst asynchron eingelöst –
+    // deshalb auf das Auth-Event warten statt sofort zu prüfen.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) markReady();
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) markReady();
+    });
+
+    timer = setTimeout(() => {
+      if (!active) return;
+      active = false;
+      setLinkError("Der Link ist abgelaufen oder ungültig. Bitte fordern Sie einen neuen an.");
+      setStatus("invalid");
+    }, 6000);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,9 +113,10 @@ export default function UpdatePassword() {
       if (error) throw error;
 
       toast.success("Passwort erfolgreich aktualisiert", {
-        description: "Sie können sich nun mit Ihrem neuen Passwort anmelden",
+        description: "Bitte melden Sie sich mit Ihrem neuen Passwort an",
       });
 
+      await supabase.auth.signOut();
       navigate("/auth");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -70,7 +125,7 @@ export default function UpdatePassword() {
         });
       } else {
         toast.error("Fehler beim Aktualisieren des Passworts", {
-          description: error.message,
+          description: translateError(error.message || "Unbekannter Fehler"),
         });
       }
     } finally {
@@ -78,16 +133,29 @@ export default function UpdatePassword() {
     }
   };
 
-  if (!hasValidToken) {
+  if (status !== "ready") {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardHeader>
-              <CardTitle>Überprüfung läuft...</CardTitle>
-              <CardDescription>Bitte warten Sie, während wir Ihren Zurücksetzungslink prüfen</CardDescription>
+              <CardTitle>
+                {status === "checking" ? "Überprüfung läuft..." : "Link nicht mehr gültig"}
+              </CardTitle>
+              <CardDescription>
+                {status === "checking"
+                  ? "Bitte warten Sie, während wir Ihren Zurücksetzungslink prüfen"
+                  : linkError}
+              </CardDescription>
             </CardHeader>
+            {status === "invalid" && (
+              <CardContent>
+                <Button className="w-full" onClick={() => navigate("/password-reset")}>
+                  Neuen Link anfordern
+                </Button>
+              </CardContent>
+            )}
           </Card>
         </main>
         <Footer />
@@ -118,9 +186,7 @@ export default function UpdatePassword() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
                 />
-                <p className="text-xs text-muted-foreground">
-                  Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben sowie einer Zahl
-                </p>
+                <p className="text-xs text-muted-foreground">{PASSWORD_HINT}</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
