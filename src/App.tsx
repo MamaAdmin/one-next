@@ -156,7 +156,7 @@ const App = () => (
           <Route path="/analyse" element={<Analysis />} />
           <Route path="/kurse" element={<Kurse />} />
           <Route path="/kurse/:slug" element={<KursDetail />} />
-          <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />} />
+          <Route path="/zahlung-erfolgreich" element={<PaymentSuccess />} />
           <Route path="/impressum" element={<Impressum />} />
           {/* Online Design Sprint (auth required) */}
           <Route path="/sprint" element={<RequireAuth><SprintDashboard /></RequireAuth>} />
