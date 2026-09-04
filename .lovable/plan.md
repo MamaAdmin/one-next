@@ -1,62 +1,25 @@
-## Ziel
-Die bestehende one-next-Palette (warmes Creme, Schieferblau, Taupe, Charcoal) wird zu einem vollständigen, skalierbaren Corporate-Design-Farbsystem ausgebaut. Alle Farben landen als semantische CSS-Variablen in `src/index.css` und als Tailwind-Tokens in `tailwind.config.ts`, damit sie im gesamten Projekt konsistent verwendet werden können.
+# Passwort zurücksetzen reparieren
 
-## Aktueller Stand (bestätigt durch Code-Read)
-- `src/index.css` enthält bereits eine erste Token-Ebene: `--background`, `--foreground`, `--primary`, `--secondary`, `--accent`, `--muted`, `--destructive`, `--border`, `--ring` usw.
-- `tailwind.config.ts` mapped diese Tokens auf `colors` und `backgroundImage`/`boxShadow`.
-- Es fehlt aber ein systematisches Corporate-Design-Set: keine klaren Brand-Primär-/Sekundär-/Tertiär-Farben, keine ausgewachsene Neutral-Skala, keine semantischen Status- und Feedback-Farben.
+## Was passiert ist
 
-## Schritte
+Für jule.haitz@gmail.com wurde am 4. September um 04:54 ein Reset-Link angefordert, eine Minute später entstand daraus auch eine gültige Sitzung — aber das Passwort selbst wurde nie geändert (der Datensatz zeigt keine Passwortänderung).
 
-### 1. Farbstrategie definieren
-Auf Basis der gewählten Richtung **Cream & Slate** entwickeln wir:
-- **Brand-Primär**: Tiefes Schieferblau (bestehendes `--primary`)
-- **Brand-Sekundär**: Warmes Taupe/Stone (bestehendes `--secondary`)
-- **Brand-Akzent**: Dusty Slate Blue (bestehendes `--accent`)
-- **Brand-Hintergrund**: Warmes Cremeweiß (bestehendes `--background`)
-- **Neutral-Skala**: 10–12 Abstufungen von Creme bis Charcoal
-- **Semantische Farben**: Erfolg, Warnung, Fehler, Info – jeweils in HSL und auf die bestehende Palette abgestimmt
-- **Dunkelmodus**: Gegenentwurf für alle neuen Tokens
+Das passt zu einem Timing-Problem auf der Seite „Passwort aktualisieren": Die Seite prüft sofort beim Öffnen, ob eine Anmeldung vorliegt. Der Link aus der E-Mail muss aber erst im Hintergrund eingelöst werden. Ist das noch nicht fertig, meldet die Seite „Ungültiger oder abgelaufener Reset-Link" und schickt die Person zurück auf die Anfrageseite — obwohl der Link gültig war.
 
-### 2. Token-Architektur in `src/index.css` erweitern
-- Neue Variablen ergänzen, ohne bestehende zu zerstören (Abwärtskompatibilität):
-  - `--brand-primary`, `--brand-secondary`, `--brand-accent`
-  - `--neutral-50` … `--neutral-950`
-  - `--success`, `--warning`, `--error`, `--info` (inkl. `-foreground`, `-soft`, `-strong`)
-  - `--surface-default`, `--surface-elevated`, `--surface-overlay`
-  - `--text-default`, `--text-muted`, `--text-placeholder`, `--text-on-dark`
-- Bestehende Tokens bleiben erhalten und werden auf die neuen Brand-Tokens abgebildet, wo sinnvoll.
+Diese Ursache ist plausibel, aber noch nicht endgültig bewiesen. Deshalb ist der erste Schritt eine Nachstellung im laufenden Preview.
 
-### 3. Tailwind-Config erweitern
-- Neue Farb-Keys in `theme.extend.colors` ergänzen:
-  - `brand.primary`, `brand.secondary`, `brand.accent`
-  - `neutral.*`
-  - `success`, `warning`, `error`, `info`
-  - `surface.*`, `text.*`
-- Sicherstellen, dass alle neuen Werte auf `hsl(var(--...))` verweisen.
+## Vorgehen
 
-### 4. Kontrast & Accessibility prüfen
-- Für jede neu definierte Vordergrundfarbe auf den entsprechenden Hintergründen prüfen, ob WCAG-AA-Kontrast erreicht wird.
-- Ggf. Anpassungen an HSL-Lightness vornehmen, bis alle Kombinationen AA-konform sind.
+1. **Nachstellen und bestätigen**: Reset-Ablauf im Browser durchspielen und beobachten, ob die Seite vorzeitig wegspringt bzw. welche Fehlermeldung genau vom Server kommt.
+2. **Seite „Passwort aktualisieren" robust machen**
+   - Auf das Einlösen des Links warten, statt sofort zu prüfen; erst nach einer klaren Wartezeit ohne Sitzung die Fehlermeldung zeigen.
+   - Enthält der Link selbst einen Fehler (z. B. abgelaufen), diesen Grund im Klartext anzeigen mit Knopf „Neuen Link anfordern".
+   - Serverfehler beim Speichern (z. B. „neues Passwort gleich dem alten") verständlich auf Deutsch ausgeben.
+3. **Passwortregeln vereinheitlichen**: Bei der Registrierung wird ein Sonderzeichen verlangt, beim Zurücksetzen nicht. Beide Stellen bekommen dieselbe Regel und denselben Hinweistext.
+4. **Nach Erfolg**: Bestätigung anzeigen, abmelden und zur Anmeldung führen, damit das neue Passwort direkt getestet wird.
+5. **Abschluss-Test**: Kompletter Durchlauf (Link anfordern, öffnen, Passwort setzen, neu anmelden) im Preview.
 
-### 5. Interne Referenz erstellen
-- Neues Komponente/Seite `src/components/design/ColorTokens.tsx` oder `src/pages/DesignSystem.tsx` anlegen.
-- Zeigt alle Brand-, Neutral- und Semantik-Farben mit Namen, HSL-Wert und Vordergrund-Kontrast.
-- Nicht öffentlich verlinken; dient als interne Dokumentation im Preview.
+## Technische Details
 
-### 6. Migration der hartcodierten Farben (optional, falls im Scope gewünscht)
-- Suche nach `text-white`, `bg-black`, `bg-[#...]`, `text-blue-600` etc. im `src/`-Code.
-- Ersetzen durch semantische Tokens aus dem neuen System.
-- Hinweis: Das passiert nur, wenn du es explizit willst; sonst bleiben bestehende hartcodierte Utility-Klassen unverändert.
-
-## Deliverables
-- Erweiterte `src/index.css` mit vollständigem semantischen Token-Set
-- Erweiterte `tailwind.config.ts` mit neuen Farb-Keys
-- Interne Farbreferenz-Komponente/Seite
-- Kurze Dokumentation der Farbregeln (z. B. im Projekt-Memory)
-
-## Nicht im Scope
-- Keine Änderung an Layout, Typografie oder Komponenten-Logik
-- Keine öffentliche Design-System-Landingpage (nur interne Referenz)
-
-Sobald du den Plan freigibst, baue ich das Token-System Schritt für Schritt um.
+- Betroffen: `src/pages/UpdatePassword.tsx` (Session-Erkennung über `onAuthStateChange` inkl. `PASSWORD_RECOVERY` statt einmaligem `getSession()`; Auswertung von `error`/`error_description` aus Query und Hash), `src/pages/Auth.tsx` und `src/pages/PasswordReset.tsx` nur für den einheitlichen Passwort-Schema-Text.
+- Keine Änderungen an Backend, Datenbank, E-Mail-Versand oder den generierten Client-Dateien.
