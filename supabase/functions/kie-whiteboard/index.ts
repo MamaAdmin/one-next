@@ -51,7 +51,13 @@ async function mirrorToStorage(sourceUrl: string, extension: string): Promise<st
     upsert: false,
   });
   if (error) throw new Error(error.message);
-  return admin.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+  const signed = await admin.storage
+    .from(BUCKET)
+    .createSignedUrl(path, 60 * 60 * 24 * 365);
+  if (signed.error || !signed.data?.signedUrl) {
+    throw new Error(signed.error?.message ?? "Signierte URL fehlgeschlagen");
+  }
+  return signed.data.signedUrl;
 }
 
 async function createJobTask(model: string, input: Record<string, unknown>): Promise<string> {
