@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { z } from "https://esm.sh/zod@3.23.8";
+import { sendTemplateEmail } from "../_shared/transactional-email-templates/send-email.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -92,16 +94,12 @@ serve(async (req) => {
     const roleLabel = ROLE_LABEL[invitation.role_type] ?? invitation.role_type;
     const greetingName = invitation.full_name || invitation.email;
 
-    const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${serviceKey}`,
-        apikey: serviceKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        templateName: "sprint-team-invite",
-        recipientEmail: invitation.email,
+    const templateName = "sprint-team-invite";
+    let sendStatus: "sent" | "suppressed" | "failed" = "sent";
+    let sendError: string | null = null;
+
+    try {
+      const result = await sendTemplateEmail(templateName, invitation.email, {
         idempotencyKey: `sprint-team-invite-${invitation.id}`,
         templateData: {
           fullName: greetingName,
@@ -109,16 +107,31 @@ serve(async (req) => {
           sprintTitle: sprint.titel,
           inviteUrl,
         },
-      }),
-    });
+      });
+      if (!result.sent) sendStatus = "suppressed";
+    } catch (err) {
+      sendStatus = "failed";
+      sendError = err instanceof Error ? err.message : String(err);
+    }
 
-    if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      return new Response(JSON.stringify({ error: errorText || "Email could not be queued" }), {
+    const { error: logError } = await admin.from("email_send_log").insert({
+      message_id: null,
+      template_name: templateName,
+      recipient_email: invitation.email,
+      status: sendStatus,
+      error_message: sendError,
+    });
+    if (logError) {
+      console.error("Failed to write email_send_log", { code: logError.code, message: logError.message });
+    }
+
+    if (sendStatus === "failed") {
+      return new Response(JSON.stringify({ error: sendError || "Email could not be sent" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
