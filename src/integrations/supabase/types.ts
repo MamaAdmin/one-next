@@ -2985,6 +2985,51 @@ export type Database = {
         }
         Relationships: []
       }
+      whiteboard_videos: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          scenes: Json
+          status: string
+          style: string
+          title: string
+          topic: string
+          updated_at: string
+          user_id: string
+          video_url: string | null
+          voice: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          scenes?: Json
+          status?: string
+          style?: string
+          title?: string
+          topic?: string
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+          voice?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          scenes?: Json
+          status?: string
+          style?: string
+          title?: string
+          topic?: string
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+          voice?: string
+        }
+        Relationships: []
+      }
       workflow_comments: {
         Row: {
           comment: string
