@@ -20,27 +20,33 @@ interface InviteEmailProps {
   confirmationUrl: string
 }
 
-export const InviteEmail = ({ siteName, siteUrl, confirmationUrl }: InviteEmailProps) => (
-  <Html lang="de" dir="ltr">
-    <Head />
-    <Preview>Einladung zu {siteName}</Preview>
+export const InviteEmail = ({
+  siteName,
+  siteUrl,
+  confirmationUrl,
+}: InviteEmailProps) => (
+  <Html lang="en" dir="ltr">
+    <Head>
+      <style>{darkModeCss}</style>
+    </Head>
+    <Preview>You've been invited to join {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Sie wurden eingeladen</Heading>
+        <Heading style={h1}>You've been invited</Heading>
         <Text style={text}>
-          Sie wurden eingeladen, {' '}
+          You've been invited to join{' '}
           <Link href={siteUrl} style={link}>
             <strong>{siteName}</strong>
           </Link>
-          {' '}beizutreten. Klicken Sie auf den Button, um die Einladung anzunehmen
-          und Ihr Konto zu erstellen.
+          . Click the button below to accept the invitation and create your
+          account.
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Einladung annehmen
+        <Button className="dm-btn" style={button} href={confirmationUrl}>
+          Accept Invitation
         </Button>
         <Text style={footer}>
-          Sie haben diese Einladung nicht erwartet? Dann können Sie diese
-          E-Mail ignorieren.
+          If you weren't expecting this invitation, you can safely ignore this
+          email.
         </Text>
       </Container>
     </Body>
@@ -49,18 +55,36 @@ export const InviteEmail = ({ siteName, siteUrl, confirmationUrl }: InviteEmailP
 
 export default InviteEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Helvetica, Arial, sans-serif' }
-const container = { padding: '32px 28px', maxWidth: '560px' }
-const h1 = { fontSize: '24px', fontWeight: 'bold' as const, color: '#1a1a1a', margin: '0 0 20px' }
-const text = { fontSize: '15px', color: '#666666', lineHeight: '1.6', margin: '0 0 20px' }
-const link = { color: '#1a1a1a', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#1a1a1a',
-  color: '#fafafa',
-  fontSize: '15px',
-  borderRadius: '24px',
-  padding: '14px 28px',
-  textDecoration: 'none',
-  display: 'inline-block',
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '32px 0 0' }
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  border: '1px solid #000000',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+// Rendered as a text child, which React may HTML-escape: keep this CSS free of >, &, and quotes.
+const darkModeCss = `
+  @media (prefers-color-scheme: dark) {
+    .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+  }
+  [data-ogsc] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+  [data-ogsb] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+`
