@@ -1,7 +1,10 @@
 project_id = "ookvxyctxmtcxowcwnij"
 
 [functions]
+  [functions.handle-email-events]
+    verify_jwt = false
   [functions.auth-email-hook]
+
     verify_jwt = false
   [functions.bmad-approve-artifact]
     verify_jwt = true
