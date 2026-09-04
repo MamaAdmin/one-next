@@ -27,8 +27,6 @@ project_id = "ookvxyctxmtcxowcwnij"
     verify_jwt = true
   [functions.generate-data-export]
     verify_jwt = true
-  [functions.process-email-queue]
-    verify_jwt = true
   [functions.send-booking-email]
     verify_jwt = true
   [functions.send-booking-to-n8n]
@@ -37,13 +35,7 @@ project_id = "ookvxyctxmtcxowcwnij"
     verify_jwt = true
   [functions.send-sprint-team-invite]
     verify_jwt = true
-  [functions.send-transactional-email]
-    verify_jwt = true
   [functions.preview-transactional-email]
-    verify_jwt = false
-  [functions.handle-email-unsubscribe]
-    verify_jwt = false
-  [functions.handle-email-suppression]
     verify_jwt = false
   [functions.verify-course-purchase]
     verify_jwt = true
