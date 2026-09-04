@@ -3131,6 +3131,18 @@ export type Database = {
           status: string
         }[]
       }
+      get_own_course_rating: {
+        Args: { p_course_id: string }
+        Returns: {
+          course_id: string
+          created_at: string
+          enrollment_id: string
+          id: string
+          rating: number
+          review_text: string
+          updated_at: string
+        }[]
+      }
       get_quiz_questions_for_participant: {
         Args: { p_quiz_id: string }
         Returns: {
