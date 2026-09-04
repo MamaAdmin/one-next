@@ -36,7 +36,7 @@ const PaperBackground: React.FC = () => {
       <AbsoluteFill
         style={{
           background:
-            "radial-gradient(circle at 20% 10%, rgba(255,255,255,0.9), rgba(38,48,59,0.10) 100%)",
+            "radial-gradient(circle at 25% 15%, rgba(255,255,255,0.95), rgba(38,48,59,0.05) 100%)",
         }}
       />
     </AbsoluteFill>

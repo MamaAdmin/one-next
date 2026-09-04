@@ -79,7 +79,7 @@ const WhiteboardVideoEditor = () => {
       setProject(loaded);
       setTitle(loaded.title);
       setTopic(loaded.topic);
-      setVoice(loaded.voice || "Charlotte");
+      setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
       setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
       setKieVideoUrl(loaded.video_url);
     };
