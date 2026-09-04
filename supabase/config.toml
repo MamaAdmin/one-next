@@ -65,3 +65,6 @@ verify_jwt = true
 
 [functions.miro-fetch-board-items]
 verify_jwt = true
+
+[functions.kie-whiteboard]
+verify_jwt = false
