@@ -18,21 +18,23 @@ const ACCENT = "#C1663F";
 
 /** Zeichnende Hand, die der aktuellen Zeichenposition folgt. */
 const DrawingHand: React.FC<{
-  x: number;
-  y: number;
+  x: number | string;
+  y: number | string;
   visible: boolean;
   size?: number;
 }> = ({ x, y, visible, size = 300 }) => {
   const frame = useCurrentFrame();
   const wobble = Math.sin(frame / 3) * 4;
   if (!visible) return null;
+  const offsetX = size * 0.28;
+  const offsetY = size * 0.27 - wobble;
   return (
     <Img
       src={handImage}
       style={{
         position: "absolute",
-        left: x - size * 0.28,
-        top: y - size * 0.27 + wobble,
+        left: typeof x === "number" ? x - offsetX : `calc(${x} - ${offsetX}px)`,
+        top: typeof y === "number" ? y - offsetY : `calc(${y} - ${offsetY}px)`,
         width: size,
         height: size,
         pointerEvents: "none",
@@ -42,6 +44,7 @@ const DrawingHand: React.FC<{
     />
   );
 };
+
 
 export interface WhiteboardVideoProps {
   title: string;
