@@ -139,28 +139,37 @@ const WhiteboardVideoEditor = () => {
 
   const runImages = async () => {
     setWorking("images");
-    try {
-      const base = [...scenes];
-      const next = await Promise.all(
-        base.map(async (scene) => {
-          const prompt = scene.imagePrompt || scene.heading;
-          if (!prompt) return scene;
-          return { ...scene, imageUrl: await generateImage(prompt) };
-        }),
-      );
-      setScenes(next);
-      await save({ scenes: next });
-      toast({ title: "Zeichnungen erstellt" });
-    } catch (error) {
-      toast({
-        title: "Zeichnungen fehlgeschlagen",
-        description: error instanceof Error ? error.message : "Unbekannter Fehler",
-        variant: "destructive",
-      });
-    } finally {
-      setWorking(null);
+    const next = [...scenes];
+    let created = 0;
+    let failed = 0;
+    for (let i = 0; i < next.length; i++) {
+      const scene = next[i];
+      const prompt = scene.imagePrompt || scene.heading;
+      if (!prompt) continue;
+      try {
+        const url = await generateImage(prompt);
+        next[i] = { ...scene, imageUrl: url };
+        created += 1;
+        setScenes([...next]);
+      } catch (error) {
+        failed += 1;
+        toast({
+          title: `Zeichnung ${i + 1} fehlgeschlagen`,
+          description: error instanceof Error ? error.message : "Unbekannter Fehler",
+          variant: "destructive",
+        });
+      }
     }
+    setScenes(next);
+    await save({ scenes: next });
+    setWorking(null);
+    toast({
+      title: created ? "Zeichnungen erstellt" : "Keine Zeichnung erstellt",
+      description: `${created} erzeugt${failed ? `, ${failed} fehlgeschlagen` : ""}`,
+      variant: created ? undefined : "destructive",
+    });
   };
+
 
   const runVoices = async () => {
     setWorking("voices");

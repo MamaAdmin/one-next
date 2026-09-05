@@ -8,6 +8,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import handImage from "@/assets/whiteboard-hand.png";
 import { FPS, type WhiteboardScene } from "./types";
 
 const PAPER = "#FBF7F0";
@@ -15,10 +16,41 @@ const INK = "#26303B";
 const MUTED = "#6B7684";
 const ACCENT = "#C1663F";
 
+/** Zeichnende Hand, die der aktuellen Zeichenposition folgt. */
+const DrawingHand: React.FC<{
+  x: number | string;
+  y: number | string;
+  visible: boolean;
+  size?: number;
+}> = ({ x, y, visible, size = 300 }) => {
+  const frame = useCurrentFrame();
+  const wobble = Math.sin(frame / 3) * 4;
+  if (!visible) return null;
+  const offsetX = size * 0.28;
+  const offsetY = size * 0.27 - wobble;
+  return (
+    <Img
+      src={handImage}
+      style={{
+        position: "absolute",
+        left: typeof x === "number" ? x - offsetX : `calc(${x} - ${offsetX}px)`,
+        top: typeof y === "number" ? y - offsetY : `calc(${y} - ${offsetY}px)`,
+        width: size,
+        height: size,
+        pointerEvents: "none",
+        filter: "drop-shadow(0 12px 24px rgba(38,48,59,0.18))",
+        zIndex: 20,
+      }}
+    />
+  );
+};
+
+
 export interface WhiteboardVideoProps {
   title: string;
   scenes: WhiteboardScene[];
 }
+
 
 const PaperBackground: React.FC = () => {
   const frame = useCurrentFrame();
@@ -73,25 +105,37 @@ const HandWriteText: React.FC<{
   weight?: number;
 }> = ({ text, delay, fontSize, color = INK, weight = 700 }) => {
   const frame = useCurrentFrame();
-  const reveal = interpolate(frame - delay, [0, 30], [0, 100], {
+  const local = frame - delay;
+  const reveal = interpolate(local, [0, 30], [0, 100], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const writing = local >= 0 && local <= 30;
+  const estWidth = text.length * fontSize * 0.52;
   return (
-    <div
-      style={{
-        fontSize,
-        fontWeight: weight,
-        color,
-        lineHeight: 1.15,
-        letterSpacing: "-0.02em",
-        clipPath: `inset(0 ${100 - reveal}% 0 0)`,
-      }}
-    >
-      {text}
+    <div style={{ position: "relative" }}>
+      <div
+        style={{
+          fontSize,
+          fontWeight: weight,
+          color,
+          lineHeight: 1.15,
+          letterSpacing: "-0.02em",
+          clipPath: `inset(0 ${100 - reveal}% 0 0)`,
+        }}
+      >
+        {text}
+      </div>
+      <DrawingHand
+        x={(reveal / 100) * estWidth}
+        y={fontSize * 0.85}
+        visible={writing}
+        size={220}
+      />
     </div>
   );
 };
+
 
 const Bullet: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
   const frame = useCurrentFrame();
@@ -116,41 +160,62 @@ const Bullet: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
   );
 };
 
+const DRAW_FRAMES = 60;
+
 const SceneIllustration: React.FC<{ url?: string | null; delay: number }> = ({ url, delay }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const s = spring({ frame: frame - delay, fps, config: { damping: 200 } });
-  const float = Math.sin((frame - delay) / 40) * 8;
+  const local = frame - delay;
+  const progress = interpolate(local, [0, DRAW_FRAMES], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const drawing = local >= 0 && local <= DRAW_FRAMES;
+  const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
+  const handY = 30 + Math.sin(local / 6) * 18;
 
   if (!url) {
     return (
       <div
         style={{
+          position: "relative",
           width: "100%",
           height: "100%",
           border: `6px dashed rgba(38,48,59,0.18)`,
           borderRadius: 32,
-          opacity: s,
-          transform: `translateY(${float}px)`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: MUTED,
+          fontSize: 30,
+          fontWeight: 500,
+          textAlign: "center",
+          padding: 40,
         }}
-      />
+      >
+        Zeichnung noch nicht erzeugt
+      </div>
     );
   }
 
   return (
     <div
       style={{
+        position: "relative",
         width: "100%",
         height: "100%",
-        opacity: s,
-        transform: `translateY(${float}px) scale(${interpolate(s, [0, 1], [0.9, 1])})`,
-        clipPath: `inset(${interpolate(s, [0, 1], [100, 0])}% 0 0 0)`,
+        transform: drawing ? undefined : `translateY(${float}px)`,
       }}
     >
-      <Img
-        src={url}
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-      />
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)`,
+        }}
+      >
+        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </div>
+      <DrawingHand x={`${progress * 100}%`} y={`${handY}%`} visible={drawing} size={330} />
     </div>
   );
 };
