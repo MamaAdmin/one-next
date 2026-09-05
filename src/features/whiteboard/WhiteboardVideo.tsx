@@ -157,43 +157,66 @@ const Bullet: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
   );
 };
 
+const DRAW_FRAMES = 60;
+
 const SceneIllustration: React.FC<{ url?: string | null; delay: number }> = ({ url, delay }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const s = spring({ frame: frame - delay, fps, config: { damping: 200 } });
-  const float = Math.sin((frame - delay) / 40) * 8;
+  const local = frame - delay;
+  const progress = interpolate(local, [0, DRAW_FRAMES], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const drawing = local >= 0 && local <= DRAW_FRAMES;
+  const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
+  const handY = 30 + Math.sin(local / 6) * 18;
 
   if (!url) {
     return (
       <div
         style={{
+          position: "relative",
           width: "100%",
           height: "100%",
           border: `6px dashed rgba(38,48,59,0.18)`,
           borderRadius: 32,
-          opacity: s,
-          transform: `translateY(${float}px)`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: MUTED,
+          fontSize: 30,
+          fontWeight: 500,
+          textAlign: "center",
+          padding: 40,
         }}
-      />
+      >
+        Zeichnung noch nicht erzeugt
+      </div>
     );
   }
 
   return (
     <div
       style={{
+        position: "relative",
         width: "100%",
         height: "100%",
-        opacity: s,
-        transform: `translateY(${float}px) scale(${interpolate(s, [0, 1], [0.9, 1])})`,
-        clipPath: `inset(${interpolate(s, [0, 1], [100, 0])}% 0 0 0)`,
+        transform: drawing ? undefined : `translateY(${float}px)`,
       }}
     >
-      <Img
-        src={url}
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-      />
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)`,
+        }}
+      >
+        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </div>
+      <DrawingHand x={`${progress * 100}%`} y={`${handY}%`} visible={drawing} size={330} />
     </div>
   );
+};
+
 };
 
 const SceneView: React.FC<{ scene: WhiteboardScene; index: number }> = ({ scene, index }) => {
