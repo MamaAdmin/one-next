@@ -102,25 +102,37 @@ const HandWriteText: React.FC<{
   weight?: number;
 }> = ({ text, delay, fontSize, color = INK, weight = 700 }) => {
   const frame = useCurrentFrame();
-  const reveal = interpolate(frame - delay, [0, 30], [0, 100], {
+  const local = frame - delay;
+  const reveal = interpolate(local, [0, 30], [0, 100], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const writing = local >= 0 && local <= 30;
+  const estWidth = text.length * fontSize * 0.52;
   return (
-    <div
-      style={{
-        fontSize,
-        fontWeight: weight,
-        color,
-        lineHeight: 1.15,
-        letterSpacing: "-0.02em",
-        clipPath: `inset(0 ${100 - reveal}% 0 0)`,
-      }}
-    >
-      {text}
+    <div style={{ position: "relative" }}>
+      <div
+        style={{
+          fontSize,
+          fontWeight: weight,
+          color,
+          lineHeight: 1.15,
+          letterSpacing: "-0.02em",
+          clipPath: `inset(0 ${100 - reveal}% 0 0)`,
+        }}
+      >
+        {text}
+      </div>
+      <DrawingHand
+        x={(reveal / 100) * estWidth}
+        y={fontSize * 0.85}
+        visible={writing}
+        size={220}
+      />
     </div>
   );
 };
+
 
 const Bullet: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
   const frame = useCurrentFrame();
