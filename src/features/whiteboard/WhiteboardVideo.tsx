@@ -217,8 +217,6 @@ const SceneIllustration: React.FC<{ url?: string | null; delay: number }> = ({ u
   );
 };
 
-};
-
 const SceneView: React.FC<{ scene: WhiteboardScene; index: number }> = ({ scene, index }) => {
   const frame = useCurrentFrame();
   const exit = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: "clamp" });
