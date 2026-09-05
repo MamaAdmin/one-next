@@ -3153,6 +3153,7 @@ export type Database = {
         Args: { _sprint_id: string; _user_id: string }
         Returns: boolean
       }
+      current_user_email: { Args: never; Returns: string }
       generate_unique_slug: {
         Args: { course_id?: string; course_title: string }
         Returns: string
