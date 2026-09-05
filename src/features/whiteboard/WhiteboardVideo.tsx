@@ -5,9 +5,11 @@ import {
   Sequence,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import handImage from "@/assets/whiteboard-hand.png";
 import { FPS, type WhiteboardScene } from "./types";
 
 const PAPER = "#FBF7F0";
@@ -15,10 +17,38 @@ const INK = "#26303B";
 const MUTED = "#6B7684";
 const ACCENT = "#C1663F";
 
+/** Zeichnende Hand, die der aktuellen Zeichenposition folgt. */
+const DrawingHand: React.FC<{
+  x: number;
+  y: number;
+  visible: boolean;
+  size?: number;
+}> = ({ x, y, visible, size = 300 }) => {
+  const frame = useCurrentFrame();
+  const wobble = Math.sin(frame / 3) * 4;
+  if (!visible) return null;
+  return (
+    <Img
+      src={handImage}
+      style={{
+        position: "absolute",
+        left: x - size * 0.28,
+        top: y - size * 0.27 + wobble,
+        width: size,
+        height: size,
+        pointerEvents: "none",
+        filter: "drop-shadow(0 12px 24px rgba(38,48,59,0.18))",
+        zIndex: 20,
+      }}
+    />
+  );
+};
+
 export interface WhiteboardVideoProps {
   title: string;
   scenes: WhiteboardScene[];
 }
+
 
 const PaperBackground: React.FC = () => {
   const frame = useCurrentFrame();
