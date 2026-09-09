@@ -67,6 +67,7 @@ import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import WhiteboardVideoDashboard from "./pages/admin/WhiteboardVideoDashboard";
 import WhiteboardVideoEditor from "./pages/admin/WhiteboardVideoEditor";
+import KieModelCatalog from "./pages/admin/KieModelCatalog";
 import SprintDashboard from "./pages/sprint/SprintDashboard";
 import SprintNew from "./pages/sprint/SprintNew";
 import SprintWorkspace from "./pages/sprint/SprintWorkspace";
@@ -134,6 +135,7 @@ const App = () => (
           <Route path="/admin/design-system" element={<DesignSystem />} />
           <Route path="/admin/whiteboard-videos" element={<WhiteboardVideoDashboard />} />
           <Route path="/admin/whiteboard-videos/:videoId" element={<WhiteboardVideoEditor />} />
+          <Route path="/admin/ki-modelle" element={<KieModelCatalog />} />
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
             <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
             <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
