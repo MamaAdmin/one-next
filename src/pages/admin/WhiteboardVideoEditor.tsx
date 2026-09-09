@@ -835,13 +835,19 @@ const WhiteboardVideoEditor = () => {
                       line.unit === "image" ? "image" : line.unit === "1k_chars" ? "voice" : line.unit === "second" ? "video" : "text"
                     ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)} {UNIT_LABELS[line.unit]}
                   </span>
-                  <span>{formatCredits(line.credits)} Credits</span>
+                  <span>{line.priceKnown ? `${formatCredits(line.credits)} Credits` : "Preis unbekannt"}</span>
                 </div>
               ))}
               <div className="flex justify-between text-sm font-medium border-t pt-2">
                 <span>Gesamt geschätzt</span>
                 <span>{formatCredits(fullEstimate.total)} Credits</span>
               </div>
+              {fullEstimate.unknownModels.length > 0 && (
+                <p className="text-sm text-destructive">
+                  Für {fullEstimate.unknownModels.join(", ")} ist kein Creditpreis hinterlegt – die Schätzung ist unvollständig.
+                </p>
+              )}
+
               {lastUsed !== null && (
                 <p className="text-sm text-muted-foreground">
                   Dieses Lernvideo hat zuletzt {formatCredits(lastUsed)} Credits verbraucht.
