@@ -123,30 +123,38 @@ async function fetchCredits(): Promise<number> {
   return value;
 }
 
-async function generateScript(topic: string, sceneCount: number, title: string) {
-  const prompt = `Du bist Autor für Whiteboard-Erklärvideos (Deutsch, Schweizer Business-Kontext).
-Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
-Thema/Briefing: "${topic}"
-Arbeitstitel: "${title}"
+const PREVIEW_TEXT =
+  "Guten Tag. So klingt diese Stimme in Ihrem Whiteboard-Lernvideo.";
 
-Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
-{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"deutsche Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","durationInSeconds":8}]}
-Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
+async function voicePreview(voice: string, model: string): Promise<string> {
+  const safe = (value: string) => value.replace(/[^a-zA-Z0-9-_]/g, "_");
+  const path = `previews/${safe(model)}-${safe(voice)}.mp3`;
 
-  const res = await fetch(`${KIE_BASE}/gpt-5-2/v1/chat/completions`, {
-    method: "POST",
-    headers: kieHeaders(),
-    body: JSON.stringify({
-      messages: [{ role: "user", content: [{ type: "text", text: prompt }] }],
-    }),
+  const existing = await admin.storage.from(BUCKET).list("previews", {
+    search: path.split("/")[1],
   });
-  const body = await res.json();
-  if (!res.ok) throw new Error(body?.msg ?? `kie.ai Fehler (${res.status})`);
-  const content: string = body?.choices?.[0]?.message?.content ?? "";
-  const match = content.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error("Skript konnte nicht gelesen werden");
-  return JSON.parse(match[0]);
+  if (!existing.error && (existing.data ?? []).some((f) => f.name === path.split("/")[1])) {
+    const signed = await admin.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24);
+    if (!signed.error && signed.data?.signedUrl) return signed.data.signedUrl;
+  }
+
+  const taskId = await createJobTask(model, { text: PREVIEW_TEXT, voice });
+  const remoteUrl = await pollJobTask(taskId);
+  const res = await fetch(remoteUrl);
+  if (!res.ok) throw new Error(`Hörprobe konnte nicht geladen werden (${res.status})`);
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  const upload = await admin.storage.from(BUCKET).upload(path, bytes, {
+    contentType: "audio/mpeg",
+    upsert: true,
+  });
+  if (upload.error) throw new Error(upload.error.message);
+  const signed = await admin.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24);
+  if (signed.error || !signed.data?.signedUrl) {
+    throw new Error(signed.error?.message ?? "Signierte URL fehlgeschlagen");
+  }
+  return signed.data.signedUrl;
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
