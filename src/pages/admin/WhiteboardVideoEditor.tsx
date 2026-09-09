@@ -256,7 +256,11 @@ const WhiteboardVideoEditor = () => {
     const usageId: string | null = null;
 
     try {
-      const script = await generateScript(topic, sceneCount, title);
+      const script = await generateScript(topic, sceneCount, title, {
+        scriptType: scriptTypeOption(scriptType).label,
+        scriptHint: scriptTypeOption(scriptType).promptHinweis,
+        styleLabel: styleOption(style).label,
+      });
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
         heading: s.heading,
@@ -590,11 +594,11 @@ const WhiteboardVideoEditor = () => {
   };
 
   const durationInFrames = useMemo(
-    () => totalDurationInFrames(scenes) + (title ? Math.round(1.8 * FPS) : 0),
+    () => totalDurationInFrames(scenes) + (title ? TITLE_FRAMES : 0),
     [scenes, title],
   );
 
-  const inputProps = useMemo(() => ({ title, scenes }), [title, scenes]);
+  const inputProps = useMemo(() => ({ title, scenes, style }), [title, scenes, style]);
 
   const renderMp4 = async () => {
     if (scenes.length === 0) {
