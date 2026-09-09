@@ -29,11 +29,14 @@ export const generateScript = (topic: string, sceneCount: number, title: string)
     (r) => r.script,
   );
 
-export const generateImage = (prompt: string) =>
-  invoke<{ url: string }>({ action: "image", prompt }).then((r) => r.url);
+export const generateImage = (prompt: string, style = "strichzeichnung") =>
+  invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style });
 
 export const generateVoice = (text: string, voice: string) =>
-  invoke<{ url: string }>({ action: "voice", text, voice }).then((r) => r.url);
+  invoke<{ url: string; taskId?: string }>({ action: "voice", text, voice });
+
+export const fetchCredits = () =>
+  invoke<{ credits: number }>({ action: "credits" }).then((r) => r.credits);
 
 export const startVideo = (prompt: string) =>
   invoke<{ taskId: string }>({ action: "video_start", prompt }).then((r) => r.taskId);
