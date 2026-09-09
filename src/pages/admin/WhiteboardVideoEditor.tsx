@@ -51,7 +51,9 @@ import {
   previewVoice,
   startVideo,
 } from "@/features/whiteboard/api";
-import { WHITEBOARD_STYLES } from "@/features/whiteboard/styles";
+import { WHITEBOARD_STYLES, normalizeStyle, styleOption } from "@/features/whiteboard/styles";
+import { SCRIPT_TYPES, scriptTypeOption } from "@/features/whiteboard/scriptTypes";
+import { TITLE_FRAMES } from "@/features/whiteboard/WhiteboardVideo";
 import {
   CATEGORY_LABELS,
   IMAGE_MODEL as DEFAULT_IMAGE_MODEL,
@@ -81,7 +83,8 @@ const WhiteboardVideoEditor = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [voice, setVoice] = useState("Charlotte");
-  const [style, setStyle] = useState("strichzeichnung");
+  const [style, setStyle] = useState("whiteboard");
+  const [scriptType, setScriptType] = useState("problem_loesung");
   const [imageModel, setImageModel] = useState(DEFAULT_IMAGE_MODEL);
   const [voiceModel, setVoiceModel] = useState(DEFAULT_VOICE_MODEL);
   const [videoModel, setVideoModel] = useState(DEFAULT_VIDEO_MODEL);

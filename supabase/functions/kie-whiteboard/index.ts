@@ -96,6 +96,27 @@ async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string>
 }
 
 const STYLE_SUFFIX: Record<string, string> = {
+  whiteboard:
+    "Black ink whiteboard marker line drawing, hand drawn doodle style, clean white background, no text, minimal, high contrast.",
+  flat_2d:
+    "Flat vector illustration, simple geometric shapes, limited muted color palette, clean light background, no text.",
+  character_2d:
+    "Friendly 2D character illustration, flat colors, bold outlines, expressive simple faces, clean light background, no text.",
+  motion_graphics:
+    "Bold motion graphics key visual, geometric icons and shapes, strong accent colors on dark background, no text.",
+  infografik:
+    "Clean infographic illustration, charts, arrows and process diagram, flat editorial style, light background, no text labels.",
+  screencast:
+    "Clean software user interface mockup, dashboard with panels and buttons, subtle shadows, light UI design, no readable text.",
+  screencast_plus:
+    "Software interface mockup combined with flat illustrated icons and callout shapes, light background, no readable text.",
+  isometric_3d:
+    "Isometric 3D illustration, clean technical render, soft lighting, muted palette, dark neutral background, no text.",
+  kinetic_typo:
+    "Minimal abstract typographic background texture, bold shapes, high contrast, no readable text.",
+  avatar:
+    "Friendly illustrated presenter figure, upper body, neutral studio background, flat vector style, no text.",
+  // Altwerte aus früheren Videos
   strichzeichnung:
     "Black ink whiteboard marker line drawing, hand drawn doodle style, clean white background, no text, minimal, high contrast.",
   bunte_marker:
@@ -182,8 +203,8 @@ Deno.serve(async (req) => {
     if (action === "image") {
       const prompt = String(payload.prompt ?? "").trim();
       if (!prompt) return json({ error: "Bildbeschreibung fehlt." }, 400);
-      const style = String(payload.style ?? "strichzeichnung");
-      const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.strichzeichnung;
+      const style = String(payload.style ?? "whiteboard");
+      const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.whiteboard;
       const imageModel = String(payload.model ?? "nano-banana-2");
       const taskId = await createJobTask(imageModel, {
         prompt: `${prompt}. ${suffix}`,

@@ -17,6 +17,7 @@ export interface WhiteboardVideoProject {
   title: string;
   topic: string;
   style: string;
+  script_type: string;
   image_model: string | null;
   voice_model: string | null;
   video_model: string | null;

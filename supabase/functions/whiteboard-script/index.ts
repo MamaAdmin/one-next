@@ -30,11 +30,22 @@ async function requireAdmin(req: Request): Promise<{ userId: string } | Response
   return { userId: data.user.id };
 }
 
-function buildPrompt(topic: string, sceneCount: number, title: string) {
-  return `Du bist Autor für Whiteboard-Erklärvideos (Deutsch, Schweizer Business-Kontext).
+function buildPrompt(
+  topic: string,
+  sceneCount: number,
+  title: string,
+  scriptType: string,
+  scriptHint: string,
+  styleLabel: string,
+) {
+  return `Du bist Autor für Erklär- und Lernvideos (Deutsch, Schweizer Business-Kontext).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
 Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
+Visueller Stil: ${styleLabel}
+Skriptart: ${scriptType}. ${scriptHint}
+Der erste Abschnitt ist ein Hook (Frage, Problem oder überraschende Aussage), der letzte fasst zusammen.
+
 
 Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
 {"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"deutsche Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","durationInSeconds":8}]}
@@ -65,6 +76,9 @@ Deno.serve(async (req) => {
     if (topic.length < 5) return json({ error: "Bitte ein Thema beschreiben." }, 400);
     const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 10);
     const title = String(payload.title ?? "");
+    const scriptType = String(payload.scriptType ?? "Problem–Lösung");
+    const scriptHint = String(payload.scriptHint ?? "");
+    const styleLabel = String(payload.styleLabel ?? "Whiteboard / Legetrick");
 
     let lastError = "";
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -77,7 +91,12 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           model: MODEL,
-          messages: [{ role: "user", content: buildPrompt(topic, sceneCount, title) }],
+          messages: [
+            {
+              role: "user",
+              content: buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel),
+            },
+          ],
         }),
       });
 

@@ -1,263 +1,45 @@
-import {
-  AbsoluteFill,
-  Audio,
-  Img,
-  Sequence,
-  interpolate,
-  spring,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
-import handImage from "@/assets/whiteboard-hand.png";
+import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { FPS, type WhiteboardScene } from "./types";
+import { rendererFor, themeFor, type VideoTheme } from "./theme";
+import {
+  DrawnUnderline,
+  HandWriteText,
+  SCENE_RENDERERS,
+  SceneAudio,
+} from "./renderers";
 
-const PAPER = "#FBF7F0";
-const INK = "#26303B";
-const MUTED = "#6B7684";
-const ACCENT = "#C1663F";
-
-/** Zeichnende Hand, die der aktuellen Zeichenposition folgt. */
-const DrawingHand: React.FC<{
-  x: number | string;
-  y: number | string;
-  visible: boolean;
-  size?: number;
-}> = ({ x, y, visible, size = 300 }) => {
-  const frame = useCurrentFrame();
-  const wobble = Math.sin(frame / 3) * 4;
-  if (!visible) return null;
-  const offsetX = size * 0.28;
-  const offsetY = size * 0.27 - wobble;
-  return (
-    <Img
-      src={handImage}
-      style={{
-        position: "absolute",
-        left: typeof x === "number" ? x - offsetX : `calc(${x} - ${offsetX}px)`,
-        top: typeof y === "number" ? y - offsetY : `calc(${y} - ${offsetY}px)`,
-        width: size,
-        height: size,
-        pointerEvents: "none",
-        filter: "drop-shadow(0 12px 24px rgba(38,48,59,0.18))",
-        zIndex: 20,
-      }}
-    />
-  );
-};
-
+export const TITLE_SECONDS = 2.4;
+export const TITLE_FRAMES = Math.round(TITLE_SECONDS * FPS);
 
 export interface WhiteboardVideoProps {
   title: string;
   scenes: WhiteboardScene[];
+  style?: string;
 }
 
-
-const PaperBackground: React.FC = () => {
+const Background: React.FC<{ theme: VideoTheme }> = ({ theme }) => {
   const frame = useCurrentFrame();
   const drift = Math.sin(frame / 90) * 10;
   return (
-    <AbsoluteFill style={{ backgroundColor: PAPER }}>
-      <AbsoluteFill
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(38,48,59,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(38,48,59,0.045) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-          transform: `translate(${drift}px, ${drift / 2}px)`,
-        }}
-      />
-      <AbsoluteFill
-        style={{
-          background:
-            "radial-gradient(circle at 25% 15%, rgba(255,255,255,0.95), rgba(38,48,59,0.05) 100%)",
-        }}
-      />
+    <AbsoluteFill style={{ background: theme.background }}>
+      {theme.overlay ? (
+        <AbsoluteFill
+          style={{
+            backgroundImage: theme.overlay,
+            backgroundSize: "64px 64px",
+            transform: `translate(${drift}px, ${drift / 2}px)`,
+          }}
+        />
+      ) : null}
     </AbsoluteFill>
   );
 };
 
-/** Hand-drawn underline that draws itself from left to right. */
-const DrawnUnderline: React.FC<{ width: number; delay: number }> = ({ width, delay }) => {
-  const frame = useCurrentFrame();
-  const progress = interpolate(frame - delay, [0, 22], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const length = 1200;
-  return (
-    <svg width={width} height={26} viewBox="0 0 1200 26" fill="none">
-      <path
-        d="M6 18 C 220 4, 420 26, 640 12 S 1020 6, 1194 16"
-        stroke={ACCENT}
-        strokeWidth={9}
-        strokeLinecap="round"
-        strokeDasharray={length}
-        strokeDashoffset={length * (1 - progress)}
-      />
-    </svg>
-  );
-};
-
-const HandWriteText: React.FC<{
-  text: string;
-  delay: number;
-  fontSize: number;
-  color?: string;
-  weight?: number;
-}> = ({ text, delay, fontSize, color = INK, weight = 700 }) => {
-  const frame = useCurrentFrame();
-  const local = frame - delay;
-  const reveal = interpolate(local, [0, 30], [0, 100], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const writing = local >= 0 && local <= 30;
-  const estWidth = text.length * fontSize * 0.52;
-  return (
-    <div style={{ position: "relative" }}>
-      <div
-        style={{
-          fontSize,
-          fontWeight: weight,
-          color,
-          lineHeight: 1.15,
-          letterSpacing: "-0.02em",
-          clipPath: `inset(0 ${100 - reveal}% 0 0)`,
-        }}
-      >
-        {text}
-      </div>
-      <DrawingHand
-        x={(reveal / 100) * estWidth}
-        y={fontSize * 0.85}
-        visible={writing}
-        size={220}
-      />
-    </div>
-  );
-};
-
-
-const Bullet: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const s = spring({ frame: frame - delay, fps, config: { damping: 18, stiffness: 160 } });
-  const x = interpolate(s, [0, 1], [-60, 0]);
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 20,
-        alignItems: "flex-start",
-        opacity: s,
-        transform: `translateX(${x}px)`,
-      }}
-    >
-      <svg width={30} height={30} viewBox="0 0 30 30" style={{ marginTop: 12, flexShrink: 0 }}>
-        <circle cx={15} cy={15} r={9} fill="none" stroke={ACCENT} strokeWidth={4} />
-      </svg>
-      <div style={{ fontSize: 40, color: MUTED, lineHeight: 1.35, fontWeight: 500 }}>{text}</div>
-    </div>
-  );
-};
-
-const DRAW_FRAMES = 60;
-
-const SceneIllustration: React.FC<{ url?: string | null; delay: number }> = ({ url, delay }) => {
-  const frame = useCurrentFrame();
-  const local = frame - delay;
-  const progress = interpolate(local, [0, DRAW_FRAMES], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const drawing = local >= 0 && local <= DRAW_FRAMES;
-  const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
-  const handY = 30 + Math.sin(local / 6) * 18;
-
-  if (!url) {
-    return (
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          border: `6px dashed rgba(38,48,59,0.18)`,
-          borderRadius: 32,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: MUTED,
-          fontSize: 30,
-          fontWeight: 500,
-          textAlign: "center",
-          padding: 40,
-        }}
-      >
-        Zeichnung noch nicht erzeugt
-      </div>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        transform: drawing ? undefined : `translateY(${float}px)`,
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)`,
-        }}
-      >
-        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      </div>
-      <DrawingHand x={`${progress * 100}%`} y={`${handY}%`} visible={drawing} size={330} />
-    </div>
-  );
-};
-
-const SceneView: React.FC<{ scene: WhiteboardScene; index: number }> = ({ scene, index }) => {
-  const frame = useCurrentFrame();
-  const exit = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: "clamp" });
-  const flip = index % 2 === 1;
-
-  return (
-    <AbsoluteFill style={{ opacity: exit }}>
-      <AbsoluteFill
-        style={{
-          display: "flex",
-          flexDirection: flip ? "row-reverse" : "row",
-          alignItems: "center",
-          gap: 90,
-          padding: "110px 130px",
-        }}
-      >
-        <div style={{ flex: 1.05, display: "flex", flexDirection: "column", gap: 28 }}>
-          <div style={{ fontSize: 28, letterSpacing: "0.22em", color: ACCENT, fontWeight: 700 }}>
-            {String(index + 1).padStart(2, "0")}
-          </div>
-          <HandWriteText text={scene.heading} delay={4} fontSize={78} />
-          <DrawnUnderline width={520} delay={16} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 22, marginTop: 12 }}>
-            {scene.bullets.slice(0, 4).map((bullet, i) => (
-              <Bullet key={i} text={bullet} delay={30 + i * 9} />
-            ))}
-          </div>
-        </div>
-        <div style={{ flex: 0.95, height: "72%" }}>
-          <SceneIllustration url={scene.imageUrl} delay={12} />
-        </div>
-      </AbsoluteFill>
-      {scene.audioUrl ? <Audio src={scene.audioUrl} /> : null}
-    </AbsoluteFill>
-  );
-};
-
-const TitleCard: React.FC<{ title: string }> = ({ title }) => {
+const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boolean }> = ({
+  title,
+  theme,
+  handwritten,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame, fps, config: { damping: 200 } });
@@ -266,27 +48,41 @@ const TitleCard: React.FC<{ title: string }> = ({ title }) => {
       style={{
         justifyContent: "center",
         padding: "0 150px",
+        fontFamily: theme.fontFamily,
         opacity: interpolate(frame, [0, 8], [0, 1], { extrapolateRight: "clamp" }),
       }}
     >
       <div style={{ transform: `translateY(${interpolate(s, [0, 1], [40, 0])}px)` }}>
-        <HandWriteText text={title} delay={2} fontSize={104} />
+        <HandWriteText
+          text={title}
+          delay={2}
+          fontSize={96}
+          color={theme.ink}
+          withHand={handwritten}
+          maxWidth={1400}
+        />
         <div style={{ marginTop: 18 }}>
-          <DrawnUnderline width={760} delay={14} />
+          <DrawnUnderline width={760} delay={14} color={theme.accent} />
         </div>
       </div>
     </AbsoluteFill>
   );
 };
 
-export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({ title, scenes }) => {
-  let cursor = 0;
+export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({ title, scenes, style }) => {
+  const theme = themeFor(style);
+  const renderer = rendererFor(style);
+  const SceneView = SCENE_RENDERERS[renderer];
+
+  // Der Titel bekommt einen eigenen Zeitblock; die Abschnitte starten erst danach.
+  let cursor = title ? TITLE_FRAMES : 0;
+
   return (
     <AbsoluteFill>
-      <PaperBackground />
+      <Background theme={theme} />
       {title ? (
-        <Sequence durationInFrames={Math.round(1.8 * FPS)}>
-          <TitleCard title={title} />
+        <Sequence durationInFrames={TITLE_FRAMES}>
+          <TitleCard title={title} theme={theme} handwritten={renderer === "whiteboard"} />
         </Sequence>
       ) : null}
       {scenes.map((scene, index) => {
@@ -295,7 +91,8 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({ title, scenes 
         cursor += duration;
         return (
           <Sequence key={scene.id} from={from} durationInFrames={duration}>
-            <SceneView scene={scene} index={index} />
+            <SceneView scene={scene} index={index} theme={theme} />
+            <SceneAudio url={scene.audioUrl} />
           </Sequence>
         );
       })}
