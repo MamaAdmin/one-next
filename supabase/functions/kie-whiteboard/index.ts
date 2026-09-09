@@ -196,7 +196,7 @@ Deno.serve(async (req) => {
       });
       const remoteUrl = await pollJobTask(taskId);
       const url = await mirrorToStorage(remoteUrl, "mp3");
-      return json({ url });
+      return json({ url, taskId });
     }
 
     if (action === "video_start") {
