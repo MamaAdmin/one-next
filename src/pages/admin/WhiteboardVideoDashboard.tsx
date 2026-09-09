@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Video } from "lucide-react";
 import type { WhiteboardVideoProject } from "@/features/whiteboard/types";
 import { KieCreditsCard } from "@/components/admin/KieCreditsCard";
-import { KieModelPricing } from "@/components/admin/KieModelPricing";
 import { KieUsageStats } from "@/components/admin/KieUsageStats";
 
 const statusLabel: Record<string, string> = {
@@ -103,7 +102,6 @@ const WhiteboardVideoDashboard = () => {
 
           <KieCreditsCard />
           <KieUsageStats />
-          <KieModelPricing />
 
           {projects.length === 0 ? (
             <Card>
