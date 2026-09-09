@@ -137,7 +137,8 @@ const WhiteboardVideoEditor = () => {
       setTitle(loaded.title);
       setTopic(loaded.topic);
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
-      setStyle(loaded.style || "strichzeichnung");
+      setStyle(normalizeStyle(loaded.style));
+      setScriptType(loaded.script_type || "problem_loesung");
       setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);
       setVoiceModel(loaded.voice_model || DEFAULT_VOICE_MODEL);
       setVideoModel(loaded.video_model || DEFAULT_VIDEO_MODEL);
