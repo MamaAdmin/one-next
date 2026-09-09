@@ -167,14 +167,25 @@ const WhiteboardVideoEditor = () => {
       setSaving(true);
       const { error } = await (supabase as any)
         .from("whiteboard_videos")
-        .update({ title, topic, voice, style, scenes, image_model: imageModel, voice_model: voiceModel, video_model: videoModel, ...patch })
+        .update({
+          title,
+          topic,
+          voice,
+          style,
+          script_type: scriptType,
+          scenes,
+          image_model: imageModel,
+          voice_model: voiceModel,
+          video_model: videoModel,
+          ...patch,
+        })
         .eq("id", videoId);
       setSaving(false);
       if (error) {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, voice, style, scenes, imageModel, voiceModel, videoModel, toast],
+    [videoId, title, topic, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
   );
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
