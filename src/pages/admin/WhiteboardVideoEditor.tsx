@@ -28,6 +28,7 @@ import {
   Image as ImageIcon,
   Loader2,
   Mic,
+  Play,
   Plus,
   Sparkles,
   Trash2,
@@ -47,6 +48,7 @@ import {
   generateImage,
   generateScript,
   generateVoice,
+  previewVoice,
   startVideo,
 } from "@/features/whiteboard/api";
 import { WHITEBOARD_STYLES } from "@/features/whiteboard/styles";
@@ -94,6 +96,8 @@ const WhiteboardVideoEditor = () => {
   const [creditsError, setCreditsError] = useState<string | null>(null);
   const [lastUsed, setLastUsed] = useState<number | null>(null);
   const [briefingOpen, setBriefingOpen] = useState(true);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const pollRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -215,31 +219,28 @@ const WhiteboardVideoEditor = () => {
     [refreshCredits, toast],
   );
 
+  const playVoicePreview = async () => {
+    setPreviewLoading(true);
+    try {
+      const url = await previewVoice(voice, voiceModel);
+      previewAudioRef.current?.pause();
+      const audio = new Audio(url);
+      previewAudioRef.current = audio;
+      await audio.play();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+      toast({ title: "Hörprobe fehlgeschlagen", description: message, variant: "destructive" });
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
   const runScript = async () => {
     if (!videoId) return;
-    const estimate = estimateCost({
-      models,
-      sceneCount,
-      scenes: [],
-      includeScript: true,
-      includeImages: false,
-      includeVoices: false,
-    });
     setWorking("script");
-    let usageId: string | null = null;
-    let before: number | null = null;
+    const usageId: string | null = null;
+
     try {
-      before = await ensureBudget(estimate);
-      usageId = await startUsage({
-        videoId,
-        creditsBefore: before,
-        estimate,
-        sections: sceneCount,
-        images: 0,
-        audioCharacters: 0,
-        videoSeconds: 0,
-        models: { script: SCRIPT_MODEL },
-      });
       const script = await generateScript(topic, sceneCount, title);
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
@@ -259,18 +260,13 @@ const WhiteboardVideoEditor = () => {
         kind: "script",
         model: SCRIPT_MODEL,
         units: 1,
-        estimatedCredits: estimate.total,
+        estimatedCredits: 0,
         status: "done",
       });
-      const after = await refreshCredits();
-      await finishUsage({
-        usageId,
-        creditsAfter: after,
-        actualCredits: estimate.total,
-        status: "done",
+      toast({
+        title: "Skript erstellt",
+        description: `${next.length} Abschnitte · über Lovable KI, keine Kie.ai-Credits`,
       });
-      setLastUsed(estimate.total);
-      toast({ title: "Skript erstellt", description: `${next.length} Abschnitte` });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unbekannter Fehler";
       await logJob({
@@ -280,13 +276,6 @@ const WhiteboardVideoEditor = () => {
         model: SCRIPT_MODEL,
         units: 1,
         estimatedCredits: 0,
-        status: "failed",
-        errorMessage: message,
-      });
-      await finishUsage({
-        usageId,
-        creditsAfter: null,
-        actualCredits: 0,
         status: "failed",
         errorMessage: message,
       });
@@ -682,18 +671,38 @@ const WhiteboardVideoEditor = () => {
                     </div>
                     <div className="space-y-2">
                       <Label>Stimme</Label>
-                      <Select value={voice} onValueChange={setVoice}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {VOICES.map((v) => (
-                            <SelectItem key={v} value={v}>
-                              {v}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="flex gap-2">
+                        <Select value={voice} onValueChange={setVoice}>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {VOICES.map((v) => (
+                              <SelectItem key={v} value={v}>
+                                {v}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          title="Stimme anhören"
+                          aria-label="Stimme anhören"
+                          disabled={previewLoading}
+                          onClick={() => void playVoicePreview()}
+                        >
+                          {previewLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Play className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Kurze Hörprobe; jede Stimme wird nur einmal erzeugt.
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label>Zeichenstil</Label>
@@ -831,11 +840,30 @@ const WhiteboardVideoEditor = () => {
               {fullEstimate.lines.map((line) => (
                 <div key={line.label} className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
-                    {line.label} · {line.model} ({CATEGORY_LABELS[
-                      line.unit === "image" ? "image" : line.unit === "1k_chars" ? "voice" : line.unit === "second" ? "video" : "text"
-                    ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)} {UNIT_LABELS[line.unit]}
+                    {line.label === "Skript" ? (
+                      <>Skript · {line.model} · keine Kie.ai-Credits</>
+                    ) : (
+                      <>
+                        {line.label} · {line.model} ({CATEGORY_LABELS[
+                          line.unit === "image"
+                            ? "image"
+                            : line.unit === "1k_chars"
+                              ? "voice"
+                              : line.unit === "second"
+                                ? "video"
+                                : "text"
+                        ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)}{" "}
+                        {UNIT_LABELS[line.unit]}
+                      </>
+                    )}
                   </span>
-                  <span>{line.priceKnown ? `${formatCredits(line.credits)} Credits` : "Preis unbekannt"}</span>
+                  <span>
+                    {line.label === "Skript"
+                      ? "über Lovable KI"
+                      : line.priceKnown
+                        ? `${formatCredits(line.credits)} Credits`
+                        : "Preis unbekannt"}
+                  </span>
                 </div>
               ))}
               <div className="flex justify-between text-sm font-medium border-t pt-2">

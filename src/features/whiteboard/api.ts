@@ -1,8 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { WhiteboardScene } from "./types";
 
-async function invoke<T>(body: Record<string, unknown>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke("kie-whiteboard", { body });
+async function invokeFn<T>(fn: string, body: Record<string, unknown>): Promise<T> {
+  const { data, error } = await supabase.functions.invoke(fn, { body });
   if (error) {
     const detail = (data as { error?: string } | null)?.error;
     throw new Error(detail ?? error.message);
@@ -12,6 +12,8 @@ async function invoke<T>(body: Record<string, unknown>): Promise<T> {
   }
   return data as T;
 }
+
+const invoke = <T,>(body: Record<string, unknown>) => invokeFn<T>("kie-whiteboard", body);
 
 export interface GeneratedScript {
   title: string;
@@ -25,9 +27,14 @@ export interface GeneratedScript {
 }
 
 export const generateScript = (topic: string, sceneCount: number, title: string) =>
-  invoke<{ script: GeneratedScript }>({ action: "script", topic, sceneCount, title }).then(
-    (r) => r.script,
-  );
+  invokeFn<{ script: GeneratedScript }>("whiteboard-script", {
+    topic,
+    sceneCount,
+    title,
+  }).then((r) => r.script);
+
+export const previewVoice = (voice: string, model?: string) =>
+  invoke<{ url: string }>({ action: "voice_preview", voice, model }).then((r) => r.url);
 
 export const generateImage = (prompt: string, style = "strichzeichnung", model?: string) =>
   invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style, model });
