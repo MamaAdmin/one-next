@@ -95,6 +95,34 @@ async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string>
   throw new Error("Zeitüberschreitung bei der Generierung");
 }
 
+const STYLE_SUFFIX: Record<string, string> = {
+  strichzeichnung:
+    "Black ink whiteboard marker line drawing, hand drawn doodle style, clean white background, no text, minimal, high contrast.",
+  bunte_marker:
+    "Colorful whiteboard marker illustration, bold hand drawn strokes, clean white background, no text, playful business doodle.",
+  bleistift:
+    "Pencil sketch illustration, soft graphite shading, hand drawn on white paper, no text, minimal.",
+  kreide:
+    "White chalk drawing on a dark green chalkboard, hand drawn, no text, high contrast.",
+  comic:
+    "Comic cartoon illustration, bold outlines, flat colors, clean white background, no text.",
+  business_flat:
+    "Flat vector business illustration, simple geometric shapes, limited muted color palette, clean white background, no text.",
+};
+
+async function fetchCredits(): Promise<number> {
+  const res = await fetch(`${KIE_BASE}/api/v1/chat/credit`, { headers: kieHeaders() });
+  if (res.status === 401 || res.status === 403) {
+    throw new Error("Kie.ai-Zugang ungültig. Bitte den API-Schlüssel prüfen.");
+  }
+  if (res.status === 429) throw new Error("Kie.ai-Limit erreicht. Bitte kurz warten.");
+  if (!res.ok) throw new Error(`Kie.ai nicht erreichbar (${res.status})`);
+  const body = await res.json().catch(() => null);
+  const value = typeof body?.data === "number" ? body.data : Number(body?.data?.credits);
+  if (!Number.isFinite(value)) throw new Error("Kie.ai lieferte keinen Kontostand");
+  return value;
+}
+
 async function generateScript(topic: string, sceneCount: number, title: string) {
   const prompt = `Du bist Autor für Whiteboard-Erklärvideos (Deutsch, Schweizer Business-Kontext).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
