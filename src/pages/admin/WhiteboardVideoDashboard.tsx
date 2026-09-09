@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Video } from "lucide-react";
 import type { WhiteboardVideoProject } from "@/features/whiteboard/types";
 import { KieCreditsCard } from "@/components/admin/KieCreditsCard";
-import { KieModelPricing } from "@/components/admin/KieModelPricing";
 import { KieUsageStats } from "@/components/admin/KieUsageStats";
 
 const statusLabel: Record<string, string> = {
@@ -90,15 +89,19 @@ const WhiteboardVideoDashboard = () => {
                   Animation und MP4-Export über Remotion.
                 </CardDescription>
               </div>
-              <Button onClick={createProject} disabled={busy}>
-                <Plus className="w-4 h-4 mr-2" /> Neues Video
-              </Button>
+              <div className="flex gap-2 shrink-0">
+                <Button variant="outline" asChild>
+                  <Link to="/admin/ki-modelle">KI-Modelle</Link>
+                </Button>
+                <Button onClick={createProject} disabled={busy}>
+                  <Plus className="w-4 h-4 mr-2" /> Neues Video
+                </Button>
+              </div>
             </CardHeader>
           </Card>
 
           <KieCreditsCard />
           <KieUsageStats />
-          <KieModelPricing />
 
           {projects.length === 0 ? (
             <Card>

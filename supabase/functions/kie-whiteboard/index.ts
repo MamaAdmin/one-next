@@ -176,7 +176,8 @@ Deno.serve(async (req) => {
       if (!prompt) return json({ error: "Bildbeschreibung fehlt." }, 400);
       const style = String(payload.style ?? "strichzeichnung");
       const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.strichzeichnung;
-      const taskId = await createJobTask("nano-banana-2", {
+      const imageModel = String(payload.model ?? "nano-banana-2");
+      const taskId = await createJobTask(imageModel, {
         prompt: `${prompt}. ${suffix}`,
         aspect_ratio: "1:1",
         resolution: "1K",
@@ -190,7 +191,8 @@ Deno.serve(async (req) => {
     if (action === "voice") {
       const text = String(payload.text ?? "").trim().slice(0, 4800);
       if (!text) return json({ error: "Sprechtext fehlt." }, 400);
-      const taskId = await createJobTask("elevenlabs/text-to-speech-multilingual-v2", {
+      const voiceModel = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
+      const taskId = await createJobTask(voiceModel, {
         text,
         voice: String(payload.voice ?? "Charlotte"),
       });
@@ -207,7 +209,7 @@ Deno.serve(async (req) => {
         headers: kieHeaders(),
         body: JSON.stringify({
           prompt: `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
-          model: "veo3_fast",
+          model: String(payload.model ?? "veo3_fast"),
           generationType: "TEXT_2_VIDEO",
           aspect_ratio: "16:9",
         }),

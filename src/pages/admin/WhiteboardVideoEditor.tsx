@@ -52,11 +52,11 @@ import {
 import { WHITEBOARD_STYLES } from "@/features/whiteboard/styles";
 import {
   CATEGORY_LABELS,
-  IMAGE_MODEL,
+  IMAGE_MODEL as DEFAULT_IMAGE_MODEL,
   SCRIPT_MODEL,
   UNIT_LABELS,
-  VIDEO_MODEL,
-  VOICE_MODEL,
+  VIDEO_MODEL as DEFAULT_VIDEO_MODEL,
+  VOICE_MODEL as DEFAULT_VOICE_MODEL,
   estimateCost,
   fetchKieModels,
   formatCredits,
@@ -80,6 +80,9 @@ const WhiteboardVideoEditor = () => {
   const [topic, setTopic] = useState("");
   const [voice, setVoice] = useState("Charlotte");
   const [style, setStyle] = useState("strichzeichnung");
+  const [imageModel, setImageModel] = useState(DEFAULT_IMAGE_MODEL);
+  const [voiceModel, setVoiceModel] = useState(DEFAULT_VOICE_MODEL);
+  const [videoModel, setVideoModel] = useState(DEFAULT_VIDEO_MODEL);
   const [sceneCount, setSceneCount] = useState(5);
   const [scenes, setScenes] = useState<WhiteboardScene[]>([]);
   const [saving, setSaving] = useState(false);
@@ -128,6 +131,9 @@ const WhiteboardVideoEditor = () => {
       setTopic(loaded.topic);
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
       setStyle(loaded.style || "strichzeichnung");
+      setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);
+      setVoiceModel(loaded.voice_model || DEFAULT_VOICE_MODEL);
+      setVideoModel(loaded.video_model || DEFAULT_VIDEO_MODEL);
       setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
       setKieVideoUrl(loaded.video_url);
       setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
@@ -153,14 +159,14 @@ const WhiteboardVideoEditor = () => {
       setSaving(true);
       const { error } = await (supabase as any)
         .from("whiteboard_videos")
-        .update({ title, topic, voice, style, scenes, ...patch })
+        .update({ title, topic, voice, style, scenes, image_model: imageModel, voice_model: voiceModel, video_model: videoModel, ...patch })
         .eq("id", videoId);
       setSaving(false);
       if (error) {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, voice, style, scenes, toast],
+    [videoId, title, topic, voice, style, scenes, imageModel, voiceModel, videoModel, toast],
   );
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
@@ -292,7 +298,7 @@ const WhiteboardVideoEditor = () => {
     });
     setWorking("images");
     let usageId: string | null = null;
-    const perImage = rateFor(models, IMAGE_MODEL);
+    const perImage = rateFor(models, imageModel);
     let actual = 0;
     try {
       const before = await ensureBudget(estimate);
@@ -304,7 +310,7 @@ const WhiteboardVideoEditor = () => {
         images: scenes.length,
         audioCharacters: 0,
         videoSeconds: 0,
-        models: { image: IMAGE_MODEL },
+        models: { image: imageModel },
       });
     } catch (error) {
       setWorking(null);
@@ -324,7 +330,7 @@ const WhiteboardVideoEditor = () => {
       const prompt = scene.imagePrompt || scene.heading;
       if (!prompt) continue;
       try {
-        const result = await generateImage(prompt, style);
+        const result = await generateImage(prompt, style, imageModel);
         next[i] = { ...scene, imageUrl: result.url };
         created += 1;
         actual += perImage;
@@ -333,7 +339,7 @@ const WhiteboardVideoEditor = () => {
           usageId,
           videoId,
           kind: "image",
-          model: IMAGE_MODEL,
+          model: imageModel,
           units: 1,
           estimatedCredits: perImage,
           status: "done",
@@ -346,7 +352,7 @@ const WhiteboardVideoEditor = () => {
           usageId,
           videoId,
           kind: "image",
-          model: IMAGE_MODEL,
+          model: imageModel,
           units: 1,
           estimatedCredits: 0,
           status: "failed",
@@ -384,7 +390,7 @@ const WhiteboardVideoEditor = () => {
       includeImages: false,
       includeVoices: true,
     });
-    const rate = rateFor(models, VOICE_MODEL);
+    const rate = rateFor(models, voiceModel);
     setWorking("voices");
     let usageId: string | null = null;
     let actual = 0;
@@ -398,7 +404,7 @@ const WhiteboardVideoEditor = () => {
         images: 0,
         audioCharacters: scenes.reduce((sum, s) => sum + s.narration.length, 0),
         videoSeconds: 0,
-        models: { voice: VOICE_MODEL },
+        models: { voice: voiceModel },
       });
     } catch (error) {
       setWorking(null);
@@ -416,7 +422,7 @@ const WhiteboardVideoEditor = () => {
       const scene = next[i];
       if (!scene.narration.trim()) continue;
       try {
-        const result = await generateVoice(scene.narration, voice);
+        const result = await generateVoice(scene.narration, voice, voiceModel);
         next[i] = {
           ...scene,
           audioUrl: result.url,
@@ -429,7 +435,7 @@ const WhiteboardVideoEditor = () => {
           usageId,
           videoId,
           kind: "voice",
-          model: VOICE_MODEL,
+          model: voiceModel,
           units: Math.round((scene.narration.length / 1000) * 100) / 100,
           estimatedCredits: cost,
           status: "done",
@@ -442,7 +448,7 @@ const WhiteboardVideoEditor = () => {
           usageId,
           videoId,
           kind: "voice",
-          model: VOICE_MODEL,
+          model: voiceModel,
           units: 0,
           estimatedCredits: 0,
           status: "failed",
@@ -494,9 +500,9 @@ const WhiteboardVideoEditor = () => {
         images: 0,
         audioCharacters: 0,
         videoSeconds: VEO_SECONDS,
-        models: { video: VIDEO_MODEL },
+        models: { video: videoModel },
       });
-      const taskId = await startVideo(topic || title);
+      const taskId = await startVideo(topic || title, videoModel);
       toast({ title: "Videoclip wird erzeugt", description: "Das dauert einige Minuten." });
       pollRef.current = window.setInterval(async () => {
         try {
@@ -510,7 +516,7 @@ const WhiteboardVideoEditor = () => {
               usageId,
               videoId,
               kind: "video",
-              model: VIDEO_MODEL,
+              model: videoModel,
               units: VEO_SECONDS,
               estimatedCredits: estimate.total,
               status: "done",
@@ -532,7 +538,7 @@ const WhiteboardVideoEditor = () => {
               usageId,
               videoId,
               kind: "video",
-              model: VIDEO_MODEL,
+              model: videoModel,
               units: 0,
               estimatedCredits: 0,
               status: "failed",
@@ -688,6 +694,57 @@ const WhiteboardVideoEditor = () => {
                               {s.label}
                             </SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Bild-Modell</Label>
+                      <Select value={imageModel} onValueChange={setImageModel}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {models
+                            .filter((m) => m.category === "image" && m.active)
+                            .map((m) => (
+                              <SelectItem key={m.id} value={m.name}>
+                                {m.display_name ?? m.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sprach-Modell</Label>
+                      <Select value={voiceModel} onValueChange={setVoiceModel}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {models
+                            .filter((m) => m.category === "voice" && m.active)
+                            .map((m) => (
+                              <SelectItem key={m.id} value={m.name}>
+                                {m.display_name ?? m.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Video-Modell</Label>
+                      <Select value={videoModel} onValueChange={setVideoModel}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {models
+                            .filter((m) => m.category === "video" && m.active)
+                            .map((m) => (
+                              <SelectItem key={m.id} value={m.name}>
+                                {m.display_name ?? m.name}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>

@@ -1,16 +1,29 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { WhiteboardScene } from "./types";
 
-export type KieCategory = "text" | "image" | "voice" | "video";
+export type KieCategory = "text" | "image" | "voice" | "video" | "music";
 export type KieUnit = "job" | "image" | "1k_chars" | "second";
 
 export interface KieModel {
   id: string;
   name: string;
+  display_name: string | null;
+  provider: string | null;
   category: KieCategory;
   unit: KieUnit;
   credits_per_unit: number;
   active: boolean;
+  recommended: boolean;
+  description_de: string | null;
+  strengths: string | null;
+  use_cases: string[];
+  quality_tier: string;
+  speed_tier: string;
+  input_modalities: string[];
+  output_modalities: string[];
+  docs_url: string | null;
+  source: string;
+  last_checked_at: string | null;
   updated_at: string;
 }
 
@@ -31,6 +44,7 @@ export const CATEGORY_LABELS: Record<KieCategory, string> = {
   image: "Bild",
   voice: "Sprache",
   video: "Video",
+  music: "Musik",
 };
 
 export const fetchKieModels = async (): Promise<KieModel[]> => {

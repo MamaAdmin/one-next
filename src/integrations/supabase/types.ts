@@ -991,36 +991,108 @@ export type Database = {
           },
         ]
       }
+      kie_catalog_sync_runs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          raw_result: Json | null
+          status: string
+          suggestions: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          raw_result?: Json | null
+          status?: string
+          suggestions?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          raw_result?: Json | null
+          status?: string
+          suggestions?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kie_models: {
         Row: {
           active: boolean
           category: string
           created_at: string
           credits_per_unit: number
+          description_de: string | null
+          display_name: string | null
+          docs_url: string | null
           id: string
+          input_modalities: string[]
+          last_checked_at: string | null
           name: string
+          output_modalities: string[]
+          provider: string | null
+          quality_tier: string
+          recommended: boolean
+          source: string
+          speed_tier: string
+          strengths: string | null
           unit: string
           updated_at: string
+          use_cases: string[]
         }
         Insert: {
           active?: boolean
           category: string
           created_at?: string
           credits_per_unit?: number
+          description_de?: string | null
+          display_name?: string | null
+          docs_url?: string | null
           id?: string
+          input_modalities?: string[]
+          last_checked_at?: string | null
           name: string
+          output_modalities?: string[]
+          provider?: string | null
+          quality_tier?: string
+          recommended?: boolean
+          source?: string
+          speed_tier?: string
+          strengths?: string | null
           unit: string
           updated_at?: string
+          use_cases?: string[]
         }
         Update: {
           active?: boolean
           category?: string
           created_at?: string
           credits_per_unit?: number
+          description_de?: string | null
+          display_name?: string | null
+          docs_url?: string | null
           id?: string
+          input_modalities?: string[]
+          last_checked_at?: string | null
           name?: string
+          output_modalities?: string[]
+          provider?: string | null
+          quality_tier?: string
+          recommended?: boolean
+          source?: string
+          speed_tier?: string
+          strengths?: string | null
           unit?: string
           updated_at?: string
+          use_cases?: string[]
         }
         Relationships: []
       }
@@ -2218,6 +2290,44 @@ export type Database = {
         }
         Relationships: []
       }
+      model_recommendations: {
+        Row: {
+          applied_video_id: string | null
+          created_at: string
+          id: string
+          prompt: string
+          result: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          applied_video_id?: string | null
+          created_at?: string
+          id?: string
+          prompt: string
+          result?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          applied_video_id?: string | null
+          created_at?: string
+          id?: string
+          prompt?: string
+          result?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "model_recommendations_applied_video_id_fkey"
+            columns: ["applied_video_id"]
+            isOneToOne: false
+            referencedRelation: "whiteboard_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       navigation_items: {
         Row: {
           created_at: string | null
@@ -3160,6 +3270,7 @@ export type Database = {
           created_at: string
           error_message: string | null
           id: string
+          image_model: string
           scenes: Json
           status: string
           style: string
@@ -3167,13 +3278,16 @@ export type Database = {
           topic: string
           updated_at: string
           user_id: string
+          video_model: string
           video_url: string | null
           voice: string
+          voice_model: string
         }
         Insert: {
           created_at?: string
           error_message?: string | null
           id?: string
+          image_model?: string
           scenes?: Json
           status?: string
           style?: string
@@ -3181,13 +3295,16 @@ export type Database = {
           topic?: string
           updated_at?: string
           user_id: string
+          video_model?: string
           video_url?: string | null
           voice?: string
+          voice_model?: string
         }
         Update: {
           created_at?: string
           error_message?: string | null
           id?: string
+          image_model?: string
           scenes?: Json
           status?: string
           style?: string
@@ -3195,8 +3312,10 @@ export type Database = {
           topic?: string
           updated_at?: string
           user_id?: string
+          video_model?: string
           video_url?: string | null
           voice?: string
+          voice_model?: string
         }
         Relationships: []
       }
