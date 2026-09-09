@@ -62,6 +62,9 @@ export const rateFor = (models: KieModel[], name: string): number => {
   return model ? Number(model.credits_per_unit) : 0;
 };
 
+const hasRate = (models: KieModel[], name: string): boolean =>
+  models.some((m) => m.name === name && m.active);
+
 export interface CostLine {
   label: string;
   model: string;
@@ -69,11 +72,13 @@ export interface CostLine {
   unit: KieUnit;
   rate: number;
   credits: number;
+  priceKnown: boolean;
 }
 
 export interface CostEstimate {
   lines: CostLine[];
   total: number;
+  unknownModels: string[];
 }
 
 interface EstimateInput {
@@ -84,6 +89,10 @@ interface EstimateInput {
   includeImages: boolean;
   includeVoices: boolean;
   videoSeconds?: number;
+  scriptModel?: string;
+  imageModel?: string;
+  voiceModel?: string;
+  videoModel?: string;
 }
 
 export const estimateCost = ({
@@ -94,63 +103,83 @@ export const estimateCost = ({
   includeImages,
   includeVoices,
   videoSeconds = 0,
+  scriptModel = SCRIPT_MODEL,
+  imageModel = IMAGE_MODEL,
+  voiceModel = VOICE_MODEL,
+  videoModel = VIDEO_MODEL,
 }: EstimateInput): CostEstimate => {
   const lines: CostLine[] = [];
+  const unknownModels: string[] = [];
+
+  const track = (name: string) => {
+    const known = hasRate(models, name);
+    if (!known && !unknownModels.includes(name)) unknownModels.push(name);
+    return known;
+  };
 
   if (includeScript) {
-    const rate = rateFor(models, SCRIPT_MODEL);
+    const priceKnown = track(scriptModel);
+    const rate = rateFor(models, scriptModel);
     lines.push({
       label: "Skript",
-      model: SCRIPT_MODEL,
+      model: scriptModel,
       units: 1,
       unit: "job",
       rate,
       credits: rate,
+      priceKnown,
     });
   }
 
   if (includeImages) {
     const count = scenes.length || sceneCount;
-    const rate = rateFor(models, IMAGE_MODEL);
+    const priceKnown = track(imageModel);
+    const rate = rateFor(models, imageModel);
     lines.push({
       label: "Zeichnungen",
-      model: IMAGE_MODEL,
+      model: imageModel,
       units: count,
       unit: "image",
       rate,
       credits: count * rate,
+      priceKnown,
     });
   }
 
   if (includeVoices) {
     const chars = scenes.reduce((sum, s) => sum + (s.narration?.length ?? 0), 0);
-    const rate = rateFor(models, VOICE_MODEL);
+    const priceKnown = track(voiceModel);
+    const rate = rateFor(models, voiceModel);
     const units = Math.round((chars / 1000) * 100) / 100;
     lines.push({
       label: "Sprecherstimme",
-      model: VOICE_MODEL,
+      model: voiceModel,
       units,
       unit: "1k_chars",
       rate,
       credits: Math.round(units * rate * 100) / 100,
+      priceKnown,
     });
   }
 
   if (videoSeconds > 0) {
-    const rate = rateFor(models, VIDEO_MODEL);
+    const priceKnown = track(videoModel);
+    const rate = rateFor(models, videoModel);
     lines.push({
       label: "KI-Videoclip",
-      model: VIDEO_MODEL,
+      model: videoModel,
       units: videoSeconds,
       unit: "second",
       rate,
       credits: videoSeconds * rate,
+      priceKnown,
     });
   }
 
   const total = Math.round(lines.reduce((sum, l) => sum + l.credits, 0) * 100) / 100;
-  return { lines, total };
+  return { lines, total, unknownModels };
 };
+
 
 export const formatCredits = (value: number | null | undefined): string =>
   value === null || value === undefined
