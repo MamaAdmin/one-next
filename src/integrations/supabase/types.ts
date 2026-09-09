@@ -854,6 +854,176 @@ export type Database = {
           },
         ]
       }
+      generation_jobs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          estimated_credits: number
+          id: string
+          kind: string
+          model: string | null
+          status: string
+          task_id: string | null
+          units: number
+          updated_at: string
+          usage_id: string | null
+          user_id: string
+          video_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          estimated_credits?: number
+          id?: string
+          kind: string
+          model?: string | null
+          status?: string
+          task_id?: string | null
+          units?: number
+          updated_at?: string
+          usage_id?: string | null
+          user_id: string
+          video_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          estimated_credits?: number
+          id?: string
+          kind?: string
+          model?: string | null
+          status?: string
+          task_id?: string | null
+          units?: number
+          updated_at?: string
+          usage_id?: string | null
+          user_id?: string
+          video_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_jobs_usage_id_fkey"
+            columns: ["usage_id"]
+            isOneToOne: false
+            referencedRelation: "generation_usage"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_jobs_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "whiteboard_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generation_usage: {
+        Row: {
+          audio_characters: number
+          created_at: string
+          credits_after: number | null
+          credits_before: number | null
+          credits_used: number | null
+          error_message: string | null
+          estimated_credits: number
+          id: string
+          image_model: string | null
+          number_of_images: number
+          number_of_sections: number
+          script_model: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          video_id: string | null
+          video_model: string | null
+          video_seconds: number
+          voice_model: string | null
+        }
+        Insert: {
+          audio_characters?: number
+          created_at?: string
+          credits_after?: number | null
+          credits_before?: number | null
+          credits_used?: number | null
+          error_message?: string | null
+          estimated_credits?: number
+          id?: string
+          image_model?: string | null
+          number_of_images?: number
+          number_of_sections?: number
+          script_model?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          video_id?: string | null
+          video_model?: string | null
+          video_seconds?: number
+          voice_model?: string | null
+        }
+        Update: {
+          audio_characters?: number
+          created_at?: string
+          credits_after?: number | null
+          credits_before?: number | null
+          credits_used?: number | null
+          error_message?: string | null
+          estimated_credits?: number
+          id?: string
+          image_model?: string | null
+          number_of_images?: number
+          number_of_sections?: number
+          script_model?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          video_id?: string | null
+          video_model?: string | null
+          video_seconds?: number
+          voice_model?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_usage_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "whiteboard_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kie_models: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          credits_per_unit: number
+          id: string
+          name: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          credits_per_unit?: number
+          id?: string
+          name: string
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          credits_per_unit?: number
+          id?: string
+          name?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lms_achievements: {
         Row: {
           achievement_type: string
