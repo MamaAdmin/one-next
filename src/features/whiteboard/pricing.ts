@@ -44,6 +44,7 @@ export const CATEGORY_LABELS: Record<KieCategory, string> = {
   image: "Bild",
   voice: "Sprache",
   video: "Video",
+  music: "Musik",
 };
 
 export const fetchKieModels = async (): Promise<KieModel[]> => {
