@@ -103,10 +103,10 @@ const WhiteboardVideoDashboard = () => {
             <div className="grid gap-4">
               {projects.map((project) => (
                 <Card key={project.id}>
-                  <CardContent className="flex items-center justify-between gap-4 py-5">
-                    <div className="flex items-center gap-4 min-w-0">
+                  <CardContent className="flex items-center justify-between gap-4 py-5 overflow-hidden">
+                    <div className="flex flex-1 items-center gap-4 min-w-0">
                       <Video className="w-5 h-5 text-primary shrink-0" />
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <Link
                           to={`/admin/whiteboard-videos/${project.id}`}
                           className="font-medium hover:underline truncate block"
