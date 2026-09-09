@@ -181,8 +181,11 @@ const WhiteboardVideoEditor = () => {
         includeScript: scenes.length === 0,
         includeImages: true,
         includeVoices: true,
+        imageModel,
+        voiceModel,
+        videoModel,
       }),
-    [models, sceneCount, scenes],
+    [models, sceneCount, scenes, imageModel, voiceModel, videoModel],
   );
 
   const ensureBudget = useCallback(
@@ -194,6 +197,13 @@ const WhiteboardVideoEditor = () => {
           description: "Die Generierung wird ohne Guthabenprüfung gestartet.",
         });
         return null;
+      }
+      if (estimate.unknownModels.length > 0) {
+        toast({
+          title: "Preis unbekannt",
+          description: `Für ${estimate.unknownModels.join(", ")} ist kein Creditpreis hinterlegt. Die Schätzung kann zu niedrig sein.`,
+          variant: "destructive",
+        });
       }
       if (estimate.total > 0 && before < estimate.total) {
         throw new Error(
@@ -295,6 +305,7 @@ const WhiteboardVideoEditor = () => {
       includeScript: false,
       includeImages: true,
       includeVoices: false,
+      imageModel,
     });
     setWorking("images");
     let usageId: string | null = null;
@@ -389,6 +400,7 @@ const WhiteboardVideoEditor = () => {
       includeScript: false,
       includeImages: false,
       includeVoices: true,
+      voiceModel,
     });
     const rate = rateFor(models, voiceModel);
     setWorking("voices");
@@ -487,6 +499,7 @@ const WhiteboardVideoEditor = () => {
       includeImages: false,
       includeVoices: false,
       videoSeconds: VEO_SECONDS,
+      videoModel,
     });
     setWorking("kie-video");
     let usageId: string | null = null;
@@ -822,13 +835,19 @@ const WhiteboardVideoEditor = () => {
                       line.unit === "image" ? "image" : line.unit === "1k_chars" ? "voice" : line.unit === "second" ? "video" : "text"
                     ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)} {UNIT_LABELS[line.unit]}
                   </span>
-                  <span>{formatCredits(line.credits)} Credits</span>
+                  <span>{line.priceKnown ? `${formatCredits(line.credits)} Credits` : "Preis unbekannt"}</span>
                 </div>
               ))}
               <div className="flex justify-between text-sm font-medium border-t pt-2">
                 <span>Gesamt geschätzt</span>
                 <span>{formatCredits(fullEstimate.total)} Credits</span>
               </div>
+              {fullEstimate.unknownModels.length > 0 && (
+                <p className="text-sm text-destructive">
+                  Für {fullEstimate.unknownModels.join(", ")} ist kein Creditpreis hinterlegt – die Schätzung ist unvollständig.
+                </p>
+              )}
+
               {lastUsed !== null && (
                 <p className="text-sm text-muted-foreground">
                   Dieses Lernvideo hat zuletzt {formatCredits(lastUsed)} Credits verbraucht.
