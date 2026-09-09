@@ -29,17 +29,17 @@ export const generateScript = (topic: string, sceneCount: number, title: string)
     (r) => r.script,
   );
 
-export const generateImage = (prompt: string, style = "strichzeichnung") =>
-  invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style });
+export const generateImage = (prompt: string, style = "strichzeichnung", model?: string) =>
+  invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style, model });
 
-export const generateVoice = (text: string, voice: string) =>
-  invoke<{ url: string; taskId?: string }>({ action: "voice", text, voice });
+export const generateVoice = (text: string, voice: string, model?: string) =>
+  invoke<{ url: string; taskId?: string }>({ action: "voice", text, voice, model });
 
 export const fetchCredits = () =>
   invoke<{ credits: number }>({ action: "credits" }).then((r) => r.credits);
 
-export const startVideo = (prompt: string) =>
-  invoke<{ taskId: string }>({ action: "video_start", prompt }).then((r) => r.taskId);
+export const startVideo = (prompt: string, model?: string) =>
+  invoke<{ taskId: string }>({ action: "video_start", prompt, model }).then((r) => r.taskId);
 
 export const checkVideo = (taskId: string) =>
   invoke<{ status: "pending" | "done" | "failed"; url?: string; error?: string }>({
