@@ -27,7 +27,7 @@ export interface KieModel {
   updated_at: string;
 }
 
-export const SCRIPT_MODEL = "gpt-5-2";
+export const SCRIPT_MODEL = "Lovable KI (Gemini)";
 export const IMAGE_MODEL = "nano-banana-2";
 export const VOICE_MODEL = "elevenlabs/text-to-speech-multilingual-v2";
 export const VIDEO_MODEL = "veo3_fast";
@@ -118,16 +118,15 @@ export const estimateCost = ({
   };
 
   if (includeScript) {
-    const priceKnown = track(scriptModel);
-    const rate = rateFor(models, scriptModel);
+    // Das Skript wird über die Lovable KI erzeugt und kostet keine Kie.ai-Credits.
     lines.push({
       label: "Skript",
       model: scriptModel,
       units: 1,
       unit: "job",
-      rate,
-      credits: rate,
-      priceKnown,
+      rate: 0,
+      credits: 0,
+      priceKnown: true,
     });
   }
 
