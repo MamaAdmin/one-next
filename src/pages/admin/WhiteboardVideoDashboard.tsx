@@ -91,6 +91,9 @@ const WhiteboardVideoDashboard = () => {
               </div>
               <div className="flex gap-2 shrink-0">
                 <Button variant="outline" asChild>
+                  <Link to="/admin/stilbibliothek">Stilbibliothek</Link>
+                </Button>
+                <Button variant="outline" asChild>
                   <Link to="/admin/ki-modelle">KI-Modelle</Link>
                 </Button>
                 <Button onClick={createProject} disabled={busy}>

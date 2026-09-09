@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Player } from "@remotion/player";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -51,7 +51,9 @@ import {
   previewVoice,
   startVideo,
 } from "@/features/whiteboard/api";
-import { WHITEBOARD_STYLES } from "@/features/whiteboard/styles";
+import { WHITEBOARD_STYLES, normalizeStyle, styleOption } from "@/features/whiteboard/styles";
+import { SCRIPT_TYPES, scriptTypeOption } from "@/features/whiteboard/scriptTypes";
+import { TITLE_FRAMES } from "@/features/whiteboard/WhiteboardVideo";
 import {
   CATEGORY_LABELS,
   IMAGE_MODEL as DEFAULT_IMAGE_MODEL,
@@ -81,7 +83,8 @@ const WhiteboardVideoEditor = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [voice, setVoice] = useState("Charlotte");
-  const [style, setStyle] = useState("strichzeichnung");
+  const [style, setStyle] = useState("whiteboard");
+  const [scriptType, setScriptType] = useState("problem_loesung");
   const [imageModel, setImageModel] = useState(DEFAULT_IMAGE_MODEL);
   const [voiceModel, setVoiceModel] = useState(DEFAULT_VOICE_MODEL);
   const [videoModel, setVideoModel] = useState(DEFAULT_VIDEO_MODEL);
@@ -134,7 +137,8 @@ const WhiteboardVideoEditor = () => {
       setTitle(loaded.title);
       setTopic(loaded.topic);
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
-      setStyle(loaded.style || "strichzeichnung");
+      setStyle(normalizeStyle(loaded.style));
+      setScriptType(loaded.script_type || "problem_loesung");
       setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);
       setVoiceModel(loaded.voice_model || DEFAULT_VOICE_MODEL);
       setVideoModel(loaded.video_model || DEFAULT_VIDEO_MODEL);
@@ -163,14 +167,25 @@ const WhiteboardVideoEditor = () => {
       setSaving(true);
       const { error } = await (supabase as any)
         .from("whiteboard_videos")
-        .update({ title, topic, voice, style, scenes, image_model: imageModel, voice_model: voiceModel, video_model: videoModel, ...patch })
+        .update({
+          title,
+          topic,
+          voice,
+          style,
+          script_type: scriptType,
+          scenes,
+          image_model: imageModel,
+          voice_model: voiceModel,
+          video_model: videoModel,
+          ...patch,
+        })
         .eq("id", videoId);
       setSaving(false);
       if (error) {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, voice, style, scenes, imageModel, voiceModel, videoModel, toast],
+    [videoId, title, topic, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
   );
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
@@ -241,7 +256,11 @@ const WhiteboardVideoEditor = () => {
     const usageId: string | null = null;
 
     try {
-      const script = await generateScript(topic, sceneCount, title);
+      const script = await generateScript(topic, sceneCount, title, {
+        scriptType: scriptTypeOption(scriptType).label,
+        scriptHint: scriptTypeOption(scriptType).promptHinweis,
+        styleLabel: styleOption(style).label,
+      });
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
         heading: s.heading,
@@ -575,11 +594,11 @@ const WhiteboardVideoEditor = () => {
   };
 
   const durationInFrames = useMemo(
-    () => totalDurationInFrames(scenes) + (title ? Math.round(1.8 * FPS) : 0),
+    () => totalDurationInFrames(scenes) + (title ? TITLE_FRAMES : 0),
     [scenes, title],
   );
 
-  const inputProps = useMemo(() => ({ title, scenes }), [title, scenes]);
+  const inputProps = useMemo(() => ({ title, scenes, style }), [title, scenes, style]);
 
   const renderMp4 = async () => {
     if (scenes.length === 0) {
@@ -646,7 +665,7 @@ const WhiteboardVideoEditor = () => {
               <div>
                 <CardTitle>Briefing</CardTitle>
                 <CardDescription>
-                  Thema, Stimme und Zeichenstil. Daraus entstehen Skript, Zeichnungen und Ton.
+                  Thema, Stimme, Videostil und Skriptart. Daraus entstehen Skript, Bilder und Ton.
                 </CardDescription>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setBriefingOpen((o) => !o)}>
@@ -705,19 +724,43 @@ const WhiteboardVideoEditor = () => {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Zeichenstil</Label>
+                      <Label>Videostil</Label>
                       <Select value={style} onValueChange={setStyle}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {WHITEBOARD_STYLES.map((s) => (
+                          {WHITEBOARD_STYLES.filter((s) => s.generierbar).map((s) => (
                             <SelectItem key={s.value} value={s.value}>
                               {s.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                      <p className="text-xs text-muted-foreground">
+                        {styleOption(style).eignung} ·{" "}
+                        <Link to="/admin/stilbibliothek" className="underline">
+                          Stilbibliothek
+                        </Link>
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Skriptart</Label>
+                      <Select value={scriptType} onValueChange={setScriptType}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SCRIPT_TYPES.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        {scriptTypeOption(scriptType).ablauf}
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label>Bild-Modell</Label>

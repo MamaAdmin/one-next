@@ -26,11 +26,23 @@ export interface GeneratedScript {
   }>;
 }
 
-export const generateScript = (topic: string, sceneCount: number, title: string) =>
+export interface ScriptOptions {
+  scriptType?: string;
+  scriptHint?: string;
+  styleLabel?: string;
+}
+
+export const generateScript = (
+  topic: string,
+  sceneCount: number,
+  title: string,
+  options: ScriptOptions = {},
+) =>
   invokeFn<{ script: GeneratedScript }>("whiteboard-script", {
     topic,
     sceneCount,
     title,
+    ...options,
   }).then((r) => r.script);
 
 export const previewVoice = (voice: string, model?: string) =>

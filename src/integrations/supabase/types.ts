@@ -3272,6 +3272,7 @@ export type Database = {
           id: string
           image_model: string
           scenes: Json
+          script_type: string
           status: string
           style: string
           title: string
@@ -3289,6 +3290,7 @@ export type Database = {
           id?: string
           image_model?: string
           scenes?: Json
+          script_type?: string
           status?: string
           style?: string
           title?: string
@@ -3306,6 +3308,7 @@ export type Database = {
           id?: string
           image_model?: string
           scenes?: Json
+          script_type?: string
           status?: string
           style?: string
           title?: string
