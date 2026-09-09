@@ -166,13 +166,13 @@ Deno.serve(async (req) => {
     const payload = await req.json().catch(() => ({}));
     const action = String(payload.action ?? "");
 
-    if (action === "script") {
-      const topic = String(payload.topic ?? "").trim();
-      if (topic.length < 5) return json({ error: "Bitte ein Thema beschreiben." }, 400);
-      const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 10);
-      const script = await generateScript(topic, sceneCount, String(payload.title ?? ""));
-      return json({ script });
+    if (action === "voice_preview") {
+      const voice = String(payload.voice ?? "Charlotte");
+      const model = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
+      const url = await voicePreview(voice, model);
+      return json({ url });
     }
+
 
     if (action === "credits") {
       const credits = await fetchCredits();
