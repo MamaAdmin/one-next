@@ -17,6 +17,9 @@ export interface WhiteboardVideoProject {
   title: string;
   topic: string;
   style: string;
+  image_model: string | null;
+  voice_model: string | null;
+  video_model: string | null;
   voice: string;
   scenes: WhiteboardScene[];
   status: WhiteboardStatus;
