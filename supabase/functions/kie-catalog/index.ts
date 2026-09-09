@@ -29,25 +29,32 @@ async function requireAdmin(req: Request): Promise<{ userId: string } | Response
 }
 
 async function callAi(messages: Array<{ role: string; content: string }>): Promise<string> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new Error("KI-Zugang ist nicht eingerichtet.");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const key = Deno.env.get("KIE_AI_API_KEY");
+  if (!key) throw new Error("Kie.ai-Zugang ist nicht eingerichtet.");
+  const res = await fetch("https://api.kie.ai/gpt-5-2/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${key}`,
-      "X-Lovable-AIG-SDK": "fetch",
     },
-    body: JSON.stringify({ model: "google/gemini-3.8-flash", messages }),
+    body: JSON.stringify({
+      messages: messages.map((m) => ({
+        role: m.role,
+        content: [{ type: "text", text: m.content }],
+      })),
+    }),
   });
-  if (res.status === 429) throw new Error("KI-Limit erreicht. Bitte kurz warten.");
-  if (res.status === 402) throw new Error("KI-Guthaben aufgebraucht. Bitte Credits aufladen.");
-  if (!res.ok) throw new Error(`KI nicht erreichbar (${res.status})`);
+  if (res.status === 401 || res.status === 403) {
+    throw new Error("Kie.ai-Zugang ungültig. Bitte den API-Schlüssel prüfen.");
+  }
+  if (res.status === 429) throw new Error("Kie.ai-Limit erreicht. Bitte kurz warten.");
+  if (!res.ok) throw new Error(`Kie.ai nicht erreichbar (${res.status})`);
   const body = await res.json();
   const text = body?.choices?.[0]?.message?.content;
-  if (!text) throw new Error("Die KI hat keine Antwort geliefert.");
+  if (!text) throw new Error("Kie.ai hat keine Antwort geliefert.");
   return String(text);
 }
+
 
 function parseJson<T>(text: string): T {
   const cleaned = text.replace(/```json|```/g, "").trim();
