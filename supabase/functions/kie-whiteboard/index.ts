@@ -130,7 +130,7 @@ Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
 
 Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
-{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"englischer Prompt für eine schwarz-weisse Whiteboard-Strichzeichnung auf weissem Hintergrund","durationInSeconds":8}]}
+{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"deutsche Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","durationInSeconds":8}]}
 Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
 
   const res = await fetch(`${KIE_BASE}/gpt-5-2/v1/chat/completions`, {
