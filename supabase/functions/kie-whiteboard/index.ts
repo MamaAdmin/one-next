@@ -166,18 +166,25 @@ Deno.serve(async (req) => {
       return json({ script });
     }
 
+    if (action === "credits") {
+      const credits = await fetchCredits();
+      return json({ credits });
+    }
+
     if (action === "image") {
       const prompt = String(payload.prompt ?? "").trim();
       if (!prompt) return json({ error: "Bildbeschreibung fehlt." }, 400);
+      const style = String(payload.style ?? "strichzeichnung");
+      const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.strichzeichnung;
       const taskId = await createJobTask("nano-banana-2", {
-        prompt: `${prompt}. Black ink whiteboard marker line drawing, hand drawn doodle style, clean white background, no text, minimal, high contrast.`,
+        prompt: `${prompt}. ${suffix}`,
         aspect_ratio: "1:1",
         resolution: "1K",
         output_format: "png",
       });
       const remoteUrl = await pollJobTask(taskId);
       const url = await mirrorToStorage(remoteUrl, "png");
-      return json({ url });
+      return json({ url, taskId });
     }
 
     if (action === "voice") {
