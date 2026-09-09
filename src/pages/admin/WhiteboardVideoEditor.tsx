@@ -237,16 +237,9 @@ const WhiteboardVideoEditor = () => {
 
   const runScript = async () => {
     if (!videoId) return;
-    const estimate = estimateCost({
-      models,
-      sceneCount,
-      scenes: [],
-      includeScript: true,
-      includeImages: false,
-      includeVoices: false,
-    });
     setWorking("script");
     const usageId: string | null = null;
+
     try {
       const script = await generateScript(topic, sceneCount, title);
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
