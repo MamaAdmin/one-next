@@ -847,9 +847,22 @@ const WhiteboardVideoEditor = () => {
               {fullEstimate.lines.map((line) => (
                 <div key={line.label} className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
-                    {line.label} · {line.model}{line.label === "Skript" ? "" : " ("}{CATEGORY_LABELS[
-                      line.unit === "image" ? "image" : line.unit === "1k_chars" ? "voice" : line.unit === "second" ? "video" : "text"
-                    ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)} {UNIT_LABELS[line.unit]}
+                    {line.label === "Skript" ? (
+                      <>Skript · {line.model} · keine Kie.ai-Credits</>
+                    ) : (
+                      <>
+                        {line.label} · {line.model} ({CATEGORY_LABELS[
+                          line.unit === "image"
+                            ? "image"
+                            : line.unit === "1k_chars"
+                              ? "voice"
+                              : line.unit === "second"
+                                ? "video"
+                                : "text"
+                        ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)}{" "}
+                        {UNIT_LABELS[line.unit]}
+                      </>
+                    )}
                   </span>
                   <span>
                     {line.label === "Skript"
