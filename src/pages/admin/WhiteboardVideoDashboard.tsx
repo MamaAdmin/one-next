@@ -90,9 +90,14 @@ const WhiteboardVideoDashboard = () => {
                   Animation und MP4-Export über Remotion.
                 </CardDescription>
               </div>
-              <Button onClick={createProject} disabled={busy}>
-                <Plus className="w-4 h-4 mr-2" /> Neues Video
-              </Button>
+              <div className="flex gap-2 shrink-0">
+                <Button variant="outline" asChild>
+                  <Link to="/admin/ki-modelle">KI-Modelle</Link>
+                </Button>
+                <Button onClick={createProject} disabled={busy}>
+                  <Plus className="w-4 h-4 mr-2" /> Neues Video
+                </Button>
+              </div>
             </CardHeader>
           </Card>
 
