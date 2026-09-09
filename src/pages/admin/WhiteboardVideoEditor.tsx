@@ -665,7 +665,7 @@ const WhiteboardVideoEditor = () => {
               <div>
                 <CardTitle>Briefing</CardTitle>
                 <CardDescription>
-                  Thema, Stimme und Zeichenstil. Daraus entstehen Skript, Zeichnungen und Ton.
+                  Thema, Stimme, Videostil und Skriptart. Daraus entstehen Skript, Bilder und Ton.
                 </CardDescription>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setBriefingOpen((o) => !o)}>
