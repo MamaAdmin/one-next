@@ -20,7 +20,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Download, Image as ImageIcon, Loader2, Mic, Plus, Sparkles, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  Image as ImageIcon,
+  Loader2,
+  Mic,
+  Plus,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { WhiteboardVideo } from "@/features/whiteboard/WhiteboardVideo";
 import {
   FPS,
@@ -32,13 +43,31 @@ import {
 import {
   checkVideo,
   estimateDuration,
+  fetchCredits,
   generateImage,
   generateScript,
   generateVoice,
   startVideo,
 } from "@/features/whiteboard/api";
+import { WHITEBOARD_STYLES } from "@/features/whiteboard/styles";
+import {
+  CATEGORY_LABELS,
+  IMAGE_MODEL,
+  SCRIPT_MODEL,
+  UNIT_LABELS,
+  VIDEO_MODEL,
+  VOICE_MODEL,
+  estimateCost,
+  fetchKieModels,
+  formatCredits,
+  rateFor,
+  type CostEstimate,
+  type KieModel,
+} from "@/features/whiteboard/pricing";
+import { finishUsage, logJob, startUsage } from "@/features/whiteboard/usage";
 
 const VOICES = ["Charlotte", "Rachel", "Aria", "Sarah", "George", "Liam", "Matilda"];
+const VEO_SECONDS = 8;
 
 const WhiteboardVideoEditor = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -50,17 +79,35 @@ const WhiteboardVideoEditor = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [voice, setVoice] = useState("Charlotte");
+  const [style, setStyle] = useState("strichzeichnung");
   const [sceneCount, setSceneCount] = useState(5);
   const [scenes, setScenes] = useState<WhiteboardScene[]>([]);
   const [saving, setSaving] = useState(false);
   const [working, setWorking] = useState<string | null>(null);
   const [renderProgress, setRenderProgress] = useState<number | null>(null);
   const [kieVideoUrl, setKieVideoUrl] = useState<string | null>(null);
+  const [models, setModels] = useState<KieModel[]>([]);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [creditsError, setCreditsError] = useState<string | null>(null);
+  const [lastUsed, setLastUsed] = useState<number | null>(null);
+  const [briefingOpen, setBriefingOpen] = useState(true);
   const pollRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!loading && !isAdmin) navigate("/");
   }, [isAdmin, loading, navigate]);
+
+  const refreshCredits = useCallback(async (): Promise<number | null> => {
+    try {
+      const value = await fetchCredits();
+      setCredits(value);
+      setCreditsError(null);
+      return value;
+    } catch (error) {
+      setCreditsError(error instanceof Error ? error.message : "Kontostand nicht abrufbar");
+      return null;
+    }
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -80,8 +127,17 @@ const WhiteboardVideoEditor = () => {
       setTitle(loaded.title);
       setTopic(loaded.topic);
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
+      setStyle(loaded.style || "strichzeichnung");
       setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
       setKieVideoUrl(loaded.video_url);
+      setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
+
+      try {
+        setModels(await fetchKieModels());
+      } catch {
+        /* Preise optional */
+      }
+      void refreshCredits();
     };
     if (isAdmin) void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,22 +153,77 @@ const WhiteboardVideoEditor = () => {
       setSaving(true);
       const { error } = await (supabase as any)
         .from("whiteboard_videos")
-        .update({ title, topic, voice, scenes, ...patch })
+        .update({ title, topic, voice, style, scenes, ...patch })
         .eq("id", videoId);
       setSaving(false);
       if (error) {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, voice, scenes, toast],
+    [videoId, title, topic, voice, style, scenes, toast],
   );
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
     setScenes((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
 
+  const fullEstimate = useMemo<CostEstimate>(
+    () =>
+      estimateCost({
+        models,
+        sceneCount,
+        scenes,
+        includeScript: scenes.length === 0,
+        includeImages: true,
+        includeVoices: true,
+      }),
+    [models, sceneCount, scenes],
+  );
+
+  const ensureBudget = useCallback(
+    async (estimate: CostEstimate): Promise<number | null> => {
+      const before = await refreshCredits();
+      if (before === null) {
+        toast({
+          title: "Kontostand nicht abrufbar",
+          description: "Die Generierung wird ohne Guthabenprüfung gestartet.",
+        });
+        return null;
+      }
+      if (estimate.total > 0 && before < estimate.total) {
+        throw new Error(
+          `Zu wenig Guthaben: benötigt ca. ${formatCredits(estimate.total)}, verfügbar ${formatCredits(before)} Credits.`,
+        );
+      }
+      return before;
+    },
+    [refreshCredits, toast],
+  );
+
   const runScript = async () => {
+    if (!videoId) return;
+    const estimate = estimateCost({
+      models,
+      sceneCount,
+      scenes: [],
+      includeScript: true,
+      includeImages: false,
+      includeVoices: false,
+    });
     setWorking("script");
+    let usageId: string | null = null;
+    let before: number | null = null;
     try {
+      before = await ensureBudget(estimate);
+      usageId = await startUsage({
+        videoId,
+        creditsBefore: before,
+        estimate,
+        sections: sceneCount,
+        images: 0,
+        audioCharacters: 0,
+        videoSeconds: 0,
+        models: { script: SCRIPT_MODEL },
+      });
       const script = await generateScript(topic, sceneCount, title);
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
@@ -123,22 +234,88 @@ const WhiteboardVideoEditor = () => {
         durationInSeconds: s.durationInSeconds || 8,
       }));
       setScenes(next);
+      setBriefingOpen(false);
       if (script.title && (!title || title === "Neues Whiteboard-Video")) setTitle(script.title);
       await save({ scenes: next, title: script.title || title });
+      await logJob({
+        usageId,
+        videoId,
+        kind: "script",
+        model: SCRIPT_MODEL,
+        units: 1,
+        estimatedCredits: estimate.total,
+        status: "done",
+      });
+      const after = await refreshCredits();
+      await finishUsage({
+        usageId,
+        creditsAfter: after,
+        actualCredits: estimate.total,
+        status: "done",
+      });
+      setLastUsed(estimate.total);
       toast({ title: "Skript erstellt", description: `${next.length} Abschnitte` });
     } catch (error) {
-      toast({
-        title: "Skript fehlgeschlagen",
-        description: error instanceof Error ? error.message : "Unbekannter Fehler",
-        variant: "destructive",
+      const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+      await logJob({
+        usageId,
+        videoId,
+        kind: "script",
+        model: SCRIPT_MODEL,
+        units: 1,
+        estimatedCredits: 0,
+        status: "failed",
+        errorMessage: message,
       });
+      await finishUsage({
+        usageId,
+        creditsAfter: null,
+        actualCredits: 0,
+        status: "failed",
+        errorMessage: message,
+      });
+      toast({ title: "Skript fehlgeschlagen", description: message, variant: "destructive" });
     } finally {
       setWorking(null);
     }
   };
 
   const runImages = async () => {
+    if (!videoId) return;
+    const estimate = estimateCost({
+      models,
+      sceneCount,
+      scenes,
+      includeScript: false,
+      includeImages: true,
+      includeVoices: false,
+    });
     setWorking("images");
+    let usageId: string | null = null;
+    const perImage = rateFor(models, IMAGE_MODEL);
+    let actual = 0;
+    try {
+      const before = await ensureBudget(estimate);
+      usageId = await startUsage({
+        videoId,
+        creditsBefore: before,
+        estimate,
+        sections: scenes.length,
+        images: scenes.length,
+        audioCharacters: 0,
+        videoSeconds: 0,
+        models: { image: IMAGE_MODEL },
+      });
+    } catch (error) {
+      setWorking(null);
+      toast({
+        title: "Generierung nicht gestartet",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const next = [...scenes];
     let created = 0;
     let failed = 0;
@@ -147,58 +324,178 @@ const WhiteboardVideoEditor = () => {
       const prompt = scene.imagePrompt || scene.heading;
       if (!prompt) continue;
       try {
-        const url = await generateImage(prompt);
-        next[i] = { ...scene, imageUrl: url };
+        const result = await generateImage(prompt, style);
+        next[i] = { ...scene, imageUrl: result.url };
         created += 1;
+        actual += perImage;
         setScenes([...next]);
+        await logJob({
+          usageId,
+          videoId,
+          kind: "image",
+          model: IMAGE_MODEL,
+          units: 1,
+          estimatedCredits: perImage,
+          status: "done",
+          taskId: result.taskId ?? null,
+        });
       } catch (error) {
         failed += 1;
-        toast({
-          title: `Zeichnung ${i + 1} fehlgeschlagen`,
-          description: error instanceof Error ? error.message : "Unbekannter Fehler",
-          variant: "destructive",
+        const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+        await logJob({
+          usageId,
+          videoId,
+          kind: "image",
+          model: IMAGE_MODEL,
+          units: 1,
+          estimatedCredits: 0,
+          status: "failed",
+          errorMessage: message,
         });
+        toast({ title: `Zeichnung ${i + 1} fehlgeschlagen`, description: message, variant: "destructive" });
       }
     }
     setScenes(next);
     await save({ scenes: next });
+    const after = await refreshCredits();
+    await finishUsage({
+      usageId,
+      creditsAfter: after,
+      actualCredits: actual,
+      status: failed === 0 ? "done" : created > 0 ? "partial" : "failed",
+      errorMessage: failed ? `${failed} Zeichnungen fehlgeschlagen` : null,
+    });
+    setLastUsed(actual);
     setWorking(null);
     toast({
       title: created ? "Zeichnungen erstellt" : "Keine Zeichnung erstellt",
-      description: `${created} erzeugt${failed ? `, ${failed} fehlgeschlagen` : ""}`,
+      description: `${created} erzeugt${failed ? `, ${failed} fehlgeschlagen` : ""} · ${formatCredits(actual)} Credits`,
       variant: created ? undefined : "destructive",
     });
   };
 
-
   const runVoices = async () => {
+    if (!videoId) return;
+    const estimate = estimateCost({
+      models,
+      sceneCount,
+      scenes,
+      includeScript: false,
+      includeImages: false,
+      includeVoices: true,
+    });
+    const rate = rateFor(models, VOICE_MODEL);
     setWorking("voices");
+    let usageId: string | null = null;
+    let actual = 0;
     try {
-      const base = [...scenes];
-      const next = await Promise.all(
-        base.map(async (scene) => {
-          if (!scene.narration.trim()) return scene;
-          const url = await generateVoice(scene.narration, voice);
-          return { ...scene, audioUrl: url, durationInSeconds: estimateDuration(scene) };
-        }),
-      );
-      setScenes(next);
-      await save({ scenes: next });
-      toast({ title: "Sprecherstimme erstellt" });
+      const before = await ensureBudget(estimate);
+      usageId = await startUsage({
+        videoId,
+        creditsBefore: before,
+        estimate,
+        sections: scenes.length,
+        images: 0,
+        audioCharacters: scenes.reduce((sum, s) => sum + s.narration.length, 0),
+        videoSeconds: 0,
+        models: { voice: VOICE_MODEL },
+      });
     } catch (error) {
+      setWorking(null);
       toast({
-        title: "Vertonung fehlgeschlagen",
+        title: "Generierung nicht gestartet",
         description: error instanceof Error ? error.message : "Unbekannter Fehler",
         variant: "destructive",
       });
-    } finally {
-      setWorking(null);
+      return;
+    }
+
+    const next = [...scenes];
+    let failed = 0;
+    for (let i = 0; i < next.length; i++) {
+      const scene = next[i];
+      if (!scene.narration.trim()) continue;
+      try {
+        const result = await generateVoice(scene.narration, voice);
+        next[i] = {
+          ...scene,
+          audioUrl: result.url,
+          durationInSeconds: estimateDuration(scene),
+        };
+        const cost = Math.round((scene.narration.length / 1000) * rate * 100) / 100;
+        actual += cost;
+        setScenes([...next]);
+        await logJob({
+          usageId,
+          videoId,
+          kind: "voice",
+          model: VOICE_MODEL,
+          units: Math.round((scene.narration.length / 1000) * 100) / 100,
+          estimatedCredits: cost,
+          status: "done",
+          taskId: result.taskId ?? null,
+        });
+      } catch (error) {
+        failed += 1;
+        const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+        await logJob({
+          usageId,
+          videoId,
+          kind: "voice",
+          model: VOICE_MODEL,
+          units: 0,
+          estimatedCredits: 0,
+          status: "failed",
+          errorMessage: message,
+        });
+        toast({ title: `Vertonung ${i + 1} fehlgeschlagen`, description: message, variant: "destructive" });
+      }
+    }
+    setScenes(next);
+    await save({ scenes: next });
+    const after = await refreshCredits();
+    await finishUsage({
+      usageId,
+      creditsAfter: after,
+      actualCredits: actual,
+      status: failed === 0 ? "done" : "partial",
+      errorMessage: failed ? `${failed} Vertonungen fehlgeschlagen` : null,
+    });
+    setLastUsed(actual);
+    setWorking(null);
+    if (!failed) {
+      toast({
+        title: "Sprecherstimme erstellt",
+        description: `${formatCredits(actual)} Credits verbraucht`,
+      });
     }
   };
 
   const runKieVideo = async () => {
+    if (!videoId) return;
+    const estimate = estimateCost({
+      models,
+      sceneCount,
+      scenes,
+      includeScript: false,
+      includeImages: false,
+      includeVoices: false,
+      videoSeconds: VEO_SECONDS,
+    });
     setWorking("kie-video");
+    let usageId: string | null = null;
     try {
+      const before = await ensureBudget(estimate);
+      usageId = await startUsage({
+        videoId,
+        creditsBefore: before,
+        estimate,
+        sections: scenes.length,
+        images: 0,
+        audioCharacters: 0,
+        videoSeconds: VEO_SECONDS,
+        models: { video: VIDEO_MODEL },
+      });
       const taskId = await startVideo(topic || title);
       toast({ title: "Videoclip wird erzeugt", description: "Das dauert einige Minuten." });
       pollRef.current = window.setInterval(async () => {
@@ -209,10 +506,46 @@ const WhiteboardVideoEditor = () => {
             setKieVideoUrl(result.url);
             setWorking(null);
             await save({ video_url: result.url, status: "ready" });
+            await logJob({
+              usageId,
+              videoId,
+              kind: "video",
+              model: VIDEO_MODEL,
+              units: VEO_SECONDS,
+              estimatedCredits: estimate.total,
+              status: "done",
+              taskId,
+            });
+            const after = await refreshCredits();
+            await finishUsage({
+              usageId,
+              creditsAfter: after,
+              actualCredits: estimate.total,
+              status: "done",
+            });
+            setLastUsed(estimate.total);
             toast({ title: "Videoclip fertig" });
           } else if (result.status === "failed") {
             if (pollRef.current) window.clearInterval(pollRef.current);
             setWorking(null);
+            await logJob({
+              usageId,
+              videoId,
+              kind: "video",
+              model: VIDEO_MODEL,
+              units: 0,
+              estimatedCredits: 0,
+              status: "failed",
+              taskId,
+              errorMessage: result.error ?? null,
+            });
+            await finishUsage({
+              usageId,
+              creditsAfter: null,
+              actualCredits: 0,
+              status: "failed",
+              errorMessage: result.error ?? null,
+            });
             toast({ title: "Videoclip fehlgeschlagen", description: result.error, variant: "destructive" });
           }
         } catch {
@@ -221,11 +554,15 @@ const WhiteboardVideoEditor = () => {
       }, 10000);
     } catch (error) {
       setWorking(null);
-      toast({
-        title: "Videoclip fehlgeschlagen",
-        description: error instanceof Error ? error.message : "Unbekannter Fehler",
-        variant: "destructive",
+      const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+      await finishUsage({
+        usageId,
+        creditsAfter: null,
+        actualCredits: 0,
+        status: "failed",
+        errorMessage: message,
       });
+      toast({ title: "Videoclip fehlgeschlagen", description: message, variant: "destructive" });
     }
   };
 
@@ -297,46 +634,78 @@ const WhiteboardVideoEditor = () => {
           </div>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Briefing</CardTitle>
-              <CardDescription>
-                Beschreiben Sie Thema und Kernbotschaft. Daraus entstehen Skript, Zeichnungen und Stimme.
-              </CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between gap-4">
+              <div>
+                <CardTitle>Briefing</CardTitle>
+                <CardDescription>
+                  Thema, Stimme und Zeichenstil. Daraus entstehen Skript, Zeichnungen und Ton.
+                </CardDescription>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setBriefingOpen((o) => !o)}>
+                {briefingOpen ? (
+                  <>
+                    <ChevronUp className="w-4 h-4 mr-2" /> Einklappen
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4 mr-2" /> Ausklappen
+                  </>
+                )}
+              </Button>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Titel</Label>
-                  <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Stimme</Label>
-                  <Select value={voice} onValueChange={setVoice}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {VOICES.map((v) => (
-                        <SelectItem key={v} value={v}>
-                          {v}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="topic">Thema / Briefing</Label>
-                <Textarea
-                  id="topic"
-                  rows={5}
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Worum geht es? Zielgruppe, Kernaussagen, gewünschter Ton."
-                />
-              </div>
+              {briefingOpen && (
+                <>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="title">Titel</Label>
+                      <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Stimme</Label>
+                      <Select value={voice} onValueChange={setVoice}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {VOICES.map((v) => (
+                            <SelectItem key={v} value={v}>
+                              {v}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Zeichenstil</Label>
+                      <Select value={style} onValueChange={setStyle}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {WHITEBOARD_STYLES.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="topic">Thema / Briefing</Label>
+                    <Textarea
+                      id="topic"
+                      rows={4}
+                      value={topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                      placeholder="Worum geht es? Zielgruppe, Kernaussagen, gewünschter Ton."
+                    />
+                  </div>
+                </>
+              )}
               <div className="flex flex-wrap items-end gap-3">
-                <div className="space-y-2 w-40">
+                <div className="space-y-2 w-32">
                   <Label htmlFor="count">Abschnitte</Label>
                   <Input
                     id="count"
@@ -372,6 +741,42 @@ const WhiteboardVideoEditor = () => {
                   Sprecherstimme erzeugen
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-4">
+              <div>
+                <CardTitle>Kosten</CardTitle>
+                <CardDescription>
+                  Geschätzter Verbrauch: ca. {formatCredits(fullEstimate.total)} Credits ·{" "}
+                  {creditsError ? creditsError : `Verfügbar: ${formatCredits(credits)} Credits`}
+                </CardDescription>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => void refreshCredits()}>
+                Credits aktualisieren
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {fullEstimate.lines.map((line) => (
+                <div key={line.label} className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {line.label} · {line.model} ({CATEGORY_LABELS[
+                      line.unit === "image" ? "image" : line.unit === "1k_chars" ? "voice" : line.unit === "second" ? "video" : "text"
+                    ]}) · {formatCredits(line.units)} × {formatCredits(line.rate)} {UNIT_LABELS[line.unit]}
+                  </span>
+                  <span>{formatCredits(line.credits)} Credits</span>
+                </div>
+              ))}
+              <div className="flex justify-between text-sm font-medium border-t pt-2">
+                <span>Gesamt geschätzt</span>
+                <span>{formatCredits(fullEstimate.total)} Credits</span>
+              </div>
+              {lastUsed !== null && (
+                <p className="text-sm text-muted-foreground">
+                  Dieses Lernvideo hat zuletzt {formatCredits(lastUsed)} Credits verbraucht.
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -490,7 +895,7 @@ const WhiteboardVideoEditor = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Bildbeschreibung (Englisch)</Label>
+                    <Label>Bildbeschreibung</Label>
                     <Input
                       value={scene.imagePrompt}
                       onChange={(e) => updateScene(scene.id, { imagePrompt: e.target.value })}
