@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Player } from "@remotion/player";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -724,19 +724,43 @@ const WhiteboardVideoEditor = () => {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Zeichenstil</Label>
+                      <Label>Videostil</Label>
                       <Select value={style} onValueChange={setStyle}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {WHITEBOARD_STYLES.map((s) => (
+                          {WHITEBOARD_STYLES.filter((s) => s.generierbar).map((s) => (
                             <SelectItem key={s.value} value={s.value}>
                               {s.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                      <p className="text-xs text-muted-foreground">
+                        {styleOption(style).eignung} ·{" "}
+                        <Link to="/admin/stilbibliothek" className="underline">
+                          Stilbibliothek
+                        </Link>
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Skriptart</Label>
+                      <Select value={scriptType} onValueChange={setScriptType}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SCRIPT_TYPES.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        {scriptTypeOption(scriptType).ablauf}
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label>Bild-Modell</Label>
