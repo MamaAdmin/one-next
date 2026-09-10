@@ -1,6 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { isUserApproved } from "@/lib/approval";
+import { Button } from "@/components/ui/button";
 
 interface RequireAuthProps {
   children: ReactNode;
