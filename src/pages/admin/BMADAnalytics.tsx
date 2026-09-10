@@ -101,7 +101,7 @@ const BMADAnalytics = () => {
       <AdminBreadcrumb
         items={[
           { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
-          { label: "BMAD Analytics", icon: <BMADAnalyticsIcon className="w-5 h-5" />, active: true }
+          { label: "BMAD Analytics", href: "/admin/bmad/analytics", icon: <BMADAnalyticsIcon className="w-5 h-5" />, active: true }
         ]}
       />
       <main className="container mx-auto px-6 pt-[140px] pb-20">

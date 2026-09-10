@@ -205,7 +205,7 @@ export default function LMSToolboxDashboard() {
   const breadcrumbItems = [
     { label: "Admin", href: "/admin" },
     { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Toolbox", active: true },
+    { label: "Toolbox", href: "/admin/lms/toolbox", active: true },
   ];
 
   const filteredTools = tools
@@ -252,7 +252,7 @@ export default function LMSToolboxDashboard() {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Toolbox", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Toolbox", href: "/admin/lms/toolbox", active: true }]} />
       <main className="container mx-auto px-6 pt-40 pb-20">
         <LMSBreadcrumb items={breadcrumbItems} />
 

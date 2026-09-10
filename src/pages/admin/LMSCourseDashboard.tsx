@@ -118,7 +118,7 @@ export default function LMSCourseDashboard() {
     const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
       { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
       { label: "LMS", href: "/admin?tab=lms", icon: <BookIcon className="h-4 w-4" /> },
-      { label: "Kurse", active: true }
+      { label: "Kurse", href: "/admin/lms/courses", active: true }
     ];
     
     return items;
@@ -149,7 +149,7 @@ export default function LMSCourseDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Kurse", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Kurse", href: "/admin/lms/courses", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <Card>

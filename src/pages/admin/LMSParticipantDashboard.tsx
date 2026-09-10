@@ -71,7 +71,7 @@ export default function LMSParticipantDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Teilnehmende", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Teilnehmende", href: "/admin/lms/participants", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40">
         <Card>
