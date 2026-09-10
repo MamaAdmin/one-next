@@ -6,6 +6,8 @@ import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { SceneMediaEditor } from "@/components/admin/SceneMediaEditor";
+import { withFreshClipUrls } from "@/features/whiteboard/clips";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -164,7 +166,12 @@ const WhiteboardVideoEditor = () => {
       setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);
       setVoiceModel(loaded.voice_model || DEFAULT_VOICE_MODEL);
       setVideoModel(loaded.video_model || DEFAULT_VIDEO_MODEL);
-      setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
+      const loadedScenes = Array.isArray(loaded.scenes) ? loaded.scenes : [];
+      setScenes(loadedScenes);
+      // Signierte Adressen laufen ab, darum je Aufnahme eine frische holen.
+      if (loadedScenes.some((s) => s.mediaType === "clip" && s.clipPath)) {
+        void withFreshClipUrls(loadedScenes).then(setScenes);
+      }
       setKieVideoUrl(loaded.video_url);
       setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
 
@@ -393,6 +400,8 @@ const WhiteboardVideoEditor = () => {
     let failed = 0;
     for (let i = 0; i < next.length; i++) {
       const scene = next[i];
+      // Abschnitte mit eigener Aufnahme brauchen keine Zeichnung.
+      if (scene.mediaType === "clip") continue;
       const prompt = scene.imagePrompt || scene.heading;
       if (!prompt) continue;
       try {
@@ -1192,21 +1201,12 @@ const WhiteboardVideoEditor = () => {
                       }
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Bildbeschreibung</Label>
-                    <Input
-                      value={scene.imagePrompt}
-                      onChange={(e) => updateScene(scene.id, { imagePrompt: e.target.value })}
-                    />
-                  </div>
+                  <SceneMediaEditor
+                    scene={scene}
+                    videoId={videoId ?? ""}
+                    onChange={(patch) => updateScene(scene.id, patch)}
+                  />
                   <div className="flex items-center gap-4">
-                    {scene.imageUrl && (
-                      <img
-                        src={scene.imageUrl}
-                        alt={`Zeichnung für ${scene.heading}`}
-                        className="h-24 w-24 object-contain border rounded"
-                      />
-                    )}
                     {scene.audioUrl && <audio src={scene.audioUrl} controls className="h-10" />}
                   </div>
                 </div>

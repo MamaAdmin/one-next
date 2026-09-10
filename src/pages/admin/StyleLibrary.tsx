@@ -102,6 +102,9 @@ const StyleLibrary = () => {
                         "Dieser Stil dient als Vorlage für eine Produktion und wird nicht automatisch erzeugt."}
                     </p>
                   )}
+                  {style.generierbar && style.hinweis && (
+                    <p className="text-muted-foreground">{style.hinweis}</p>
+                  )}
                   <Button variant="secondary" size="sm" onClick={() => setActiveStyle(style)}>
                     <Play className="w-4 h-4 mr-2" /> Beispiel ansehen
                   </Button>

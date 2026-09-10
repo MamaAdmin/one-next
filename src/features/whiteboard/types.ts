@@ -1,3 +1,11 @@
+export interface SceneCaption {
+  text: string;
+  atSecond: number;
+  durationInSeconds: number;
+}
+
+export type SceneMediaType = "image" | "clip";
+
 export interface WhiteboardScene {
   id: string;
   heading: string;
@@ -7,7 +15,19 @@ export interface WhiteboardScene {
   imageUrl?: string | null;
   audioUrl?: string | null;
   durationInSeconds: number;
+  /** "image" = KI-Zeichnung (Vorgabe), "clip" = eigene Bildschirmaufnahme. */
+  mediaType?: SceneMediaType;
+  /** Pfad im Bucket whiteboard-uploads; daraus wird die signierte Adresse geholt. */
+  clipPath?: string | null;
+  clipUrl?: string | null;
+  clipStartInSeconds?: number;
+  clipEndInSeconds?: number;
+  captions?: SceneCaption[];
 }
+
+export const MAX_CAPTIONS = 3;
+
+export const isClipScene = (scene: WhiteboardScene): boolean => scene.mediaType === "clip";
 
 export type WhiteboardStatus = "draft" | "generating" | "ready" | "error";
 

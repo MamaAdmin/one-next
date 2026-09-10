@@ -2,11 +2,15 @@ import {
   AbsoluteFill,
   Audio,
   Img,
+  OffthreadVideo,
+  Video,
+  getRemotionEnvironment,
   interpolate,
   spring,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import type { SceneCaption } from "./types";
 import handImage from "@/assets/whiteboard-hand.png";
 import type { WhiteboardScene } from "./types";
 import type { RendererKey } from "./styles";
@@ -229,11 +233,112 @@ const Placeholder: React.FC<{ theme: VideoTheme }> = ({ theme }) => (
 
 const DRAW_FRAMES = 60;
 
+/**
+ * Eigene Bildschirmaufnahme. Beim Export wird OffthreadVideo genutzt,
+ * in der Vorschau das normale Video-Element.
+ */
+export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; radius?: number }> = ({
+  scene,
+  theme,
+  radius = 20,
+}) => {
+  const url = scene.clipUrl;
+  if (!url) return <Placeholder theme={theme} />;
+
+  const start = Math.max(0, scene.clipStartInSeconds ?? 0);
+  const end = scene.clipEndInSeconds;
+  const startFrom = Math.round(start * 30);
+  const endAt = end && end > start ? Math.round(end * 30) : undefined;
+  const rendering = getRemotionEnvironment().isRendering;
+  const VideoTag = rendering ? OffthreadVideo : Video;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        borderRadius: radius,
+        overflow: "hidden",
+        background: theme.ink,
+      }}
+    >
+      <VideoTag
+        src={url}
+        muted
+        startFrom={startFrom}
+        endAt={endAt}
+        // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
+        pauseWhenBuffering
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    </div>
+  );
+};
+
+/** Einblendungen als weiche Textkarten unten links. */
+export const SceneCaptions: React.FC<{ captions?: SceneCaption[]; theme: VideoTheme }> = ({
+  captions,
+  theme,
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  if (!captions?.length) return null;
+  return (
+    <AbsoluteFill style={{ fontFamily: theme.fontFamily, pointerEvents: "none" }}>
+      {captions.slice(0, 3).map((caption, i) => {
+        const from = Math.round((caption.atSecond || 0) * fps);
+        const length = Math.round(Math.max(1, caption.durationInSeconds || 3) * fps);
+        const local = frame - from;
+        if (local < -1 || local > length) return null;
+        const opacity =
+          interpolate(local, [0, 10], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) *
+          interpolate(local, [length - 12, length], [1, 0], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          });
+        const lift = interpolate(local, [0, 12], [24, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        });
+        return (
+          <div
+            key={`${caption.text}-${i}`}
+            style={{
+              position: "absolute",
+              left: 110,
+              bottom: 110,
+              maxWidth: 900,
+              opacity,
+              transform: `translateY(${lift}px)`,
+              background: theme.background,
+              border: `4px solid ${theme.accent}`,
+              borderRadius: 24,
+              padding: "24px 32px",
+              fontSize: 46,
+              fontWeight: 700,
+              color: theme.ink,
+              boxShadow: "0 24px 48px rgba(0,0,0,0.18)",
+            }}
+          >
+            {caption.text}
+          </div>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
 /** Whiteboard: Bild wird von links nach rechts von einer Hand gezeichnet. */
-const DrawnIllustration: React.FC<{ url?: string | null; delay: number; theme: VideoTheme }> = ({
+const DrawnIllustration: React.FC<{
+  url?: string | null;
+  delay: number;
+  theme: VideoTheme;
+  scene?: WhiteboardScene;
+}> = ({
   url,
   delay,
   theme,
+  scene,
 }) => {
   const frame = useCurrentFrame();
   const local = frame - delay;
@@ -245,6 +350,7 @@ const DrawnIllustration: React.FC<{ url?: string | null; delay: number; theme: V
   const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
   const handY = 30 + Math.sin(local / 6) * 18;
 
+  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} />;
   if (!url) return <Placeholder theme={theme} />;
 
   return (
@@ -272,10 +378,12 @@ const FadeIllustration: React.FC<{
   theme: VideoTheme;
   radius?: number;
   zoom?: boolean;
-}> = ({ url, delay, theme, radius = 28, zoom = true }) => {
+  scene?: WhiteboardScene;
+}> = ({ url, delay, theme, radius = 28, zoom = true, scene }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame: frame - delay, fps, config: { damping: 200 } });
+  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} radius={radius} />;
   if (!url) return <Placeholder theme={theme} />;
   const scale = zoom ? interpolate(s, [0, 1], [0.92, 1]) : 1;
   return (
@@ -337,7 +445,7 @@ const WhiteboardSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 0.95, height: "72%" }}>
-      <DrawnIllustration url={scene.imageUrl} delay={12} theme={theme} />
+      <DrawnIllustration url={scene.imageUrl} scene={scene} delay={12} theme={theme} />
     </div>
   </Frame>
 );
@@ -354,7 +462,7 @@ const FlatSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 1, height: "74%" }}>
-      <FadeIllustration url={scene.imageUrl} delay={10} theme={theme} />
+      <FadeIllustration url={scene.imageUrl} scene={scene} delay={10} theme={theme} />
     </div>
   </Frame>
 );
@@ -371,7 +479,7 @@ const MotionSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 0.9, height: "70%" }}>
-      <FadeIllustration url={scene.imageUrl} delay={8} theme={theme} radius={24} />
+      <FadeIllustration url={scene.imageUrl} scene={scene} delay={8} theme={theme} radius={24} />
     </div>
   </Frame>
 );
@@ -410,7 +518,7 @@ const ScreencastSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
           ))}
         </div>
         <div style={{ position: "absolute", inset: "54px 0 0 0" }}>
-          <FadeIllustration url={scene.imageUrl} delay={6} theme={theme} radius={0} zoom={false} />
+          <FadeIllustration url={scene.imageUrl} scene={scene} delay={6} theme={theme} radius={0} zoom={false} />
         </div>
       </div>
 
@@ -457,7 +565,7 @@ const IsometricSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
       </div>
       <div style={{ flex: 1.05, height: "76%", overflow: "hidden" }}>
         <div style={{ width: "100%", height: "100%", transform: `translateX(${parallax}px) scale(${scale})` }}>
-          <FadeIllustration url={scene.imageUrl} delay={8} theme={theme} />
+          <FadeIllustration url={scene.imageUrl} scene={scene} delay={8} theme={theme} />
         </div>
       </div>
     </Frame>
@@ -513,7 +621,7 @@ const AvatarSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
   return (
     <Frame theme={theme}>
       <div style={{ flex: 0.8, height: "80%", transform: `translateY(${breathe}px)` }}>
-        <FadeIllustration url={scene.imageUrl} delay={0} theme={theme} zoom={false} />
+        <FadeIllustration url={scene.imageUrl} scene={scene} delay={0} theme={theme} zoom={false} />
       </div>
       <div style={{ flex: 1.2, display: "flex", flexDirection: "column", gap: 24 }}>
         <SceneNumber index={index} theme={theme} />

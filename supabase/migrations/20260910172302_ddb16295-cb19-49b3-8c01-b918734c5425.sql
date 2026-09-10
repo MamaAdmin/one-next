@@ -1,0 +1,4 @@
+CREATE POLICY "Admins read whiteboard uploads" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'whiteboard-uploads' AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins upload whiteboard uploads" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'whiteboard-uploads' AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins update whiteboard uploads" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'whiteboard-uploads' AND public.has_role(auth.uid(), 'admin')) WITH CHECK (bucket_id = 'whiteboard-uploads' AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins delete whiteboard uploads" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'whiteboard-uploads' AND public.has_role(auth.uid(), 'admin'));
