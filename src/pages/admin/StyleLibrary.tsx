@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
@@ -6,19 +6,29 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, ExternalLink } from "lucide-react";
-import { STYLE_RECOMMENDATIONS, WHITEBOARD_STYLES } from "@/features/whiteboard/styles";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ArrowLeft, ExternalLink, Play } from "lucide-react";
+import {
+  STYLE_RECOMMENDATIONS,
+  WHITEBOARD_STYLES,
+  type WhiteboardStyleOption,
+} from "@/features/whiteboard/styles";
 import { SCRIPT_TYPES } from "@/features/whiteboard/scriptTypes";
+import { thumbFor, youtubeId } from "@/features/whiteboard/styleThumbs";
 
 const StyleLibrary = () => {
   const navigate = useNavigate();
   const { isAdmin, loading } = useAdmin();
+  const [activeStyle, setActiveStyle] = useState<WhiteboardStyleOption | null>(null);
 
   useEffect(() => {
     if (!loading && !isAdmin) navigate("/");
   }, [isAdmin, loading, navigate]);
 
   if (loading || !isAdmin) return null;
+
+  const activeVideoId = activeStyle ? youtubeId(activeStyle.beispielUrl) : null;
 
   return (
     <div className="min-h-screen">
