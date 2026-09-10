@@ -4,6 +4,7 @@ import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useParticipants } from "@/hooks/useParticipants";
@@ -85,7 +86,8 @@ export default function LMSEnrollmentDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Einschreibungen", href: "/admin/lms/enrollments", active: true }]} />
-      <main className="container mx-auto px-4 py-8 mt-40">
+      <DashboardPage>
+        <DashboardHeader title="Einschreibungen" description="Teilnehmende Kursen zuweisen und ihren Fortschritt verfolgen." />
         <div className="space-y-6">
           <Card>
         <CardHeader>
@@ -188,7 +190,7 @@ export default function LMSEnrollmentDashboard() {
         </CardContent>
           </Card>
         </div>
-      </main>
+      </DashboardPage>
       <Footer isEditMode={false} />
     </div>
   );

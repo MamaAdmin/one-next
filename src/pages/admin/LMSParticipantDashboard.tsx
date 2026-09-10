@@ -3,6 +3,7 @@ import { useParticipants } from "@/hooks/useParticipants";
 import { useCustomer } from "@/hooks/useCustomer";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { Button } from "@/components/ui/button";
@@ -66,7 +67,8 @@ export default function LMSParticipantDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Teilnehmende", href: "/admin/lms/participants", active: true }]} />
-      <main className="container mx-auto px-4 py-8 mt-40">
+      <DashboardPage>
+        <DashboardHeader title="Teilnehmende" description="Kontaktdaten und Firmenzuordnungen der Lernenden verwalten." />
         <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -179,7 +181,7 @@ export default function LMSParticipantDashboard() {
           </Table>
         </CardContent>
       </Card>
-      </main>
+      </DashboardPage>
       <Footer isEditMode={false} />
     </div>
   );

@@ -6,6 +6,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { TrendingUp, Users, BookOpen, Award } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 
 interface Metrics {
@@ -84,9 +85,8 @@ export default function LMSAnalytics() {
     <div className="min-h-screen">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Analytics", href: "/admin/lms/analytics", active: true }]} />
-      <main className="container mx-auto px-6 pb-20 mt-40">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">LMS Analytics</h1>
+      <DashboardPage>
+          <DashboardHeader title="Lernplattform-Analyse" description="Fortschritt, Aktivität und Nutzung der Kurse im Überblick." />
 
           {/* Metric Cards */}
           <div className="grid gap-6 md:grid-cols-4 mb-8">
@@ -169,8 +169,7 @@ export default function LMSAnalytics() {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </main>
+      </DashboardPage>
       <Footer />
     </div>
   );

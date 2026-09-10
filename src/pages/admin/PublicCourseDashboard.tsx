@@ -4,6 +4,7 @@ import { usePublicCourses, useCourseDates, useCourseRegistrations, PublicCourse 
 import { usePublicCourseModules, PublicCourseModule } from "@/hooks/usePublicCourseModules";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { Button } from "@/components/ui/button";
@@ -149,7 +150,8 @@ export default function PublicCourseDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Offene Kurse", href: "/admin/kurse", active: true }]} />
-      <main className="container mx-auto px-4 py-8 mt-40 flex-1 space-y-8">
+      <DashboardPage>
+        <DashboardHeader title="Offene Kurse" description="Termine, Module und Anmeldungen für öffentliche Kurse verwalten." />
         <div className="rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
           Hinweis: Kurs-Grunddaten (Titel, Beschreibung, Preis, Sichtbarkeit) werden jetzt in der{" "}
           <a href="/admin/lms/courses" className="underline text-primary">LMS Kursverwaltung</a>{" "}
@@ -412,7 +414,7 @@ export default function PublicCourseDashboard() {
             <DialogFooter><Button onClick={handleUpdateModule}>Speichern</Button></DialogFooter>
           </DialogContent>
         </Dialog>
-      </main>
+      </DashboardPage>
       <Footer isEditMode={false} />
     </div>
   );
