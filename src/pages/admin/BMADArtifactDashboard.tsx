@@ -187,8 +187,9 @@ const BMADArtifactDashboard = () => {
       <Navigation />
       <AdminBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
-          { label: "BMAD Artifacts", href: "/admin/bmad/artifacts", icon: <BMADArtifactIcon className="w-5 h-5" />, active: true }
+          { label: "Admin", href: "/admin" },
+          { label: "BMAD", href: "/admin/bmad/sessions" },
+          { label: "Artifacts", href: "/admin/bmad/artifacts", active: true }
         ]}
       />
       <main className="container mx-auto px-6 pt-[140px] pb-20">

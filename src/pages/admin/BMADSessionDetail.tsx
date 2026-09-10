@@ -350,8 +350,8 @@ export default function BMADSessionDetail() {
       <Navigation />
       <AdminBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
-          { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-5 h-5" /> },
+          { label: "Admin", href: "/admin" },
+          { label: "BMAD", href: "/admin/bmad/sessions" },
           { label: session.title, active: true }
         ]}
       />
