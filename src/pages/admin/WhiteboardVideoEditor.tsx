@@ -6,6 +6,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { SceneMediaEditor } from "@/components/admin/SceneMediaEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
