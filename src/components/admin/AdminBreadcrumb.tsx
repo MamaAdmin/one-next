@@ -1,12 +1,4 @@
 import { Link } from "react-router-dom";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { ChevronRight } from "lucide-react";
 
 interface BreadcrumbItemType {
@@ -27,39 +19,35 @@ export const AdminBreadcrumb = ({ items }: AdminBreadcrumbProps) => {
       aria-label="breadcrumb"
     >
       <div className="container mx-auto px-6 py-3">
-        <Breadcrumb>
-          <BreadcrumbList className="text-sm">
-            {items.map((item, index) => {
-              const isLast = index === items.length - 1;
-              const isActive = item.active || isLast;
+        <ol className="flex flex-nowrap items-center gap-2 overflow-x-auto text-sm text-muted-foreground whitespace-nowrap">
+          {items.map((item, index) => {
+            const isLast = index === items.length - 1;
+            const isActive = item.active || isLast;
 
-              return (
-                <div key={index} className="flex items-center">
-                  <BreadcrumbItem>
-                    {isActive ? (
-                      <BreadcrumbPage className="flex items-center gap-2 max-w-[16rem] truncate">
-                        {item.icon}
-                        <span className="truncate">{item.label}</span>
-                      </BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink asChild>
-                        <Link to={item.href || "#"} className="flex items-center gap-2">
-                          {item.icon}
-                          <span>{item.label}</span>
-                        </Link>
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                  {!isLast && (
-                    <BreadcrumbSeparator>
-                      <ChevronRight className="h-4 w-4" />
-                    </BreadcrumbSeparator>
-                  )}
-                </div>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
+            return (
+              <li key={index} className="flex shrink-0 items-center gap-2">
+                {isActive ? (
+                  <span
+                    aria-current="page"
+                    className="flex min-w-0 items-center gap-2 font-normal text-foreground"
+                  >
+                    {item.icon}
+                    <span className="max-w-[16rem] truncate">{item.label}</span>
+                  </span>
+                ) : (
+                  <Link
+                    to={item.href || "#"}
+                    className="flex items-center gap-2 transition-colors hover:text-foreground"
+                  >
+                    {item.icon}
+                    <span className="max-w-[16rem] truncate">{item.label}</span>
+                  </Link>
+                )}
+                {!isLast && <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />}
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </nav>
   );
