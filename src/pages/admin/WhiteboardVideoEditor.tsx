@@ -80,6 +80,11 @@ import {
   type KieModel,
 } from "@/features/whiteboard/pricing";
 import { finishUsage, logJob, startUsage } from "@/features/whiteboard/usage";
+import {
+  fetchSeries,
+  fetchSeriesClips,
+  type WhiteboardVideoSeries,
+} from "@/features/whiteboard/series";
 
 const VOICES = ["Charlotte", "Rachel", "Aria", "Sarah", "George", "Liam", "Matilda"];
 const DEFAULT_CLIP_SECONDS = 4;
@@ -93,6 +98,8 @@ const WhiteboardVideoEditor = () => {
   const { toast } = useToast();
 
   const [project, setProject] = useState<WhiteboardVideoProject | null>(null);
+  const [series, setSeries] = useState<WhiteboardVideoSeries | null>(null);
+  const [siblings, setSiblings] = useState<WhiteboardVideoProject[]>([]);
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [voice, setVoice] = useState("Charlotte");
@@ -160,6 +167,22 @@ const WhiteboardVideoEditor = () => {
       setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
       setKieVideoUrl(loaded.video_url);
       setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
+
+      if (loaded.series_id) {
+        try {
+          const [loadedSeries, clips] = await Promise.all([
+            fetchSeries(loaded.series_id),
+            fetchSeriesClips(loaded.series_id),
+          ]);
+          setSeries(loadedSeries);
+          setSiblings(clips);
+        } catch {
+          /* Serie optional */
+        }
+      } else {
+        setSeries(null);
+        setSiblings([]);
+      }
 
       try {
         setModels(await fetchKieModels());
@@ -665,19 +688,56 @@ const WhiteboardVideoEditor = () => {
     }
   };
 
+  const clipIndex = siblings.findIndex((clip) => clip.id === videoId);
+  const previousClip = clipIndex > 0 ? siblings[clipIndex - 1] : null;
+  const nextClip =
+    clipIndex >= 0 && clipIndex < siblings.length - 1 ? siblings[clipIndex + 1] : null;
+
   if (loading || !isAdmin || !project) return null;
 
   return (
     <div className="min-h-screen">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", href: "/admin/whiteboard-videos" }, { label: title || project.title || "Video", active: true }]} />
+      <AdminBreadcrumb
+        items={[
+          { label: "Admin", href: "/admin" },
+          { label: "Lernvideos", href: "/admin/whiteboard-videos" },
+          ...(series
+            ? [{ label: series.title, href: `/admin/whiteboard-videos/serie/${series.id}` }]
+            : []),
+          { label: title || project.title || "Video", active: true },
+        ]}
+      />
       <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex items-center justify-between gap-4">
             <Button variant="ghost" onClick={() => navigate("/admin/whiteboard-videos")}>
               <ArrowLeft className="w-4 h-4 mr-2" /> Zurück
             </Button>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              {series && clipIndex >= 0 && (
+                <>
+                  <span className="text-sm text-muted-foreground">
+                    Clip {clipIndex + 1} von {siblings.length}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!previousClip}
+                    onClick={() => previousClip && navigate(`/admin/whiteboard-videos/${previousClip.id}`)}
+                  >
+                    Vorheriger Clip
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!nextClip}
+                    onClick={() => nextClip && navigate(`/admin/whiteboard-videos/${nextClip.id}`)}
+                  >
+                    Nächster Clip
+                  </Button>
+                </>
+              )}
               {saving && <span className="text-sm text-muted-foreground">Speichert…</span>}
               <Button variant="outline" onClick={() => save()}>
                 Speichern
