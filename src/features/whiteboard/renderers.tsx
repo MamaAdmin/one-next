@@ -350,6 +350,7 @@ const DrawnIllustration: React.FC<{
   const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
   const handY = 30 + Math.sin(local / 6) * 18;
 
+  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} />;
   if (!url) return <Placeholder theme={theme} />;
 
   return (
