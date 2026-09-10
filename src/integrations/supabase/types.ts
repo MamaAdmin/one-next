@@ -3274,14 +3274,61 @@ export type Database = {
         }
         Relationships: []
       }
+      whiteboard_video_series: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_model: string
+          script_type: string
+          style: string
+          title: string
+          updated_at: string
+          user_id: string
+          video_model: string
+          voice: string
+          voice_model: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_model?: string
+          script_type?: string
+          style?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+          video_model?: string
+          voice?: string
+          voice_model?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_model?: string
+          script_type?: string
+          style?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          video_model?: string
+          voice?: string
+          voice_model?: string
+        }
+        Relationships: []
+      }
       whiteboard_videos: {
         Row: {
           created_at: string
           error_message: string | null
           id: string
           image_model: string
+          position: number | null
           scenes: Json
           script_type: string
+          series_id: string | null
           status: string
           style: string
           title: string
@@ -3298,8 +3345,10 @@ export type Database = {
           error_message?: string | null
           id?: string
           image_model?: string
+          position?: number | null
           scenes?: Json
           script_type?: string
+          series_id?: string | null
           status?: string
           style?: string
           title?: string
@@ -3316,8 +3365,10 @@ export type Database = {
           error_message?: string | null
           id?: string
           image_model?: string
+          position?: number | null
           scenes?: Json
           script_type?: string
+          series_id?: string | null
           status?: string
           style?: string
           title?: string
@@ -3329,7 +3380,15 @@ export type Database = {
           voice?: string
           voice_model?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "whiteboard_videos_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "whiteboard_video_series"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workflow_comments: {
         Row: {
