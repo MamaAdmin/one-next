@@ -19,6 +19,8 @@ export interface WhiteboardStyleOption {
   renderer: RendererKey;
   generierbar: boolean;
   nichtGenerierbarGrund?: string;
+  /** Zusatzhinweis für erzeugbare Stile mit besonderem Ablauf. */
+  hinweis?: string;
 }
 
 export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
