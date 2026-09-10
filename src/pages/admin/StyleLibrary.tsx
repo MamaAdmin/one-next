@@ -98,8 +98,8 @@ const StyleLibrary = () => {
                   </p>
                   {!style.generierbar && (
                     <p className="text-muted-foreground">
-                      Dieser Stil dient als Vorlage für eine Produktion und wird nicht automatisch
-                      erzeugt.
+                      {style.nichtGenerierbarGrund ??
+                        "Dieser Stil dient als Vorlage für eine Produktion und wird nicht automatisch erzeugt."}
                     </p>
                   )}
                   <Button variant="secondary" size="sm" onClick={() => setActiveStyle(style)}>

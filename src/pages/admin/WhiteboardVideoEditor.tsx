@@ -20,6 +20,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
@@ -72,7 +82,9 @@ import {
 import { finishUsage, logJob, startUsage } from "@/features/whiteboard/usage";
 
 const VOICES = ["Charlotte", "Rachel", "Aria", "Sarah", "George", "Liam", "Matilda"];
-const VEO_SECONDS = 8;
+const DEFAULT_CLIP_SECONDS = 4;
+const MIN_CLIP_SECONDS = 2;
+const MAX_CLIP_SECONDS = 10;
 
 const WhiteboardVideoEditor = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -100,6 +112,8 @@ const WhiteboardVideoEditor = () => {
   const [creditsError, setCreditsError] = useState<string | null>(null);
   const [lastUsed, setLastUsed] = useState<number | null>(null);
   const [briefingOpen, setBriefingOpen] = useState(true);
+  const [clipSeconds, setClipSeconds] = useState(DEFAULT_CLIP_SECONDS);
+  const [clipDialogOpen, setClipDialogOpen] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const pollRef = useRef<number | null>(null);
@@ -204,9 +218,18 @@ const WhiteboardVideoEditor = () => {
         imageModel,
         voiceModel,
         videoModel,
+        videoSeconds: clipSeconds,
       }),
-    [models, sceneCount, scenes, imageModel, voiceModel, videoModel],
+    [models, sceneCount, scenes, imageModel, voiceModel, videoModel, clipSeconds],
   );
+
+  const clipRate = useMemo(() => rateFor(models, videoModel), [models, videoModel]);
+  const clipCost = useMemo(
+    () => Math.round(clipRate * clipSeconds * 100) / 100,
+    [clipRate, clipSeconds],
+  );
+  const clipAffordable = credits === null || clipCost <= credits;
+  const clipMissing = credits === null ? 0 : Math.round((clipCost - credits) * 100) / 100;
 
   const ensureBudget = useCallback(
     async (estimate: CostEstimate): Promise<number | null> => {
@@ -507,7 +530,7 @@ const WhiteboardVideoEditor = () => {
       includeScript: false,
       includeImages: false,
       includeVoices: false,
-      videoSeconds: VEO_SECONDS,
+      videoSeconds: clipSeconds,
       videoModel,
     });
     setWorking("kie-video");
@@ -521,7 +544,7 @@ const WhiteboardVideoEditor = () => {
         sections: scenes.length,
         images: 0,
         audioCharacters: 0,
-        videoSeconds: VEO_SECONDS,
+        videoSeconds: clipSeconds,
         models: { video: videoModel },
       });
       const taskId = await startVideo(topic || title, videoModel);
@@ -539,7 +562,7 @@ const WhiteboardVideoEditor = () => {
               videoId,
               kind: "video",
               model: videoModel,
-              units: VEO_SECONDS,
+              units: clipSeconds,
               estimatedCredits: estimate.total,
               status: "done",
               taskId,
@@ -960,15 +983,81 @@ const WhiteboardVideoEditor = () => {
                 <Button onClick={renderMp4} disabled={renderProgress !== null}>
                   <Download className="w-4 h-4 mr-2" /> Als MP4 herunterladen
                 </Button>
-                <Button variant="outline" onClick={runKieVideo} disabled={working !== null}>
-                  {working === "kie-video" ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-4 h-4 mr-2" />
-                  )}
-                  Zusätzlichen KI-Videoclip erzeugen
-                </Button>
+                <div className="flex items-end gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="clip-seconds" className="text-xs">
+                      Cliplänge in Sekunden
+                    </Label>
+                    <Input
+                      id="clip-seconds"
+                      type="number"
+                      min={MIN_CLIP_SECONDS}
+                      max={MAX_CLIP_SECONDS}
+                      step={1}
+                      className="w-28"
+                      value={clipSeconds}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value);
+                        if (Number.isNaN(raw)) return;
+                        setClipSeconds(
+                          Math.min(MAX_CLIP_SECONDS, Math.max(MIN_CLIP_SECONDS, Math.round(raw))),
+                        );
+                      }}
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setClipDialogOpen(true)}
+                    disabled={working !== null}
+                  >
+                    {working === "kie-video" ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    )}
+                    Zusätzlichen KI-Videoclip erzeugen
+                  </Button>
+                </div>
               </div>
+
+              <AlertDialog open={clipDialogOpen} onOpenChange={setClipDialogOpen}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>KI-Videoclip erzeugen?</AlertDialogTitle>
+                    <AlertDialogDescription asChild>
+                      <div className="space-y-1 text-sm">
+                        <div>Modell: {videoModel}</div>
+                        <div>Länge: {clipSeconds} Sekunden</div>
+                        <div>
+                          Preis: {clipRate > 0 ? `${formatCredits(clipRate)} Credits pro Sekunde` : "kein Creditpreis hinterlegt"}
+                        </div>
+                        <div>Gesamtkosten: ca. {formatCredits(clipCost)} Credits</div>
+                        <div>
+                          Verfügbares Guthaben:{" "}
+                          {credits === null ? "nicht abrufbar" : `${formatCredits(credits)} Credits`}
+                        </div>
+                        {!clipAffordable && (
+                          <div className="text-destructive">
+                            Es fehlen {formatCredits(clipMissing)} Credits.
+                          </div>
+                        )}
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction
+                      disabled={!clipAffordable}
+                      onClick={() => {
+                        setClipDialogOpen(false);
+                        void runKieVideo();
+                      }}
+                    >
+                      Clip erzeugen
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               {kieVideoUrl && (
                 <video src={kieVideoUrl} controls className="w-full rounded-lg border" />
               )}

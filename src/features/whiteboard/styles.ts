@@ -18,6 +18,7 @@ export interface WhiteboardStyleOption {
   promptSuffix: string;
   renderer: RendererKey;
   generierbar: boolean;
+  nichtGenerierbarGrund?: string;
 }
 
 export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
@@ -97,7 +98,9 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix:
       "Clean software user interface mockup, dashboard with panels and buttons, subtle shadows, light UI design, no readable text.",
     renderer: "screencast",
-    generierbar: true,
+    generierbar: false,
+    nichtGenerierbarGrund:
+      "Braucht eine Bildschirmaufnahme deiner Software. Die KI kann nur Standbilder erzeugen, keine echte Oberfläche.",
   },
   {
     value: "screencast_plus",
@@ -110,7 +113,9 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix:
       "Software interface mockup combined with flat illustrated icons and callout shapes, light background, no readable text.",
     renderer: "screencast",
-    generierbar: true,
+    generierbar: false,
+    nichtGenerierbarGrund:
+      "Braucht eine Bildschirmaufnahme deiner Software. Die KI kann nur Standbilder erzeugen, keine echte Oberfläche.",
   },
   {
     value: "isometric_3d",
@@ -162,6 +167,8 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix: "",
     renderer: "flat",
     generierbar: false,
+    nichtGenerierbarGrund:
+      "Dieser Stil dient als Vorlage für eine Produktion und wird nicht automatisch erzeugt.",
   },
   {
     value: "live_action",
@@ -174,6 +181,8 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix: "",
     renderer: "flat",
     generierbar: false,
+    nichtGenerierbarGrund:
+      "Dieser Stil dient als Vorlage für eine Produktion und wird nicht automatisch erzeugt.",
   },
 ];
 
@@ -187,7 +196,8 @@ export const STYLE_RECOMMENDATIONS: Array<{ lernziel: string; stil: string; waru
   {
     lernziel: "Software bedienen",
     stil: "Screencast",
-    warum: "Zeigt das tatsächliche Interface und konkrete Handlungen",
+    warum:
+      "Zeigt das tatsächliche Interface und konkrete Handlungen. Aufnahme selbst erstellen, die Vertonung übernimmt das Tool.",
   },
   {
     lernziel: "Prozess oder System verstehen",
