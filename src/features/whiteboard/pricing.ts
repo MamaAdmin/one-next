@@ -131,7 +131,10 @@ export const estimateCost = ({
   }
 
   if (includeImages) {
-    const count = scenes.length || sceneCount;
+    // Abschnitte mit eigener Aufnahme brauchen keine KI-Zeichnung.
+    const count = scenes.length
+      ? scenes.filter((s) => s.mediaType !== "clip").length
+      : sceneCount;
     const priceKnown = track(imageModel);
     const rate = rateFor(models, imageModel);
     lines.push({
