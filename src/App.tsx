@@ -67,6 +67,7 @@ import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import WhiteboardVideoDashboard from "./pages/admin/WhiteboardVideoDashboard";
 import WhiteboardVideoEditor from "./pages/admin/WhiteboardVideoEditor";
+import WhiteboardSeriesDetail from "./pages/admin/WhiteboardSeriesDetail";
 import KieModelCatalog from "./pages/admin/KieModelCatalog";
 import StyleLibrary from "./pages/admin/StyleLibrary";
 import SprintDashboard from "./pages/sprint/SprintDashboard";
