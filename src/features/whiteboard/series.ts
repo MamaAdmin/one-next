@@ -172,7 +172,10 @@ export const parseSeriesMarkdown = (markdown: string): ParsedClip[] => {
 
       const parts: string[] = [];
       if (sprechtext.length) parts.push(sprechtext.join(" "));
+      const seen = new Set<string>();
       for (const { label } of NOTE_SECTIONS) {
+        if (seen.has(label)) continue;
+        seen.add(label);
         const entries = notes[label];
         if (entries && entries.length) parts.push(`${label}: ${entries.join(" ")}`);
       }
