@@ -973,15 +973,81 @@ const WhiteboardVideoEditor = () => {
                 <Button onClick={renderMp4} disabled={renderProgress !== null}>
                   <Download className="w-4 h-4 mr-2" /> Als MP4 herunterladen
                 </Button>
-                <Button variant="outline" onClick={runKieVideo} disabled={working !== null}>
-                  {working === "kie-video" ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-4 h-4 mr-2" />
-                  )}
-                  Zusätzlichen KI-Videoclip erzeugen
-                </Button>
+                <div className="flex items-end gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="clip-seconds" className="text-xs">
+                      Cliplänge in Sekunden
+                    </Label>
+                    <Input
+                      id="clip-seconds"
+                      type="number"
+                      min={MIN_CLIP_SECONDS}
+                      max={MAX_CLIP_SECONDS}
+                      step={1}
+                      className="w-28"
+                      value={clipSeconds}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value);
+                        if (Number.isNaN(raw)) return;
+                        setClipSeconds(
+                          Math.min(MAX_CLIP_SECONDS, Math.max(MIN_CLIP_SECONDS, Math.round(raw))),
+                        );
+                      }}
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setClipDialogOpen(true)}
+                    disabled={working !== null}
+                  >
+                    {working === "kie-video" ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    )}
+                    Zusätzlichen KI-Videoclip erzeugen
+                  </Button>
+                </div>
               </div>
+
+              <AlertDialog open={clipDialogOpen} onOpenChange={setClipDialogOpen}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>KI-Videoclip erzeugen?</AlertDialogTitle>
+                    <AlertDialogDescription asChild>
+                      <div className="space-y-1 text-sm">
+                        <div>Modell: {videoModel}</div>
+                        <div>Länge: {clipSeconds} Sekunden</div>
+                        <div>
+                          Preis: {clipRate > 0 ? `${formatCredits(clipRate)} Credits pro Sekunde` : "kein Creditpreis hinterlegt"}
+                        </div>
+                        <div>Gesamtkosten: ca. {formatCredits(clipCost)} Credits</div>
+                        <div>
+                          Verfügbares Guthaben:{" "}
+                          {credits === null ? "nicht abrufbar" : `${formatCredits(credits)} Credits`}
+                        </div>
+                        {!clipAffordable && (
+                          <div className="text-destructive">
+                            Es fehlen {formatCredits(clipMissing)} Credits.
+                          </div>
+                        )}
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction
+                      disabled={!clipAffordable}
+                      onClick={() => {
+                        setClipDialogOpen(false);
+                        void runKieVideo();
+                      }}
+                    >
+                      Clip erzeugen
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               {kieVideoUrl && (
                 <video src={kieVideoUrl} controls className="w-full rounded-lg border" />
               )}
