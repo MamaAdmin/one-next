@@ -26,6 +26,8 @@ export interface WhiteboardVideoProject {
   status: WhiteboardStatus;
   video_url: string | null;
   error_message: string | null;
+  series_id: string | null;
+  position: number | null;
   created_at: string;
   updated_at: string;
 }

@@ -67,6 +67,7 @@ import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import WhiteboardVideoDashboard from "./pages/admin/WhiteboardVideoDashboard";
 import WhiteboardVideoEditor from "./pages/admin/WhiteboardVideoEditor";
+import WhiteboardSeriesDetail from "./pages/admin/WhiteboardSeriesDetail";
 import KieModelCatalog from "./pages/admin/KieModelCatalog";
 import StyleLibrary from "./pages/admin/StyleLibrary";
 import SprintDashboard from "./pages/sprint/SprintDashboard";
@@ -135,6 +136,7 @@ const App = () => (
           {/* Internal design reference — not linked from navigation */}
           <Route path="/admin/design-system" element={<DesignSystem />} />
           <Route path="/admin/whiteboard-videos" element={<WhiteboardVideoDashboard />} />
+          <Route path="/admin/whiteboard-videos/serie/:seriesId" element={<WhiteboardSeriesDetail />} />
           <Route path="/admin/whiteboard-videos/:videoId" element={<WhiteboardVideoEditor />} />
           <Route path="/admin/ki-modelle" element={<KieModelCatalog />} />
           <Route path="/admin/stilbibliothek" element={<StyleLibrary />} />

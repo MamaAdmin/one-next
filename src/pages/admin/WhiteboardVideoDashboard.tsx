@@ -9,8 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Video } from "lucide-react";
+import { Layers, Plus, Trash2, Video } from "lucide-react";
 import type { WhiteboardVideoProject } from "@/features/whiteboard/types";
+import {
+  createSeries,
+  fetchSeriesClipSummary,
+  fetchSeriesList,
+  type WhiteboardVideoSeries,
+} from "@/features/whiteboard/series";
+import { IMAGE_MODEL, VIDEO_MODEL, VOICE_MODEL } from "@/features/whiteboard/pricing";
 import { KieCreditsCard } from "@/components/admin/KieCreditsCard";
 import { KieUsageStats } from "@/components/admin/KieUsageStats";
 import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
@@ -28,6 +35,10 @@ const WhiteboardVideoDashboard = () => {
   const { toast } = useToast();
   const [projects, setProjects] = useState<WhiteboardVideoProject[]>([]);
   const [busy, setBusy] = useState(false);
+  const [seriesList, setSeriesList] = useState<WhiteboardVideoSeries[]>([]);
+  const [seriesSummary, setSeriesSummary] = useState<
+    Record<string, { total: number; ready: number; draft: number; error: number }>
+  >({});
 
   useEffect(() => {
     if (!loading && !isAdmin) navigate("/");
@@ -44,6 +55,46 @@ const WhiteboardVideoDashboard = () => {
     }
     setProjects((data ?? []) as WhiteboardVideoProject[]);
   };
+
+  const loadSeries = async () => {
+    try {
+      const [list, summary] = await Promise.all([fetchSeriesList(), fetchSeriesClipSummary()]);
+      setSeriesList(list);
+      setSeriesSummary(summary);
+    } catch (error) {
+      toast({
+        title: "Serien konnten nicht geladen werden",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const createNewSeries = async () => {
+    setBusy(true);
+    try {
+      const series = await createSeries({
+        title: "Neue Serie",
+        image_model: IMAGE_MODEL,
+        voice_model: VOICE_MODEL,
+        video_model: VIDEO_MODEL,
+      });
+      navigate(`/admin/whiteboard-videos/serie/${series.id}`);
+    } catch (error) {
+      toast({
+        title: "Serie konnte nicht angelegt werden",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin) void loadSeries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
   useEffect(() => {
     if (isAdmin) void load();
@@ -92,11 +143,53 @@ const WhiteboardVideoDashboard = () => {
                 <Button variant="outline" asChild>
                   <Link to="/admin/ki-modelle">KI-Modelle</Link>
                 </Button>
+                <Button variant="outline" onClick={createNewSeries} disabled={busy}>
+                  <Layers className="w-4 h-4 mr-2" /> Neue Serie
+                </Button>
                 <Button onClick={createProject} disabled={busy}>
                   <Plus className="w-4 h-4 mr-2" /> Neues Video
                 </Button>
               </>}
           />
+
+          {seriesList.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Serien</CardTitle>
+                <CardDescription>Mehrere Clips mit gemeinsamen Einstellungen.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                {seriesList.map((series) => {
+                  const summary = seriesSummary[series.id] ?? { total: 0, ready: 0, draft: 0, error: 0 };
+                  return (
+                    <div
+                      key={series.id}
+                      className="flex items-center justify-between gap-4 overflow-hidden rounded-md border p-4"
+                    >
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <Layers className="h-5 w-5 shrink-0 text-primary" />
+                        <div className="min-w-0">
+                          <Link
+                            to={`/admin/whiteboard-videos/serie/${series.id}`}
+                            className="block truncate font-medium hover:underline"
+                          >
+                            {series.title}
+                          </Link>
+                          <p className="truncate text-sm text-muted-foreground">
+                            {summary.total} Clips · {summary.ready} fertig · {summary.draft} offen
+                            {summary.error ? ` · ${summary.error} Fehler` : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" asChild className="shrink-0">
+                        <Link to={`/admin/whiteboard-videos/serie/${series.id}`}>Öffnen</Link>
+                      </Button>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          )}
 
           <KieCreditsCard />
           <KieUsageStats />
