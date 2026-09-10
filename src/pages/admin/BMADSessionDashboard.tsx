@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BMADSessionDetailsDialog } from "@/components/admin/BMADSessionDetailsDialog";
 import { BMADInfo } from "@/components/admin/BMADInfo";
 import { BMADSessionCreator } from "@/components/admin/BMADSessionCreator";
-import { Home, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Edit, Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -44,8 +44,7 @@ import {
   ScrumIcon,
   DeveloperIcon,
   QAIcon,
-  OrchestratorIcon,
-  BMADSessionIcon
+  OrchestratorIcon
 } from "@/components/ui/custom-icons";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 
@@ -193,8 +192,8 @@ const BMADSessionDashboard = () => {
       <Navigation />
       <AdminBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
-          { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-5 h-5" />, active: true }
+          { label: "Admin", href: "/admin" },
+          { label: "BMAD", href: "/admin/bmad/sessions", active: true }
         ]}
       />
       <main className="container mx-auto px-6 pt-[140px] pb-20">

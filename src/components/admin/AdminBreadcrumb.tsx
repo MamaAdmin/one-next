@@ -4,7 +4,6 @@ import { ChevronRight } from "lucide-react";
 interface BreadcrumbItemType {
   label: string;
   href?: string;
-  icon?: React.ReactNode;
   active?: boolean;
 }
 

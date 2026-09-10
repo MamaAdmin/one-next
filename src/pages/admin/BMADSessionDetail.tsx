@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Play, Check, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Home, Edit } from "lucide-react";
+import { ArrowLeft, Play, Check, ChevronRight, Zap, Circle, CheckCircle2, XCircle, Loader2, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,8 +28,7 @@ import {
   ScrumIcon,
   DeveloperIcon,
   QAIcon,
-  OrchestratorIcon,
-  BMADSessionIcon
+  OrchestratorIcon
 } from "@/components/ui/custom-icons";
 
 const PHASE_CONFIG = {
@@ -350,8 +349,8 @@ export default function BMADSessionDetail() {
       <Navigation />
       <AdminBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
-          { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-5 h-5" /> },
+          { label: "Admin", href: "/admin" },
+          { label: "BMAD", href: "/admin/bmad/sessions" },
           { label: session.title, active: true }
         ]}
       />

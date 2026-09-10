@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
-import { Home, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Edit, Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -43,8 +43,7 @@ import {
   ScrumIcon,
   DeveloperIcon,
   QAIcon,
-  OrchestratorIcon,
-  BMADArtifactIcon
+  OrchestratorIcon
 } from "@/components/ui/custom-icons";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 
@@ -187,8 +186,9 @@ const BMADArtifactDashboard = () => {
       <Navigation />
       <AdminBreadcrumb
         items={[
-          { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
-          { label: "BMAD Artifacts", href: "/admin/bmad/artifacts", icon: <BMADArtifactIcon className="w-5 h-5" />, active: true }
+          { label: "Admin", href: "/admin" },
+          { label: "BMAD", href: "/admin/bmad/sessions" },
+          { label: "Artifacts", href: "/admin/bmad/artifacts", active: true }
         ]}
       />
       <main className="container mx-auto px-6 pt-[140px] pb-20">
