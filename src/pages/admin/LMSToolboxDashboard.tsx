@@ -4,6 +4,7 @@ import { useToolbox, Tool } from "@/hooks/useToolbox";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage, DashboardToolbar } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -247,33 +248,20 @@ export default function LMSToolboxDashboard() {
     <div className="min-h-screen">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Toolbox", href: "/admin/lms/toolbox", active: true }]} />
-      <main className="container mx-auto px-6 pt-40 pb-20">
-
-        <div className="max-w-7xl mx-auto">
-          <Card className="mb-8">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-3xl">
-                    Toolbox-Verwaltung
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    Verwalten Sie Design Sprint Tools, Templates und Ressourcen
-                  </CardDescription>
-                </div>
-                <Link to="/admin/lms/toolbox/new">
+      <DashboardPage>
+          <DashboardHeader
+            title="Toolbox"
+            description="Design-Sprint-Tools, Vorlagen und Ressourcen verwalten."
+            action={<Link to="/admin/lms/toolbox/new">
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
                     Neues Tool
                   </Button>
-                </Link>
-              </div>
-            </CardHeader>
-          </Card>
+                </Link>}
+          />
 
           {/* Filter */}
-          <Card className="mb-6">
-            <CardContent className="pt-6">
+          <DashboardToolbar>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <Input
@@ -307,8 +295,7 @@ export default function LMSToolboxDashboard() {
                   </SelectContent>
                 </Select>
               </div>
-            </CardContent>
-          </Card>
+          </DashboardToolbar>
 
           {/* Desktop Table */}
           <Card className="hidden md:block">
@@ -424,8 +411,7 @@ export default function LMSToolboxDashboard() {
               </Card>
             ))}
           </div>
-        </div>
-      </main>
+      </DashboardPage>
       <Footer />
     </div>
   );

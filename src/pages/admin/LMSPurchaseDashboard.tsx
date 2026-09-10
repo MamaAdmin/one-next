@@ -3,6 +3,7 @@ import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 import { useCustomer } from "@/hooks/useCustomer";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
@@ -76,7 +77,8 @@ export default function LMSPurchaseDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Käufe", href: "/admin/lms/purchases", active: true }]} />
-      <main className="container mx-auto px-4 py-8 mt-40">
+      <DashboardPage>
+        <DashboardHeader title="Käufe" description="Kurskäufe und zugehörige Lizenzen verwalten." />
         <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -192,7 +194,7 @@ export default function LMSPurchaseDashboard() {
           </Table>
         </CardContent>
       </Card>
-      </main>
+      </DashboardPage>
       <Footer isEditMode={false} />
     </div>
   );

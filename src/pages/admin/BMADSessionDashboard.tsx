@@ -33,6 +33,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { 
@@ -196,17 +197,8 @@ const BMADSessionDashboard = () => {
           { label: "BMAD", href: "/admin/bmad/sessions", active: true }
         ]}
       />
-      <main className="container mx-auto px-6 pt-[140px] pb-20">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">BMAD Sessions</h1>
-              <p className="text-muted-foreground">
-                Übersicht aller AI-gestützten Entwicklungssessions
-              </p>
-            </div>
-            <BMADSessionCreator />
-          </div>
+      <DashboardPage>
+          <DashboardHeader title="BMAD-Sessions" description="Alle KI-gestützten Entwicklungssessions verwalten und überwachen." action={<BMADSessionCreator />} />
 
           <BMADInfo />
 
@@ -340,8 +332,7 @@ const BMADSessionDashboard = () => {
               )}
             </CardContent>
           </Card>
-        </div>
-      </main>
+      </DashboardPage>
 
       <BMADSessionDetailsDialog
         session={selectedSession}
