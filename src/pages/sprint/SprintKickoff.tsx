@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -89,8 +90,9 @@ export default function SprintKickoff() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/20">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Kickoff", active: true }]} />
 
-      <main className="flex-1 w-full px-6 py-10 lg:py-16">
+      <main className="flex-1 w-full px-6 pt-32 pb-10 lg:pb-16">
         <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
           ← Sprint-Übersicht
         </Link>

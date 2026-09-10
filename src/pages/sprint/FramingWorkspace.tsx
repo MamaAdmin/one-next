@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -144,8 +145,9 @@ export default function FramingWorkspace() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/20">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Problem Framing", active: true }]} />
 
-      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-16">
+      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 pt-28 sm:pt-32 pb-4 sm:pb-6 lg:pb-16">
         <div className="mb-6">
           <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
             ← Sprint-Übersicht

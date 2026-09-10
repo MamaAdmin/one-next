@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -124,8 +125,9 @@ export default function SprintWorkspace() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/20">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Sprint", active: true }]} />
 
-      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-16">
+      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 pt-28 sm:pt-32 pb-4 sm:pb-6 lg:pb-16">
         <div className="grid md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] gap-6 lg:gap-8">
           {/* Side-Nav */}
           <aside className="md:sticky md:top-24 md:self-start space-y-4">

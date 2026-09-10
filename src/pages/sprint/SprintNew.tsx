@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -69,8 +70,9 @@ export default function SprintNew() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Neuer Sprint", href: "/sprint/neu", active: true }]} />
 
-      <main className="flex-1 w-full px-6 py-16">
+      <main className="flex-1 w-full px-6 pt-32 pb-16">
         <div className="max-w-2xl mx-auto">
           <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
             ← Zur Sprint-Übersicht
