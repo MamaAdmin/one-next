@@ -165,7 +165,12 @@ const WhiteboardVideoEditor = () => {
       setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);
       setVoiceModel(loaded.voice_model || DEFAULT_VOICE_MODEL);
       setVideoModel(loaded.video_model || DEFAULT_VIDEO_MODEL);
-      setScenes(Array.isArray(loaded.scenes) ? loaded.scenes : []);
+      const loadedScenes = Array.isArray(loaded.scenes) ? loaded.scenes : [];
+      setScenes(loadedScenes);
+      // Signierte Adressen laufen ab, darum je Aufnahme eine frische holen.
+      if (loadedScenes.some((s) => s.mediaType === "clip" && s.clipPath)) {
+        void withFreshClipUrls(loadedScenes).then(setScenes);
+      }
       setKieVideoUrl(loaded.video_url);
       setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
 
