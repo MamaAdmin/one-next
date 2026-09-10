@@ -102,6 +102,8 @@ const WhiteboardVideoEditor = () => {
   const [creditsError, setCreditsError] = useState<string | null>(null);
   const [lastUsed, setLastUsed] = useState<number | null>(null);
   const [briefingOpen, setBriefingOpen] = useState(true);
+  const [clipSeconds, setClipSeconds] = useState(DEFAULT_CLIP_SECONDS);
+  const [clipDialogOpen, setClipDialogOpen] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const pollRef = useRef<number | null>(null);
