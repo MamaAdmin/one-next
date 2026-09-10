@@ -208,9 +208,18 @@ const WhiteboardVideoEditor = () => {
         imageModel,
         voiceModel,
         videoModel,
+        videoSeconds: clipSeconds,
       }),
-    [models, sceneCount, scenes, imageModel, voiceModel, videoModel],
+    [models, sceneCount, scenes, imageModel, voiceModel, videoModel, clipSeconds],
   );
+
+  const clipRate = useMemo(() => rateFor(models, videoModel), [models, videoModel]);
+  const clipCost = useMemo(
+    () => Math.round(clipRate * clipSeconds * 100) / 100,
+    [clipRate, clipSeconds],
+  );
+  const clipAffordable = credits === null || clipCost <= credits;
+  const clipMissing = credits === null ? 0 : Math.round((clipCost - credits) * 100) / 100;
 
   const ensureBudget = useCallback(
     async (estimate: CostEstimate): Promise<number | null> => {
