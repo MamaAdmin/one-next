@@ -30,6 +30,8 @@ import {
   LinkIcon
 } from "@/components/ui/custom-icons";
 import { Clapperboard, FileText, UserPlus } from "lucide-react";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -73,16 +75,9 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
-        <div className="max-w-6xl mx-auto">
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-3xl">Admin-Dashboard</CardTitle>
-              <CardDescription>
-                Verwalten Sie Ihre Website-Inhalte, Blog-Artikel und Medien.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin", active: true }]} />
+      <DashboardPage>
+          <DashboardHeader title="Admin-Dashboard" description="Inhalte, Lernangebote, BMAD, Design Sprints und Benutzer zentral verwalten." />
 
           <Tabs defaultValue={defaultTab} className="w-full">
             <TabsList className="grid w-full grid-cols-5">
@@ -297,8 +292,7 @@ const AdminDashboard = () => {
               </Tabs>
             </TabsContent>
           </Tabs>
-        </div>
-      </main>
+      </DashboardPage>
       <Footer />
     </div>
   );

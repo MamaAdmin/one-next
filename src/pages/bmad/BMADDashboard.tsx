@@ -19,6 +19,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Brain, Plus, LogOut, Clock, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 
 interface BMADSession {
   id: string;
@@ -176,39 +179,19 @@ const BMADDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <Brain className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-semibold">BMAD Dashboard</h1>
-              <p className="text-sm text-muted-foreground">{user?.email}</p>
-            </div>
-          </div>
+      <Navigation />
+      <AdminBreadcrumb items={[{ label: "BMAD", href: "/bmad", active: true }]} />
+      <DashboardPage>
+        <DashboardHeader title="Meine BMAD-Sessions" description={user?.email ? `Angemeldet als ${user.email}` : "BMAD-Planungssessions verwalten."} action={<div className="flex gap-2">
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" />
             Abmelden
           </Button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold">Meine Sessions</h2>
-            <p className="text-muted-foreground">
-              Verwalten Sie Ihre BMAD-Planungssessions
-            </p>
-          </div>
           <Button onClick={() => setCreateDialogOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Neue Session
           </Button>
-        </div>
+        </div>} />
 
         {sessions.length === 0 ? (
           <Card>
@@ -263,7 +246,7 @@ const BMADDashboard = () => {
             ))}
           </div>
         )}
-      </main>
+      </DashboardPage>
 
       {/* Create Session Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -110,16 +111,11 @@ const LMSCustomerDashboard = () => {
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Firmenkunden", href: "/admin/customers", active: true }]} />
       
-      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">LMS Kunden-Verwaltung</h1>
-            <p className="text-muted-foreground">Verwalten Sie Ihre Kunden und deren Teilnehmer</p>
-          </div>
-
+      <DashboardPage>
+        <DashboardHeader title="Firmenkunden" description="Firmen und ihre zugehörigen Teilnehmenden verwalten." action={
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="my-[100px]">
+              <Button>
                 <Plus className="mr-2 h-4 w-4" />
                 Neuer Kunde
               </Button>
@@ -184,7 +180,7 @@ const LMSCustomerDashboard = () => {
               </form>
             </DialogContent>
           </Dialog>
-        </div>
+        } />
 
         {loading ? <Card>
             <CardContent className="pt-6">
@@ -313,7 +309,7 @@ const LMSCustomerDashboard = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </main>
+      </DashboardPage>
 
       <Footer isEditMode={false} />
     </div>;

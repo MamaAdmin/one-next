@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
 import { Edit, Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -191,14 +192,8 @@ const BMADArtifactDashboard = () => {
           { label: "Artifacts", href: "/admin/bmad/artifacts", active: true }
         ]}
       />
-      <main className="container mx-auto px-6 pt-[140px] pb-20">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">BMAD Artifacts</h1>
-            <p className="text-muted-foreground">
-              Übersicht aller generierten AI-Artifacts
-            </p>
-          </div>
+      <DashboardPage>
+          <DashboardHeader title="BMAD-Artefakte" description="Alle generierten KI-Artefakte verwalten und prüfen." />
 
           <Card>
             <CardHeader>
@@ -465,8 +460,7 @@ const BMADArtifactDashboard = () => {
               )}
             </CardContent>
           </Card>
-        </div>
-      </main>
+      </DashboardPage>
 
       <BMADArtifactPreviewDialog
         artifact={selectedArtifact}

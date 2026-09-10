@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { Activity, FileText, CheckCircle, Clock } from "lucide-react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 
 const COLORS = {
   requirements: "#A855F7",
@@ -104,14 +105,8 @@ const BMADAnalytics = () => {
           { label: "Analytics", href: "/admin/bmad/analytics", active: true }
         ]}
       />
-      <main className="container mx-auto px-6 pt-[140px] pb-20">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">BMAD Analytics</h1>
-            <p className="text-muted-foreground">
-              Statistiken und Analysen des BMAD-Systems
-            </p>
-          </div>
+      <DashboardPage>
+          <DashboardHeader title="BMAD-Analyse" description="Aktivität, Fortschritt und Ergebnisse des BMAD-Bereichs im Überblick." />
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -260,8 +255,7 @@ const BMADAnalytics = () => {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </main>
+      </DashboardPage>
       <Footer />
     </div>
   );

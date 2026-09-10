@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 
 export default function LMSCourseDashboard() {
@@ -140,7 +141,8 @@ export default function LMSCourseDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Kurse", href: "/admin/lms/courses", active: true }]} />
-      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
+      <DashboardPage>
+        <DashboardHeader title="Kurse" description="Kurse erstellen, veröffentlichen und inhaltlich verwalten." />
         <Card>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -449,7 +451,7 @@ export default function LMSCourseDashboard() {
             </div>
           </CardContent>
         </Card>
-      </main>
+      </DashboardPage>
       <Footer isEditMode={false} />
     </div>
   );
