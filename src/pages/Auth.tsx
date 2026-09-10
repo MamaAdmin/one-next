@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
+import { isUserApproved } from "@/lib/approval";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { z } from "zod";
@@ -51,17 +52,29 @@ const Auth = () => {
   const redirectTo = searchParams.get("redirect") || "/";
 
   useEffect(() => {
+    const handleSession = async (userId: string | undefined) => {
+      if (!userId) return;
+      const approved = await isUserApproved(userId);
+      if (!approved) {
+        await supabase.auth.signOut();
+        toast({
+          title: "Konto wartet auf Freigabe",
+          description:
+            "Ihr Konto wurde noch nicht freigegeben. Bitte warten Sie auf die Bestätigung durch einen Administrator.",
+          variant: "destructive",
+        });
+        return;
+      }
+      navigate(redirectTo);
+    };
+
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate(redirectTo);
-      }
+      void handleSession(session?.user?.id);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate(redirectTo);
-      }
+      setTimeout(() => void handleSession(session?.user?.id), 0);
     });
 
     return () => subscription.unsubscribe();
