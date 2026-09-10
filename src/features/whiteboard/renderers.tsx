@@ -445,7 +445,7 @@ const WhiteboardSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 0.95, height: "72%" }}>
-      <DrawnIllustration url={scene.imageUrl} delay={12} theme={theme} />
+      <DrawnIllustration url={scene.imageUrl} scene={scene} delay={12} theme={theme} />
     </div>
   </Frame>
 );
@@ -462,7 +462,7 @@ const FlatSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 1, height: "74%" }}>
-      <FadeIllustration url={scene.imageUrl} delay={10} theme={theme} />
+      <FadeIllustration url={scene.imageUrl} scene={scene} delay={10} theme={theme} />
     </div>
   </Frame>
 );
@@ -479,7 +479,7 @@ const MotionSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 0.9, height: "70%" }}>
-      <FadeIllustration url={scene.imageUrl} delay={8} theme={theme} radius={24} />
+      <FadeIllustration url={scene.imageUrl} scene={scene} delay={8} theme={theme} radius={24} />
     </div>
   </Frame>
 );
@@ -518,7 +518,7 @@ const ScreencastSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
           ))}
         </div>
         <div style={{ position: "absolute", inset: "54px 0 0 0" }}>
-          <FadeIllustration url={scene.imageUrl} delay={6} theme={theme} radius={0} zoom={false} />
+          <FadeIllustration url={scene.imageUrl} scene={scene} delay={6} theme={theme} radius={0} zoom={false} />
         </div>
       </div>
 
@@ -565,7 +565,7 @@ const IsometricSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
       </div>
       <div style={{ flex: 1.05, height: "76%", overflow: "hidden" }}>
         <div style={{ width: "100%", height: "100%", transform: `translateX(${parallax}px) scale(${scale})` }}>
-          <FadeIllustration url={scene.imageUrl} delay={8} theme={theme} />
+          <FadeIllustration url={scene.imageUrl} scene={scene} delay={8} theme={theme} />
         </div>
       </div>
     </Frame>
@@ -621,7 +621,7 @@ const AvatarSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
   return (
     <Frame theme={theme}>
       <div style={{ flex: 0.8, height: "80%", transform: `translateY(${breathe}px)` }}>
-        <FadeIllustration url={scene.imageUrl} delay={0} theme={theme} zoom={false} />
+        <FadeIllustration url={scene.imageUrl} scene={scene} delay={0} theme={theme} zoom={false} />
       </div>
       <div style={{ flex: 1.2, display: "flex", flexDirection: "column", gap: 24 }}>
         <SceneNumber index={index} theme={theme} />
