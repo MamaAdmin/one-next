@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { ToolSelector } from "@/components/lms/ToolSelector";
@@ -321,9 +322,10 @@ const LMSModuleEditor = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", href: "/admin/lms/modules" }, { label: "Bearbeiten", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
 
-      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         {/* Sticky Header */}
         <div className="sticky top-32 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-4 mb-6">
           <div className="flex justify-between items-center">

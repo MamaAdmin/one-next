@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParticipants } from "@/hooks/useParticipants";
 import { useCustomer } from "@/hooks/useCustomer";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
@@ -70,8 +71,9 @@ export default function LMSParticipantDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Teilnehmende", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-4 py-8 mt-32">
+      <main className="container mx-auto px-4 py-8 mt-40">
         <Card>
         <CardHeader>
           <div className="flex items-center justify-between">

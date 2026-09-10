@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { WhiteboardBreadcrumb } from "@/components/admin/WhiteboardBreadcrumb";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -79,7 +79,7 @@ const WhiteboardVideoDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <WhiteboardBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", active: true }]} />
       <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-5xl mx-auto space-y-6">
           <Card>

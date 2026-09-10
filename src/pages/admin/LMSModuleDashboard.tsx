@@ -23,6 +23,7 @@ import {
   DotsIcon
 } from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { CourseCategory, categoryLabels, categoryColors, categoryOrder } from "@/lib/categoryMappings";
 
@@ -200,8 +201,9 @@ export default function LMSModuleDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Module Management</h1>
             <Button onClick={() => navigate(`/admin/lms/modules/new?courseId=${selectedCourse}`)}>

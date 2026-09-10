@@ -32,6 +32,7 @@ import {
   SortIcon
 } from "@/components/ui/custom-icons";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 
 export default function LMSCourseDashboard() {
@@ -148,8 +149,9 @@ export default function LMSCourseDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Kurse", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <Card>
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -18,7 +18,7 @@ import { useBMADSession } from "@/hooks/useBMADSessions";
 import { useBMADArtifacts } from "@/hooks/useBMADArtifacts";
 import { useBMADConversations } from "@/hooks/useBMADConversations";
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
-import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { 
   AnalystIcon,
   ManagerIcon,
@@ -348,7 +348,7 @@ export default function BMADSessionDetail() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <BMADBreadcrumb
+      <AdminBreadcrumb
         items={[
           { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
           { label: "BMAD Sessions", href: "/admin/bmad/sessions", icon: <BMADSessionIcon className="w-5 h-5" /> },

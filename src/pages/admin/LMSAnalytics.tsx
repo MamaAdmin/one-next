@@ -6,6 +6,7 @@ import { HomeIcon } from "@/components/ui/custom-icons";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, Users, BookOpen, Award } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 
 interface Metrics {
@@ -88,8 +89,9 @@ export default function LMSAnalytics() {
   return (
     <div className="min-h-screen">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Analytics", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-6 pb-20 mt-32">
+      <main className="container mx-auto px-6 pb-20 mt-40">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">LMS Analytics</h1>
 

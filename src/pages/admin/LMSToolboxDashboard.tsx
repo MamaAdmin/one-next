@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToolbox, Tool } from "@/hooks/useToolbox";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { Button } from "@/components/ui/button";
@@ -251,7 +252,8 @@ export default function LMSToolboxDashboard() {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Toolbox", active: true }]} />
+      <main className="container mx-auto px-6 pt-40 pb-20">
         <LMSBreadcrumb items={breadcrumbItems} />
 
         <div className="max-w-7xl mx-auto">

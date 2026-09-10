@@ -16,11 +16,11 @@ interface BreadcrumbItemType {
   active?: boolean;
 }
 
-interface WhiteboardBreadcrumbProps {
+interface AdminBreadcrumbProps {
   items: BreadcrumbItemType[];
 }
 
-export const WhiteboardBreadcrumb = ({ items }: WhiteboardBreadcrumbProps) => {
+export const AdminBreadcrumb = ({ items }: AdminBreadcrumbProps) => {
   return (
     <nav
       className="bg-accent/30 border-b border-border fixed top-16 left-0 right-0 z-40"
