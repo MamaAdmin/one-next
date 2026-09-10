@@ -48,6 +48,28 @@ export default function RequireAuth({ children }: RequireAuthProps) {
     );
   }
 
+  if (status === "pending") {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <div className="max-w-md text-center space-y-4">
+          <h1 className="text-2xl font-semibold">Konto wartet auf Freigabe</h1>
+          <p className="text-muted-foreground">
+            Ihr Konto wurde noch nicht freigegeben. Sobald ein Administrator es
+            bestätigt hat, erhalten Sie Zugriff.
+          </p>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              await supabase.auth.signOut();
+            }}
+          >
+            Abmelden
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (status === "out") {
     const redirect = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/auth?redirect=${redirect}`} replace />;
