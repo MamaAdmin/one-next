@@ -420,7 +420,7 @@ const WhiteboardSeriesDetail = () => {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {WHITEBOARD_STYLES.filter((option) => option.generierbar).map((option) => (
-                    <SelectItem key={option.id} value={option.id}>{option.label}</SelectItem>
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
