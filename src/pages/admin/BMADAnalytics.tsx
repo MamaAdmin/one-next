@@ -6,8 +6,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Activity, FileText, CheckCircle, Clock, Home } from "lucide-react";
-import { BMADAnalyticsIcon } from "@/components/ui/custom-icons";
+import { Activity, FileText, CheckCircle, Clock } from "lucide-react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 
 const COLORS = {

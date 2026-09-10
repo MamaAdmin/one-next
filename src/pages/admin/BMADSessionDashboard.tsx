@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BMADSessionDetailsDialog } from "@/components/admin/BMADSessionDetailsDialog";
 import { BMADInfo } from "@/components/admin/BMADInfo";
 import { BMADSessionCreator } from "@/components/admin/BMADSessionCreator";
-import { Home, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Edit, Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -44,8 +44,7 @@ import {
   ScrumIcon,
   DeveloperIcon,
   QAIcon,
-  OrchestratorIcon,
-  BMADSessionIcon
+  OrchestratorIcon
 } from "@/components/ui/custom-icons";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 

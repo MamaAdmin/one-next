@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BMADArtifactPreviewDialog } from "@/components/admin/BMADArtifactPreviewDialog";
-import { Home, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Edit, Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -43,8 +43,7 @@ import {
   ScrumIcon,
   DeveloperIcon,
   QAIcon,
-  OrchestratorIcon,
-  BMADArtifactIcon
+  OrchestratorIcon
 } from "@/components/ui/custom-icons";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 
