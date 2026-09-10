@@ -113,7 +113,9 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix:
       "Software interface mockup combined with flat illustrated icons and callout shapes, light background, no readable text.",
     renderer: "screencast",
-    generierbar: true,
+    generierbar: false,
+    nichtGenerierbarGrund:
+      "Braucht eine Bildschirmaufnahme deiner Software. Die KI kann nur Standbilder erzeugen, keine echte Oberfläche.",
   },
   {
     value: "isometric_3d",
