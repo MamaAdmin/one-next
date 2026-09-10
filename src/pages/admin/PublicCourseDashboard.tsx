@@ -5,7 +5,6 @@ import { usePublicCourseModules, PublicCourseModule } from "@/hooks/usePublicCou
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -145,16 +144,11 @@ export default function PublicCourseDashboard() {
     return <div className="flex items-center justify-center h-screen"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
 
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "Kurse", active: true },
-  ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Offene Kurse", href: "/admin/kurse", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40 flex-1 space-y-8">
         <div className="rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
           Hinweis: Kurs-Grunddaten (Titel, Beschreibung, Preis, Sichtbarkeit) werden jetzt in der{" "}

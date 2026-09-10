@@ -2,7 +2,6 @@ import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -106,16 +105,10 @@ const LMSCustomerDashboard = () => {
         </Card>
       </div>;
   }
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Kunden", active: true }
-  ];
 
   return <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Firmenkunden", href: "/admin/customers", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
       
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <div className="flex justify-between items-center mb-8">

@@ -5,7 +5,6 @@ import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useParticipants } from "@/hooks/useParticipants";
 import { Button } from "@/components/ui/button";
@@ -81,17 +80,11 @@ export default function LMSEnrollmentDashboard() {
     );
   }
 
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Teilnahmen", active: true }
-  ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Einschreibungen", href: "/admin/lms/enrollments", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40">
         <div className="space-y-6">
           <Card>

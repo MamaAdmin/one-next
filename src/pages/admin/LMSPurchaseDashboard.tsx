@@ -4,7 +4,6 @@ import { useCustomer } from "@/hooks/useCustomer";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
 import { Button } from "@/components/ui/button";
@@ -72,17 +71,11 @@ export default function LMSPurchaseDashboard() {
     );
   }
 
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Käufe", href: "/admin/lms/purchases", active: true }
-  ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Käufe", href: "/admin/lms/purchases", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40">
         <Card>
         <CardHeader>

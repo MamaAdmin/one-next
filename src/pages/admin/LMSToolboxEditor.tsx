@@ -6,7 +6,6 @@ import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -172,15 +171,6 @@ export default function LMSToolboxEditor() {
     }
   };
 
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin" },
-    { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Toolbox", href: "/admin/lms/toolbox" },
-    {
-      label: toolId === "new" ? "Neues Tool" : "Tool bearbeiten",
-      active: true,
-    },
-  ];
 
   if (adminLoading || loading) {
     return (
@@ -200,7 +190,6 @@ export default function LMSToolboxEditor() {
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Toolbox", href: "/admin/lms/toolbox" }, { label: "Bearbeiten", active: true }]} />
       <main className="container mx-auto px-6 pt-40 pb-20">
-        <LMSBreadcrumb items={breadcrumbItems} />
 
         <div className="max-w-7xl mx-auto">
           {/* Sticky Header */}

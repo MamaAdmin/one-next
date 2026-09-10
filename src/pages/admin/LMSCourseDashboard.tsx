@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useLMSCourse } from "@/hooks/useLMSCourse";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { Button } from "@/components/ui/button";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -114,15 +113,6 @@ export default function LMSCourseDashboard() {
   };
 
   // Breadcrumb items - must be before any early returns
-  const breadcrumbItems = useMemo(() => {
-    const items: Array<{label: string; href?: string; icon?: React.ReactNode; active?: boolean}> = [
-      { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-      { label: "LMS", href: "/admin?tab=lms", icon: <BookIcon className="h-4 w-4" /> },
-      { label: "Kurse", href: "/admin/lms/courses", active: true }
-    ];
-    
-    return items;
-  }, []);
 
   // Show editor if in create or edit mode
   if (activeView === "create" || activeView === "edit") {
@@ -150,7 +140,6 @@ export default function LMSCourseDashboard() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Kurse", href: "/admin/lms/courses", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <Card>
           <CardHeader>
