@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,18 +117,8 @@ export default function SprintDashboard() {
         <Navigation />
         <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint", active: true }]} />
 
-        <main className="flex-1 w-full px-6 pt-32 pb-16">
-          <div className="mb-10">
-            <h1 className="text-4xl lg:text-5xl font-bold">
-              Meine{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Design Sprints
-              </span>
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Selbstgeführte Online Design Sprints – flexibel, mit KI-Unterstützung.
-            </p>
-          </div>
+        <DashboardPage contentClassName="max-w-none">
+          <DashboardHeader title="Meine Design Sprints" description="Problem Framings und selbstgeführte Design Sprints mit KI-Unterstützung." />
 
           <section className="mb-10">
             <Card className="border-l-4 border-l-primary">
@@ -461,7 +452,7 @@ export default function SprintDashboard() {
               {Math.min(deleteCount, MAX_SPRINT_RESTARTS)} / {MAX_SPRINT_RESTARTS}.
             </p>
           ) : null}
-        </main>
+        </DashboardPage>
 
         <Footer />
       </div>

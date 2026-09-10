@@ -267,7 +267,7 @@ const UserRoleManager = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
             <div>
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
@@ -296,7 +296,7 @@ const UserRoleManager = () => {
               />
             </div>
             <Select value={selectedRole} onValueChange={(v) => setSelectedRole(v as AppRole | "all")}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Rolle filtern" />
               </SelectTrigger>
               <SelectContent>
@@ -352,7 +352,7 @@ const UserRoleManager = () => {
           </div>
 
           {/* Users Table */}
-          <div className="rounded-md border">
+          <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -13,6 +13,7 @@ import { Plus, Trash2, Video } from "lucide-react";
 import type { WhiteboardVideoProject } from "@/features/whiteboard/types";
 import { KieCreditsCard } from "@/components/admin/KieCreditsCard";
 import { KieUsageStats } from "@/components/admin/KieUsageStats";
+import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 
 const statusLabel: Record<string, string> = {
   draft: "Entwurf",
@@ -80,18 +81,11 @@ const WhiteboardVideoDashboard = () => {
     <div className="min-h-screen">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", href: "/admin/whiteboard-videos", active: true }]} />
-      <main className="container mx-auto px-6 pt-40 pb-20">
-        <div className="max-w-5xl mx-auto space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-start justify-between gap-4">
-              <div>
-                <CardTitle className="text-3xl">Whiteboard-Videos</CardTitle>
-                <CardDescription>
-                  Erklärvideos aus Text erzeugen: Skript, Zeichnungen und Sprecherstimme über kie.ai,
-                  Animation und MP4-Export über Remotion.
-                </CardDescription>
-              </div>
-              <div className="flex gap-2 shrink-0">
+      <DashboardPage contentClassName="max-w-5xl">
+          <DashboardHeader
+            title="Lernvideos"
+            description="Erklärvideos mit passenden Stilen, Stimmen und KI-Modellen erstellen."
+            action={<>
                 <Button variant="outline" asChild>
                   <Link to="/admin/stilbibliothek">Stilbibliothek</Link>
                 </Button>
@@ -101,9 +95,8 @@ const WhiteboardVideoDashboard = () => {
                 <Button onClick={createProject} disabled={busy}>
                   <Plus className="w-4 h-4 mr-2" /> Neues Video
                 </Button>
-              </div>
-            </CardHeader>
-          </Card>
+              </>}
+          />
 
           <KieCreditsCard />
           <KieUsageStats />
@@ -144,8 +137,7 @@ const WhiteboardVideoDashboard = () => {
               ))}
             </div>
           )}
-        </div>
-      </main>
+      </DashboardPage>
       <Footer />
     </div>
   );

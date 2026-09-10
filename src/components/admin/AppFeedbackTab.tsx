@@ -152,9 +152,9 @@ const AppFeedbackTab = () => {
         </CardContent></Card>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-48"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Alle Status</SelectItem>
             {STATUS_OPTIONS.map((s) => (
@@ -175,7 +175,7 @@ const AppFeedbackTab = () => {
             return (
               <Card key={f.id}>
                 <CardContent className="pt-4 space-y-3">
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
                     <div className="flex items-center gap-2 min-w-0">
                       <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <span className="font-medium text-sm truncate">{getUserName(f.user_id)}</span>
@@ -183,7 +183,7 @@ const AppFeedbackTab = () => {
                         {CATEGORY_LABELS[f.category] || f.category}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0">
                       {statusBadge(f.status)}
                       <Select value={f.status} onValueChange={(v) => updateStatus(f.id, v)}>
                         <SelectTrigger className="h-7 w-28">
@@ -200,8 +200,8 @@ const AppFeedbackTab = () => {
 
                   <p className="text-sm whitespace-pre-wrap">{f.message}</p>
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Seite: {f.page_url}</span>
+                  <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+                    <span className="break-all">Seite: {f.page_url}</span>
                     <span>{format(new Date(f.created_at), "dd. MMM yyyy HH:mm", { locale: de })}</span>
                   </div>
 
@@ -220,7 +220,7 @@ const AppFeedbackTab = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       {f.admin_notes && (
                         <p className="text-xs bg-muted rounded px-2 py-1 flex-1">{f.admin_notes}</p>
                       )}

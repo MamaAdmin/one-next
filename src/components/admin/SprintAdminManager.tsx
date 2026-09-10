@@ -129,9 +129,9 @@ export default function SprintAdminManager() {
         </Select>
       </div>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardContent className="p-0">
-          <Table>
+          <div className="overflow-x-auto"><Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Titel</TableHead>
@@ -225,7 +225,7 @@ export default function SprintAdminManager() {
                 })
               )}
             </TableBody>
-          </Table>
+          </Table></div>
         </CardContent>
       </Card>
 
@@ -237,9 +237,9 @@ export default function SprintAdminManager() {
           <StatCard label="Abgeschlossen" value={framingStats.done} />
           <StatCard label="Archiviert" value={framingStats.archived} />
         </div>
-        <Card>
+        <Card className="overflow-hidden">
           <CardContent className="p-0">
-            <Table>
+            <div className="overflow-x-auto"><Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Arbeitstitel</TableHead>
@@ -314,7 +314,7 @@ export default function SprintAdminManager() {
                   })
                 )}
               </TableBody>
-            </Table>
+            </Table></div>
           </CardContent>
         </Card>
       </section>

@@ -80,7 +80,7 @@ const AdminDashboard = () => {
           <DashboardHeader title="Admin-Dashboard" description="Inhalte, Lernangebote, BMAD, Design Sprints und Benutzer zentral verwalten." />
 
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-5">
               <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
               <TabsTrigger value="bmad">BMAD</TabsTrigger>
@@ -228,7 +228,7 @@ const AdminDashboard = () => {
                 <CardHeader>
                   <CardTitle>BMAD Verwaltung</CardTitle>
                   <CardDescription>
-                    Breakthrough Method for Agile AI-Driven Development - Verwalten Sie AI-gestützte Entwicklungssessions
+                    Breakthrough Method for Agile KI-Driven Development – KI-gestützte Entwicklungssessions verwalten
                   </CardDescription>
                 </CardHeader>
                 <div className="p-6">
