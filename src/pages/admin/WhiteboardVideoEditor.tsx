@@ -511,7 +511,7 @@ const WhiteboardVideoEditor = () => {
       includeScript: false,
       includeImages: false,
       includeVoices: false,
-      videoSeconds: VEO_SECONDS,
+      videoSeconds: clipSeconds,
       videoModel,
     });
     setWorking("kie-video");
@@ -525,7 +525,7 @@ const WhiteboardVideoEditor = () => {
         sections: scenes.length,
         images: 0,
         audioCharacters: 0,
-        videoSeconds: VEO_SECONDS,
+        videoSeconds: clipSeconds,
         models: { video: videoModel },
       });
       const taskId = await startVideo(topic || title, videoModel);
@@ -543,7 +543,7 @@ const WhiteboardVideoEditor = () => {
               videoId,
               kind: "video",
               model: videoModel,
-              units: VEO_SECONDS,
+              units: clipSeconds,
               estimatedCredits: estimate.total,
               status: "done",
               taskId,
