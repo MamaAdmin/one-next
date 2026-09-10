@@ -1,7 +1,7 @@
-# Einheitliches Dashboard-Design für CMS, LMS, BMAD und Design Sprints
+# Einheitliches Dashboard-Design für CMS, LMS, BMAD, Design Sprints und Benutzer
 
 ## Ziel
-Alle Dashboard- und Übersichtsseiten der vier Bereiche erhalten denselben visuellen Aufbau wie die bestehende Admin-Navigation: ruhige Cream-&-Slate-Flächen, einheitliche Breadcrumbs, klare Überschriften, konsistente Aktionen, Filter, Karten und Listen. Bestehende Funktionen und Berechtigungen bleiben unverändert.
+Alle Dashboard- und Übersichtsseiten der fünf Bereiche erhalten denselben visuellen Aufbau wie die bestehende Admin-Navigation: ruhige Cream-&-Slate-Flächen, einheitliche Breadcrumbs, klare Überschriften, konsistente Aktionen, Filter, Karten und Listen. Bestehende Funktionen und Berechtigungen bleiben unverändert.
 
 ## Umsetzung
 
@@ -36,9 +36,14 @@ Alle Dashboard- und Übersichtsseiten der vier Bereiche erhalten denselben visue
 - Problem-Framing-/Sprint-Paare, Statusanzeigen und Aktionen in das gemeinsame Raster einordnen.
 - Arbeitsseiten wie Framing, Kickoff und eigentlicher Sprint behalten ihren aufgabenbezogenen Aufbau; nur Navigation und Seitenrahmen bleiben dort konsistent.
 
-### 7. Prüfung
+### 7. Benutzerverwaltung
+- Benutzerliste, Freigaben, Rollen und Feedback in das gemeinsame Dashboard-Grundlayout übernehmen.
+- Filter, Statusanzeigen sowie Freigabe- und Löschaktionen konsistent und mobil nutzbar anordnen.
+- Bestehende Sicherheitsabfragen, doppelte Löschbestätigung und Rollenlogik unverändert lassen.
+
+### 8. Prüfung
 - Alle Breadcrumb-Ziele und Hauptaktionen anklicken und kontrollieren.
-- CMS, LMS, BMAD und Sprints auf Desktop, Tablet und Mobilgerät prüfen.
+- CMS, LMS, BMAD, Sprints und Benutzerverwaltung auf Desktop, Tablet und Mobilgerät prüfen.
 - Sicherstellen, dass keine Inhalte überlappen und bestehende Funktionen unverändert arbeiten.
 
 ## Technische Details
