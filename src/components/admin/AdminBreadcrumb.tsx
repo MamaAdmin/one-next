@@ -23,12 +23,7 @@ export const AdminBreadcrumb = ({ items }: AdminBreadcrumbProps) => {
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
             const isActive = item.active || isLast;
-            const content = (
-              <>
-                {item.icon}
-                <span className="max-w-[16rem] truncate">{item.label}</span>
-              </>
-            );
+            const content = <span className="max-w-[16rem] truncate">{item.label}</span>;
 
             return (
               <li key={index} className="flex shrink-0 items-center gap-2">
