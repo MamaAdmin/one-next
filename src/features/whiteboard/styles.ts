@@ -167,6 +167,8 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix: "",
     renderer: "flat",
     generierbar: false,
+    nichtGenerierbarGrund:
+      "Dieser Stil dient als Vorlage für eine Produktion und wird nicht automatisch erzeugt.",
   },
   {
     value: "live_action",
