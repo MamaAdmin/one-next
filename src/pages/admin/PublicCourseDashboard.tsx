@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { usePublicCourses, useCourseDates, useCourseRegistrations, PublicCourse } from "@/hooks/usePublicCourses";
 import { usePublicCourseModules, PublicCourseModule } from "@/hooks/usePublicCourseModules";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
@@ -152,8 +153,9 @@ export default function PublicCourseDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Offene Kurse", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-4 py-8 mt-32 flex-1 space-y-8">
+      <main className="container mx-auto px-4 py-8 mt-40 flex-1 space-y-8">
         <div className="rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
           Hinweis: Kurs-Grunddaten (Titel, Beschreibung, Preis, Sichtbarkeit) werden jetzt in der{" "}
           <a href="/admin/lms/courses" className="underline text-primary">LMS Kursverwaltung</a>{" "}

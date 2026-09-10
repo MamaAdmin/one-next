@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { Activity, FileText, CheckCircle, Clock, Home } from "lucide-react";
 import { BMADAnalyticsIcon } from "@/components/ui/custom-icons";
-import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 
 const COLORS = {
   requirements: "#A855F7",
@@ -98,7 +98,7 @@ const BMADAnalytics = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <BMADBreadcrumb
+      <AdminBreadcrumb
         items={[
           { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
           { label: "BMAD Analytics", icon: <BMADAnalyticsIcon className="w-5 h-5" />, active: true }

@@ -3,6 +3,7 @@ import { useLMSEnrollment } from "@/hooks/useLMSEnrollment";
 import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
@@ -89,8 +90,9 @@ export default function LMSEnrollmentDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Einschreibungen", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="container mx-auto px-4 py-8 mt-32">
+      <main className="container mx-auto px-4 py-8 mt-40">
         <div className="space-y-6">
           <Card>
         <CardHeader>

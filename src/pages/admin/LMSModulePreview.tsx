@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft, Edit, Clock, Video, FileText } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { CourseCategory, categoryLabels, categoryColors } from "@/lib/categoryMappings";
 import { ModuleContentPreview } from "@/components/lms/ModuleContentPreview";
@@ -135,8 +136,9 @@ export default function LMSModulePreview() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", href: "/admin/lms/modules" }, { label: "Vorschau", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
-      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         {/* Header */}
         <div className="mb-6">
           <Button

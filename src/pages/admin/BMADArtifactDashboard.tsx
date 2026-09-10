@@ -46,7 +46,7 @@ import {
   OrchestratorIcon,
   BMADArtifactIcon
 } from "@/components/ui/custom-icons";
-import { BMADBreadcrumb } from "@/components/admin/BMADBreadcrumb";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 
 const getAgentIcon = (agentType: string) => {
   const iconProps = { className: "w-5 h-5" };
@@ -185,7 +185,7 @@ const BMADArtifactDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <BMADBreadcrumb
+      <AdminBreadcrumb
         items={[
           { label: "Admin", href: "/admin?tab=bmad", icon: <Home className="w-5 h-5" /> },
           { label: "BMAD Artifacts", icon: <BMADArtifactIcon className="w-5 h-5" />, active: true }

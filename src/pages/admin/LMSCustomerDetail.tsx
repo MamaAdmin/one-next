@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
 import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
@@ -112,9 +113,10 @@ const LMSCustomerDetail = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Firmenkunden", href: "/admin/customers" }, { label: "Details", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
 
-      <main className="flex-1 container mx-auto px-4 py-8 mt-32">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="outline" size="icon" onClick={() => navigate("/admin/customers")}>
             <ArrowLeft className="h-4 w-4" />
