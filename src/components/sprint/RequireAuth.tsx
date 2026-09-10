@@ -14,17 +14,25 @@ interface RequireAuthProps {
  */
 export default function RequireAuth({ children }: RequireAuthProps) {
   const location = useLocation();
-  const [status, setStatus] = useState<"loading" | "in" | "out">("loading");
+  const [status, setStatus] = useState<"loading" | "in" | "out" | "pending">("loading");
 
   useEffect(() => {
     let mounted = true;
+
+    const evaluate = async (userId: string | undefined) => {
+      if (!userId) {
+        if (mounted) setStatus("out");
+        return;
+      }
+      const approved = await isUserApproved(userId);
+      if (mounted) setStatus(approved ? "in" : "pending");
+    };
+
     supabase.auth.getSession().then(({ data }) => {
-      if (!mounted) return;
-      setStatus(data.session ? "in" : "out");
+      void evaluate(data.session?.user?.id);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (!mounted) return;
-      setStatus(session ? "in" : "out");
+      setTimeout(() => void evaluate(session?.user?.id), 0);
     });
     return () => {
       mounted = false;
