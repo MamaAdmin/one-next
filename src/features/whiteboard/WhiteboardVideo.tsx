@@ -6,6 +6,7 @@ import {
   HandWriteText,
   SCENE_RENDERERS,
   SceneAudio,
+  SceneCaptions,
 } from "./renderers";
 
 export const TITLE_SECONDS = 2.4;
@@ -92,6 +93,7 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({ title, scenes,
         return (
           <Sequence key={scene.id} from={from} durationInFrames={duration}>
             <SceneView scene={scene} index={index} theme={theme} />
+            <SceneCaptions captions={scene.captions} theme={theme} />
             <SceneAudio url={scene.audioUrl} />
           </Sequence>
         );
