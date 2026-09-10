@@ -15,7 +15,6 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import Footer from "@/components/Footer";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { ToolSelector } from "@/components/lms/ToolSelector";
 import { LessonManager } from "@/components/lms/LessonManager";
 import { QuizManager } from "@/components/lms/QuizManager";
@@ -305,11 +304,6 @@ const LMSModuleEditor = () => {
     setSaving(false);
   };
 
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin" },
-    { label: "LMS Module", href: "/admin/lms/modules" },
-    { label: isEditing ? "Bearbeiten" : "Neu" },
-  ];
 
   if (loading) {
     return (
@@ -323,7 +317,6 @@ const LMSModuleEditor = () => {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", href: "/admin/lms/modules" }, { label: "Bearbeiten", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
 
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         {/* Sticky Header */}

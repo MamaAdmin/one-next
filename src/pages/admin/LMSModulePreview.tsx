@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { LMSBreadcrumb } from "@/components/lms/LMSBreadcrumb";
 import { HomeIcon } from "@/components/ui/custom-icons";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -124,12 +123,6 @@ export default function LMSModulePreview() {
 
   if (!isAdmin || !module) return null;
 
-  const breadcrumbItems = [
-    { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
-    { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Module", href: `/admin/lms/modules${courseId ? `?course=${courseId}` : ""}` },
-    { label: module.title, active: true }
-  ];
 
   const tools = module.module_tools?.map(mt => mt.tool) || [];
 
@@ -137,7 +130,6 @@ export default function LMSModulePreview() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", href: "/admin/lms/modules" }, { label: "Vorschau", active: true }]} />
-      <LMSBreadcrumb items={breadcrumbItems} />
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         {/* Header */}
         <div className="mb-6">
