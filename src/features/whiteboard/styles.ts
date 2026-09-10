@@ -196,7 +196,8 @@ export const STYLE_RECOMMENDATIONS: Array<{ lernziel: string; stil: string; waru
   {
     lernziel: "Software bedienen",
     stil: "Screencast",
-    warum: "Zeigt das tatsächliche Interface und konkrete Handlungen",
+    warum:
+      "Zeigt das tatsächliche Interface und konkrete Handlungen. Aufnahme selbst erstellen, die Vertonung übernimmt das Tool.",
   },
   {
     lernziel: "Prozess oder System verstehen",
