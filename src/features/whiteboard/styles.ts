@@ -18,6 +18,7 @@ export interface WhiteboardStyleOption {
   promptSuffix: string;
   renderer: RendererKey;
   generierbar: boolean;
+  nichtGenerierbarGrund?: string;
 }
 
 export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
