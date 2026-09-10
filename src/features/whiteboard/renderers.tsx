@@ -233,11 +233,112 @@ const Placeholder: React.FC<{ theme: VideoTheme }> = ({ theme }) => (
 
 const DRAW_FRAMES = 60;
 
+/**
+ * Eigene Bildschirmaufnahme. Beim Export wird OffthreadVideo genutzt,
+ * in der Vorschau das normale Video-Element.
+ */
+export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; radius?: number }> = ({
+  scene,
+  theme,
+  radius = 20,
+}) => {
+  const url = scene.clipUrl;
+  if (!url) return <Placeholder theme={theme} />;
+
+  const start = Math.max(0, scene.clipStartInSeconds ?? 0);
+  const end = scene.clipEndInSeconds;
+  const startFrom = Math.round(start * 30);
+  const endAt = end && end > start ? Math.round(end * 30) : undefined;
+  const rendering = getRemotionEnvironment().isRendering;
+  const VideoTag = rendering ? OffthreadVideo : Video;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        borderRadius: radius,
+        overflow: "hidden",
+        background: theme.ink,
+      }}
+    >
+      <VideoTag
+        src={url}
+        muted
+        startFrom={startFrom}
+        endAt={endAt}
+        // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
+        pauseWhenBuffering
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    </div>
+  );
+};
+
+/** Einblendungen als weiche Textkarten unten links. */
+export const SceneCaptions: React.FC<{ captions?: SceneCaption[]; theme: VideoTheme }> = ({
+  captions,
+  theme,
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  if (!captions?.length) return null;
+  return (
+    <AbsoluteFill style={{ fontFamily: theme.fontFamily, pointerEvents: "none" }}>
+      {captions.slice(0, 3).map((caption, i) => {
+        const from = Math.round((caption.atSecond || 0) * fps);
+        const length = Math.round(Math.max(1, caption.durationInSeconds || 3) * fps);
+        const local = frame - from;
+        if (local < -1 || local > length) return null;
+        const opacity =
+          interpolate(local, [0, 10], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) *
+          interpolate(local, [length - 12, length], [1, 0], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          });
+        const lift = interpolate(local, [0, 12], [24, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        });
+        return (
+          <div
+            key={`${caption.text}-${i}`}
+            style={{
+              position: "absolute",
+              left: 110,
+              bottom: 110,
+              maxWidth: 900,
+              opacity,
+              transform: `translateY(${lift}px)`,
+              background: theme.background,
+              border: `4px solid ${theme.accent}`,
+              borderRadius: 24,
+              padding: "24px 32px",
+              fontSize: 46,
+              fontWeight: 700,
+              color: theme.ink,
+              boxShadow: "0 24px 48px rgba(0,0,0,0.18)",
+            }}
+          >
+            {caption.text}
+          </div>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
 /** Whiteboard: Bild wird von links nach rechts von einer Hand gezeichnet. */
-const DrawnIllustration: React.FC<{ url?: string | null; delay: number; theme: VideoTheme }> = ({
+const DrawnIllustration: React.FC<{
+  url?: string | null;
+  delay: number;
+  theme: VideoTheme;
+  scene?: WhiteboardScene;
+}> = ({
   url,
   delay,
   theme,
+  scene,
 }) => {
   const frame = useCurrentFrame();
   const local = frame - delay;
