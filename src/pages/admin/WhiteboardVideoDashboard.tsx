@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { WhiteboardBreadcrumb } from "@/components/admin/WhiteboardBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -78,7 +79,7 @@ const WhiteboardVideoDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-5xl mx-auto space-y-6">
           <Card>
             <CardHeader className="flex flex-row items-start justify-between gap-4">

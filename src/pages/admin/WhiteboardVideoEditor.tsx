@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { WhiteboardBreadcrumb } from "@/components/admin/WhiteboardBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -646,7 +647,7 @@ const WhiteboardVideoEditor = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex items-center justify-between gap-4">
             <Button variant="ghost" onClick={() => navigate("/admin/whiteboard-videos")}>
