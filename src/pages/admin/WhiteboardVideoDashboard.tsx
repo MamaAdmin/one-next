@@ -79,7 +79,7 @@ const WhiteboardVideoDashboard = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", href: "/admin/whiteboard-videos", active: true }]} />
       <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-5xl mx-auto space-y-6">
           <Card>

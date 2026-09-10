@@ -89,7 +89,7 @@ export default function LMSAnalytics() {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Analytics", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Analytics", href: "/admin/lms/analytics", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-6 pb-20 mt-40">
         <div className="max-w-7xl mx-auto">

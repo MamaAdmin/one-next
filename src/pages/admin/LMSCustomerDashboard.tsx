@@ -114,7 +114,7 @@ const LMSCustomerDashboard = () => {
 
   return <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Firmenkunden", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Firmenkunden", href: "/admin/customers", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">

@@ -75,13 +75,13 @@ export default function LMSPurchaseDashboard() {
   const breadcrumbItems = [
     { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
     { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Käufe", active: true }
+    { label: "Käufe", href: "/admin/lms/purchases", active: true }
   ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Käufe", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Käufe", href: "/admin/lms/purchases", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40">
         <Card>

@@ -195,13 +195,13 @@ export default function LMSModuleDashboard() {
   const breadcrumbItems = [
     { label: "Admin", href: "/admin", icon: <HomeIcon className="h-4 w-4" /> },
     { label: "LMS", href: "/admin?tab=lms" },
-    { label: "Module", active: true }
+    { label: "Module", href: "/admin/lms/modules", active: true }
   ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Module", href: "/admin/lms/modules", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="flex-1 container mx-auto px-4 py-8 mt-40">
         <div className="flex justify-between items-center mb-8">

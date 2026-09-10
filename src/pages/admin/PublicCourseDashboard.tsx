@@ -153,7 +153,7 @@ export default function PublicCourseDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Offene Kurse", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Offene Kurse", href: "/admin/kurse", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40 flex-1 space-y-8">
         <div className="rounded-md border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">

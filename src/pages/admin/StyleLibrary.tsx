@@ -34,7 +34,7 @@ const StyleLibrary = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", href: "/admin/whiteboard-videos" }, { label: "Stilbibliothek", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", href: "/admin/whiteboard-videos" }, { label: "Stilbibliothek", href: "/admin/stilbibliothek", active: true }]} />
       <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-6xl mx-auto space-y-6">
           <Button variant="ghost" asChild className="w-fit">

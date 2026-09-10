@@ -90,7 +90,7 @@ export default function LMSEnrollmentDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Einschreibungen", active: true }]} />
+      <AdminBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernplattform", href: "/admin/lms" }, { label: "Einschreibungen", href: "/admin/lms/enrollments", active: true }]} />
       <LMSBreadcrumb items={breadcrumbItems} />
       <main className="container mx-auto px-4 py-8 mt-40">
         <div className="space-y-6">
