@@ -98,7 +98,9 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
     promptSuffix:
       "Clean software user interface mockup, dashboard with panels and buttons, subtle shadows, light UI design, no readable text.",
     renderer: "screencast",
-    generierbar: true,
+    generierbar: false,
+    nichtGenerierbarGrund:
+      "Braucht eine Bildschirmaufnahme deiner Software. Die KI kann nur Standbilder erzeugen, keine echte Oberfläche.",
   },
   {
     value: "screencast_plus",
