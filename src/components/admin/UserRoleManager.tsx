@@ -16,7 +16,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Search, UserPlus, X, Shield, Users, Mail } from "lucide-react";
+import { Search, UserPlus, X, Shield, Users, Mail, Check, Trash2, Clock } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -27,6 +37,7 @@ interface UserWithRoles {
   full_name: string | null;
   created_at: string;
   last_sign_in_at: string | null;
+  approved: boolean;
   roles: AppRole[];
 }
 
@@ -49,6 +60,9 @@ const UserRoleManager = () => {
   const [inviteName, setInviteName] = useState("");
   const [inviteRole, setInviteRole] = useState<AppRole>("user");
   const [inviting, setInviting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<UserWithRoles | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [onlyPending, setOnlyPending] = useState(false);
 
   const handleInvite = async () => {
     if (!inviteEmail || !inviteName) {
@@ -85,7 +99,7 @@ const UserRoleManager = () => {
       // Fetch all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, email, full_name, created_at")
+        .select("id, email, full_name, created_at, approved")
         .order("created_at", { ascending: false });
 
       if (profilesError) throw profilesError;
@@ -109,6 +123,7 @@ const UserRoleManager = () => {
       // Combine profiles with their roles
       const usersWithRoles: UserWithRoles[] = (profiles || []).map((profile) => ({
         ...profile,
+        approved: (profile as { approved?: boolean }).approved ?? false,
         last_sign_in_at: signIns[profile.id] ?? null,
         roles: (roles || [])
           .filter((r) => r.user_id === profile.id)
@@ -152,6 +167,46 @@ const UserRoleManager = () => {
     setAddingRole(null);
   };
 
+  const setApproval = async (user: UserWithRoles, approved: boolean) => {
+    try {
+      const { data: me } = await supabase.auth.getUser();
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          approved,
+          approved_at: approved ? new Date().toISOString() : null,
+          approved_by: approved ? me.user?.id ?? null : null,
+        })
+        .eq("id", user.id);
+      if (error) throw error;
+      toast.success(approved ? "Benutzer freigegeben" : "Freigabe entzogen");
+      fetchUsers();
+    } catch (error) {
+      console.error("Error updating approval:", error);
+      toast.error("Fehler beim Ändern der Freigabe");
+    }
+  };
+
+  const deleteUser = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-delete-user", {
+        body: { user_id: deleteTarget.id },
+      });
+      if (error) throw error;
+      const err = (data as { error?: string })?.error;
+      if (err) throw new Error(err);
+      toast.success("Benutzer gelöscht");
+      setDeleteTarget(null);
+      fetchUsers();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Fehler beim Löschen");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const removeRole = async (userId: string, role: AppRole) => {
     try {
       const { error } = await supabase
@@ -178,7 +233,9 @@ const UserRoleManager = () => {
     const matchesRole =
       selectedRole === "all" || user.roles.includes(selectedRole);
     
-    return matchesSearch && matchesRole;
+    const matchesPending = !onlyPending || !user.approved;
+
+    return matchesSearch && matchesRole && matchesPending;
   });
 
   const getRoleBadgeVariant = (role: AppRole) => {
@@ -251,6 +308,13 @@ const UserRoleManager = () => {
                 ))}
               </SelectContent>
             </Select>
+            <Button
+              variant={onlyPending ? "default" : "outline"}
+              onClick={() => setOnlyPending((v) => !v)}
+            >
+              <Clock className="h-4 w-4 mr-2" />
+              Nur offene Freigaben
+            </Button>
           </div>
 
           {/* Stats */}
@@ -280,9 +344,9 @@ const UserRoleManager = () => {
             <Card>
               <CardContent className="p-4">
                 <div className="text-2xl font-bold">
-                  {users.filter((u) => u.roles.includes("user")).length}
+                  {users.filter((u) => !u.approved).length}
                 </div>
-                <div className="text-sm text-muted-foreground">Kurs-Teilnehmer</div>
+                <div className="text-sm text-muted-foreground">Warten auf Freigabe</div>
               </CardContent>
             </Card>
           </div>
@@ -294,6 +358,7 @@ const UserRoleManager = () => {
                 <TableRow>
                   <TableHead>Benutzer</TableHead>
                   <TableHead>E-Mail</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Rollen</TableHead>
                   <TableHead>Registriert</TableHead>
                   <TableHead>Zuletzt angemeldet</TableHead>
@@ -303,7 +368,7 @@ const UserRoleManager = () => {
               <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       Keine Benutzer gefunden
                     </TableCell>
                   </TableRow>
@@ -321,6 +386,17 @@ const UserRoleManager = () => {
                         </div>
                       </TableCell>
                       <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                      <TableCell>
+                        {user.approved ? (
+                          <Badge variant="outline" className="gap-1">
+                            <Check className="h-3 w-3" /> Freigegeben
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive" className="gap-1">
+                            <Clock className="h-3 w-3" /> Wartet auf Freigabe
+                          </Badge>
+                        )}
+                      </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {user.roles.length === 0 ? (
@@ -392,6 +468,16 @@ const UserRoleManager = () => {
                             </Button>
                           </div>
                         ) : (
+                          <div className="flex items-center gap-2 justify-end">
+                          {user.approved ? (
+                            <Button size="sm" variant="ghost" onClick={() => setApproval(user, false)}>
+                              Freigabe entziehen
+                            </Button>
+                          ) : (
+                            <Button size="sm" onClick={() => setApproval(user, true)}>
+                              <Check className="h-4 w-4 mr-1" /> Freigeben
+                            </Button>
+                          )}
                           <Button
                             size="sm"
                             variant="outline"
@@ -408,6 +494,15 @@ const UserRoleManager = () => {
                             <UserPlus className="h-4 w-4 mr-1" />
                             Rolle hinzufügen
                           </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setDeleteTarget(user)}
+                            title="Benutzer löschen"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                          </div>
                         )}
                       </TableCell>
                     </TableRow>
@@ -491,6 +586,23 @@ const UserRoleManager = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Benutzer endgültig löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget?.full_name || deleteTarget?.email} wird mit allen Rollen entfernt und kann
+              sich nicht mehr anmelden. Das lässt sich nicht rückgängig machen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction onClick={(e) => { e.preventDefault(); void deleteUser(); }} disabled={deleting}>
+              {deleting ? "Wird gelöscht…" : "Löschen"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
