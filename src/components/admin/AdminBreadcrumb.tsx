@@ -23,25 +23,32 @@ export const AdminBreadcrumb = ({ items }: AdminBreadcrumbProps) => {
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
             const isActive = item.active || isLast;
+            const content = (
+              <>
+                {item.icon}
+                <span className="max-w-[16rem] truncate">{item.label}</span>
+              </>
+            );
 
             return (
               <li key={index} className="flex shrink-0 items-center gap-2">
-                {isActive ? (
+                {item.href ? (
+                  <Link
+                    to={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`flex min-w-0 items-center gap-2 transition-colors hover:text-foreground ${
+                      isActive ? "font-normal text-foreground" : ""
+                    }`}
+                  >
+                    {content}
+                  </Link>
+                ) : (
                   <span
-                    aria-current="page"
+                    aria-current={isActive ? "page" : undefined}
                     className="flex min-w-0 items-center gap-2 font-normal text-foreground"
                   >
-                    {item.icon}
-                    <span className="max-w-[16rem] truncate">{item.label}</span>
+                    {content}
                   </span>
-                ) : (
-                  <Link
-                    to={item.href || "#"}
-                    className="flex items-center gap-2 transition-colors hover:text-foreground"
-                  >
-                    {item.icon}
-                    <span className="max-w-[16rem] truncate">{item.label}</span>
-                  </Link>
                 )}
                 {!isLast && <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />}
               </li>
