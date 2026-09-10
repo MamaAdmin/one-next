@@ -2,11 +2,15 @@ import {
   AbsoluteFill,
   Audio,
   Img,
+  OffthreadVideo,
+  Video,
+  getRemotionEnvironment,
   interpolate,
   spring,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import type { SceneCaption } from "./types";
 import handImage from "@/assets/whiteboard-hand.png";
 import type { WhiteboardScene } from "./types";
 import type { RendererKey } from "./styles";
