@@ -135,6 +135,7 @@ const App = () => (
           {/* Internal design reference — not linked from navigation */}
           <Route path="/admin/design-system" element={<DesignSystem />} />
           <Route path="/admin/whiteboard-videos" element={<WhiteboardVideoDashboard />} />
+          <Route path="/admin/whiteboard-videos/serie/:seriesId" element={<WhiteboardSeriesDetail />} />
           <Route path="/admin/whiteboard-videos/:videoId" element={<WhiteboardVideoEditor />} />
           <Route path="/admin/ki-modelle" element={<KieModelCatalog />} />
           <Route path="/admin/stilbibliothek" element={<StyleLibrary />} />
