@@ -72,7 +72,9 @@ import {
 import { finishUsage, logJob, startUsage } from "@/features/whiteboard/usage";
 
 const VOICES = ["Charlotte", "Rachel", "Aria", "Sarah", "George", "Liam", "Matilda"];
-const VEO_SECONDS = 8;
+const DEFAULT_CLIP_SECONDS = 4;
+const MIN_CLIP_SECONDS = 2;
+const MAX_CLIP_SECONDS = 10;
 
 const WhiteboardVideoEditor = () => {
   const { videoId } = useParams<{ videoId: string }>();
