@@ -6,4 +6,4 @@
 - [x] BMAD-Übersichten angleichen
 - [x] Design-Sprint-Übersichten angleichen
 - [x] Benutzerverwaltung und Feedback angleichen
-- [ ] Darstellung und Navigation prüfen
+- [x] Darstellung und Navigation prüfen
