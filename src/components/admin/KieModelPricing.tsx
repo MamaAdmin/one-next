@@ -64,6 +64,15 @@ export const KieModelPricing = () => {
                 {CATEGORY_LABELS[model.category]} · {UNIT_LABELS[model.unit]} · zuletzt aktualisiert{" "}
                 {new Date(model.updated_at).toLocaleDateString("de-CH")}
               </p>
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-muted-foreground">
+                {model.last_checked_at ? (
+                  <span>
+                    zuletzt geprüft: {new Date(model.last_checked_at).toLocaleDateString("de-CH")}
+                  </span>
+                ) : (
+                  <Badge variant="outline">Preis nie abgeglichen</Badge>
+                )}
+              </div>
             </div>
             <Input
               type="number"
