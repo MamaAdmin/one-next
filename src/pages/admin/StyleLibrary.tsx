@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { WhiteboardBreadcrumb } from "@/components/admin/WhiteboardBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,8 @@ const StyleLibrary = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className="container mx-auto px-6 pt-32 pb-20">
+      <WhiteboardBreadcrumb items={[{ label: "Admin", href: "/admin" }, { label: "Lernvideos", href: "/admin/whiteboard-videos" }, { label: "Stilbibliothek", active: true }]} />
+      <main className="container mx-auto px-6 pt-40 pb-20">
         <div className="max-w-6xl mx-auto space-y-6">
           <Button variant="ghost" asChild className="w-fit">
             <Link to="/admin/whiteboard-videos">
