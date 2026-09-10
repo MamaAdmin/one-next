@@ -393,6 +393,8 @@ const WhiteboardVideoEditor = () => {
     let failed = 0;
     for (let i = 0; i < next.length; i++) {
       const scene = next[i];
+      // Abschnitte mit eigener Aufnahme brauchen keine Zeichnung.
+      if (scene.mediaType === "clip") continue;
       const prompt = scene.imagePrompt || scene.heading;
       if (!prompt) continue;
       try {
@@ -1192,21 +1194,12 @@ const WhiteboardVideoEditor = () => {
                       }
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Bildbeschreibung</Label>
-                    <Input
-                      value={scene.imagePrompt}
-                      onChange={(e) => updateScene(scene.id, { imagePrompt: e.target.value })}
-                    />
-                  </div>
+                  <SceneMediaEditor
+                    scene={scene}
+                    videoId={videoId ?? ""}
+                    onChange={(patch) => updateScene(scene.id, patch)}
+                  />
                   <div className="flex items-center gap-4">
-                    {scene.imageUrl && (
-                      <img
-                        src={scene.imageUrl}
-                        alt={`Zeichnung für ${scene.heading}`}
-                        className="h-24 w-24 object-contain border rounded"
-                      />
-                    )}
                     {scene.audioUrl && <audio src={scene.audioUrl} controls className="h-10" />}
                   </div>
                 </div>
