@@ -177,6 +177,54 @@ const WhiteboardVideoDashboard = () => {
     setProjects((prev) => prev.filter((p) => p.id !== id));
   };
 
+  const openEdit = (series: WhiteboardVideoSeries) => {
+    setEditSeries(series);
+    setEditTitle(series.title ?? "");
+    setEditDescription(series.description ?? "");
+  };
+
+  const saveEdit = async () => {
+    if (!editSeries) return;
+    setBusy(true);
+    try {
+      await updateSeries(editSeries.id, { title: editTitle, description: editDescription });
+      setEditSeries(null);
+      await loadSeries();
+      toast({ title: "Serie gespeichert" });
+    } catch (error) {
+      toast({
+        title: "Speichern fehlgeschlagen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeSeries = async (withClips: boolean) => {
+    if (!deleteTarget) return;
+    setBusy(true);
+    try {
+      if (withClips) await deleteSeriesWithClips(deleteTarget.id);
+      else await deleteSeries(deleteTarget.id);
+      setDeleteTarget(null);
+      await Promise.all([loadSeries(), load()]);
+      toast({
+        title: "Serie gelöscht",
+        description: withClips ? "Serie und Clips wurden entfernt." : "Die Clips bleiben als Einzelvideos erhalten.",
+      });
+    } catch (error) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
   if (loading || !isAdmin) return null;
 
   return (
