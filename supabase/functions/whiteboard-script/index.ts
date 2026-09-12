@@ -49,7 +49,7 @@ Der erste Abschnitt ist ein Hook (Frage, Problem oder überraschende Aussage), d
 
 
 Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
-{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"deutsche Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","durationInSeconds":8}]}
+{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"deutsche Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","motionPrompt":"ein Satz, was sich im Bild bewegt (Kamera, Figuren, Objekte)","durationInSeconds":8}]}
 Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
 }
 
