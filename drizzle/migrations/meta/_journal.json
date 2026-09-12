@@ -8,6 +8,13 @@
       "when": 1789201384247,
       "tag": "0000_whiteboard_video_motion_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789203472040,
+      "tag": "0001_fix_nano_banana_pro_model_id",
+      "breakpoints": true
     }
   ]
 }
