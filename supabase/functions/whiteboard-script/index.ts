@@ -31,6 +31,13 @@ async function requireAdmin(req: Request): Promise<{ userId: string } | Response
   return { userId: data.user.id };
 }
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  de: "Deutsch",
+  en: "Englisch",
+  fr: "Französisch",
+  it: "Italienisch",
+};
+
 function buildPrompt(
   topic: string,
   sceneCount: number,
@@ -38,9 +45,13 @@ function buildPrompt(
   scriptType: string,
   scriptHint: string,
   styleLabel: string,
+  language: string,
 ) {
-  return `Du bist Autor für Erklär- und Lernvideos (Deutsch, Schweizer Business-Kontext).
+  const languageName = LANGUAGE_NAMES[language] ?? "Deutsch";
+  const isGerman = languageName === "Deutsch";
+  return `Du bist Autor für Erklär- und Lernvideos (${languageName}${isGerman ? ", Schweizer Business-Kontext" : ""}).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
+WICHTIG: Sämtliche Texte (Titel, Überschriften, Sprechtext, Stichpunkte, Bild- und Bewegungsbeschreibungen) schreibst du vollständig auf ${languageName}.
 Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
 Visueller Stil: ${styleLabel}
@@ -49,7 +60,7 @@ Der erste Abschnitt ist ein Hook (Frage, Problem oder überraschende Aussage), d
 
 
 Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
-{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"deutsche Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","motionPrompt":"ein Satz, was sich im Bild bewegt (Kamera, Figuren, Objekte)","durationInSeconds":8}]}
+{"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","motionPrompt":"ein Satz, was sich im Bild bewegt (Kamera, Figuren, Objekte)","durationInSeconds":8}]}
 Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
 }
 
@@ -82,8 +93,9 @@ Deno.serve(async (req) => {
     const scriptType = String(payload.scriptType ?? "Problem–Lösung");
     const scriptHint = String(payload.scriptHint ?? "");
     const styleLabel = String(payload.styleLabel ?? "Whiteboard / Legetrick");
+    const language = String(payload.language ?? "de").slice(0, 5);
 
-    const prompt = buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel);
+    const prompt = buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel, language);
     let lastError: { status: number; message: string } | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
