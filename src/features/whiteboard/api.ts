@@ -48,8 +48,23 @@ export const generateScript = (
 export const previewVoice = (voice: string, model?: string) =>
   invoke<{ url: string }>({ action: "voice_preview", voice, model }).then((r) => r.url);
 
-export const generateImage = (prompt: string, style = "strichzeichnung", model?: string) =>
-  invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style, model });
+export interface ImageOptions {
+  model?: string;
+  /** Gleicher Wert über alle Abschnitte hält den Look zusammen. */
+  seed?: number | null;
+  negativePrompt?: string | null;
+  /** Erstes Bild der Serie als Stilreferenz. */
+  styleRefUrl?: string | null;
+}
+
+export const generateImage = (
+  prompt: string,
+  style = "strichzeichnung",
+  options: ImageOptions | string = {},
+) => {
+  const opts = typeof options === "string" ? { model: options } : options;
+  return invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style, ...opts });
+};
 
 export const generateVoice = (text: string, voice: string, model?: string) =>
   invoke<{ url: string; taskId?: string }>({ action: "voice", text, voice, model });
@@ -57,8 +72,18 @@ export const generateVoice = (text: string, voice: string, model?: string) =>
 export const fetchCredits = () =>
   invoke<{ credits: number }>({ action: "credits" }).then((r) => r.credits);
 
-export const startVideo = (prompt: string, model?: string) =>
-  invoke<{ taskId: string }>({ action: "video_start", prompt, model }).then((r) => r.taskId);
+export interface VideoOptions {
+  model?: string;
+  /** Startbild für Bild-zu-Video; ohne Bild entsteht ein reiner Textclip. */
+  imageUrl?: string | null;
+  seconds?: number;
+  seed?: number | null;
+}
+
+export const startVideo = (prompt: string, options: VideoOptions | string = {}) => {
+  const opts = typeof options === "string" ? { model: options } : options;
+  return invoke<{ taskId: string }>({ action: "video_start", prompt, ...opts }).then((r) => r.taskId);
+};
 
 export const checkVideo = (taskId: string) =>
   invoke<{ status: "pending" | "done" | "failed"; url?: string; error?: string }>({
