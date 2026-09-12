@@ -114,12 +114,64 @@ export const SceneMediaEditor: React.FC<Props> = ({
           {isAiClip && (
             <div className="space-y-3 rounded-lg border p-3">
               <div className="space-y-2">
-                <Label>Was bewegt sich?</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Was bewegt sich?</Label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    disabled={motionBusy || !scene.heading}
+                    onClick={async () => {
+                      setMotionBusy(true);
+                      setMotionSuggestions(null);
+                      try {
+                        const suggestions = await fetchMotionSuggestions(
+                          scene.heading,
+                          scene.bullets ?? [],
+                          scene.imagePrompt,
+                        );
+                        setMotionSuggestions(suggestions);
+                      } catch (error) {
+                        toast({
+                          title: "Vorschläge fehlgeschlagen",
+                          description: error instanceof Error ? error.message : "Unbekannter Fehler",
+                          variant: "destructive",
+                        });
+                      } finally {
+                        setMotionBusy(false);
+                      }
+                    }}
+                  >
+                    {motionBusy ? (
+                      <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-1" />
+                    )}
+                    KI-Vorschlag
+                  </Button>
+                </div>
                 <Input
                   placeholder="z. B. Die Kamera fährt langsam auf die Figur zu, die Notizzettel flattern."
                   value={scene.motionPrompt ?? ""}
                   onChange={(e) => onChange({ motionPrompt: e.target.value })}
                 />
+                {motionSuggestions && motionSuggestions.length > 0 && (
+                  <div className="flex flex-col gap-1.5 pt-1">
+                    {motionSuggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        className="rounded-md border bg-muted/40 px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
+                        onClick={() => {
+                          onChange({ motionPrompt: s });
+                          setMotionSuggestions(null);
+                        }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="flex flex-wrap items-end gap-3">
                 <div className="space-y-1">
