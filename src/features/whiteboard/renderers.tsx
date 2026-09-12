@@ -147,88 +147,21 @@ const FadeText: React.FC<{
   );
 };
 
-const BulletRow: React.FC<{
-  text: string;
-  delay: number;
-  theme: VideoTheme;
-  variant?: "circle" | "tile" | "dash";
-}> = ({ text, delay, theme, variant = "circle" }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const s = spring({ frame: frame - delay, fps, config: { damping: 18, stiffness: 160 } });
-  const x = interpolate(s, [0, 1], [-60, 0]);
-
-  if (variant === "tile") {
-    return (
-      <div
-        style={{
-          opacity: s,
-          transform: `translateY(${interpolate(s, [0, 1], [30, 0])}px)`,
-          background: theme.surface,
-          borderLeft: `8px solid ${theme.accent}`,
-          borderRadius: 16,
-          padding: "22px 28px",
-          fontSize: 38,
-          color: theme.ink,
-          fontWeight: 500,
-        }}
-      >
-        {text}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 20,
-        alignItems: "flex-start",
-        opacity: s,
-        transform: `translateX(${x}px)`,
-      }}
-    >
-      {variant === "dash" ? (
-        <div
-          style={{
-            width: 34,
-            height: 6,
-            borderRadius: 3,
-            background: theme.accent,
-            marginTop: 22,
-            flexShrink: 0,
-          }}
-        />
-      ) : (
-        <svg width={30} height={30} viewBox="0 0 30 30" style={{ marginTop: 12, flexShrink: 0 }}>
-          <circle cx={15} cy={15} r={9} fill="none" stroke={theme.accent} strokeWidth={4} />
-        </svg>
-      )}
-      <div style={{ fontSize: 40, color: theme.muted, lineHeight: 1.35, fontWeight: 500 }}>
-        {text}
-      </div>
-    </div>
-  );
-};
-
+/** Leere Bühne ohne Folien-Rahmen, solange noch kein Bild erzeugt wurde. */
 const Placeholder: React.FC<{ theme: VideoTheme }> = ({ theme }) => (
   <div
     style={{
       width: "100%",
       height: "100%",
-      border: `6px dashed ${theme.muted}55`,
-      borderRadius: 32,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      color: theme.muted,
-      fontSize: 30,
-      fontWeight: 500,
-      textAlign: "center",
-      padding: 40,
+      background: theme.surface,
     }}
   >
-    Zeichnung noch nicht erzeugt
+    <span style={{ color: `${theme.muted}88`, fontSize: 26, fontWeight: 500 }}>
+      Zeichnung noch nicht erzeugt
+    </span>
   </div>
 );
 
@@ -425,12 +358,15 @@ const DrawnIllustration: React.FC<{
   theme: VideoTheme;
   scene?: WhiteboardScene;
   index?: number;
+  /** Füllt den ganzen Frame (cover) statt im Kasten zu sitzen (contain). */
+  cover?: boolean;
 }> = ({
   url,
   delay,
   theme,
   scene,
   index = 0,
+  cover = false,
 }) => {
   const frame = useCurrentFrame();
   const local = frame - delay;
@@ -439,10 +375,11 @@ const DrawnIllustration: React.FC<{
     extrapolateRight: "clamp",
   });
   const drawing = local >= 0 && local <= DRAW_FRAMES;
-  const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
+  const float = cover ? 0 : Math.sin((local - DRAW_FRAMES) / 40) * 6;
   const handY = 30 + Math.sin(local / 6) * 18;
 
-  if (hasMovingMedia(scene) && scene) return <ClipStage scene={scene} theme={theme} />;
+  if (hasMovingMedia(scene) && scene)
+    return <ClipStage scene={scene} theme={theme} radius={cover ? 0 : 20} />;
   if (!url) return <Placeholder theme={theme} />;
 
   return (
@@ -458,7 +395,10 @@ const DrawnIllustration: React.FC<{
         <div
           style={{ width: "100%", height: "100%", clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)` }}
         >
-          <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          <Img
+            src={url}
+            style={{ width: "100%", height: "100%", objectFit: cover ? "cover" : "contain" }}
+          />
         </div>
       </KenBurns>
       <DrawingHand x={`${progress * 100}%`} y={`${handY}%`} visible={drawing} size={330} />
