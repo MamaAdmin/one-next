@@ -210,8 +210,11 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
   );
 };
 
+// Bewegtbild nur, wenn auch wirklich ein Clip vorliegt.
+// Fehlt er (z. B. erst die Zeichnung erzeugt), wird das Standbild gezeigt.
 const hasMovingMedia = (scene?: WhiteboardScene): boolean =>
-  scene?.mediaType === "clip" || scene?.mediaType === "ai_clip";
+  (scene?.mediaType === "clip" && !!scene?.clipUrl) ||
+  (scene?.mediaType === "ai_clip" && !!scene?.aiClipUrl);
 
 /** Ruhige Kamerafahrt über ein Standbild, damit nie ein Bild still steht. */
 const KenBurns: React.FC<{ index: number; children: React.ReactNode }> = ({ index, children }) => {
