@@ -451,81 +451,136 @@ const SceneNumber: React.FC<{ index: number; theme: VideoTheme }> = ({ index, th
   </div>
 );
 
-const Frame: React.FC<{ children: React.ReactNode; theme: VideoTheme; flip?: boolean }> = ({
-  children,
-  theme,
-  flip,
-}) => {
+const SceneNumber: React.FC<{ index: number; theme: VideoTheme }> = ({ index, theme }) => (
+  <div style={{ fontSize: 28, letterSpacing: "0.22em", color: theme.accent, fontWeight: 700 }}>
+    {String(index + 1).padStart(2, "0")}
+  </div>
+);
+
+/**
+ * Stichpunkte erscheinen nacheinander über die Abschnittsdauer verteilt.
+ * Der gerade aktuelle Punkt ist voll sichtbar, frühere verblassen.
+ */
+const TimedBullets: React.FC<{
+  bullets: string[];
+  theme: VideoTheme;
+  onDark?: boolean;
+  fontSize?: number;
+}> = ({ bullets, theme, onDark = true, fontSize = 44 }) => {
   const frame = useCurrentFrame();
-  const exit = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: "clamp" });
+  const { fps, durationInFrames } = useVideoConfig();
+  const items = bullets.slice(0, 4);
+  if (items.length === 0) return null;
+  const start = Math.round(durationInFrames * 0.16);
+  const span = Math.max(1, durationInFrames * 0.72);
+  const step = span / items.length;
+  const shown = items.filter((_, i) => frame >= start + i * step).length;
+  const base = onDark ? theme.background : theme.ink;
   return (
-    <AbsoluteFill style={{ opacity: exit, fontFamily: theme.fontFamily }}>
-      <AbsoluteFill
-        style={{
-          display: "flex",
-          flexDirection: flip ? "row-reverse" : "row",
-          alignItems: "center",
-          gap: 90,
-          padding: "110px 130px",
-        }}
-      >
-        {children}
-      </AbsoluteFill>
-    </AbsoluteFill>
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {items.map((text, i) => {
+        const from = start + i * step;
+        if (frame < from) return null;
+        const s = spring({ frame: frame - from, fps, config: { damping: 18, stiffness: 160 } });
+        const isActive = i === shown - 1;
+        return (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              gap: 22,
+              alignItems: "flex-start",
+              opacity: s * (isActive ? 1 : 0.45),
+              transform: `translateX(${interpolate(s, [0, 1], [-50, 0])}px)`,
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 7,
+                borderRadius: 4,
+                background: isActive ? theme.accent : `${base}66`,
+                marginTop: fontSize * 0.55,
+                flexShrink: 0,
+              }}
+            />
+            <div
+              style={{
+                fontSize,
+                color: base,
+                lineHeight: 1.3,
+                fontWeight: isActive ? 700 : 500,
+              }}
+            >
+              {text}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
-const WhiteboardSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
-  <Frame theme={theme} flip={index % 2 === 1}>
-    <div style={{ flex: 1.05, display: "flex", flexDirection: "column", gap: 28 }}>
-      <SceneNumber index={index} theme={theme} />
-      <HandWriteText text={scene.heading} delay={4} fontSize={78} color={theme.ink} />
-      <DrawnUnderline width={520} delay={16} color={theme.accent} />
-      <div style={{ display: "flex", flexDirection: "column", gap: 22, marginTop: 12 }}>
-        {scene.bullets.slice(0, 4).map((b, i) => (
-          <BulletRow key={i} text={b} delay={30 + i * 9} theme={theme} />
-        ))}
-      </div>
+/**
+ * Überschrift und Stichpunkte als Einblendung über dem Bild (Lower Third).
+ * Unten bleibt Platz für die wortweisen Untertitel.
+ */
+const LowerThird: React.FC<{
+  scene: WhiteboardScene;
+  theme: VideoTheme;
+  handwritten?: boolean;
+}> = ({ scene, theme, handwritten }) => (
+  <AbsoluteFill
+    style={{ fontFamily: theme.fontFamily, justifyContent: "flex-end", pointerEvents: "none" }}
+  >
+    <div
+      style={{
+        padding: "240px 120px 200px",
+        background: `linear-gradient(to top, ${theme.ink}F2 0%, ${theme.ink}CC 55%, transparent 100%)`,
+        display: "flex",
+        flexDirection: "column",
+        gap: 30,
+      }}
+    >
+      {handwritten ? (
+        <HandWriteText text={scene.heading} delay={6} fontSize={84} color={theme.background} maxWidth={1500} />
+      ) : (
+        <FadeText text={scene.heading} delay={6} fontSize={84} color={theme.background} weight={800} />
+      )}
+      <TimedBullets bullets={scene.bullets} theme={theme} onDark />
     </div>
-    <div style={{ flex: 0.95, height: "72%" }}>
-      <DrawnIllustration url={scene.imageUrl} scene={scene} index={index} delay={12} theme={theme} />
-    </div>
-  </Frame>
+  </AbsoluteFill>
 );
 
-const FlatSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
-  <Frame theme={theme} flip={index % 2 === 1}>
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 26 }}>
-      <SceneNumber index={index} theme={theme} />
-      <FadeText text={scene.heading} delay={4} fontSize={76} color={theme.ink} />
-      <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 8 }}>
-        {scene.bullets.slice(0, 4).map((b, i) => (
-          <BulletRow key={i} text={b} delay={20 + i * 10} theme={theme} variant="dash" />
-        ))}
-      </div>
-    </div>
-    <div style={{ flex: 1, height: "74%" }}>
-      <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={10} theme={theme} />
-    </div>
-  </Frame>
-);
+type IllustrationComponent = React.FC<{
+  url?: string | null;
+  delay: number;
+  theme: VideoTheme;
+  scene?: WhiteboardScene;
+  index?: number;
+  cover?: boolean;
+}>;
 
-const MotionSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
-  <Frame theme={theme}>
-    <div style={{ flex: 1.1, display: "flex", flexDirection: "column", gap: 24 }}>
-      <SceneNumber index={index} theme={theme} />
-      <FadeText text={scene.heading} delay={2} fontSize={80} color={theme.ink} weight={800} />
-      <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 10 }}>
-        {scene.bullets.slice(0, 4).map((b, i) => (
-          <BulletRow key={i} text={b} delay={16 + i * 8} theme={theme} variant="tile" />
-        ))}
-      </div>
-    </div>
-    <div style={{ flex: 0.9, height: "70%" }}>
-      <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={8} theme={theme} radius={24} />
-    </div>
-  </Frame>
-);
+/**
+ * Filmischer Aufbau für alle Bildstile: das Medium füllt den ganzen Frame,
+ * der Text liegt als animierte Einblendung darüber.
+ */
+const cinematic =
+  (Illustration: IllustrationComponent, handwritten: boolean): React.FC<SceneProps> =>
+  function CinematicScene({ scene, index, theme }) {
+    return (
+      <AbsoluteFill style={{ fontFamily: theme.fontFamily, background: theme.ink }}>
+        <Illustration url={scene.imageUrl} scene={scene} index={index} delay={2} theme={theme} cover />
+        <LowerThird scene={scene} theme={theme} handwritten={handwritten} />
+      </AbsoluteFill>
+    );
+  };
+
+const WhiteboardSceneView = cinematic(DrawnIllustration, true);
+const FlatSceneView = cinematic(FadeIllustration, false);
+const MotionSceneView = cinematic(FadeIllustration, false);
+const IsometricSceneView = cinematic(FadeIllustration, false);
+const AvatarSceneView = cinematic(FadeIllustration, false);
 
 const ScreencastSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
   const frame = useCurrentFrame();
@@ -569,49 +624,22 @@ const ScreencastSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
         style={{
           position: "absolute",
           left: 140,
-          bottom: 140,
-          maxWidth: 780,
+          bottom: 190,
+          maxWidth: 820,
           background: theme.background,
           border: `4px solid ${theme.accent}`,
           borderRadius: 28,
           padding: "32px 38px",
           display: "flex",
           flexDirection: "column",
-          gap: 16,
+          gap: 18,
           boxShadow: "0 24px 48px rgba(0,0,0,0.16)",
         }}
       >
-        <SceneNumber index={index} theme={theme} />
-        <FadeText text={scene.heading} delay={6} fontSize={56} color={theme.ink} />
-        {scene.bullets.slice(0, 3).map((b, i) => (
-          <BulletRow key={i} text={b} delay={22 + i * 9} theme={theme} variant="dash" />
-        ))}
+        <FadeText text={scene.heading} delay={6} fontSize={54} color={theme.ink} />
+        <TimedBullets bullets={scene.bullets.slice(0, 3)} theme={theme} onDark={false} fontSize={34} />
       </div>
     </AbsoluteFill>
-  );
-};
-
-const IsometricSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
-  const frame = useCurrentFrame();
-  const parallax = interpolate(frame, [0, 200], [-24, 24], { extrapolateRight: "clamp" });
-  const scale = interpolate(frame, [0, 200], [1.02, 1.1], { extrapolateRight: "clamp" });
-  return (
-    <Frame theme={theme} flip={index % 2 === 1}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 26 }}>
-        <SceneNumber index={index} theme={theme} />
-        <FadeText text={scene.heading} delay={4} fontSize={74} color={theme.ink} />
-        <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 8 }}>
-          {scene.bullets.slice(0, 4).map((b, i) => (
-            <BulletRow key={i} text={b} delay={20 + i * 10} theme={theme} variant="dash" />
-          ))}
-        </div>
-      </div>
-      <div style={{ flex: 1.05, height: "76%", overflow: "hidden" }}>
-        <div style={{ width: "100%", height: "100%", transform: `translateX(${parallax}px) scale(${scale})` }}>
-          <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={8} theme={theme} />
-        </div>
-      </div>
-    </Frame>
   );
 };
 
@@ -655,27 +683,6 @@ const TypographySceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
         })}
       </div>
     </AbsoluteFill>
-  );
-};
-
-const AvatarSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
-  const frame = useCurrentFrame();
-  const breathe = Math.sin(frame / 28) * 6;
-  return (
-    <Frame theme={theme}>
-      <div style={{ flex: 0.8, height: "80%", transform: `translateY(${breathe}px)` }}>
-        <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={0} theme={theme} zoom={false} />
-      </div>
-      <div style={{ flex: 1.2, display: "flex", flexDirection: "column", gap: 24 }}>
-        <SceneNumber index={index} theme={theme} />
-        <FadeText text={scene.heading} delay={4} fontSize={72} color={theme.ink} />
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          {scene.bullets.slice(0, 4).map((b, i) => (
-            <BulletRow key={i} text={b} delay={18 + i * 10} theme={theme} variant="tile" />
-          ))}
-        </div>
-      </div>
-    </Frame>
   );
 };
 
