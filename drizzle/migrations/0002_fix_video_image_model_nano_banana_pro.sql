@@ -1,0 +1,2 @@
+UPDATE public.whiteboard_videos SET image_model = 'nano-banana-pro' WHERE image_model = 'nano-banana-2-pro';
+UPDATE public.whiteboard_video_series SET image_model = 'nano-banana-pro' WHERE image_model = 'nano-banana-2-pro';
