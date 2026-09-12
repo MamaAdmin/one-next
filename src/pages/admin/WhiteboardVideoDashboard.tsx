@@ -62,6 +62,34 @@ const WhiteboardVideoDashboard = () => {
   const [seriesSummary, setSeriesSummary] = useState<
     Record<string, { total: number; ready: number; draft: number; error: number }>
   >({});
+  const [openSeries, setOpenSeries] = useState<Record<string, boolean>>({});
+  const [editSeries, setEditSeries] = useState<WhiteboardVideoSeries | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<WhiteboardVideoSeries | null>(null);
+
+  /** Clips je Serie, nach Position sortiert. */
+  const clipsBySeries = useMemo(() => {
+    const map: Record<string, WhiteboardVideoProject[]> = {};
+    for (const project of projects) {
+      const seriesId = (project as { series_id?: string | null }).series_id;
+      if (!seriesId) continue;
+      (map[seriesId] ??= []).push(project);
+    }
+    for (const list of Object.values(map)) {
+      list.sort(
+        (a, b) =>
+          ((a as { position?: number | null }).position ?? 0) -
+          ((b as { position?: number | null }).position ?? 0),
+      );
+    }
+    return map;
+  }, [projects]);
+
+  const singleProjects = useMemo(
+    () => projects.filter((p) => !(p as { series_id?: string | null }).series_id),
+    [projects],
+  );
 
   useEffect(() => {
     if (!loading && !isAdmin) navigate("/");
