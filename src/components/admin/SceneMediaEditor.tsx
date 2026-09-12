@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Trash2, Upload } from "lucide-react";
+import { Sparkles, Loader2, Plus, Trash2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { uploadClip, validateClipFile } from "@/features/whiteboard/clips";
+import { fetchMotionSuggestions } from "@/features/whiteboard/api";
 import { MAX_CAPTIONS, type SceneCaption, type WhiteboardScene } from "@/features/whiteboard/types";
 
 interface Props {
