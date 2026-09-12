@@ -414,13 +414,16 @@ const FadeIllustration: React.FC<{
   zoom?: boolean;
   scene?: WhiteboardScene;
   index?: number;
-}> = ({ url, delay, theme, radius = 28, zoom = true, scene, index = 0 }) => {
+  /** Füllt den ganzen Frame (cover) statt im Kasten zu sitzen (contain). */
+  cover?: boolean;
+}> = ({ url, delay, theme, radius = 28, zoom = true, scene, index = 0, cover = false }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame: frame - delay, fps, config: { damping: 200 } });
-  if (hasMovingMedia(scene) && scene) return <ClipStage scene={scene} theme={theme} radius={radius} />;
+  if (hasMovingMedia(scene) && scene)
+    return <ClipStage scene={scene} theme={theme} radius={cover ? 0 : radius} />;
   if (!url) return <Placeholder theme={theme} />;
-  const scale = zoom ? interpolate(s, [0, 1], [0.92, 1]) : 1;
+  const scale = zoom && !cover ? interpolate(s, [0, 1], [0.92, 1]) : 1;
   return (
     <div
       style={{
@@ -428,12 +431,15 @@ const FadeIllustration: React.FC<{
         height: "100%",
         opacity: s,
         transform: `scale(${scale})`,
-        borderRadius: radius,
+        borderRadius: cover ? 0 : radius,
         overflow: "hidden",
       }}
     >
       <KenBurns index={index}>
-        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+        <Img
+          src={url}
+          style={{ width: "100%", height: "100%", objectFit: cover ? "cover" : "contain" }}
+        />
       </KenBurns>
     </div>
   );
