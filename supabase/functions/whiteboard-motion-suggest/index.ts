@@ -84,10 +84,22 @@ Deno.serve(async (req) => {
           model: MODEL,
           json: true,
           messages: [{ role: "user", content: prompt }],
-          maxOutputTokens: 1024,
+          maxOutputTokens: 2048,
+          thinkingBudget: 0,
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              suggestions: { type: "ARRAY", items: { type: "STRING" } },
+            },
+            required: ["suggestions"],
+          },
         });
         const match = result.content.match(/\{[\s\S]*\}/);
-        if (!match) return json({ error: "Vorschläge konnten nicht gelesen werden" }, 502);
+        if (!match) {
+          console.error("[motion-suggest] leere Antwort", result.finishReason, result.content.slice(0, 200));
+          if (attempt < 2) continue;
+          return json({ error: "Vorschläge konnten nicht gelesen werden" }, 502);
+        }
         const parsed = JSON.parse(match[0]) as { suggestions?: string[] };
         const suggestions = (parsed.suggestions ?? []).filter((s) => typeof s === "string" && s.trim());
         if (suggestions.length === 0) return json({ error: "Keine Vorschläge erhalten" }, 502);
