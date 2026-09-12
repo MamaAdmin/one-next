@@ -283,16 +283,32 @@ Deno.serve(async (req) => {
       const imageUrl = String(payload.imageUrl ?? "").trim();
       const seconds = Number(payload.seconds);
       const seed = Number(payload.seed);
+      // Die Clip-Schnittstelle unterstützt nur diese Modelle.
+      const VEO_MODELS = new Set(["veo3_fast", "veo3", "veo3_lite"]);
+      const requested = String(payload.model ?? "veo3_fast");
+      if (!VEO_MODELS.has(requested)) {
+        return json(
+          {
+            error: `Das Videomodell „${requested}" kann keine Clips erzeugen. Bitte im Briefing „Veo 3 Fast" oder „Veo 3" wählen.`,
+          },
+          400,
+        );
+      }
+      // Erlaubte Cliplängen: 4, 6 oder 8 Sekunden.
+      const allowed = [4, 6, 8];
+      const duration = Number.isFinite(seconds) && seconds > 0
+        ? allowed.reduce((a, b) => (Math.abs(b - seconds) < Math.abs(a - seconds) ? b : a), 8)
+        : 8;
       const body_: Record<string, unknown> = {
         prompt: imageUrl
           ? prompt
           : `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
-        model: String(payload.model ?? "veo3_fast"),
+        model: requested,
         generationType: imageUrl ? "IMAGE_2_VIDEO" : "TEXT_2_VIDEO",
         aspect_ratio: "16:9",
+        duration,
       };
       if (imageUrl) body_.imageUrls = [imageUrl];
-      if (Number.isFinite(seconds) && seconds > 0) body_.duration = Math.round(seconds);
       if (Number.isFinite(seed) && seed > 0) body_.seeds = Math.round(seed);
       const res = await fetch(`${KIE_BASE}/api/v1/veo/generate`, {
         method: "POST",
