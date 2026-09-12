@@ -107,6 +107,7 @@ const WhiteboardVideoEditor = () => {
   const [siblings, setSiblings] = useState<WhiteboardVideoProject[]>([]);
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
+  const [language, setLanguage] = useState("de");
   const [voice, setVoice] = useState("Charlotte");
   const [style, setStyle] = useState("whiteboard");
   const [scriptType, setScriptType] = useState("problem_loesung");
@@ -165,6 +166,7 @@ const WhiteboardVideoEditor = () => {
       setProject(loaded);
       setTitle(loaded.title);
       setTopic(loaded.topic);
+      setLanguage(loaded.language || "de");
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
       setStyle(normalizeStyle(loaded.style));
       setScriptType(loaded.script_type || "problem_loesung");
@@ -227,6 +229,7 @@ const WhiteboardVideoEditor = () => {
         .update({
           title,
           topic,
+          language,
           voice,
           style,
           script_type: scriptType,
@@ -242,7 +245,7 @@ const WhiteboardVideoEditor = () => {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
+    [videoId, title, topic, language, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
   );
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
