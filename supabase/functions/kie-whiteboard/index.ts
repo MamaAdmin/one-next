@@ -66,8 +66,9 @@ async function createJobTask(model: string, input: Record<string, unknown>): Pro
     headers: kieHeaders(),
     body: JSON.stringify({ model, input }),
   });
-  const body = await res.json();
+  const body = await res.json().catch(() => null);
   if (!res.ok || body?.code !== 200 || !body?.data?.taskId) {
+    console.error("[createTask] model=", model, "status=", res.status, "body=", JSON.stringify(body)?.slice(0, 600));
     throw new Error(body?.msg ?? body?.message ?? `kie.ai Fehler (${res.status})`);
   }
   return body.data.taskId as string;
@@ -89,6 +90,7 @@ async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string>
       return url as string;
     }
     if (state === "fail") {
+      console.error("[pollJobTask] fail", JSON.stringify(body?.data)?.slice(0, 600));
       throw new Error(body?.data?.failMsg ?? "Generierung fehlgeschlagen");
     }
   }
@@ -291,6 +293,7 @@ Deno.serve(async (req) => {
     return json({ error: "Unbekannte Aktion" }, 400);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+    console.error("[kie-whiteboard] Fehler:", message);
     return json({ error: message }, 500);
   }
 });
