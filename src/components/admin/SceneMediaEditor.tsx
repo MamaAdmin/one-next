@@ -12,14 +12,25 @@ interface Props {
   scene: WhiteboardScene;
   videoId: string;
   onChange: (patch: Partial<WhiteboardScene>) => void;
+  /** Erzeugt aus der Zeichnung einen bewegten Clip (Bild zu Video). */
+  onGenerateAiClip?: () => void;
+  aiClipBusy?: boolean;
 }
 
-export const SceneMediaEditor: React.FC<Props> = ({ scene, videoId, onChange }) => {
+export const SceneMediaEditor: React.FC<Props> = ({
+  scene,
+  videoId,
+  onChange,
+  onGenerateAiClip,
+  aiClipBusy,
+}) => {
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [rawLength, setRawLength] = useState<number | null>(null);
-  const isClip = scene.mediaType === "clip";
+  const media = scene.mediaType ?? "image";
+  const isClip = media === "clip";
+  const isAiClip = media === "ai_clip";
   const captions = scene.captions ?? [];
 
   const start = scene.clipStartInSeconds ?? 0;
