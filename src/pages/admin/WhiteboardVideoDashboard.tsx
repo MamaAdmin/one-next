@@ -260,29 +260,97 @@ const WhiteboardVideoDashboard = () => {
               <CardContent className="grid gap-3">
                 {seriesList.map((series) => {
                   const summary = seriesSummary[series.id] ?? { total: 0, ready: 0, draft: 0, error: 0 };
+                  const clips = clipsBySeries[series.id] ?? [];
+                  const expanded = openSeries[series.id] ?? false;
                   return (
-                    <div
-                      key={series.id}
-                      className="flex items-center justify-between gap-4 overflow-hidden rounded-md border p-4"
-                    >
-                      <div className="flex min-w-0 flex-1 items-center gap-3">
-                        <Layers className="h-5 w-5 shrink-0 text-primary" />
-                        <div className="min-w-0">
-                          <Link
-                            to={`/admin/whiteboard-videos/serie/${series.id}`}
-                            className="block truncate font-medium hover:underline"
+                    <div key={series.id} className="overflow-hidden rounded-md border">
+                      <div className="flex items-center justify-between gap-4 p-4">
+                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="shrink-0"
+                            aria-label={expanded ? "Clips ausblenden" : "Clips anzeigen"}
+                            onClick={() =>
+                              setOpenSeries((prev) => ({ ...prev, [series.id]: !expanded }))
+                            }
                           >
-                            {series.title}
-                          </Link>
-                          <p className="truncate text-sm text-muted-foreground">
-                            {summary.total} Clips · {summary.ready} fertig · {summary.draft} offen
-                            {summary.error ? ` · ${summary.error} Fehler` : ""}
-                          </p>
+                            {expanded ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Layers className="h-5 w-5 shrink-0 text-primary" />
+                          <div className="min-w-0">
+                            <Link
+                              to={`/admin/whiteboard-videos/serie/${series.id}`}
+                              className="block truncate font-medium hover:underline"
+                            >
+                              {series.title}
+                            </Link>
+                            <p className="truncate text-sm text-muted-foreground">
+                              {summary.total} Clips · {summary.ready} fertig · {summary.draft} offen
+                              {summary.error ? ` · ${summary.error} Fehler` : ""}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to={`/admin/whiteboard-videos/serie/${series.id}`}>Öffnen</Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Serie bearbeiten"
+                            onClick={() => openEdit(series)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Serie löschen"
+                            onClick={() => setDeleteTarget(series)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" asChild className="shrink-0">
-                        <Link to={`/admin/whiteboard-videos/serie/${series.id}`}>Öffnen</Link>
-                      </Button>
+
+                      {expanded && (
+                        <div className="border-t bg-muted/30 px-4 py-3">
+                          {clips.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">
+                              Noch keine Clips in dieser Serie.
+                            </p>
+                          ) : (
+                            <ul className="grid gap-2">
+                              {clips.map((clip, index) => (
+                                <li
+                                  key={clip.id}
+                                  className="flex items-center justify-between gap-3 overflow-hidden"
+                                >
+                                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                                    <span className="w-6 shrink-0 text-sm text-muted-foreground">
+                                      {index + 1}.
+                                    </span>
+                                    <Link
+                                      to={`/admin/whiteboard-videos/${clip.id}`}
+                                      className="truncate text-sm hover:underline"
+                                    >
+                                      {clip.title}
+                                    </Link>
+                                  </div>
+                                  <Badge variant="secondary" className="shrink-0">
+                                    {statusLabel[clip.status] ?? clip.status}
+                                  </Badge>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -293,15 +361,17 @@ const WhiteboardVideoDashboard = () => {
           <KieCreditsCard />
           <KieUsageStats />
 
-          {projects.length === 0 ? (
+          {singleProjects.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
-                Noch kein Video angelegt.
+                {seriesList.length > 0
+                  ? "Alle Videos gehören zu einer Serie."
+                  : "Noch kein Video angelegt."}
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-4">
-              {projects.map((project) => (
+              {singleProjects.map((project) => (
                 <Card key={project.id}>
                   <CardContent className="flex items-center justify-between gap-4 py-5 overflow-hidden">
                     <div className="flex flex-1 items-center gap-4 min-w-0">
@@ -329,6 +399,64 @@ const WhiteboardVideoDashboard = () => {
               ))}
             </div>
           )}
+
+          <Dialog open={editSeries !== null} onOpenChange={(open) => !open && setEditSeries(null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Serie bearbeiten</DialogTitle>
+                <DialogDescription>
+                  Titel und Beschreibung ändern. Stil, Stimme und Modelle bearbeitest du auf der Serienseite.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Titel</Label>
+                  <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Beschreibung</Label>
+                  <Textarea
+                    rows={3}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setEditSeries(null)}>
+                  Abbrechen
+                </Button>
+                <Button onClick={() => void saveEdit()} disabled={busy || !editTitle.trim()}>
+                  Speichern
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <AlertDialog
+            open={deleteTarget !== null}
+            onOpenChange={(open) => !open && setDeleteTarget(null)}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Serie „{deleteTarget?.title}“ löschen?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {(clipsBySeries[deleteTarget?.id ?? ""] ?? []).length} Clips gehören dazu. Du kannst
+                  sie behalten – sie erscheinen dann als Einzelvideos – oder mit der Serie löschen.
+                  Das Löschen lässt sich nicht rückgängig machen.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                <Button variant="outline" disabled={busy} onClick={() => void removeSeries(false)}>
+                  Nur Serie löschen
+                </Button>
+                <Button variant="destructive" disabled={busy} onClick={() => void removeSeries(true)}>
+                  Serie und Clips löschen
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
       </DashboardPage>
       <Footer />
     </div>
