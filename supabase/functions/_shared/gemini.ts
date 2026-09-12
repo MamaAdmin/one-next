@@ -11,6 +11,8 @@ export interface CallGeminiOptions {
   responseSchema?: unknown;
   temperature?: number;
   maxOutputTokens?: number;
+  /** 0 disables Gemini 2.5 "thinking" tokens so short JSON answers are not truncated. */
+  thinkingBudget?: number;
 }
 
 export interface CallGeminiResult {
@@ -56,6 +58,9 @@ export async function callGemini(opts: CallGeminiOptions): Promise<CallGeminiRes
   };
   if (opts.json) generationConfig.responseMimeType = "application/json";
   if (opts.responseSchema) generationConfig.responseSchema = opts.responseSchema;
+  if (typeof opts.thinkingBudget === "number") {
+    generationConfig.thinkingConfig = { thinkingBudget: opts.thinkingBudget };
+  }
 
   const body: Record<string, unknown> = {
     contents,

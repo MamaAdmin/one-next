@@ -42,7 +42,7 @@ Stil: ${styleLabel}
 
 Schlage genau 3 verschiedene Bewegungsideen vor – von dezent bis dynamisch.
 Jeder Vorschlag ist ein Satz auf Deutsch, der Kamera, Figuren und Objekte beschreibt.
-Keine Stilangaben, keine技术ischen Begriffe, nur lesbare Bewegungsbeschreibungen.
+Keine Stilangaben, keine technischen Begriffe, nur lesbare Bewegungsbeschreibungen.
 
 Antworte AUSSCHLIESSLICH mit JSON in dieser Form, ohne Markdown:
 {"suggestions":["Vorschlag 1","Vorschlag 2","Vorschlag 3"]}`;
@@ -84,10 +84,22 @@ Deno.serve(async (req) => {
           model: MODEL,
           json: true,
           messages: [{ role: "user", content: prompt }],
-          maxOutputTokens: 1024,
+          maxOutputTokens: 2048,
+          thinkingBudget: 0,
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              suggestions: { type: "ARRAY", items: { type: "STRING" } },
+            },
+            required: ["suggestions"],
+          },
         });
         const match = result.content.match(/\{[\s\S]*\}/);
-        if (!match) return json({ error: "Vorschläge konnten nicht gelesen werden" }, 502);
+        if (!match) {
+          console.error("[motion-suggest] leere Antwort", result.finishReason, result.content.slice(0, 200));
+          if (attempt < 2) continue;
+          return json({ error: "Vorschläge konnten nicht gelesen werden" }, 502);
+        }
         const parsed = JSON.parse(match[0]) as { suggestions?: string[] };
         const suggestions = (parsed.suggestions ?? []).filter((s) => typeof s === "string" && s.trim());
         if (suggestions.length === 0) return json({ error: "Keine Vorschläge erhalten" }, 502);
