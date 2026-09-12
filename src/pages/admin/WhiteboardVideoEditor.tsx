@@ -66,7 +66,7 @@ import {
 } from "@/features/whiteboard/api";
 import { WHITEBOARD_STYLES, normalizeStyle, styleOption } from "@/features/whiteboard/styles";
 import { SCRIPT_TYPES, scriptTypeOption } from "@/features/whiteboard/scriptTypes";
-import { TITLE_FRAMES } from "@/features/whiteboard/WhiteboardVideo";
+import { TITLE_FRAMES, compositionFrames } from "@/features/whiteboard/WhiteboardVideo";
 import {
   CATEGORY_LABELS,
   IMAGE_MODEL as DEFAULT_IMAGE_MODEL,
@@ -649,12 +649,75 @@ const WhiteboardVideoEditor = () => {
     }
   };
 
-  const durationInFrames = useMemo(
-    () => totalDurationInFrames(scenes) + (title ? TITLE_FRAMES : 0),
-    [scenes, title],
+  // Übergänge überlappen, deshalb ist das Video kürzer als die Summe der Abschnitte.
+  const durationInFrames = useMemo(() => compositionFrames(title, scenes), [scenes, title]);
+
+  const inputProps = useMemo(
+    () => ({
+      title,
+      scenes,
+      style,
+      musicUrl: project?.music_url ?? null,
+      musicVolume: project?.music_volume ?? 0.18,
+      subtitles,
+    }),
+    [title, scenes, style, project?.music_url, project?.music_volume, subtitles],
   );
 
-  const inputProps = useMemo(() => ({ title, scenes, style }), [title, scenes, style]);
+  /** Aus der fertigen Zeichnung einen bewegten Clip machen (Bild zu Video). */
+  const runAiClip = async (sceneId: string) => {
+    const scene = scenes.find((s) => s.id === sceneId);
+    if (!scene?.imageUrl) {
+      toast({ title: "Zuerst die Zeichnung erzeugen", variant: "destructive" });
+      return;
+    }
+    const seconds = Math.min(10, Math.max(2, scene.aiClipSeconds ?? 5));
+    const rate = rateFor(models, videoModel);
+    const cost = seconds * rate;
+    if (credits !== null && cost > credits) {
+      toast({
+        title: "Guthaben reicht nicht",
+        description: `Der Clip kostet ${formatCredits(cost)} Credits, verfügbar sind ${formatCredits(credits)}.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    setAiClipBusy(sceneId);
+    try {
+      const taskId = await startVideo(scene.motionPrompt || scene.imagePrompt || scene.heading, {
+        model: videoModel,
+        imageUrl: scene.imageUrl,
+        seconds,
+        seed: project?.seed ?? null,
+      });
+      let url: string | null = null;
+      for (let attempt = 0; attempt < 60; attempt++) {
+        await new Promise((r) => setTimeout(r, 5000));
+        const result = await checkVideo(taskId);
+        if (result.status === "done" && result.url) {
+          url = result.url;
+          break;
+        }
+        if (result.status === "failed") throw new Error(result.error ?? "Clip fehlgeschlagen");
+      }
+      if (!url) throw new Error("Zeitüberschreitung bei der Clip-Erzeugung");
+      setScenes((prev) =>
+        prev.map((s) =>
+          s.id === sceneId ? { ...s, mediaType: "ai_clip", aiClipUrl: url, aiClipTaskId: taskId } : s,
+        ),
+      );
+      toast({ title: "Bewegter Clip erstellt" });
+      void loadCredits();
+    } catch (error) {
+      toast({
+        title: "Clip fehlgeschlagen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setAiClipBusy(null);
+    }
+  };
 
   const renderMp4 = async () => {
     if (scenes.length === 0) {
