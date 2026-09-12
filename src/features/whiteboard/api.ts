@@ -46,6 +46,7 @@ export interface ScriptOptions {
   scriptType?: string;
   scriptHint?: string;
   styleLabel?: string;
+  language?: string;
 }
 
 export const generateScript = (
