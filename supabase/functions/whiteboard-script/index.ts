@@ -1,7 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { callGemini, geminiErrorStatus } from "../_shared/gemini.ts";
 
-const MODEL = "google/gemini-3.8-flash";
+const MODEL = "gemini-2.5-flash";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
