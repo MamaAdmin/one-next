@@ -7,7 +7,10 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { SceneMediaEditor } from "@/components/admin/SceneMediaEditor";
+import { MusicPicker } from "@/components/admin/MusicPicker";
 import { withFreshClipUrls } from "@/features/whiteboard/clips";
+import { signedMusicUrl } from "@/features/whiteboard/music";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -174,7 +177,14 @@ const WhiteboardVideoEditor = () => {
       if (loadedScenes.some((s) => s.mediaType === "clip" && s.clipPath)) {
         void withFreshClipUrls(loadedScenes).then(setScenes);
       }
+      // Auch die hochgeladene Musik braucht eine frische Adresse.
+      if (loaded.music_path) {
+        void signedMusicUrl(loaded.music_path).then((url) => {
+          if (url) setProject((prev) => (prev ? { ...prev, music_url: url } : prev));
+        });
+      }
       setKieVideoUrl(loaded.video_url);
+
       setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
 
       if (loaded.series_id) {
@@ -1101,22 +1111,21 @@ const WhiteboardVideoEditor = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Hintergrundmusik (Adresse)</Label>
-                  <Input
-                    placeholder="https://…/musik.mp3"
-                    value={project?.music_url ?? ""}
-                    onChange={(e) =>
-                      setProject((prev) =>
-                        prev ? { ...prev, music_url: e.target.value || null } : prev,
-                      )
-                    }
-                    onBlur={() => void save({ music_url: project?.music_url ?? null })}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Läuft leise unter der Sprecherstimme.
-                  </p>
-                </div>
+                <MusicPicker
+                  videoId={videoId ?? ""}
+                  url={project?.music_url ?? null}
+                  path={project?.music_path ?? null}
+                  volume={project?.music_volume ?? 0.18}
+                  onChange={(patch) => {
+                    setProject((prev) => (prev ? { ...prev, ...patch } : prev));
+                    void save(patch);
+                  }}
+                  onVolumeChange={(next) => {
+                    setProject((prev) => (prev ? { ...prev, music_volume: next } : prev));
+                    void save({ music_volume: next });
+                  }}
+                />
+
                 <div className="space-y-2">
                   <Label>Mitlaufende Untertitel</Label>
                   <div className="flex items-center gap-2">
