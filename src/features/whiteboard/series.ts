@@ -207,3 +207,13 @@ export const createClipsFromParsed = async (
   const { error } = await (supabase as any).from("whiteboard_videos").insert(rows);
   if (error) throw new Error(error.message);
 };
+
+/** Löscht die Serie samt aller zugehörigen Clips. */
+export const deleteSeriesWithClips = async (id: string) => {
+  const { error: clipError } = await (supabase as any)
+    .from("whiteboard_videos")
+    .delete()
+    .eq("series_id", id);
+  if (clipError) throw new Error(clipError.message);
+  await deleteSeries(id);
+};
