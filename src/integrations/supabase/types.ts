@@ -3325,6 +3325,7 @@ export type Database = {
           error_message: string | null
           id: string
           image_model: string
+          language: string
           music_path: string | null
           music_url: string | null
           music_volume: number
@@ -3350,6 +3351,7 @@ export type Database = {
           error_message?: string | null
           id?: string
           image_model?: string
+          language?: string
           music_path?: string | null
           music_url?: string | null
           music_volume?: number
@@ -3375,6 +3377,7 @@ export type Database = {
           error_message?: string | null
           id?: string
           image_model?: string
+          language?: string
           music_path?: string | null
           music_url?: string | null
           music_volume?: number
