@@ -241,15 +241,25 @@ Deno.serve(async (req) => {
     if (action === "video_start") {
       const prompt = String(payload.prompt ?? "").trim();
       if (!prompt) return json({ error: "Videobeschreibung fehlt." }, 400);
+      // Mit Startbild entsteht ein bewegter Clip aus der erzeugten Zeichnung.
+      const imageUrl = String(payload.imageUrl ?? "").trim();
+      const seconds = Number(payload.seconds);
+      const seed = Number(payload.seed);
+      const body_: Record<string, unknown> = {
+        prompt: imageUrl
+          ? prompt
+          : `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
+        model: String(payload.model ?? "veo3_fast"),
+        generationType: imageUrl ? "IMAGE_2_VIDEO" : "TEXT_2_VIDEO",
+        aspect_ratio: "16:9",
+      };
+      if (imageUrl) body_.imageUrls = [imageUrl];
+      if (Number.isFinite(seconds) && seconds > 0) body_.duration = Math.round(seconds);
+      if (Number.isFinite(seed) && seed > 0) body_.seeds = Math.round(seed);
       const res = await fetch(`${KIE_BASE}/api/v1/veo/generate`, {
         method: "POST",
         headers: kieHeaders(),
-        body: JSON.stringify({
-          prompt: `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
-          model: String(payload.model ?? "veo3_fast"),
-          generationType: "TEXT_2_VIDEO",
-          aspect_ratio: "16:9",
-        }),
+        body: JSON.stringify(body_),
       });
       const body = await res.json();
       if (!res.ok || body?.code !== 200 || !body?.data?.taskId) {
