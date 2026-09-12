@@ -29,6 +29,8 @@ export const SceneMediaEditor: React.FC<Props> = ({
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [rawLength, setRawLength] = useState<number | null>(null);
+  const [motionBusy, setMotionBusy] = useState(false);
+  const [motionSuggestions, setMotionSuggestions] = useState<string[] | null>(null);
   const media = scene.mediaType ?? "image";
   const isClip = media === "clip";
   const isAiClip = media === "ai_clip";
