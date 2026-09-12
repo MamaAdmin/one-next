@@ -445,11 +445,6 @@ const FadeIllustration: React.FC<{
   );
 };
 
-const SceneNumber: React.FC<{ index: number; theme: VideoTheme }> = ({ index, theme }) => (
-  <div style={{ fontSize: 28, letterSpacing: "0.22em", color: theme.accent, fontWeight: 700 }}>
-    {String(index + 1).padStart(2, "0")}
-  </div>
-);
 
 const SceneNumber: React.FC<{ index: number; theme: VideoTheme }> = ({ index, theme }) => (
   <div style={{ fontSize: 28, letterSpacing: "0.22em", color: theme.accent, fontWeight: 700 }}>
