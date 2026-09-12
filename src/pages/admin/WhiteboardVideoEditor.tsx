@@ -1100,6 +1100,45 @@ const WhiteboardVideoEditor = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Hintergrundmusik (Adresse)</Label>
+                  <Input
+                    placeholder="https://…/musik.mp3"
+                    value={project?.music_url ?? ""}
+                    onChange={(e) =>
+                      setProject((prev) =>
+                        prev ? { ...prev, music_url: e.target.value || null } : prev,
+                      )
+                    }
+                    onBlur={() => void save({ music_url: project?.music_url ?? null })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Läuft leise unter der Sprecherstimme.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Mitlaufende Untertitel</Label>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={subtitles ? "default" : "outline"}
+                      onClick={() => setSubtitles(true)}
+                    >
+                      An
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={subtitles ? "outline" : "default"}
+                      onClick={() => setSubtitles(false)}
+                    >
+                      Aus
+                    </Button>
+                  </div>
+                </div>
+              </div>
               <div className="rounded-lg overflow-hidden border">
                 <Player
                   component={WhiteboardVideo as never}
