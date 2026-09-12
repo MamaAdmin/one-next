@@ -13,6 +13,22 @@ async function invokeFn<T>(fn: string, body: Record<string, unknown>): Promise<T
   return data as T;
 }
 
+/** Bewegungsvorschläge für einen Abschnitt per Gemini generieren. */
+export async function fetchMotionSuggestions(
+  heading: string,
+  bullets: string[],
+  imagePrompt: string,
+  styleLabel?: string,
+): Promise<string[]> {
+  const result = await invokeFn<{ suggestions: string[] }>("whiteboard-motion-suggest", {
+    heading,
+    bullets,
+    imagePrompt,
+    styleLabel,
+  });
+  return result.suggestions ?? [];
+}
+
 const invoke = <T,>(body: Record<string, unknown>) => invokeFn<T>("kie-whiteboard", body);
 
 export interface GeneratedScript {
