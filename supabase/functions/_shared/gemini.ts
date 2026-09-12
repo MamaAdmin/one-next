@@ -11,6 +11,8 @@ export interface CallGeminiOptions {
   responseSchema?: unknown;
   temperature?: number;
   maxOutputTokens?: number;
+  /** 0 disables Gemini 2.5 "thinking" tokens so short JSON answers are not truncated. */
+  thinkingBudget?: number;
 }
 
 export interface CallGeminiResult {
