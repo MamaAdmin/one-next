@@ -13,6 +13,7 @@ import {
 import type { SceneCaption } from "./types";
 import handImage from "@/assets/whiteboard-hand.png";
 import type { WhiteboardScene } from "./types";
+import { groupLines, kenBurnsFor, timeWords } from "./motion";
 import type { RendererKey } from "./styles";
 import type { VideoTheme } from "./theme";
 
@@ -234,19 +235,20 @@ const Placeholder: React.FC<{ theme: VideoTheme }> = ({ theme }) => (
 const DRAW_FRAMES = 60;
 
 /**
- * Eigene Bildschirmaufnahme. Beim Export wird OffthreadVideo genutzt,
- * in der Vorschau das normale Video-Element.
+ * Bewegtbild im Abschnitt: eigene Bildschirmaufnahme oder KI-Clip.
+ * Beim Export wird OffthreadVideo genutzt, in der Vorschau das normale Video-Element.
  */
 export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; radius?: number }> = ({
   scene,
   theme,
   radius = 20,
 }) => {
-  const url = scene.clipUrl;
+  const isAi = scene.mediaType === "ai_clip";
+  const url = isAi ? scene.aiClipUrl : scene.clipUrl;
   if (!url) return <Placeholder theme={theme} />;
 
-  const start = Math.max(0, scene.clipStartInSeconds ?? 0);
-  const end = scene.clipEndInSeconds;
+  const start = isAi ? 0 : Math.max(0, scene.clipStartInSeconds ?? 0);
+  const end = isAi ? undefined : scene.clipEndInSeconds;
   const startFrom = Math.round(start * 30);
   const endAt = end && end > start ? Math.round(end * 30) : undefined;
   const rendering = getRemotionEnvironment().isRendering;
@@ -269,9 +271,97 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
         endAt={endAt}
         // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
         pauseWhenBuffering
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+        style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
       />
     </div>
+  );
+};
+
+const hasMovingMedia = (scene?: WhiteboardScene): boolean =>
+  scene?.mediaType === "clip" || scene?.mediaType === "ai_clip";
+
+/** Ruhige Kamerafahrt über ein Standbild, damit nie ein Bild still steht. */
+const KenBurns: React.FC<{ index: number; children: React.ReactNode }> = ({ index, children }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const move = kenBurnsFor(index);
+  const p = interpolate(frame, [0, Math.max(1, durationInFrames)], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const scale = interpolate(p, [0, 1], [move.scaleFrom, move.scaleTo]);
+  const x = interpolate(p, [0, 1], [move.xFrom, move.xTo]);
+  const y = interpolate(p, [0, 1], [move.yFrom, move.yTo]);
+  return (
+    <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          transform: `translate(${x}px, ${y}px) scale(${scale})`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+/** Sprechtext wortweise als Untertitel, passend zur Abschnittsdauer. */
+export const NarrationSubtitles: React.FC<{
+  narration: string;
+  durationInSeconds: number;
+  theme: VideoTheme;
+}> = ({ narration, durationInSeconds, theme }) => {
+  const frame = useCurrentFrame();
+  const words = timeWords(narration ?? "", durationInSeconds);
+  if (words.length === 0) return null;
+  const lines = groupLines(words);
+  const active = lines.find((line) => frame < line[line.length - 1].toFrame) ?? lines[lines.length - 1];
+  return (
+    <AbsoluteFill style={{ fontFamily: theme.fontFamily, pointerEvents: "none" }}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 64,
+          display: "flex",
+          justifyContent: "center",
+          padding: "0 160px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "6px 14px",
+            background: `${theme.ink}E6`,
+            borderRadius: 18,
+            padding: "14px 26px",
+            maxWidth: 1400,
+          }}
+        >
+          {active.map((word, i) => {
+            const spoken = frame >= word.fromFrame;
+            return (
+              <span
+                key={`${word.text}-${i}`}
+                style={{
+                  fontSize: 40,
+                  fontWeight: 600,
+                  color: spoken ? theme.accent : theme.background,
+                  opacity: spoken ? 1 : 0.55,
+                }}
+              >
+                {word.text}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    </AbsoluteFill>
   );
 };
 
