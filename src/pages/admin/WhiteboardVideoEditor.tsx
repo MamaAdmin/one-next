@@ -177,7 +177,14 @@ const WhiteboardVideoEditor = () => {
       if (loadedScenes.some((s) => s.mediaType === "clip" && s.clipPath)) {
         void withFreshClipUrls(loadedScenes).then(setScenes);
       }
+      // Auch die hochgeladene Musik braucht eine frische Adresse.
+      if (loaded.music_path) {
+        void signedMusicUrl(loaded.music_path).then((url) => {
+          if (url) setProject((prev) => (prev ? { ...prev, music_url: url } : prev));
+        });
+      }
       setKieVideoUrl(loaded.video_url);
+
       setBriefingOpen(!(Array.isArray(loaded.scenes) && loaded.scenes.length > 0));
 
       if (loaded.series_id) {
