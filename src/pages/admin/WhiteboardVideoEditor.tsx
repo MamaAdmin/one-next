@@ -91,7 +91,7 @@ import {
   type WhiteboardVideoSeries,
 } from "@/features/whiteboard/series";
 
-const VOICES = ["Charlotte", "Rachel", "Aria", "Sarah", "George", "Liam", "Matilda"];
+const VOICES = ["Rachel", "Aria", "Bella", "Emma", "Hope", "Liam", "Brian", "Felix"];
 const DEFAULT_CLIP_SECONDS = 4;
 const MIN_CLIP_SECONDS = 2;
 const MAX_CLIP_SECONDS = 10;
