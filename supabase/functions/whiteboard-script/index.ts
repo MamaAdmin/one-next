@@ -1,7 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { callGemini, geminiErrorStatus } from "../_shared/gemini.ts";
 
-const MODEL = "google/gemini-3.8-flash";
+const MODEL = "gemini-2.5-flash";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -52,13 +53,18 @@ Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
 Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
 }
 
-function gatewayError(status: number, message: string): string {
-  if (status === 401) return "Der KI-Zugang ist nicht konfiguriert.";
-  if (status === 402) return message || "Das KI-Guthaben reicht nicht aus. Bitte Credits aufladen.";
-  if (status === 403) return message || "Die KI-Nutzung ist für diesen Arbeitsbereich gesperrt.";
-  if (status === 429) return "Zu viele Anfragen. Bitte kurz warten und erneut versuchen.";
-  if (status >= 500) return "Die KI ist gerade nicht erreichbar. Bitte später erneut versuchen.";
-  return message || `KI-Fehler (${status})`;
+function geminiError(err: unknown): { status: number; message: string } {
+  const status = (err as { status?: number })?.status ?? 500;
+  const message = err instanceof Error ? err.message : "";
+  if (message.includes("GEMINI_API_KEY")) {
+    return { status: 500, message: "Der KI-Zugang (Gemini) ist nicht konfiguriert." };
+  }
+  if (status === 429) return { status: 429, message: "Zu viele Anfragen. Bitte kurz warten und erneut versuchen." };
+  if (status === 401 || status === 403) {
+    return { status: 502, message: "Der Gemini-Schlüssel wurde abgelehnt. Bitte den Schlüssel prüfen." };
+  }
+  if (status >= 500) return { status: 503, message: "Die KI ist gerade nicht erreichbar. Bitte später erneut versuchen." };
+  return { status: geminiErrorStatus(err), message: message || `KI-Fehler (${status})` };
 }
 
 Deno.serve(async (req) => {
@@ -67,9 +73,6 @@ Deno.serve(async (req) => {
   try {
     const auth = await requireAdmin(req);
     if (auth instanceof Response) return auth;
-
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) return json({ error: "KI-Zugang ist nicht konfiguriert." }, 500);
 
     const payload = await req.json().catch(() => ({}));
     const topic = String(payload.topic ?? "").trim();
@@ -80,47 +83,29 @@ Deno.serve(async (req) => {
     const scriptHint = String(payload.scriptHint ?? "");
     const styleLabel = String(payload.styleLabel ?? "Whiteboard / Legetrick");
 
-    let lastError = "";
+    const prompt = buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel);
+    let lastError: { status: number; message: string } | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Lovable-API-Key": apiKey,
-          "X-Lovable-AIG-SDK": "fetch",
-        },
-        body: JSON.stringify({
+      try {
+        const result = await callGemini({
           model: MODEL,
-          messages: [
-            {
-              role: "user",
-              content: buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel),
-            },
-          ],
-        }),
-      });
-
-      if (res.ok) {
-        const body = await res.json();
-        const content: string = body?.choices?.[0]?.message?.content ?? "";
-        const match = content.match(/\{[\s\S]*\}/);
+          json: true,
+          messages: [{ role: "user", content: prompt }],
+        });
+        const match = result.content.match(/\{[\s\S]*\}/);
         if (!match) return json({ error: "Skript konnte nicht gelesen werden" }, 502);
         return json({ script: JSON.parse(match[0]) });
+      } catch (err) {
+        lastError = geminiError(err);
+        const status = (err as { status?: number })?.status ?? 500;
+        if (status !== 429 && status < 500) {
+          return json({ error: lastError.message }, lastError.status);
+        }
+        await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
       }
-
-      const errBody = await res.json().catch(() => null);
-      lastError = gatewayError(res.status, errBody?.message ?? errBody?.error?.message ?? "");
-      if (res.status !== 429 && res.status < 500) {
-        return json({ error: lastError }, res.status === 402 || res.status === 403 ? 402 : 400);
-      }
-      const retryAfter = Number(res.headers.get("Retry-After"));
-      const delay = Number.isFinite(retryAfter) && retryAfter > 0
-        ? retryAfter * 1000
-        : 1500 * (attempt + 1);
-      await new Promise((r) => setTimeout(r, delay));
     }
 
-    return json({ error: lastError || "Skript konnte nicht erstellt werden" }, 503);
+    return json({ error: lastError?.message || "Skript konnte nicht erstellt werden" }, lastError?.status ?? 503);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unbekannter Fehler";
     return json({ error: message }, 500);
