@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -8,13 +8,36 @@ import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Layers, Plus, Trash2, Video } from "lucide-react";
+import { ChevronDown, ChevronRight, Layers, Pencil, Plus, Trash2, Video } from "lucide-react";
 import type { WhiteboardVideoProject } from "@/features/whiteboard/types";
 import {
   createSeries,
+  deleteSeries,
+  deleteSeriesWithClips,
   fetchSeriesClipSummary,
   fetchSeriesList,
+  updateSeries,
   type WhiteboardVideoSeries,
 } from "@/features/whiteboard/series";
 import { IMAGE_MODEL, VIDEO_MODEL, VOICE_MODEL } from "@/features/whiteboard/pricing";
