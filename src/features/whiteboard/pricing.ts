@@ -118,7 +118,7 @@ export const estimateCost = ({
   };
 
   if (includeScript) {
-    // Das Skript wird über die Lovable KI erzeugt und kostet keine Kie.ai-Credits.
+    // Das Skript läuft direkt über Gemini und kostet keine Kie.ai-Credits.
     lines.push({
       label: "Skript",
       model: scriptModel,
@@ -160,6 +160,24 @@ export const estimateCost = ({
       unit: "1k_chars",
       rate,
       credits: Math.round(units * rate * 100) / 100,
+      priceKnown,
+    });
+  }
+
+  // Abschnitte, die als bewegter KI-Clip laufen, werden nach Sekunden abgerechnet.
+  const aiClipSeconds = scenes
+    .filter((s) => s.mediaType === "ai_clip")
+    .reduce((sum, s) => sum + (s.aiClipSeconds || 5), 0);
+  if (aiClipSeconds > 0) {
+    const priceKnown = track(videoModel);
+    const rate = rateFor(models, videoModel);
+    lines.push({
+      label: "Bewegte KI-Clips",
+      model: videoModel,
+      units: aiClipSeconds,
+      unit: "second",
+      rate,
+      credits: aiClipSeconds * rate,
       priceKnown,
     });
   }

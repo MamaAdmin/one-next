@@ -13,6 +13,7 @@ import {
 import type { SceneCaption } from "./types";
 import handImage from "@/assets/whiteboard-hand.png";
 import type { WhiteboardScene } from "./types";
+import { groupLines, kenBurnsFor, timeWords } from "./motion";
 import type { RendererKey } from "./styles";
 import type { VideoTheme } from "./theme";
 
@@ -234,19 +235,20 @@ const Placeholder: React.FC<{ theme: VideoTheme }> = ({ theme }) => (
 const DRAW_FRAMES = 60;
 
 /**
- * Eigene Bildschirmaufnahme. Beim Export wird OffthreadVideo genutzt,
- * in der Vorschau das normale Video-Element.
+ * Bewegtbild im Abschnitt: eigene Bildschirmaufnahme oder KI-Clip.
+ * Beim Export wird OffthreadVideo genutzt, in der Vorschau das normale Video-Element.
  */
 export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; radius?: number }> = ({
   scene,
   theme,
   radius = 20,
 }) => {
-  const url = scene.clipUrl;
+  const isAi = scene.mediaType === "ai_clip";
+  const url = isAi ? scene.aiClipUrl : scene.clipUrl;
   if (!url) return <Placeholder theme={theme} />;
 
-  const start = Math.max(0, scene.clipStartInSeconds ?? 0);
-  const end = scene.clipEndInSeconds;
+  const start = isAi ? 0 : Math.max(0, scene.clipStartInSeconds ?? 0);
+  const end = isAi ? undefined : scene.clipEndInSeconds;
   const startFrom = Math.round(start * 30);
   const endAt = end && end > start ? Math.round(end * 30) : undefined;
   const rendering = getRemotionEnvironment().isRendering;
@@ -269,9 +271,97 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
         endAt={endAt}
         // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
         pauseWhenBuffering
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+        style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
       />
     </div>
+  );
+};
+
+const hasMovingMedia = (scene?: WhiteboardScene): boolean =>
+  scene?.mediaType === "clip" || scene?.mediaType === "ai_clip";
+
+/** Ruhige Kamerafahrt über ein Standbild, damit nie ein Bild still steht. */
+const KenBurns: React.FC<{ index: number; children: React.ReactNode }> = ({ index, children }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const move = kenBurnsFor(index);
+  const p = interpolate(frame, [0, Math.max(1, durationInFrames)], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const scale = interpolate(p, [0, 1], [move.scaleFrom, move.scaleTo]);
+  const x = interpolate(p, [0, 1], [move.xFrom, move.xTo]);
+  const y = interpolate(p, [0, 1], [move.yFrom, move.yTo]);
+  return (
+    <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          transform: `translate(${x}px, ${y}px) scale(${scale})`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+/** Sprechtext wortweise als Untertitel, passend zur Abschnittsdauer. */
+export const NarrationSubtitles: React.FC<{
+  narration: string;
+  durationInSeconds: number;
+  theme: VideoTheme;
+}> = ({ narration, durationInSeconds, theme }) => {
+  const frame = useCurrentFrame();
+  const words = timeWords(narration ?? "", durationInSeconds);
+  if (words.length === 0) return null;
+  const lines = groupLines(words);
+  const active = lines.find((line) => frame < line[line.length - 1].toFrame) ?? lines[lines.length - 1];
+  return (
+    <AbsoluteFill style={{ fontFamily: theme.fontFamily, pointerEvents: "none" }}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 64,
+          display: "flex",
+          justifyContent: "center",
+          padding: "0 160px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "6px 14px",
+            background: `${theme.ink}E6`,
+            borderRadius: 18,
+            padding: "14px 26px",
+            maxWidth: 1400,
+          }}
+        >
+          {active.map((word, i) => {
+            const spoken = frame >= word.fromFrame;
+            return (
+              <span
+                key={`${word.text}-${i}`}
+                style={{
+                  fontSize: 40,
+                  fontWeight: 600,
+                  color: spoken ? theme.accent : theme.background,
+                  opacity: spoken ? 1 : 0.55,
+                }}
+              >
+                {word.text}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    </AbsoluteFill>
   );
 };
 
@@ -334,11 +424,13 @@ const DrawnIllustration: React.FC<{
   delay: number;
   theme: VideoTheme;
   scene?: WhiteboardScene;
+  index?: number;
 }> = ({
   url,
   delay,
   theme,
   scene,
+  index = 0,
 }) => {
   const frame = useCurrentFrame();
   const local = frame - delay;
@@ -350,7 +442,7 @@ const DrawnIllustration: React.FC<{
   const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
   const handY = 30 + Math.sin(local / 6) * 18;
 
-  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} />;
+  if (hasMovingMedia(scene) && scene) return <ClipStage scene={scene} theme={theme} />;
   if (!url) return <Placeholder theme={theme} />;
 
   return (
@@ -362,11 +454,13 @@ const DrawnIllustration: React.FC<{
         transform: drawing ? undefined : `translateY(${float}px)`,
       }}
     >
-      <div
-        style={{ width: "100%", height: "100%", clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)` }}
-      >
-        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      </div>
+      <KenBurns index={index}>
+        <div
+          style={{ width: "100%", height: "100%", clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)` }}
+        >
+          <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+        </div>
+      </KenBurns>
       <DrawingHand x={`${progress * 100}%`} y={`${handY}%`} visible={drawing} size={330} />
     </div>
   );
@@ -379,11 +473,12 @@ const FadeIllustration: React.FC<{
   radius?: number;
   zoom?: boolean;
   scene?: WhiteboardScene;
-}> = ({ url, delay, theme, radius = 28, zoom = true, scene }) => {
+  index?: number;
+}> = ({ url, delay, theme, radius = 28, zoom = true, scene, index = 0 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame: frame - delay, fps, config: { damping: 200 } });
-  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} radius={radius} />;
+  if (hasMovingMedia(scene) && scene) return <ClipStage scene={scene} theme={theme} radius={radius} />;
   if (!url) return <Placeholder theme={theme} />;
   const scale = zoom ? interpolate(s, [0, 1], [0.92, 1]) : 1;
   return (
@@ -397,7 +492,9 @@ const FadeIllustration: React.FC<{
         overflow: "hidden",
       }}
     >
-      <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      <KenBurns index={index}>
+        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </KenBurns>
     </div>
   );
 };
@@ -445,7 +542,7 @@ const WhiteboardSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 0.95, height: "72%" }}>
-      <DrawnIllustration url={scene.imageUrl} scene={scene} delay={12} theme={theme} />
+      <DrawnIllustration url={scene.imageUrl} scene={scene} index={index} delay={12} theme={theme} />
     </div>
   </Frame>
 );
@@ -462,7 +559,7 @@ const FlatSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 1, height: "74%" }}>
-      <FadeIllustration url={scene.imageUrl} scene={scene} delay={10} theme={theme} />
+      <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={10} theme={theme} />
     </div>
   </Frame>
 );
@@ -479,7 +576,7 @@ const MotionSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => (
       </div>
     </div>
     <div style={{ flex: 0.9, height: "70%" }}>
-      <FadeIllustration url={scene.imageUrl} scene={scene} delay={8} theme={theme} radius={24} />
+      <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={8} theme={theme} radius={24} />
     </div>
   </Frame>
 );
@@ -518,7 +615,7 @@ const ScreencastSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
           ))}
         </div>
         <div style={{ position: "absolute", inset: "54px 0 0 0" }}>
-          <FadeIllustration url={scene.imageUrl} scene={scene} delay={6} theme={theme} radius={0} zoom={false} />
+          <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={6} theme={theme} radius={0} zoom={false} />
         </div>
       </div>
 
@@ -565,7 +662,7 @@ const IsometricSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
       </div>
       <div style={{ flex: 1.05, height: "76%", overflow: "hidden" }}>
         <div style={{ width: "100%", height: "100%", transform: `translateX(${parallax}px) scale(${scale})` }}>
-          <FadeIllustration url={scene.imageUrl} scene={scene} delay={8} theme={theme} />
+          <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={8} theme={theme} />
         </div>
       </div>
     </Frame>
@@ -621,7 +718,7 @@ const AvatarSceneView: React.FC<SceneProps> = ({ scene, index, theme }) => {
   return (
     <Frame theme={theme}>
       <div style={{ flex: 0.8, height: "80%", transform: `translateY(${breathe}px)` }}>
-        <FadeIllustration url={scene.imageUrl} scene={scene} delay={0} theme={theme} zoom={false} />
+        <FadeIllustration url={scene.imageUrl} scene={scene} index={index} delay={0} theme={theme} zoom={false} />
       </div>
       <div style={{ flex: 1.2, display: "flex", flexDirection: "column", gap: 24 }}>
         <SceneNumber index={index} theme={theme} />

@@ -12,14 +12,25 @@ interface Props {
   scene: WhiteboardScene;
   videoId: string;
   onChange: (patch: Partial<WhiteboardScene>) => void;
+  /** Erzeugt aus der Zeichnung einen bewegten Clip (Bild zu Video). */
+  onGenerateAiClip?: () => void;
+  aiClipBusy?: boolean;
 }
 
-export const SceneMediaEditor: React.FC<Props> = ({ scene, videoId, onChange }) => {
+export const SceneMediaEditor: React.FC<Props> = ({
+  scene,
+  videoId,
+  onChange,
+  onGenerateAiClip,
+  aiClipBusy,
+}) => {
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [rawLength, setRawLength] = useState<number | null>(null);
-  const isClip = scene.mediaType === "clip";
+  const media = scene.mediaType ?? "image";
+  const isClip = media === "clip";
+  const isAiClip = media === "ai_clip";
   const captions = scene.captions ?? [];
 
   const start = scene.clipStartInSeconds ?? 0;
@@ -55,11 +66,11 @@ export const SceneMediaEditor: React.FC<Props> = ({ scene, videoId, onChange }) 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           type="button"
           size="sm"
-          variant={isClip ? "outline" : "default"}
+          variant={media === "image" ? "default" : "outline"}
           onClick={() => onChange({ mediaType: "image" })}
         >
           Zeichnung
@@ -67,10 +78,18 @@ export const SceneMediaEditor: React.FC<Props> = ({ scene, videoId, onChange }) 
         <Button
           type="button"
           size="sm"
+          variant={isAiClip ? "default" : "outline"}
+          onClick={() => onChange({ mediaType: "ai_clip" })}
+        >
+          Bewegter KI-Clip
+        </Button>
+        <Button
+          type="button"
+          size="sm"
           variant={isClip ? "default" : "outline"}
           onClick={() => onChange({ mediaType: "clip" })}
         >
-          Aufnahme
+          Eigene Aufnahme
         </Button>
       </div>
 
@@ -87,6 +106,57 @@ export const SceneMediaEditor: React.FC<Props> = ({ scene, videoId, onChange }) 
               alt={`Zeichnung für ${scene.heading}`}
               className="h-24 w-24 object-contain border rounded"
             />
+          )}
+
+          {isAiClip && (
+            <div className="space-y-3 rounded-lg border p-3">
+              <div className="space-y-2">
+                <Label>Was bewegt sich?</Label>
+                <Input
+                  placeholder="z. B. Die Kamera fährt langsam auf die Figur zu, die Notizzettel flattern."
+                  value={scene.motionPrompt ?? ""}
+                  onChange={(e) => onChange({ motionPrompt: e.target.value })}
+                />
+              </div>
+              <div className="flex flex-wrap items-end gap-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">Länge (Sekunden)</Label>
+                  <Input
+                    type="number"
+                    min={2}
+                    max={10}
+                    step={1}
+                    className="w-28"
+                    value={scene.aiClipSeconds ?? 5}
+                    onChange={(e) =>
+                      onChange({
+                        aiClipSeconds: Math.min(10, Math.max(2, Number(e.target.value) || 5)),
+                      })
+                    }
+                  />
+                </div>
+                {onGenerateAiClip && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={aiClipBusy || !scene.imageUrl}
+                    onClick={onGenerateAiClip}
+                  >
+                    {aiClipBusy && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                    {scene.aiClipUrl ? "Clip neu erzeugen" : "Clip erzeugen"}
+                  </Button>
+                )}
+              </div>
+              {!scene.imageUrl && (
+                <p className="text-xs text-muted-foreground">
+                  Zuerst die Zeichnung erzeugen – daraus entsteht die Bewegung.
+                </p>
+              )}
+              {scene.aiClipUrl && (
+                <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+              )}
+            </div>
           )}
         </div>
       ) : (

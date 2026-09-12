@@ -4,7 +4,8 @@ export interface SceneCaption {
   durationInSeconds: number;
 }
 
-export type SceneMediaType = "image" | "clip";
+/** "image" = KI-Zeichnung, "ai_clip" = bewegter KI-Clip, "clip" = eigene Aufnahme. */
+export type SceneMediaType = "image" | "ai_clip" | "clip";
 
 export interface WhiteboardScene {
   id: string;
@@ -15,8 +16,13 @@ export interface WhiteboardScene {
   imageUrl?: string | null;
   audioUrl?: string | null;
   durationInSeconds: number;
-  /** "image" = KI-Zeichnung (Vorgabe), "clip" = eigene Bildschirmaufnahme. */
   mediaType?: SceneMediaType;
+  /** Ein Satz, der die Bewegung im KI-Clip beschreibt. */
+  motionPrompt?: string;
+  /** Ergebnis der Bild-zu-Video-Generierung. */
+  aiClipUrl?: string | null;
+  aiClipTaskId?: string | null;
+  aiClipSeconds?: number;
   /** Pfad im Bucket whiteboard-uploads; daraus wird die signierte Adresse geholt. */
   clipPath?: string | null;
   clipUrl?: string | null;
@@ -28,6 +34,11 @@ export interface WhiteboardScene {
 export const MAX_CAPTIONS = 3;
 
 export const isClipScene = (scene: WhiteboardScene): boolean => scene.mediaType === "clip";
+
+export const isAiClipScene = (scene: WhiteboardScene): boolean => scene.mediaType === "ai_clip";
+
+/** Abschnitte, für die eine KI-Zeichnung erzeugt werden muss (auch KI-Clips brauchen ein Startbild). */
+export const needsImage = (scene: WhiteboardScene): boolean => scene.mediaType !== "clip";
 
 export type WhiteboardStatus = "draft" | "generating" | "ready" | "error";
 
@@ -48,6 +59,10 @@ export interface WhiteboardVideoProject {
   error_message: string | null;
   series_id: string | null;
   position: number | null;
+  music_url: string | null;
+  music_volume: number | null;
+  seed: number | null;
+  style_ref_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -60,6 +75,7 @@ export const createEmptyScene = (index: number): WhiteboardScene => ({
   narration: "",
   bullets: [],
   imagePrompt: "",
+  motionPrompt: "",
   imageUrl: null,
   audioUrl: null,
   durationInSeconds: 6,

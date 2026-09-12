@@ -206,12 +206,20 @@ Deno.serve(async (req) => {
       const style = String(payload.style ?? "whiteboard");
       const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.whiteboard;
       const imageModel = String(payload.model ?? "nano-banana-2");
-      const taskId = await createJobTask(imageModel, {
+      const negative = String(payload.negativePrompt ?? "").trim();
+      const seed = Number(payload.seed);
+      const input: Record<string, unknown> = {
         prompt: `${prompt}. ${suffix}`,
-        aspect_ratio: "1:1",
-        resolution: "1K",
+        aspect_ratio: "16:9",
+        resolution: "2K",
         output_format: "png",
-      });
+      };
+      if (negative) input.negative_prompt = negative;
+      if (Number.isFinite(seed) && seed > 0) input.seed = Math.round(seed);
+      // Erstes Bild als Stilreferenz, damit alle Abschnitte gleich aussehen.
+      const styleRef = String(payload.styleRefUrl ?? "").trim();
+      if (styleRef) input.image_urls = [styleRef];
+      const taskId = await createJobTask(imageModel, input);
       const remoteUrl = await pollJobTask(taskId);
       const url = await mirrorToStorage(remoteUrl, "png");
       return json({ url, taskId });
@@ -233,15 +241,25 @@ Deno.serve(async (req) => {
     if (action === "video_start") {
       const prompt = String(payload.prompt ?? "").trim();
       if (!prompt) return json({ error: "Videobeschreibung fehlt." }, 400);
+      // Mit Startbild entsteht ein bewegter Clip aus der erzeugten Zeichnung.
+      const imageUrl = String(payload.imageUrl ?? "").trim();
+      const seconds = Number(payload.seconds);
+      const seed = Number(payload.seed);
+      const body_: Record<string, unknown> = {
+        prompt: imageUrl
+          ? prompt
+          : `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
+        model: String(payload.model ?? "veo3_fast"),
+        generationType: imageUrl ? "IMAGE_2_VIDEO" : "TEXT_2_VIDEO",
+        aspect_ratio: "16:9",
+      };
+      if (imageUrl) body_.imageUrls = [imageUrl];
+      if (Number.isFinite(seconds) && seconds > 0) body_.duration = Math.round(seconds);
+      if (Number.isFinite(seed) && seed > 0) body_.seeds = Math.round(seed);
       const res = await fetch(`${KIE_BASE}/api/v1/veo/generate`, {
         method: "POST",
         headers: kieHeaders(),
-        body: JSON.stringify({
-          prompt: `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
-          model: String(payload.model ?? "veo3_fast"),
-          generationType: "TEXT_2_VIDEO",
-          aspect_ratio: "16:9",
-        }),
+        body: JSON.stringify(body_),
       });
       const body = await res.json();
       if (!res.ok || body?.code !== 200 || !body?.data?.taskId) {

@@ -215,7 +215,7 @@ const WhiteboardVideoDashboard = () => {
                           {project.title}
                         </Link>
                         <p className="text-sm text-muted-foreground truncate">
-                          {project.topic || "Kein Briefing hinterlegt"}
+                          {(project.scenes ?? []).length} Abschnitte
                         </p>
                       </div>
                     </div>

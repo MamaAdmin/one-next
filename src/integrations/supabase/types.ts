@@ -3325,12 +3325,16 @@ export type Database = {
           error_message: string | null
           id: string
           image_model: string
+          music_url: string | null
+          music_volume: number
           position: number | null
           scenes: Json
           script_type: string
+          seed: number | null
           series_id: string | null
           status: string
           style: string
+          style_ref_url: string | null
           title: string
           topic: string
           updated_at: string
@@ -3345,12 +3349,16 @@ export type Database = {
           error_message?: string | null
           id?: string
           image_model?: string
+          music_url?: string | null
+          music_volume?: number
           position?: number | null
           scenes?: Json
           script_type?: string
+          seed?: number | null
           series_id?: string | null
           status?: string
           style?: string
+          style_ref_url?: string | null
           title?: string
           topic?: string
           updated_at?: string
@@ -3365,12 +3373,16 @@ export type Database = {
           error_message?: string | null
           id?: string
           image_model?: string
+          music_url?: string | null
+          music_volume?: number
           position?: number | null
           scenes?: Json
           script_type?: string
+          seed?: number | null
           series_id?: string | null
           status?: string
           style?: string
+          style_ref_url?: string | null
           title?: string
           topic?: string
           updated_at?: string
