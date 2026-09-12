@@ -1,0 +1,1 @@
+ALTER TABLE public.whiteboard_videos ADD COLUMN IF NOT EXISTS music_path TEXT;
