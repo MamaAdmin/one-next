@@ -60,7 +60,9 @@ export interface WhiteboardVideoProject {
   series_id: string | null;
   position: number | null;
   music_url: string | null;
+  music_path?: string | null;
   music_volume: number | null;
+
   seed: number | null;
   style_ref_url: string | null;
   created_at: string;
