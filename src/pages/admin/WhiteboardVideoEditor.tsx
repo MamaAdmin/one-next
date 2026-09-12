@@ -329,6 +329,7 @@ const WhiteboardVideoEditor = () => {
         scriptType: scriptTypeOption(scriptType).label,
         scriptHint: scriptTypeOption(scriptType).promptHinweis,
         styleLabel: styleOption(style).label,
+        language,
       });
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
@@ -861,10 +862,30 @@ const WhiteboardVideoEditor = () => {
             <CardContent className="space-y-4">
               {briefingOpen && (
                 <>
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">Titel</Label>
                       <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sprache</Label>
+                      <Select
+                        value={language}
+                        onValueChange={(v) => {
+                          setLanguage(v);
+                          void save({ language: v });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="de">Deutsch</SelectItem>
+                          <SelectItem value="en">Englisch</SelectItem>
+                          <SelectItem value="fr">Französisch</SelectItem>
+                          <SelectItem value="it">Italienisch</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label>Stimme</Label>
