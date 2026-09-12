@@ -58,6 +58,9 @@ export async function callGemini(opts: CallGeminiOptions): Promise<CallGeminiRes
   };
   if (opts.json) generationConfig.responseMimeType = "application/json";
   if (opts.responseSchema) generationConfig.responseSchema = opts.responseSchema;
+  if (typeof opts.thinkingBudget === "number") {
+    generationConfig.thinkingConfig = { thinkingBudget: opts.thinkingBudget };
+  }
 
   const body: Record<string, unknown> = {
     contents,
