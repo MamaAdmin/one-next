@@ -42,7 +42,7 @@ Stil: ${styleLabel}
 
 Schlage genau 3 verschiedene Bewegungsideen vor – von dezent bis dynamisch.
 Jeder Vorschlag ist ein Satz auf Deutsch, der Kamera, Figuren und Objekte beschreibt.
-Keine Stilangaben, keine技术ischen Begriffe, nur lesbare Bewegungsbeschreibungen.
+Keine Stilangaben, keine technischen Begriffe, nur lesbare Bewegungsbeschreibungen.
 
 Antworte AUSSCHLIESSLICH mit JSON in dieser Form, ohne Markdown:
 {"suggestions":["Vorschlag 1","Vorschlag 2","Vorschlag 3"]}`;
