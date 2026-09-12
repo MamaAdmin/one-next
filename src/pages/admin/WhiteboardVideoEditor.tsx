@@ -719,11 +719,11 @@ const WhiteboardVideoEditor = () => {
         if (result.status === "failed") throw new Error(result.error ?? "Clip fehlgeschlagen");
       }
       if (!url) throw new Error("Zeitüberschreitung bei der Clip-Erzeugung");
-      setScenes((prev) =>
-        prev.map((s) =>
-          s.id === sceneId ? { ...s, mediaType: "ai_clip", aiClipUrl: url, aiClipTaskId: taskId } : s,
-        ),
+      const next = scenes.map((s) =>
+        s.id === sceneId ? { ...s, mediaType: "ai_clip" as const, aiClipUrl: url, aiClipTaskId: taskId } : s,
       );
+      setScenes(next);
+      await save({ scenes: next });
       toast({ title: "Bewegter Clip erstellt" });
       void refreshCredits();
     } catch (error) {
