@@ -53,13 +53,18 @@ Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
 Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
 }
 
-function gatewayError(status: number, message: string): string {
-  if (status === 401) return "Der KI-Zugang ist nicht konfiguriert.";
-  if (status === 402) return message || "Das KI-Guthaben reicht nicht aus. Bitte Credits aufladen.";
-  if (status === 403) return message || "Die KI-Nutzung ist für diesen Arbeitsbereich gesperrt.";
-  if (status === 429) return "Zu viele Anfragen. Bitte kurz warten und erneut versuchen.";
-  if (status >= 500) return "Die KI ist gerade nicht erreichbar. Bitte später erneut versuchen.";
-  return message || `KI-Fehler (${status})`;
+function geminiError(err: unknown): { status: number; message: string } {
+  const status = (err as { status?: number })?.status ?? 500;
+  const message = err instanceof Error ? err.message : "";
+  if (message.includes("GEMINI_API_KEY")) {
+    return { status: 500, message: "Der KI-Zugang (Gemini) ist nicht konfiguriert." };
+  }
+  if (status === 429) return { status: 429, message: "Zu viele Anfragen. Bitte kurz warten und erneut versuchen." };
+  if (status === 401 || status === 403) {
+    return { status: 502, message: "Der Gemini-Schlüssel wurde abgelehnt. Bitte den Schlüssel prüfen." };
+  }
+  if (status >= 500) return { status: 503, message: "Die KI ist gerade nicht erreichbar. Bitte später erneut versuchen." };
+  return { status: geminiErrorStatus(err), message: message || `KI-Fehler (${status})` };
 }
 
 Deno.serve(async (req) => {
