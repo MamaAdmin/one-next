@@ -94,7 +94,7 @@ const WhiteboardSeriesDetail = () => {
   const [description, setDescription] = useState("");
   const [style, setStyle] = useState("whiteboard");
   const [scriptType, setScriptType] = useState("problem_loesung");
-  const [voice, setVoice] = useState("Charlotte");
+  const [voice, setVoice] = useState("Rachel");
   const [imageModel, setImageModel] = useState("");
   const [voiceModel, setVoiceModel] = useState("");
   const [videoModel, setVideoModel] = useState("");
@@ -109,7 +109,7 @@ const WhiteboardSeriesDetail = () => {
     setDescription(loaded.description ?? "");
     setStyle(normalizeStyle(loaded.style));
     setScriptType(loaded.script_type || "problem_loesung");
-    setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
+    setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Rachel");
     setImageModel(loaded.image_model);
     setVoiceModel(loaded.voice_model);
     setVideoModel(loaded.video_model);

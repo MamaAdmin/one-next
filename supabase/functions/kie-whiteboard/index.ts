@@ -190,7 +190,7 @@ Deno.serve(async (req) => {
     const action = String(payload.action ?? "");
 
     if (action === "voice_preview") {
-      const voice = String(payload.voice ?? "Charlotte");
+      const voice = String(payload.voice ?? "Rachel");
       const model = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
       const url = await voicePreview(voice, model);
       return json({ url });
@@ -233,7 +233,7 @@ Deno.serve(async (req) => {
       const voiceModel = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
       const taskId = await createJobTask(voiceModel, {
         text,
-        voice: String(payload.voice ?? "Charlotte"),
+        voice: String(payload.voice ?? "Rachel"),
       });
       const remoteUrl = await pollJobTask(taskId);
       const url = await mirrorToStorage(remoteUrl, "mp3");
