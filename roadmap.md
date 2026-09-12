@@ -14,5 +14,5 @@
 - [x] Bewegungssystem, Übergänge und mitlaufende Untertitel in Remotion
 - [x] Bilder in 16:9/2K, Startwert und Stilreferenz
 - [x] Bewegte KI-Clips aus der Zeichnung (Bild zu Video)
-- [ ] Editor: Clip-Erzeugung, Musik, Kosten und echte Tonlänge
-- [ ] Listenansicht: nur Titel zeigen, kein umbrechender Skripttext
+- [x] Editor: Clip-Erzeugung, Musik, Untertitel, Länge mit Übergängen
+- [x] Listenansicht: nur Titel zeigen, kein Skripttext
