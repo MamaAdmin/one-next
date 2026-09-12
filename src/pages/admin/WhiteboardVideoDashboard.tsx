@@ -251,154 +251,148 @@ const WhiteboardVideoDashboard = () => {
               </>}
           />
 
-          {seriesList.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Serien</CardTitle>
-                <CardDescription>Mehrere Clips mit gemeinsamen Einstellungen.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                {seriesList.map((series) => {
-                  const summary = seriesSummary[series.id] ?? { total: 0, ready: 0, draft: 0, error: 0 };
-                  const clips = clipsBySeries[series.id] ?? [];
-                  const expanded = openSeries[series.id] ?? false;
-                  return (
-                    <div key={series.id} className="overflow-hidden rounded-md border">
-                      <div className="flex items-center justify-between gap-4 p-4">
-                        <div className="flex min-w-0 flex-1 items-center gap-3">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="shrink-0"
-                            aria-label={expanded ? "Clips ausblenden" : "Clips anzeigen"}
-                            onClick={() =>
-                              setOpenSeries((prev) => ({ ...prev, [series.id]: !expanded }))
-                            }
-                          >
-                            {expanded ? (
-                              <ChevronDown className="h-4 w-4" />
-                            ) : (
-                              <ChevronRight className="h-4 w-4" />
-                            )}
-                          </Button>
-                          <Layers className="h-5 w-5 shrink-0 text-primary" />
-                          <div className="min-w-0">
-                            <Link
-                              to={`/admin/whiteboard-videos/serie/${series.id}`}
-                              className="block truncate font-medium hover:underline"
+          <Card>
+            <CardHeader>
+              <CardTitle>Meine Videos</CardTitle>
+              <CardDescription>Serien und einzelne Videos an einem Ort.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+              {seriesList.length === 0 && singleProjects.length === 0 ? (
+                <p className="py-8 text-center text-sm text-muted-foreground">
+                  Noch kein Video angelegt.
+                </p>
+              ) : (
+                <>
+                  {seriesList.map((series) => {
+                    const summary = seriesSummary[series.id] ?? { total: 0, ready: 0, draft: 0, error: 0 };
+                    const clips = clipsBySeries[series.id] ?? [];
+                    const expanded = openSeries[series.id] ?? false;
+                    return (
+                      <div key={series.id} className="overflow-hidden rounded-md border">
+                        <div className="flex items-center justify-between gap-4 p-4">
+                          <div className="flex min-w-0 flex-1 items-center gap-3">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="shrink-0"
+                              aria-label={expanded ? "Clips ausblenden" : "Clips anzeigen"}
+                              onClick={() =>
+                                setOpenSeries((prev) => ({ ...prev, [series.id]: !expanded }))
+                              }
                             >
-                              {series.title}
+                              {expanded ? (
+                                <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Layers className="h-5 w-5 shrink-0 text-primary" />
+                            <div className="min-w-0">
+                              <Link
+                                to={`/admin/whiteboard-videos/serie/${series.id}`}
+                                className="block truncate font-medium hover:underline"
+                              >
+                                {series.title}
+                              </Link>
+                              <p className="truncate text-sm text-muted-foreground">
+                                {summary.total} Clips · {summary.ready} fertig · {summary.draft} offen
+                                {summary.error ? ` · ${summary.error} Fehler` : ""}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex shrink-0 items-center gap-2">
+                            <Button variant="outline" size="sm" asChild>
+                              <Link to={`/admin/whiteboard-videos/serie/${series.id}`}>Öffnen</Link>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Serie bearbeiten"
+                              onClick={() => openEdit(series)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Serie löschen"
+                              onClick={() => setDeleteTarget(series)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        {expanded && (
+                          <div className="border-t bg-muted/30 px-4 py-3">
+                            {clips.length === 0 ? (
+                              <p className="text-sm text-muted-foreground">
+                                Noch keine Clips in dieser Serie.
+                              </p>
+                            ) : (
+                              <ul className="grid gap-2">
+                                {clips.map((clip, index) => (
+                                  <li
+                                    key={clip.id}
+                                    className="flex items-center justify-between gap-3 overflow-hidden"
+                                  >
+                                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                                      <span className="w-6 shrink-0 text-sm text-muted-foreground">
+                                        {index + 1}.
+                                      </span>
+                                      <Link
+                                        to={`/admin/whiteboard-videos/${clip.id}`}
+                                        className="truncate text-sm hover:underline"
+                                      >
+                                        {clip.title}
+                                      </Link>
+                                    </div>
+                                    <Badge variant="secondary" className="shrink-0">
+                                      {statusLabel[clip.status] ?? clip.status}
+                                    </Badge>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {singleProjects.map((project) => (
+                    <Card key={project.id}>
+                      <CardContent className="flex items-center justify-between gap-4 py-5 overflow-hidden">
+                        <div className="flex flex-1 items-center gap-4 min-w-0">
+                          <Video className="w-5 h-5 text-primary shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <Link
+                              to={`/admin/whiteboard-videos/${project.id}`}
+                              className="font-medium hover:underline truncate block"
+                            >
+                              {project.title}
                             </Link>
-                            <p className="truncate text-sm text-muted-foreground">
-                              {summary.total} Clips · {summary.ready} fertig · {summary.draft} offen
-                              {summary.error ? ` · ${summary.error} Fehler` : ""}
+                            <p className="text-sm text-muted-foreground truncate">
+                              {(project.scenes ?? []).length} Abschnitte
                             </p>
                           </div>
                         </div>
-                        <div className="flex shrink-0 items-center gap-2">
-                          <Button variant="outline" size="sm" asChild>
-                            <Link to={`/admin/whiteboard-videos/serie/${series.id}`}>Öffnen</Link>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Serie bearbeiten"
-                            onClick={() => openEdit(series)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Serie löschen"
-                            onClick={() => setDeleteTarget(series)}
-                          >
-                            <Trash2 className="h-4 w-4" />
+                        <div className="flex items-center gap-3 shrink-0">
+                          <Badge variant="secondary">{statusLabel[project.status] ?? project.status}</Badge>
+                          <Button variant="ghost" size="icon" onClick={() => remove(project.id)}>
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
-                      </div>
-
-                      {expanded && (
-                        <div className="border-t bg-muted/30 px-4 py-3">
-                          {clips.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">
-                              Noch keine Clips in dieser Serie.
-                            </p>
-                          ) : (
-                            <ul className="grid gap-2">
-                              {clips.map((clip, index) => (
-                                <li
-                                  key={clip.id}
-                                  className="flex items-center justify-between gap-3 overflow-hidden"
-                                >
-                                  <div className="flex min-w-0 flex-1 items-center gap-3">
-                                    <span className="w-6 shrink-0 text-sm text-muted-foreground">
-                                      {index + 1}.
-                                    </span>
-                                    <Link
-                                      to={`/admin/whiteboard-videos/${clip.id}`}
-                                      className="truncate text-sm hover:underline"
-                                    >
-                                      {clip.title}
-                                    </Link>
-                                  </div>
-                                  <Badge variant="secondary" className="shrink-0">
-                                    {statusLabel[clip.status] ?? clip.status}
-                                  </Badge>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </>
+              )}
+            </CardContent>
+          </Card>
 
           <KieCreditsCard />
           <KieUsageStats />
-
-          {singleProjects.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center text-muted-foreground">
-                {seriesList.length > 0
-                  ? "Alle Videos gehören zu einer Serie."
-                  : "Noch kein Video angelegt."}
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {singleProjects.map((project) => (
-                <Card key={project.id}>
-                  <CardContent className="flex items-center justify-between gap-4 py-5 overflow-hidden">
-                    <div className="flex flex-1 items-center gap-4 min-w-0">
-                      <Video className="w-5 h-5 text-primary shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <Link
-                          to={`/admin/whiteboard-videos/${project.id}`}
-                          className="font-medium hover:underline truncate block"
-                        >
-                          {project.title}
-                        </Link>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {(project.scenes ?? []).length} Abschnitte
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <Badge variant="secondary">{statusLabel[project.status] ?? project.status}</Badge>
-                      <Button variant="ghost" size="icon" onClick={() => remove(project.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
 
           <Dialog open={editSeries !== null} onOpenChange={(open) => !open && setEditSeries(null)}>
             <DialogContent>
