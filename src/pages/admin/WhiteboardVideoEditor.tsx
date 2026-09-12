@@ -709,7 +709,7 @@ const WhiteboardVideoEditor = () => {
         ),
       );
       toast({ title: "Bewegter Clip erstellt" });
-      void loadCredits();
+      void refreshCredits();
     } catch (error) {
       toast({
         title: "Clip fehlgeschlagen",
