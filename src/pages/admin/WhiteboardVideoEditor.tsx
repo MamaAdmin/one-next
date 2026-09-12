@@ -107,6 +107,7 @@ const WhiteboardVideoEditor = () => {
   const [siblings, setSiblings] = useState<WhiteboardVideoProject[]>([]);
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
+  const [language, setLanguage] = useState("de");
   const [voice, setVoice] = useState("Charlotte");
   const [style, setStyle] = useState("whiteboard");
   const [scriptType, setScriptType] = useState("problem_loesung");
@@ -165,6 +166,7 @@ const WhiteboardVideoEditor = () => {
       setProject(loaded);
       setTitle(loaded.title);
       setTopic(loaded.topic);
+      setLanguage(loaded.language || "de");
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
       setStyle(normalizeStyle(loaded.style));
       setScriptType(loaded.script_type || "problem_loesung");
@@ -227,6 +229,7 @@ const WhiteboardVideoEditor = () => {
         .update({
           title,
           topic,
+          language,
           voice,
           style,
           script_type: scriptType,
@@ -242,7 +245,7 @@ const WhiteboardVideoEditor = () => {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
+    [videoId, title, topic, language, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
   );
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
@@ -326,6 +329,7 @@ const WhiteboardVideoEditor = () => {
         scriptType: scriptTypeOption(scriptType).label,
         scriptHint: scriptTypeOption(scriptType).promptHinweis,
         styleLabel: styleOption(style).label,
+        language,
       });
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
@@ -858,10 +862,30 @@ const WhiteboardVideoEditor = () => {
             <CardContent className="space-y-4">
               {briefingOpen && (
                 <>
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">Titel</Label>
                       <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sprache</Label>
+                      <Select
+                        value={language}
+                        onValueChange={(v) => {
+                          setLanguage(v);
+                          void save({ language: v });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="de">Deutsch</SelectItem>
+                          <SelectItem value="en">Englisch</SelectItem>
+                          <SelectItem value="fr">Französisch</SelectItem>
+                          <SelectItem value="it">Italienisch</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label>Stimme</Label>
