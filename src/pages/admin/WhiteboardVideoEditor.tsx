@@ -407,7 +407,13 @@ const WhiteboardVideoEditor = () => {
       const prompt = scene.imagePrompt || scene.heading;
       if (!prompt) continue;
       try {
-        const result = await generateImage(prompt, style, imageModel);
+        // Startwert und das erste Bild als Referenz halten den Look zusammen.
+        const styleRefUrl = next.find((s) => s.imageUrl)?.imageUrl ?? null;
+        const result = await generateImage(prompt, style, {
+          model: imageModel,
+          seed: project?.seed ?? null,
+          styleRefUrl,
+        });
         next[i] = { ...scene, imageUrl: result.url };
         created += 1;
         actual += perImage;
@@ -1270,6 +1276,8 @@ const WhiteboardVideoEditor = () => {
                     scene={scene}
                     videoId={videoId ?? ""}
                     onChange={(patch) => updateScene(scene.id, patch)}
+                    onGenerateAiClip={() => void runAiClip(scene.id)}
+                    aiClipBusy={aiClipBusy === scene.id}
                   />
                   <div className="flex items-center gap-4">
                     {scene.audioUrl && <audio src={scene.audioUrl} controls className="h-10" />}
