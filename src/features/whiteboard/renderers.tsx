@@ -473,11 +473,12 @@ const FadeIllustration: React.FC<{
   radius?: number;
   zoom?: boolean;
   scene?: WhiteboardScene;
-}> = ({ url, delay, theme, radius = 28, zoom = true, scene }) => {
+  index?: number;
+}> = ({ url, delay, theme, radius = 28, zoom = true, scene, index = 0 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame: frame - delay, fps, config: { damping: 200 } });
-  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} radius={radius} />;
+  if (hasMovingMedia(scene) && scene) return <ClipStage scene={scene} theme={theme} radius={radius} />;
   if (!url) return <Placeholder theme={theme} />;
   const scale = zoom ? interpolate(s, [0, 1], [0.92, 1]) : 1;
   return (
@@ -491,7 +492,9 @@ const FadeIllustration: React.FC<{
         overflow: "hidden",
       }}
     >
-      <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      <KenBurns index={index}>
+        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+      </KenBurns>
     </div>
   );
 };
