@@ -424,11 +424,13 @@ const DrawnIllustration: React.FC<{
   delay: number;
   theme: VideoTheme;
   scene?: WhiteboardScene;
+  index?: number;
 }> = ({
   url,
   delay,
   theme,
   scene,
+  index = 0,
 }) => {
   const frame = useCurrentFrame();
   const local = frame - delay;
@@ -440,7 +442,7 @@ const DrawnIllustration: React.FC<{
   const float = Math.sin((local - DRAW_FRAMES) / 40) * 6;
   const handY = 30 + Math.sin(local / 6) * 18;
 
-  if (scene?.mediaType === "clip") return <ClipStage scene={scene} theme={theme} />;
+  if (hasMovingMedia(scene) && scene) return <ClipStage scene={scene} theme={theme} />;
   if (!url) return <Placeholder theme={theme} />;
 
   return (
@@ -452,11 +454,13 @@ const DrawnIllustration: React.FC<{
         transform: drawing ? undefined : `translateY(${float}px)`,
       }}
     >
-      <div
-        style={{ width: "100%", height: "100%", clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)` }}
-      >
-        <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      </div>
+      <KenBurns index={index}>
+        <div
+          style={{ width: "100%", height: "100%", clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)` }}
+        >
+          <Img src={url} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+        </div>
+      </KenBurns>
       <DrawingHand x={`${progress * 100}%`} y={`${handY}%`} visible={drawing} size={330} />
     </div>
   );
