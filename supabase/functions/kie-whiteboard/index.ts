@@ -206,12 +206,20 @@ Deno.serve(async (req) => {
       const style = String(payload.style ?? "whiteboard");
       const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.whiteboard;
       const imageModel = String(payload.model ?? "nano-banana-2");
-      const taskId = await createJobTask(imageModel, {
+      const negative = String(payload.negativePrompt ?? "").trim();
+      const seed = Number(payload.seed);
+      const input: Record<string, unknown> = {
         prompt: `${prompt}. ${suffix}`,
-        aspect_ratio: "1:1",
-        resolution: "1K",
+        aspect_ratio: "16:9",
+        resolution: "2K",
         output_format: "png",
-      });
+      };
+      if (negative) input.negative_prompt = negative;
+      if (Number.isFinite(seed) && seed > 0) input.seed = Math.round(seed);
+      // Erstes Bild als Stilreferenz, damit alle Abschnitte gleich aussehen.
+      const styleRef = String(payload.styleRefUrl ?? "").trim();
+      if (styleRef) input.image_urls = [styleRef];
+      const taskId = await createJobTask(imageModel, input);
       const remoteUrl = await pollJobTask(taskId);
       const url = await mirrorToStorage(remoteUrl, "png");
       return json({ url, taskId });
