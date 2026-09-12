@@ -91,7 +91,7 @@ import {
   type WhiteboardVideoSeries,
 } from "@/features/whiteboard/series";
 
-const VOICES = ["Charlotte", "Rachel", "Aria", "Sarah", "George", "Liam", "Matilda"];
+const VOICES = ["Rachel", "Aria", "Bella", "Emma", "Hope", "Liam", "Brian", "Felix"];
 const DEFAULT_CLIP_SECONDS = 4;
 const MIN_CLIP_SECONDS = 2;
 const MAX_CLIP_SECONDS = 10;
@@ -108,7 +108,7 @@ const WhiteboardVideoEditor = () => {
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [language, setLanguage] = useState("de");
-  const [voice, setVoice] = useState("Charlotte");
+  const [voice, setVoice] = useState("Rachel");
   const [style, setStyle] = useState("whiteboard");
   const [scriptType, setScriptType] = useState("problem_loesung");
   const [imageModel, setImageModel] = useState(DEFAULT_IMAGE_MODEL);
@@ -167,7 +167,7 @@ const WhiteboardVideoEditor = () => {
       setTitle(loaded.title);
       setTopic(loaded.topic);
       setLanguage(loaded.language || "de");
-      setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Charlotte");
+      setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Rachel");
       setStyle(normalizeStyle(loaded.style));
       setScriptType(loaded.script_type || "problem_loesung");
       setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);

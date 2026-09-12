@@ -161,8 +161,26 @@ async function voicePreview(voice: string, model: string): Promise<string> {
     if (!signed.error && signed.data?.signedUrl) return signed.data.signedUrl;
   }
 
-  const taskId = await createJobTask(model, { text: PREVIEW_TEXT, voice });
-  const remoteUrl = await pollJobTask(taskId);
+  // Der Sprachdienst meldet gelegentlich „Internal Error“ — dann erneut versuchen.
+  let remoteUrl: string | null = null;
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const taskId = await createJobTask(model, { text: PREVIEW_TEXT, voice });
+      remoteUrl = await pollJobTask(taskId);
+      break;
+    } catch (err) {
+      lastError = err;
+      const message = err instanceof Error ? err.message : "";
+      if (!message.includes("Internal Error")) throw err;
+    }
+  }
+  if (!remoteUrl) {
+    console.error("[kie-whiteboard] Hörprobe nach 3 Versuchen fehlgeschlagen:", lastError);
+    throw new Error(
+      "Der Sprachdienst meldet gerade eine Störung. Bitte in ein paar Minuten erneut versuchen — es wurden keine Credits verbraucht.",
+    );
+  }
   const res = await fetch(remoteUrl);
   if (!res.ok) throw new Error(`Hörprobe konnte nicht geladen werden (${res.status})`);
   const bytes = new Uint8Array(await res.arrayBuffer());
@@ -190,7 +208,7 @@ Deno.serve(async (req) => {
     const action = String(payload.action ?? "");
 
     if (action === "voice_preview") {
-      const voice = String(payload.voice ?? "Charlotte");
+      const voice = String(payload.voice ?? "Rachel");
       const model = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
       const url = await voicePreview(voice, model);
       return json({ url });
@@ -231,13 +249,31 @@ Deno.serve(async (req) => {
       const text = String(payload.text ?? "").trim().slice(0, 4800);
       if (!text) return json({ error: "Sprechtext fehlt." }, 400);
       const voiceModel = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
-      const taskId = await createJobTask(voiceModel, {
-        text,
-        voice: String(payload.voice ?? "Charlotte"),
-      });
-      const remoteUrl = await pollJobTask(taskId);
+      // Der Sprachdienst meldet gelegentlich „Internal Error“ — dann erneut versuchen.
+      let remoteUrl: string | null = null;
+      let lastError: unknown = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const taskId = await createJobTask(voiceModel, {
+            text,
+            voice: String(payload.voice ?? "Rachel"),
+          });
+          remoteUrl = await pollJobTask(taskId);
+          break;
+        } catch (err) {
+          lastError = err;
+          const message = err instanceof Error ? err.message : "";
+          if (!message.includes("Internal Error")) throw err;
+        }
+      }
+      if (!remoteUrl) {
+        console.error("[kie-whiteboard] Stimme nach 3 Versuchen fehlgeschlagen:", lastError);
+        throw new Error(
+          "Der Sprachdienst meldet gerade eine Störung. Bitte in ein paar Minuten erneut versuchen — es wurden keine Credits verbraucht.",
+        );
+      }
       const url = await mirrorToStorage(remoteUrl, "mp3");
-      return json({ url, taskId });
+      return json({ url });
     }
 
     if (action === "video_start") {
