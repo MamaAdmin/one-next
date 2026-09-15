@@ -185,7 +185,6 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
   const startFrom = Math.round(start * 30);
   const endAt = end && end > start ? Math.round(end * 30) : undefined;
   const rendering = getRemotionEnvironment().isRendering;
-  const VideoTag = rendering ? OffthreadVideo : Video;
 
   return (
     <div
