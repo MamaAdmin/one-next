@@ -196,15 +196,26 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
         background: theme.ink,
       }}
     >
-      <VideoTag
-        src={url}
-        muted
-        startFrom={startFrom}
-        endAt={endAt}
-        // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
-        pauseWhenBuffering
-        style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
-      />
+      {rendering ? (
+        <MediaVideo
+          src={url}
+          muted
+          trimBefore={startFrom}
+          trimAfter={endAt}
+          style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
+        />
+      ) : (
+        <Video
+          src={url}
+          muted
+          startFrom={startFrom}
+          endAt={endAt}
+          // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
+          pauseWhenBuffering
+          style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
+        />
+      )}
+
     </div>
   );
 };
