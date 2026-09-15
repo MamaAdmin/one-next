@@ -1,8 +1,6 @@
 import {
   AbsoluteFill,
-  Audio,
   Img,
-  OffthreadVideo,
   Video,
   getRemotionEnvironment,
   interpolate,
@@ -10,6 +8,8 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+// Der Browser-Export unterstützt nur die Medien-Bausteine aus @remotion/media.
+import { Audio, Video as MediaVideo } from "@remotion/media";
 import type { SceneCaption } from "./types";
 import handImage from "@/assets/whiteboard-hand.png";
 import type { WhiteboardScene } from "./types";
