@@ -1,12 +1,13 @@
 import {
   AbsoluteFill,
-  Audio,
   Sequence,
   interpolate,
   spring,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+// Der Browser-Export unterstützt nur die Medien-Bausteine aus @remotion/media.
+import { Audio } from "@remotion/media";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 import { fade } from "@remotion/transitions/fade";
