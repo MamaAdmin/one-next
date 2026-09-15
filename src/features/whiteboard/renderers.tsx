@@ -1,8 +1,6 @@
 import {
   AbsoluteFill,
-  Audio,
   Img,
-  OffthreadVideo,
   Video,
   getRemotionEnvironment,
   interpolate,
@@ -10,6 +8,8 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+// Der Browser-Export unterstützt nur die Medien-Bausteine aus @remotion/media.
+import { Audio, Video as MediaVideo } from "@remotion/media";
 import type { SceneCaption } from "./types";
 import handImage from "@/assets/whiteboard-hand.png";
 import type { WhiteboardScene } from "./types";
@@ -185,7 +185,6 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
   const startFrom = Math.round(start * 30);
   const endAt = end && end > start ? Math.round(end * 30) : undefined;
   const rendering = getRemotionEnvironment().isRendering;
-  const VideoTag = rendering ? OffthreadVideo : Video;
 
   return (
     <div
@@ -197,15 +196,26 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
         background: theme.ink,
       }}
     >
-      <VideoTag
-        src={url}
-        muted
-        startFrom={startFrom}
-        endAt={endAt}
-        // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
-        pauseWhenBuffering
-        style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
-      />
+      {rendering ? (
+        <MediaVideo
+          src={url}
+          muted
+          trimBefore={startFrom}
+          trimAfter={endAt}
+          style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
+        />
+      ) : (
+        <Video
+          src={url}
+          muted
+          startFrom={startFrom}
+          endAt={endAt}
+          // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
+          pauseWhenBuffering
+          style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
+        />
+      )}
+
     </div>
   );
 };
