@@ -1,11 +1,17 @@
 import { supabase } from "@/integrations/supabase/client";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import type { WhiteboardScene } from "./types";
 
 async function invokeFn<T>(fn: string, body: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase.functions.invoke(fn, { body });
   if (error) {
     const detail = (data as { error?: string } | null)?.error;
-    throw new Error(detail ?? error.message);
+    if (detail) throw new Error(detail);
+    if (error instanceof FunctionsHttpError) {
+      const responseBody = await error.context.json().catch(() => null) as { error?: string } | null;
+      throw new Error(responseBody?.error ?? error.message);
+    }
+    throw new Error(error.message);
   }
   if ((data as { error?: string })?.error) {
     throw new Error((data as { error: string }).error);

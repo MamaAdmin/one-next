@@ -74,7 +74,7 @@ async function createJobTask(model: string, input: Record<string, unknown>): Pro
   return body.data.taskId as string;
 }
 
-async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string> {
+async function pollJobTask(taskId: string, timeoutMs = 75_000): Promise<string> {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
     await new Promise((r) => setTimeout(r, 3000));
@@ -149,51 +149,40 @@ async function fetchCredits(): Promise<number> {
 const PREVIEW_TEXT =
   "Guten Tag. So klingt diese Stimme in Ihrem Whiteboard-Lernvideo.";
 
-async function voicePreview(voice: string, model: string): Promise<string> {
-  const safe = (value: string) => value.replace(/[^a-zA-Z0-9-_]/g, "_");
-  const path = `previews/${safe(model)}-${safe(voice)}.mp3`;
+const VOICE_IDS: Record<string, string> = {
+  Rachel: "aD6riP1btT197c6dACmy",
+  Aria: "TC0Zp7WVFzhA8zpTlRqV",
+  Bella: "hpp4J3VqNfWAUOO0d1Us",
+  Emma: "pPdl9cQBQq4p6mRkZy2Z",
+  Hope: "uYXf8XasLslADfZ2MB4u",
+  Liam: "TX3LPaxmHKxFdv7VOQHJ",
+  Brian: "nPczCjzI2devNBz1zQrb",
+  Felix: "Sq93GQT4X1lKDXsQcixO",
+};
 
-  const existing = await admin.storage.from(BUCKET).list("previews", {
-    search: path.split("/")[1],
-  });
-  if (!existing.error && (existing.data ?? []).some((f) => f.name === path.split("/")[1])) {
-    const signed = await admin.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24);
-    if (!signed.error && signed.data?.signedUrl) return signed.data.signedUrl;
-  }
+function resolveVoiceId(voice: string): string {
+  return VOICE_IDS[voice] ?? voice;
+}
 
-  // Der Sprachdienst meldet gelegentlich „Internal Error“ — dann erneut versuchen.
-  let remoteUrl: string | null = null;
-  let lastError: unknown = null;
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const taskId = await createJobTask(model, { text: PREVIEW_TEXT, voice });
-      remoteUrl = await pollJobTask(taskId);
-      break;
-    } catch (err) {
-      lastError = err;
-      const message = err instanceof Error ? err.message : "";
-      if (!message.includes("Internal Error")) throw err;
-    }
-  }
-  if (!remoteUrl) {
-    console.error("[kie-whiteboard] Hörprobe nach 3 Versuchen fehlgeschlagen:", lastError);
-    throw new Error(
-      "Der Sprachdienst meldet gerade eine Störung. Bitte in ein paar Minuten erneut versuchen — es wurden keine Credits verbraucht.",
-    );
-  }
-  const res = await fetch(remoteUrl);
-  if (!res.ok) throw new Error(`Hörprobe konnte nicht geladen werden (${res.status})`);
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  const upload = await admin.storage.from(BUCKET).upload(path, bytes, {
-    contentType: "audio/mpeg",
-    upsert: true,
-  });
-  if (upload.error) throw new Error(upload.error.message);
-  const signed = await admin.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24);
-  if (signed.error || !signed.data?.signedUrl) {
-    throw new Error(signed.error?.message ?? "Signierte URL fehlgeschlagen");
-  }
-  return signed.data.signedUrl;
+function voiceInput(text: string, voice: string): Record<string, unknown> {
+  return {
+    text,
+    voice: resolveVoiceId(voice),
+    stability: 0.5,
+    similarity_boost: 0.75,
+    style: 0,
+    speed: 1,
+    timestamps: false,
+    previous_text: "",
+    next_text: "",
+    language_code: "",
+  };
+}
+
+function voicePreview(voice: string): string {
+  const voiceId = resolveVoiceId(voice);
+  if (!/^[a-zA-Z0-9]{20}$/.test(voiceId)) throw new Error("Unbekannte Sprecherstimme");
+  return `https://static.aiquickdraw.com/elevenlabs/voice/${voiceId}.mp3`;
 }
 
 
@@ -209,8 +198,7 @@ Deno.serve(async (req) => {
 
     if (action === "voice_preview") {
       const voice = String(payload.voice ?? "Rachel");
-      const model = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
-      const url = await voicePreview(voice, model);
+      const url = voicePreview(voice);
       return json({ url });
     }
 
@@ -249,16 +237,18 @@ Deno.serve(async (req) => {
       const text = String(payload.text ?? "").trim().slice(0, 4800);
       if (!text) return json({ error: "Sprechtext fehlt." }, 400);
       const voiceModel = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
-      // Der Sprachdienst meldet gelegentlich „Internal Error“ — dann erneut versuchen.
+      // Ein einzelner Wiederholungsversuch bleibt innerhalb der Laufzeit der Edge Function.
       let remoteUrl: string | null = null;
+      let completedTaskId: string | null = null;
       let lastError: unknown = null;
-      for (let attempt = 0; attempt < 3; attempt++) {
+      for (let attempt = 0; attempt < 2; attempt++) {
         try {
-          const taskId = await createJobTask(voiceModel, {
-            text,
-            voice: String(payload.voice ?? "Rachel"),
-          });
+          const taskId = await createJobTask(
+            voiceModel,
+            voiceInput(text, String(payload.voice ?? "Rachel")),
+          );
           remoteUrl = await pollJobTask(taskId);
+          completedTaskId = taskId;
           break;
         } catch (err) {
           lastError = err;
@@ -267,13 +257,13 @@ Deno.serve(async (req) => {
         }
       }
       if (!remoteUrl) {
-        console.error("[kie-whiteboard] Stimme nach 3 Versuchen fehlgeschlagen:", lastError);
+        console.error("[kie-whiteboard] Stimme nach 2 Versuchen fehlgeschlagen:", lastError);
         throw new Error(
           "Der Sprachdienst meldet gerade eine Störung. Bitte in ein paar Minuten erneut versuchen — es wurden keine Credits verbraucht.",
         );
       }
       const url = await mirrorToStorage(remoteUrl, "mp3");
-      return json({ url });
+      return json({ url, taskId: completedTaskId });
     }
 
     if (action === "video_start") {
