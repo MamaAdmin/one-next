@@ -74,7 +74,7 @@ async function createJobTask(model: string, input: Record<string, unknown>): Pro
   return body.data.taskId as string;
 }
 
-async function pollJobTask(taskId: string, timeoutMs = 75_000): Promise<string> {
+async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string> {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
     await new Promise((r) => setTimeout(r, 3000));
