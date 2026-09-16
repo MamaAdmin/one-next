@@ -89,8 +89,24 @@ export const generateImage = (
   return invoke<{ url: string; taskId?: string }>({ action: "image", prompt, style, ...opts });
 };
 
-export const generateVoice = (text: string, voice: string, model?: string) =>
-  invoke<{ url: string; taskId?: string }>({ action: "voice", text, voice, model });
+const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+export const generateVoice = async (text: string, voice: string, model?: string) => {
+  const { taskId } = await invoke<{ taskId: string }>({ action: "voice_start", text, voice, model });
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    await wait(3000);
+    const result = await invoke<{
+      status: "pending" | "done" | "failed";
+      url?: string;
+      error?: string;
+    }>({ action: "voice_status", taskId });
+    if (result.status === "done" && result.url) return { url: result.url, taskId };
+    if (result.status === "failed") {
+      throw new Error(result.error ?? "Spracherzeugung fehlgeschlagen");
+    }
+  }
+  throw new Error("Die Spracherzeugung dauert länger als erwartet. Bitte später erneut versuchen.");
+};
 
 export const fetchCredits = () =>
   invoke<{ credits: number }>({ action: "credits" }).then((r) => r.credits);

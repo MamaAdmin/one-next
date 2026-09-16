@@ -97,6 +97,36 @@ async function pollJobTask(taskId: string, timeoutMs = 75_000): Promise<string> 
   throw new Error("Zeitüberschreitung bei der Generierung");
 }
 
+async function checkJobTask(taskId: string): Promise<{
+  status: "pending" | "done" | "failed";
+  url?: string;
+  error?: string;
+}> {
+  const res = await fetch(`${KIE_BASE}/api/v1/jobs/recordInfo?taskId=${encodeURIComponent(taskId)}`, {
+    headers: kieHeaders(),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || body?.code !== 200) {
+    throw new Error(body?.msg ?? `Kie.ai nicht erreichbar (${res.status})`);
+  }
+  const state = body?.data?.state;
+  if (state === "success") {
+    const parsed = JSON.parse(body.data.resultJson ?? "{}");
+    const url = parsed?.resultUrls?.[0];
+    return url
+      ? { status: "done", url }
+      : { status: "failed", error: "Kie.ai lieferte keine Audiodatei" };
+  }
+  if (state === "fail") {
+    console.error("[checkJobTask] fail", JSON.stringify(body?.data)?.slice(0, 600));
+    return {
+      status: "failed",
+      error: body?.data?.failMsg ?? "Spracherzeugung fehlgeschlagen",
+    };
+  }
+  return { status: "pending" };
+}
+
 const STYLE_SUFFIX: Record<string, string> = {
   whiteboard:
     "Black ink whiteboard marker line drawing, hand drawn doodle style, clean white background, no text, minimal, high contrast.",
@@ -233,37 +263,24 @@ Deno.serve(async (req) => {
       return json({ url, taskId });
     }
 
-    if (action === "voice") {
+    if (action === "voice_start") {
       const text = String(payload.text ?? "").trim().slice(0, 4800);
       if (!text) return json({ error: "Sprechtext fehlt." }, 400);
       const voiceModel = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
-      // Ein einzelner Wiederholungsversuch bleibt innerhalb der Laufzeit der Edge Function.
-      let remoteUrl: string | null = null;
-      let completedTaskId: string | null = null;
-      let lastError: unknown = null;
-      for (let attempt = 0; attempt < 2; attempt++) {
-        try {
-          const taskId = await createJobTask(
-            voiceModel,
-            voiceInput(text, String(payload.voice ?? "Rachel")),
-          );
-          remoteUrl = await pollJobTask(taskId);
-          completedTaskId = taskId;
-          break;
-        } catch (err) {
-          lastError = err;
-          const message = err instanceof Error ? err.message : "";
-          if (!message.includes("Internal Error")) throw err;
-        }
-      }
-      if (!remoteUrl) {
-        console.error("[kie-whiteboard] Stimme nach 2 Versuchen fehlgeschlagen:", lastError);
-        throw new Error(
-          "Der Sprachdienst meldet gerade eine Störung. Bitte in ein paar Minuten erneut versuchen — es wurden keine Credits verbraucht.",
-        );
-      }
-      const url = await mirrorToStorage(remoteUrl, "mp3");
-      return json({ url, taskId: completedTaskId });
+      const taskId = await createJobTask(
+        voiceModel,
+        voiceInput(text, String(payload.voice ?? "Rachel")),
+      );
+      return json({ taskId });
+    }
+
+    if (action === "voice_status") {
+      const taskId = String(payload.taskId ?? "").trim();
+      if (!taskId) return json({ error: "taskId fehlt." }, 400);
+      const result = await checkJobTask(taskId);
+      if (result.status !== "done" || !result.url) return json(result);
+      const url = await mirrorToStorage(result.url, "mp3");
+      return json({ status: "done", url });
     }
 
     if (action === "video_start") {
