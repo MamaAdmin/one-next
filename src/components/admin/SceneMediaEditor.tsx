@@ -302,7 +302,8 @@ export const SceneMediaEditor: React.FC<Props> = ({
             <video
               src={scene.clipUrl}
               controls
-              className="w-full max-w-md rounded border"
+              playsInline
+              className="w-full aspect-video rounded-lg border bg-muted object-contain"
               onLoadedMetadata={(e) => setRawLength(e.currentTarget.duration)}
             />
           )}
