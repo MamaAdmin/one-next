@@ -64,6 +64,29 @@ export const SceneMediaEditor: React.FC<Props> = ({
     }
   };
 
+  const handleDeleteClip = async () => {
+    setUploading(true);
+    try {
+      if (scene.clipPath) await deleteClip(scene.clipPath);
+      onChange({
+        clipPath: null,
+        clipUrl: null,
+        clipStartInSeconds: 0,
+        clipEndInSeconds: undefined,
+      });
+      setRawLength(null);
+      toast({ title: "Aufnahme gelöscht" });
+    } catch (error) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const setCaption = (index: number, patch: Partial<SceneCaption>) =>
     onChange({ captions: captions.map((c, i) => (i === index ? { ...c, ...patch } : c)) });
 
