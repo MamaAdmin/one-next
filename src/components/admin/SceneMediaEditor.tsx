@@ -232,7 +232,21 @@ export const SceneMediaEditor: React.FC<Props> = ({
                 </p>
               )}
               {scene.aiClipUrl && (
-                <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+                <div className="space-y-2">
+                  <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive"
+                    onClick={() => {
+                      onChange({ aiClipUrl: null, aiClipTaskId: null });
+                      toast({ title: "Clip gelöscht" });
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" /> Clip löschen
+                  </Button>
+                </div>
               )}
             </div>
           )}
