@@ -130,7 +130,7 @@ export const SceneMediaEditor: React.FC<Props> = ({
             <img
               src={scene.imageUrl}
               alt={`Zeichnung für ${scene.heading}`}
-              className="h-24 w-24 object-contain border rounded"
+              className="w-full aspect-video object-contain border rounded-lg bg-muted"
             />
           )}
 
