@@ -130,7 +130,7 @@ export const SceneMediaEditor: React.FC<Props> = ({
             <img
               src={scene.imageUrl}
               alt={`Zeichnung für ${scene.heading}`}
-              className="h-24 w-24 object-contain border rounded"
+              className="w-full aspect-video object-contain border rounded-lg bg-muted"
             />
           )}
 
@@ -233,7 +233,12 @@ export const SceneMediaEditor: React.FC<Props> = ({
               )}
               {scene.aiClipUrl && (
                 <div className="space-y-2">
-                  <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+                  <video
+                    src={scene.aiClipUrl}
+                    controls
+                    playsInline
+                    className="w-full aspect-video rounded-lg border bg-muted object-contain"
+                  />
                   <Button
                     type="button"
                     size="sm"
@@ -297,7 +302,8 @@ export const SceneMediaEditor: React.FC<Props> = ({
             <video
               src={scene.clipUrl}
               controls
-              className="w-full max-w-md rounded border"
+              playsInline
+              className="w-full aspect-video rounded-lg border bg-muted object-contain"
               onLoadedMetadata={(e) => setRawLength(e.currentTarget.duration)}
             />
           )}
