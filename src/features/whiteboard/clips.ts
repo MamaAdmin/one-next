@@ -42,6 +42,12 @@ export const uploadClip = async (
   return { path, url };
 };
 
+/** Entfernt eine hochgeladene Aufnahme aus dem Bucket. */
+export const deleteClip = async (path: string): Promise<void> => {
+  const { error } = await supabase.storage.from(CLIP_BUCKET).remove([path]);
+  if (error) throw new Error(error.message);
+};
+
 /** Holt für alle Aufnahme-Abschnitte frische signierte Adressen. */
 export const withFreshClipUrls = async (
   scenes: WhiteboardScene[],
