@@ -278,6 +278,18 @@ export const SceneMediaEditor: React.FC<Props> = ({
               )}
               {scene.clipPath ? "Aufnahme ersetzen" : "Aufnahme hochladen"}
             </Button>
+            {(scene.clipPath || scene.clipUrl) && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="text-destructive"
+                disabled={uploading}
+                onClick={() => void handleDeleteClip()}
+              >
+                <Trash2 className="w-4 h-4 mr-1" /> Aufnahme löschen
+              </Button>
+            )}
             <span className="text-xs text-muted-foreground">MP4 oder WEBM, höchstens 200 MB</span>
           </div>
 
