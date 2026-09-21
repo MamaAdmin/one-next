@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2, Plus, Trash2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { uploadClip, validateClipFile } from "@/features/whiteboard/clips";
+import { deleteClip, uploadClip, validateClipFile } from "@/features/whiteboard/clips";
 import { fetchMotionSuggestions } from "@/features/whiteboard/api";
 import { MAX_CAPTIONS, type SceneCaption, type WhiteboardScene } from "@/features/whiteboard/types";
 
@@ -61,6 +61,29 @@ export const SceneMediaEditor: React.FC<Props> = ({
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const handleDeleteClip = async () => {
+    setUploading(true);
+    try {
+      if (scene.clipPath) await deleteClip(scene.clipPath);
+      onChange({
+        clipPath: null,
+        clipUrl: null,
+        clipStartInSeconds: 0,
+        clipEndInSeconds: undefined,
+      });
+      setRawLength(null);
+      toast({ title: "Aufnahme gelöscht" });
+    } catch (error) {
+      toast({
+        title: "Löschen fehlgeschlagen",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -209,7 +232,21 @@ export const SceneMediaEditor: React.FC<Props> = ({
                 </p>
               )}
               {scene.aiClipUrl && (
-                <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+                <div className="space-y-2">
+                  <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive"
+                    onClick={() => {
+                      onChange({ aiClipUrl: null, aiClipTaskId: null });
+                      toast({ title: "Clip gelöscht" });
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" /> Clip löschen
+                  </Button>
+                </div>
               )}
             </div>
           )}
@@ -241,6 +278,18 @@ export const SceneMediaEditor: React.FC<Props> = ({
               )}
               {scene.clipPath ? "Aufnahme ersetzen" : "Aufnahme hochladen"}
             </Button>
+            {(scene.clipPath || scene.clipUrl) && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="text-destructive"
+                disabled={uploading}
+                onClick={() => void handleDeleteClip()}
+              >
+                <Trash2 className="w-4 h-4 mr-1" /> Aufnahme löschen
+              </Button>
+            )}
             <span className="text-xs text-muted-foreground">MP4 oder WEBM, höchstens 200 MB</span>
           </div>
 
