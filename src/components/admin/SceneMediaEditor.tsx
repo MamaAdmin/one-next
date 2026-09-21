@@ -233,7 +233,12 @@ export const SceneMediaEditor: React.FC<Props> = ({
               )}
               {scene.aiClipUrl && (
                 <div className="space-y-2">
-                  <video src={scene.aiClipUrl} controls className="w-full max-w-md rounded border" />
+                  <video
+                    src={scene.aiClipUrl}
+                    controls
+                    playsInline
+                    className="w-full aspect-video rounded-lg border bg-muted object-contain"
+                  />
                   <Button
                     type="button"
                     size="sm"
