@@ -40,15 +40,24 @@ function kieHeaders() {
   return { Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
 }
 
-async function mirrorToStorage(sourceUrl: string, extension: string): Promise<string> {
+async function mirrorToStorage(
+  sourceUrl: string,
+  extension: string,
+  name?: string,
+): Promise<string> {
+  const path = `${name ?? crypto.randomUUID()}.${extension}`;
+  // Bei festem Namen reicht es, die bereits gespiegelte Datei erneut zu signieren.
+  if (name) {
+    const existing = await admin.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24 * 365);
+    if (existing.data?.signedUrl) return existing.data.signedUrl;
+  }
   const res = await fetch(sourceUrl);
   if (!res.ok) throw new Error(`Asset konnte nicht geladen werden (${res.status})`);
   const bytes = new Uint8Array(await res.arrayBuffer());
-  const path = `${crypto.randomUUID()}.${extension}`;
   const contentType = res.headers.get("content-type") ?? "application/octet-stream";
   const { error } = await admin.storage.from(BUCKET).upload(path, bytes, {
     contentType,
-    upsert: false,
+    upsert: true,
   });
   if (error) throw new Error(error.message);
   const signed = await admin.storage
@@ -279,7 +288,7 @@ Deno.serve(async (req) => {
       if (!taskId) return json({ error: "taskId fehlt." }, 400);
       const result = await checkJobTask(taskId);
       if (result.status !== "done" || !result.url) return json(result);
-      const url = await mirrorToStorage(result.url, "mp3");
+      const url = await mirrorToStorage(result.url, "mp3", taskId);
       return json({ status: "done", url });
     }
 
@@ -340,7 +349,7 @@ Deno.serve(async (req) => {
       if (flag === 1) {
         const remoteUrl = body?.data?.response?.resultUrls?.[0];
         if (!remoteUrl) return json({ status: "failed", error: "Kein Video erhalten" });
-        const url = await mirrorToStorage(remoteUrl, "mp4");
+        const url = await mirrorToStorage(remoteUrl, "mp4", taskId);
         return json({ status: "done", url });
       }
       if (flag === 2 || flag === 3) {

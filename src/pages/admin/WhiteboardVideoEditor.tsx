@@ -220,6 +220,48 @@ const WhiteboardVideoEditor = () => {
     if (pollRef.current) window.clearInterval(pollRef.current);
   }, []);
 
+  // Clips, die beim letzten Besuch noch liefen, werden weiterverfolgt.
+  const resumedRef = useRef(false);
+  useEffect(() => {
+    if (resumedRef.current || scenes.length === 0) return;
+    const pending = scenes.filter((s) => s.aiClipTaskId && !s.aiClipUrl);
+    if (pending.length === 0) return;
+    resumedRef.current = true;
+    let stopped = false;
+    const resume = async () => {
+      for (const scene of pending) {
+        for (let attempt = 0; attempt < 90 && !stopped; attempt++) {
+          let result;
+          try {
+            result = await checkVideo(scene.aiClipTaskId as string);
+          } catch {
+            break;
+          }
+          if (result.status === "failed") break;
+          if (result.status === "done" && result.url) {
+            const url = result.url;
+            setScenes((prev) => {
+              const next = prev.map((s) => (s.id === scene.id ? { ...s, aiClipUrl: url } : s));
+              void (supabase as any)
+                .from("whiteboard_videos")
+                .update({ scenes: next })
+                .eq("id", videoId);
+              return next;
+            });
+            toast({ title: "Bewegter Clip fertig", description: scene.heading });
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 5000));
+        }
+      }
+    };
+    void resume();
+    return () => {
+      stopped = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenes.length]);
+
   const save = useCallback(
     async (patch: Partial<WhiteboardVideoProject> = {}) => {
       if (!videoId) return;
@@ -712,8 +754,14 @@ const WhiteboardVideoEditor = () => {
         seconds,
         seed: project?.seed ?? null,
       });
+      // Auftrag sofort merken, damit er beim Zurückkehren weiterverfolgt wird.
+      const started = scenes.map((s) =>
+        s.id === sceneId ? { ...s, mediaType: "ai_clip" as const, aiClipTaskId: taskId } : s,
+      );
+      setScenes(started);
+      await save({ scenes: started });
       let url: string | null = null;
-      for (let attempt = 0; attempt < 60; attempt++) {
+      for (let attempt = 0; attempt < 90; attempt++) {
         await new Promise((r) => setTimeout(r, 5000));
         const result = await checkVideo(taskId);
         if (result.status === "done" && result.url) {
@@ -722,10 +770,11 @@ const WhiteboardVideoEditor = () => {
         }
         if (result.status === "failed") throw new Error(result.error ?? "Clip fehlgeschlagen");
       }
-      if (!url) throw new Error("Zeitüberschreitung bei der Clip-Erzeugung");
-      const next = scenes.map((s) =>
-        s.id === sceneId ? { ...s, mediaType: "ai_clip" as const, aiClipUrl: url, aiClipTaskId: taskId } : s,
-      );
+      if (!url)
+        throw new Error(
+          "Die Clip-Erzeugung dauert länger als erwartet. Sie läuft weiter – öffne den Abschnitt später erneut.",
+        );
+      const next = started.map((s) => (s.id === sceneId ? { ...s, aiClipUrl: url } : s));
       setScenes(next);
       await save({ scenes: next });
       toast({ title: "Bewegter Clip erstellt" });
