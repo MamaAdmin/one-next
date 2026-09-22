@@ -111,10 +111,23 @@ export default function FramingStepCard({
     }
   }
 
-  async function handleSave(opts?: { completed?: boolean; next?: boolean }) {
+  async function handleSave(opts?: { completed?: boolean; next?: boolean; force?: boolean }) {
     if (opts?.completed) {
       const w = getStepWarnings(step.key, data);
       setWarnings(w);
+      // Bei offenen Angaben speichern wir als abgeschlossen, bleiben aber
+      // stehen, damit der gelbe Hinweis sichtbar ist. Erst ein weiterer Klick
+      // ("Trotzdem weiter") navigiert weiter.
+      if (w.length > 0 && !opts?.force) {
+        setSaving(true);
+        try {
+          const { vorschlaege: _discard, ...cleanData } = data as Record<string, unknown>;
+          await onSave(cleanData as FramingStepData, { completed: true });
+        } finally {
+          setSaving(false);
+        }
+        return;
+      }
     } else {
       setWarnings([]);
     }
@@ -336,10 +349,18 @@ export default function FramingStepCard({
           </Button>
           <Button
             className=""
-            onClick={() => handleSave({ completed: true, next: true })}
+            onClick={() =>
+              handleSave({ completed: true, next: true, force: warnings.length > 0 })
+            }
             disabled={saving}
           >
-            {saving ? "Speichert …" : onNext ? "Abschließen & weiter" : "Abschließen"}
+            {saving
+              ? "Speichert …"
+              : warnings.length > 0
+                ? "Trotzdem weiter"
+                : onNext
+                  ? "Abschließen & weiter"
+                  : "Abschließen"}
           </Button>
         </div>
       </CardContent>
