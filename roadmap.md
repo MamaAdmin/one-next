@@ -28,5 +28,5 @@
 
 - [x] Ursprünglichen Seitenaufbau und Inhalte prüfen
 - [x] Leistungen-Menü mit Icons und Einordnungen aufwerten
-- [ ] Workshop-Seite im vertrauten Aufbau visuell verfeinern
-- [ ] Desktop- und Mobilansicht sowie Links prüfen
+- [x] Workshop-Seite im vertrauten Aufbau visuell verfeinern
+- [x] Desktop- und Mobilansicht sowie Links prüfen

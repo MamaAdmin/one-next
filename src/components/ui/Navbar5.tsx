@@ -1,4 +1,5 @@
 import { MenuIcon, type LucideIcon } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import {
@@ -45,6 +46,7 @@ type Navbar5Props = {
 
 export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrolled = false }: Navbar5Props) => {
   const { pathname } = useLocation();
+  const [desktopMenu, setDesktopMenu] = useState("");
 
   return (
   <header
@@ -58,13 +60,13 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
         <img src={logoSrc} alt={logoAlt} className="h-[2.1rem] w-auto" />
       </Link>
 
-      <NavigationMenu className="hidden lg:flex">
+      <NavigationMenu value={desktopMenu} onValueChange={setDesktopMenu} className="hidden lg:flex" onMouseLeave={() => setDesktopMenu("")}>
         <NavigationMenuList>
           {items.map((item) => (
-            <NavigationMenuItem key={item.id}>
+            <NavigationMenuItem key={item.id} value={item.id}>
               {item.children?.length ? (
                 <>
-                  <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                  <NavigationMenuTrigger onMouseEnter={() => setDesktopMenu(item.id)} onFocus={() => setDesktopMenu(item.id)}>{item.label}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[52rem] grid-cols-5 gap-2 p-5">
                       {item.children.map((child) => {
