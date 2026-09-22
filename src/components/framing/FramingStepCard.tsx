@@ -2284,7 +2284,15 @@ function VariantNuf({
   }
 
   function chooseTop1(r: NufRow) {
-    patch({ top1Id: r.id, top1Challenge: r.text });
+    let id = r.id;
+    const p: Partial<FramingStepData> = {};
+    if (!id) {
+      id = newId();
+      p.nufBewertungen = bew.map((x) => (x === r ? { ...x, id } : x));
+    }
+    p.top1Id = id;
+    p.top1Challenge = r.text;
+    patch(p);
   }
 
   function removeRow(i: number) {
