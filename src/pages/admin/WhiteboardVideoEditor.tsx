@@ -47,6 +47,7 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  GripVertical,
   Image as ImageIcon,
   Loader2,
   Mic,
@@ -134,6 +135,18 @@ const WhiteboardVideoEditor = () => {
   const [clipSeconds, setClipSeconds] = useState(DEFAULT_CLIP_SECONDS);
   const [clipDialogOpen, setClipDialogOpen] = useState(false);
   const [aiClipBusy, setAiClipBusy] = useState<string | null>(null);
+  // Abschnitte per Ziehen neu sortieren.
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const moveScene = (from: number, to: number) => {
+    if (from === to) return;
+    setScenes((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  };
   const [subtitles, setSubtitles] = useState(true);
   const [previewLoading, setPreviewLoading] = useState(false);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -1359,9 +1372,38 @@ const WhiteboardVideoEditor = () => {
                   <AccordionItem
                     key={scene.id}
                     value={scene.id}
-                    className="rounded-lg border px-4"
+                    className={`rounded-lg border px-4 transition-colors ${
+                      dragOverIndex === index && dragIndex !== index
+                        ? "border-primary bg-muted/50"
+                        : ""
+                    } ${dragIndex === index ? "opacity-60" : ""}`}
+                    onDragOver={(e) => {
+                      if (dragIndex === null) return;
+                      e.preventDefault();
+                      setDragOverIndex(index);
+                    }}
+                    onDrop={(e) => {
+                      if (dragIndex === null) return;
+                      e.preventDefault();
+                      moveScene(dragIndex, index);
+                      setDragIndex(null);
+                      setDragOverIndex(null);
+                    }}
                   >
                     <div className="flex items-center gap-3">
+                      <span
+                        draggable
+                        onDragStart={() => setDragIndex(index)}
+                        onDragEnd={() => {
+                          setDragIndex(null);
+                          setDragOverIndex(null);
+                        }}
+                        title="Zum Sortieren ziehen"
+                        aria-label="Abschnitt verschieben"
+                        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+                      >
+                        <GripVertical className="w-4 h-4" />
+                      </span>
                       <AccordionTrigger className="flex-1 hover:no-underline">
                         <div className="flex items-center gap-3 text-left">
                           <Badge variant="secondary">Abschnitt {index + 1}</Badge>
