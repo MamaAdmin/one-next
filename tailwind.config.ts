@@ -17,6 +17,8 @@ export default {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
         display: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
+        workshop: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'workshop-heading': ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         'tightest': '-0.03em',

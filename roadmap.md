@@ -23,3 +23,10 @@
 - [x] Hirzel, Zielorte und Entfernungen einbinden
 - [x] Globus unter den Kontaktinformationen platzieren
 - [x] Darstellung und Bedienung auf Desktop und Mobilgeräten prüfen
+
+# Leistungen und Problem-Framing-Workshop
+
+- [x] Ursprünglichen Seitenaufbau und Inhalte prüfen
+- [x] Leistungen-Menü mit Icons und Einordnungen aufwerten
+- [ ] Workshop-Seite im vertrauten Aufbau visuell verfeinern
+- [ ] Desktop- und Mobilansicht sowie Links prüfen
