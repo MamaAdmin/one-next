@@ -131,7 +131,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               />
             </div>
             <div className="pt-8 md:pt-0">
-              <Button variant="outline" size="lg" className="rounded-full border-foreground/15 hover:bg-foreground/5">
+              <Button variant="outline" size="lg" className="rounded-none border-border-accent hover:bg-accent-soft">
                 {isEditMode ? (
                   <InlineTextField
                     value={content.success_button || 'Unsere Lösungen'}
