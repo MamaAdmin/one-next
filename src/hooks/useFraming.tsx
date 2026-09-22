@@ -177,6 +177,35 @@ export function useFramingSuggest() {
   });
 }
 
+export interface NufRatingSuggestion {
+  frage: string;
+  neuheit: number;
+  nutzen: number;
+  machbarkeit: number;
+  begruendung: string;
+}
+
+/** Schritt 9: KI-Einschätzung (Neu / Nützlich / Realisierbar) je bestehender Frage. */
+export function useFramingRatingSuggest() {
+  return useMutation({
+    mutationFn: async (args: {
+      session_id: string;
+      fragen: string[];
+    }): Promise<{ bewertungen: NufRatingSuggestion[] }> => {
+      const { data, error } = await supabase.functions.invoke("framing-ai-suggest", {
+        body: {
+          session_id: args.session_id,
+          step_key: "9",
+          field: "bewertung",
+          fragen: args.fragen,
+        },
+      });
+      if (error) throw error;
+      return { bewertungen: (data as { bewertungen?: NufRatingSuggestion[] })?.bewertungen ?? [] };
+    },
+  });
+}
+
 export function useGenerateChallenge() {
   return useMutation({
     mutationFn: async (args: { session_id: string }): Promise<ChallengeStatementResult> => {
