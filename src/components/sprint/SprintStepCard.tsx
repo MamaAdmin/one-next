@@ -629,7 +629,7 @@ export default function SprintStepCard({
                   />
                   {herkunft[a] && framing ? (
                     <a
-                      href={`/sprint/framing/${framing.sessionId}`}
+                      href={`/sprint/framing/${framing.sessionId}?step=${herkunft[a].stepKey}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-2 inline-flex items-center gap-1 rounded-sm border border-primary/30 px-2 py-0.5 text-[11px] text-primary hover:bg-primary/5"
