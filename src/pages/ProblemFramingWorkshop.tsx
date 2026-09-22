@@ -187,16 +187,16 @@ const ProblemFramingWorkshop = () => {
             </div>
           </section>
 
-          <section className="border-y border-border bg-primary py-16 text-primary-foreground md:py-24">
+          <section className="border-y border-border-accent bg-accent-soft/40 py-16 md:py-24">
             <div className="container px-4 md:px-6">
               <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
                 <div>
-                  <p className="mb-3 text-sm font-bold uppercase text-primary-foreground/70">Arbeitsweise</p>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Arbeitsweise</p>
                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Moderation statt starrer Vorlagen</h2>
-                  <p className="mt-5 max-w-xl leading-relaxed text-primary-foreground/75">Moderierte Gespräche, Whiteboards und kollaborative Denkprozesse passen sich Ihrem Team und Ihrer Challenge an. Methoden und Fragen werden situativ gewählt.</p>
+                  <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">Moderierte Gespräche, Whiteboards und kollaborative Denkprozesse passen sich Ihrem Team und Ihrer Challenge an. Methoden und Fragen werden situativ gewählt.</p>
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2">
-                  {["Moderierte Gespräche", "Adaptive Methoden", "Situative Fragetechniken", "Live-Dokumentation"].map((item) => <div key={item} className="border-t border-primary-foreground/25 pt-4"><CheckCircle2 className="mb-3 size-5" /><p className="font-workshop-heading font-semibold">{item}</p></div>)}
+                  {["Moderierte Gespräche", "Adaptive Methoden", "Situative Fragetechniken", "Live-Dokumentation"].map((item) => <div key={item} className="border-t border-border-accent pt-4"><CheckCircle2 className="mb-3 size-5 text-primary" /><p className="font-workshop-heading font-semibold">{item}</p></div>)}
                 </div>
               </div>
             </div>
