@@ -153,7 +153,7 @@ const WhiteboardStudio = () => {
         },
         inputProps: inputProps as never,
       });
-      const blob = await result.getBlob();
+      const blob = await result.blob({ format: "png" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
