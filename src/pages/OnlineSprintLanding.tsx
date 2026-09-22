@@ -275,14 +275,9 @@ const OnlineSprintLanding = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
-        </div>
-        
+      <section className="py-24 border-y border-border-accent bg-accent-soft/40 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
-          <Card className="bg-background/95 backdrop-blur-sm border-none shadow-2xl max-w-4xl mx-auto">
+          <Card className="bg-background border border-border-accent shadow-card max-w-4xl mx-auto">
             <CardContent className="p-12 text-center space-y-6">
               <h2 className="text-4xl font-bold">
                 Bereit für Ihren{" "}

@@ -328,12 +328,12 @@ const AboutUs = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-primary">
+      <section className="py-20 px-6 border-y border-border-accent bg-accent-soft/40">
         <div className="container mx-auto max-w-4xl text-center space-y-8">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white">
+          <h2 className="text-4xl lg:text-5xl font-bold">
             Lassen Sie uns gemeinsam Ihre KI-Zukunft gestalten
           </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Kontaktieren Sie uns für ein unverbindliches Erstgespräch und erfahren Sie, 
             wie wir Ihr Unternehmen mit KI voranbringen können.
           </p>

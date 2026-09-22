@@ -54,42 +54,37 @@ const AIConsultingServices = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
-        </div>
-        
+      <section className="pt-32 pb-20 border-b border-border-accent bg-accent-soft/40 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full">
+            <div className="inline-flex items-center gap-2 border border-border-accent bg-background text-primary px-4 py-2 rounded-full">
               <SparklesIcon className="w-5 h-5" />
               <span className="font-semibold">KI Consulting Services</span>
             </div>
-            
+
             <InlineTextField
               value={content.hero_title || 'Strategische KI-Beratung für Ihren nachhaltigen Wettbewerbsvorteil'}
               onSave={(value) => updateContent('hero_title', value)}
               isEditMode={isEditMode}
-              className="text-5xl lg:text-6xl font-bold text-primary-foreground"
+              className="text-5xl lg:text-6xl font-bold"
               placeholder="Hero title"
               as="h1"
             />
-            
+
             <InlineTextArea
               value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
               onSave={(value) => updateContent('hero_description', value)}
               isEditMode={isEditMode}
-              className="text-xl text-primary-foreground/90 leading-relaxed"
+              className="text-xl text-muted-foreground leading-relaxed"
               placeholder="Hero description"
               minRows={3}
             />
-            
+
             <div className="mt-6">
               <CalendarBookingDialog
                 buttonText="Beratungsgespräch vereinbaren"
                 buttonSize="lg"
-                buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6"
+                buttonClassName="text-lg px-8 py-6"
               />
             </div>
           </div>
