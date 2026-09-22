@@ -2354,9 +2354,9 @@ function VariantNuf({
       <CanvasSection defaultOpen title="1. Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
         <div className="rounded-lg border-l-4 border-l-primary bg-accent-soft p-3 text-sm text-foreground/80 space-y-1.5">
           <p>NUF steht für New, Useful, Feasible – im Deutschen Neu, Nützlich, Machbar. Ihr bewertet hier Fragen, keine Lösungen.</p>
-          <p><strong>New (Neu)</strong>: Wurde die Idee so schon einmal ausprobiert? Hebt sie sich von bestehenden Ansätzen oder Mitbewerbern ab? [1, 2, 3]</p>
-          <p><strong>Useful (Nützlich)</strong>: Löst die Idee das eigentliche Kernproblem? Erfüllt sie ein echtes Bedürfnis oder hilft sie dabei, die gesetzten Ziele direkt zu erreichen? [1, 2, 3]</p>
-          <p><strong>Feasible (Machbar)</strong>: Lässt sich die Idee mit den vorhandenen Ressourcen in die Praxis umsetzen? Hierbei werden Budget, technisches Know-how und der zeitliche Rahmen berücksichtigt. [1, 2, 3]</p>
+          <p><strong>New (Neu)</strong>: Wurde die Idee so schon einmal ausprobiert? Hebt sie sich von bestehenden Ansätzen oder Mitbewerbern ab?&nbsp;</p>
+          <p><strong>Useful (Nützlich)</strong>: Löst die Idee das eigentliche Kernproblem? Erfüllt sie ein echtes Bedürfnis oder hilft sie dabei, die gesetzten Ziele direkt zu erreichen?&nbsp;</p>
+          <p><strong>Feasible (Machbar)</strong>: Lässt sich die Idee mit den vorhandenen Ressourcen in die Praxis umsetzen? Hierbei werden Budget, technisches Know-how und der zeitliche Rahmen berücksichtigt.&nbsp;</p>
         </div>
 
         {hatDrift ? (
