@@ -66,9 +66,8 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
                     {item.label}
                   </Button>
                   <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover/nav:visible group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:opacity-100">
-                    <ul className="grid w-[52rem] grid-cols-5 gap-2 rounded-md border border-border bg-popover p-5 text-popover-foreground shadow-lg">
-                      {item.children.map((child) => {
-                        const Icon = child.icon;
+                    <ul className="w-[52rem] rounded-md border border-border bg-popover p-3 text-popover-foreground shadow-lg">
+                      {item.children.map((child, index) => {
                         const active = pathname === child.href;
                         return (
                         <li key={child.id}>
@@ -76,14 +75,14 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
                             <Link
                               to={child.href}
                               className={cn(
-                                "group/service block h-full rounded-lg border px-4 py-4 text-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                                active ? "border-primary bg-primary text-primary-foreground" : "border-transparent text-foreground",
-                                child.depth ? "pl-7" : "font-medium",
+                                "group/service block border-l-2 px-5 py-4 text-sm transition-colors hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                active ? "border-primary bg-accent-soft" : "border-border/60",
+                                index > 0 && "border-t border-t-border/40",
+                                child.depth && "pl-8",
                               )}
                             >
-                              {Icon && <span className={cn("mb-4 flex size-10 items-center justify-center rounded-md bg-muted", active && "bg-primary-foreground/10")}><Icon className="size-5" /></span>}
-                              <span className="block font-workshop-heading text-sm font-semibold leading-snug">{child.label}</span>
-                              {child.description && <span className={cn("mt-2 block text-xs font-normal leading-relaxed", active ? "text-primary-foreground/75" : "text-muted-foreground")}>{child.description}</span>}
+                              <span className="block font-workshop-heading text-sm font-semibold leading-snug text-foreground">{child.label}</span>
+                              {child.description && <span className="mt-1 block text-xs font-normal leading-relaxed text-muted-foreground">{child.description}</span>}
                             </Link>
                           </NavigationMenuLink>
                         </li>
@@ -127,19 +126,17 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
                   <AccordionTrigger className="text-base hover:no-underline">{item.label}</AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-1">
-                      {item.children.map((child) => {
-                        const Icon = child.icon;
-                        return (
+                      {item.children.map((child) => (
                         <SheetClose asChild key={child.id}>
                           <Link
                             to={child.href}
-                            className={cn("flex min-h-14 items-start gap-3 rounded-md px-3 py-3 text-sm hover:bg-accent-soft", pathname === child.href && "bg-accent-soft", child.depth && "pl-7")}
+                            className={cn("block min-h-14 border-l-2 border-border/60 px-4 py-3 text-sm hover:bg-accent-soft", pathname === child.href && "border-primary bg-accent-soft", child.depth && "pl-8")}
                           >
-                            {Icon && <Icon className="mt-0.5 size-5 shrink-0 text-primary" />}
-                            <span><span className="block font-workshop-heading font-semibold">{child.label}</span>{child.description && <span className="mt-1 block text-xs text-muted-foreground">{child.description}</span>}</span>
+                            <span className="block font-workshop-heading font-semibold">{child.label}</span>
+                            {child.description && <span className="mt-1 block text-xs text-muted-foreground">{child.description}</span>}
                           </Link>
                         </SheetClose>
-                      )})}
+                      ))}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
