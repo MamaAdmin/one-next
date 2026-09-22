@@ -205,6 +205,7 @@ export default function FramingStepCard({
 
         <StepVariant
           step={step}
+          sessionId={sessionId}
           allSteps={allSteps}
           data={data}
           patch={patch}
