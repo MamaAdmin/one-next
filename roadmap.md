@@ -41,3 +41,9 @@
 - [x] Erwartungsbild mit ChatGPT und Claude schärfen
 - [x] Modulare Agenda für 1–4 Tage einführen
 - [x] Desktop- und Mobilansicht prüfen
+
+## Design-Sprint-Struktur wie Problem Framing
+- [x] Ausgangslage, Ziel und Rollen in das gemeinsame Seitenraster übertragen
+- [x] Modulare Agenda für Desktop und Smartphone angleichen
+- [x] Arbeitsweise und Ergebnisse verdichten
+- [ ] Desktop- und Mobilansicht prüfen
