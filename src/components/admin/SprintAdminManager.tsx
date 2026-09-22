@@ -135,11 +135,7 @@ export default function SprintAdminManager() {
                       <TableRow
                         key={r.id}
                         className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => navigate(
-                          r.resulting_sprint_id
-                            ? `/sprint/${r.resulting_sprint_id}`
-                            : `/sprint/framing/${r.id}`
-                        )}
+                        onClick={() => navigate(`/sprint/framing/${r.id}`)}
                       >
                         <TableCell className="font-medium">{r.titel_arbeitstitel}</TableCell>
                         <TableCell>
@@ -165,7 +161,16 @@ export default function SprintAdminManager() {
                         <TableCell>{r.member_count}</TableCell>
                         <TableCell className="text-sm">
                           {r.resulting_sprint_id ? (
-                            <Badge variant="outline">Sprint erstellt</Badge>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/sprint/${r.resulting_sprint_id}`);
+                              }}
+                            >
+                              Zum Sprint
+                            </Button>
                           ) : (
                             "—"
                           )}
