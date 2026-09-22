@@ -40,7 +40,7 @@ const Services = () => {
           }}>
                 <CardContent className="p-6 md:p-8 space-y-3 md:space-y-4">
                   <div className="w-14 h-14 md:w-16 md:h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Icon className="w-7 h-7 md:w-8 md:h-8 text-primary-foreground" />
+                    <Icon className="w-7 h-7 md:w-8 md:h-8 text-primary" />
                   </div>
                   <div className="space-y-1 md:space-y-2">
                     <p className="text-xs md:text-sm font-semibold text-primary leading-tight">{service.step}</p>

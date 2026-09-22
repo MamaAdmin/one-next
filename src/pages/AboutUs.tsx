@@ -59,7 +59,7 @@ const AboutUs = () => {
             </p>
           </div>
           
-          <Card className="max-w-4xl mx-auto shadow-elegant hover:shadow-glow transition-all duration-300">
+          <Card className="max-w-4xl mx-auto shadow-elegant hover:shadow-card transition-all duration-300">
             <CardContent className="p-8">
               <div className="grid md:grid-cols-[auto_1fr] gap-8 items-center">
                 <Avatar className="h-48 w-48">
@@ -111,7 +111,7 @@ const AboutUs = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <Card className="group hover-scale shadow-elegant hover:shadow-glow transition-all duration-300">
+            <Card className="group hover-scale shadow-elegant hover:shadow-card transition-all duration-300">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                   <BrainIcon className="w-8 h-8 text-primary" />
@@ -124,7 +124,7 @@ const AboutUs = () => {
               </CardContent>
             </Card>
 
-            <Card className="group hover-scale shadow-elegant hover:shadow-glow transition-all duration-300">
+            <Card className="group hover-scale shadow-elegant hover:shadow-card transition-all duration-300">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                   <TargetIcon className="w-8 h-8 text-primary" />
@@ -137,7 +137,7 @@ const AboutUs = () => {
               </CardContent>
             </Card>
 
-            <Card className="group hover-scale shadow-elegant hover:shadow-glow transition-all duration-300">
+            <Card className="group hover-scale shadow-elegant hover:shadow-card transition-all duration-300">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                   <LightbulbIcon className="w-8 h-8 text-primary" />
@@ -150,7 +150,7 @@ const AboutUs = () => {
               </CardContent>
             </Card>
 
-            <Card className="group hover-scale shadow-elegant hover:shadow-glow transition-all duration-300">
+            <Card className="group hover-scale shadow-elegant hover:shadow-card transition-all duration-300">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                   <RocketIcon className="w-8 h-8 text-primary" />

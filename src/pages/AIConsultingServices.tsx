@@ -220,7 +220,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <TargetIcon className="w-8 h-8 text-primary-foreground" />
+                  <TargetIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">KI-Strategie-Entwicklung</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -234,7 +234,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <LightbulbIcon className="w-8 h-8 text-primary-foreground" />
+                  <LightbulbIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Machbarkeitsanalysen</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -247,7 +247,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <CpuIcon className="w-8 h-8 text-primary-foreground" />
+                  <CpuIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Technologie-Evaluierung</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -260,7 +260,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <RocketIcon className="w-8 h-8 text-primary-foreground" />
+                  <RocketIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Implementierungs-Roadmaps</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -273,7 +273,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <GraduationCapIcon className="w-8 h-8 text-primary-foreground" />
+                  <GraduationCapIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Team-Training & Workshops</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -286,7 +286,7 @@ const AIConsultingServices = () => {
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
                 <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <ScaleIcon className="w-8 h-8 text-primary-foreground" />
+                  <ScaleIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Ethik & Governance</h3>
                 <p className="text-muted-foreground leading-relaxed">

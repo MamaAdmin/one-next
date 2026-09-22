@@ -78,7 +78,7 @@ const Applications = ({ isEditMode = false }: ApplicationsProps) => {
               >
                 <CardContent className="p-8 space-y-4">
                   <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon className="w-8 h-8 text-primary-foreground" />
+                    <Icon className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="text-2xl font-bold">{app.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{app.description}</p>

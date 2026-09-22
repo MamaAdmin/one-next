@@ -150,7 +150,7 @@ const OnlineSprintLanding = () => {
                       </div>
                       
                       <div className="w-12 h-12 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center z-10 flex-shrink-0">
-                        <Icon className="w-6 h-6 text-primary-foreground" />
+                        <Icon className="w-6 h-6 text-primary" />
                       </div>
                       
                       <div className={`flex-1 ${index % 2 === 0 ? 'order-2' : ''}`} />
@@ -177,7 +177,7 @@ const OnlineSprintLanding = () => {
               return <Card key={index} className="text-center hover:shadow-hover transition-all">
                   <CardContent className="p-6 space-y-4">
                     <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                      <Icon className="w-7 h-7 text-primary-foreground" />
+                      <Icon className="w-7 h-7 text-primary" />
                     </div>
                     <h3 className="font-bold text-lg">{feature.title}</h3>
                     <p className="text-muted-foreground text-sm">{feature.description}</p>
