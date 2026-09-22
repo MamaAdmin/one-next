@@ -36,6 +36,13 @@
       "when": 1789204365259,
       "tag": "0004_whiteboard_videos_language",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790081930283,
+      "tag": "0005_bmad_sessions_link_sprint",
+      "breakpoints": true
     }
   ]
 }

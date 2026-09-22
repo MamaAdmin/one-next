@@ -332,10 +332,12 @@ export type Database = {
           current_phase: string
           description: string | null
           development_started_at: string | null
+          framing_session_id: string | null
           id: string
           planning_completed_at: string | null
           project_context: string | null
           settings: Json | null
+          sprint_id: string | null
           status: Database["public"]["Enums"]["bmad_session_status"]
           title: string
           updated_at: string
@@ -346,10 +348,12 @@ export type Database = {
           current_phase?: string
           description?: string | null
           development_started_at?: string | null
+          framing_session_id?: string | null
           id?: string
           planning_completed_at?: string | null
           project_context?: string | null
           settings?: Json | null
+          sprint_id?: string | null
           status?: Database["public"]["Enums"]["bmad_session_status"]
           title: string
           updated_at?: string
@@ -360,15 +364,32 @@ export type Database = {
           current_phase?: string
           description?: string | null
           development_started_at?: string | null
+          framing_session_id?: string | null
           id?: string
           planning_completed_at?: string | null
           project_context?: string | null
           settings?: Json | null
+          sprint_id?: string | null
           status?: Database["public"]["Enums"]["bmad_session_status"]
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bmad_sessions_framing_session_id_fkey"
+            columns: ["framing_session_id"]
+            isOneToOne: false
+            referencedRelation: "framing_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bmad_sessions_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "sprints"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories: {
         Row: {
