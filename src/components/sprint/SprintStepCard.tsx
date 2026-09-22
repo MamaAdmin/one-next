@@ -335,7 +335,7 @@ export default function SprintStepCard({
   function acceptVorschlag(v: string) {
     const next = buildAcceptedSuggestionsData(latestDataRef.current, [v]);
     latestDataRef.current = next;
-    setEigene(next.eigene ?? []);
+    setAntworten(toAntwortenArray(next));
     setVorschlaege(next.vorschlaege ?? []);
     persistSnapshot(next);
   }
@@ -345,7 +345,7 @@ export default function SprintStepCard({
     if (!current.vorschlaege?.length) return;
     const next = buildAcceptedSuggestionsData(current, current.vorschlaege);
     latestDataRef.current = next;
-    setEigene(next.eigene ?? []);
+    setAntworten(toAntwortenArray(next));
     setVorschlaege(next.vorschlaege ?? []);
     persistSnapshot(next);
     toast({ title: "Alle Vorschläge übernommen" });
