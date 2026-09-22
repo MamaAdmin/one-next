@@ -94,12 +94,13 @@ export default function FramingWorkspace() {
   useEffect(() => {
     const raw = searchParams.get("step");
     if (!raw) return;
+    if (!session) return; // erst springen, wenn die Session geladen ist
     const idx = Number(raw);
     const next = new URLSearchParams(searchParams);
     next.delete("step");
     setSearchParams(next, { replace: true });
     if (!Number.isFinite(idx) || idx < 1) return;
-    if (session && session.current_step !== idx) {
+    if (session.current_step !== idx) {
       goTo(idx);
     } else {
       setShowCompletion(false);
