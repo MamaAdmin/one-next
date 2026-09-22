@@ -217,6 +217,43 @@ const CustomAIDevelopment = () => {
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">
               <div className="mx-auto max-w-6xl">
+                <div className="mb-12 max-w-2xl">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Was ist BMAD?</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Eine Methode für umsetzungsreife KI-Planung</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">BMAD (Breakthrough Method of Agile AI-Driven Development) ist eine strukturierte Methode, die fachliche und technische Anforderungen zu einem vollständigen Spezifikations-Paket verbindet. Ein nach der BMAD-Methode erstellter Blueprint ist ein in Markdown-Dokumenten festgehaltenes Paket, das alle folgenden Phasen der Entwicklung trägt.</p>
+                </div>
+
+                <div className="grid gap-0 border-t border-border md:grid-cols-3">
+                  {[
+                    [FileText, "Product Requirements Document (PRD)", "Eine präzise Beschreibung aller Anforderungen und Systemgrenzen."],
+                    [Layers, "Architektur-Spezifikation", "Die technische Struktur, Datenflüsse, API-Anbindungen und die Auswahl der passenden KI-Modelle."],
+                    [GitBranch, "User Stories & Epics", "In kleine, testbare Häppchen zerlegte Aufgabenpakete für die Entwicklung."],
+                  ].map(([Icon, title, text]) => {
+                    const ItemIcon = Icon as typeof FileText;
+                    return (
+                      <div key={title as string} className="border-b border-border px-0 py-7 md:border-r md:border-b-0 md:last:border-r-0 md:px-8 md:first:pl-0">
+                        <ItemIcon className="mb-5 size-7 text-primary" />
+                        <h3 className="font-workshop-heading text-lg font-semibold">{title as string}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text as string}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-10 flex gap-4 border-l-4 border-primary bg-accent-soft p-6">
+                  <FileCheck2 className="size-7 shrink-0 text-primary" />
+                  <div>
+                    <h3 className="font-workshop-heading font-semibold">Der Zweck des Blueprints</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Mit dem fertigen Dokument erhalten Sie ein umsetzungsreifes Lastenheft. Dieser KI-Bauplan ist so detailliert und präzise aufbereitet, dass er direkt an externe Softwareentwickler oder an KI-Entwicklungs-Agenten wie Claude Code oder Cursor übergeben werden kann. Dadurch werden Missverständnisse, Fehler und unnötige Entwicklungsschleifen minimiert.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
                 <div className="mb-12 text-center">
                   <p className="mb-3 text-sm font-bold uppercase text-primary">BMAD-Blueprint</p>
                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Vom Business Alignment zur Roadmap</h2>
