@@ -47,6 +47,8 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  ChevronDown,
+  ChevronUp,
   GripVertical,
   Image as ImageIcon,
   Loader2,
@@ -1606,6 +1608,34 @@ const WhiteboardVideoEditor = () => {
                             })
                           }
                         />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={sceneBusy !== null || working !== null}
+                          onClick={() => void runSceneImage(scene.id)}
+                        >
+                          {sceneBusy?.id === scene.id && sceneBusy.kind === "image" ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <ImageIcon className="w-4 h-4 mr-2" />
+                          )}
+                          Zeichnung neu erzeugen
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={sceneBusy !== null || working !== null}
+                          onClick={() => void runSceneVoice(scene.id)}
+                        >
+                          {sceneBusy?.id === scene.id && sceneBusy.kind === "voice" ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Mic className="w-4 h-4 mr-2" />
+                          )}
+                          Vertonung neu erzeugen
+                        </Button>
                       </div>
                       <SceneMediaEditor
                         scene={scene}
