@@ -12,6 +12,8 @@ import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import consultingImage from "@/assets/ai-consulting-strategy.jpg";
 
 const AIConsultingServices = () => {
   const [isEditMode, setIsEditMode] = useState(false);
