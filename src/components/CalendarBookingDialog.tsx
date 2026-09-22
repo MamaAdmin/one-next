@@ -10,7 +10,7 @@ interface CalendarBookingDialogProps {
 export function CalendarBookingDialog({
   buttonText = "Termin vereinbaren",
   buttonSize = "lg",
-  buttonClassName = "bg-gradient-primary hover:opacity-90 transition-opacity text-background",
+  buttonClassName = "",
 }: CalendarBookingDialogProps) {
   return (
     <Dialog>
