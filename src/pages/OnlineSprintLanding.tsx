@@ -8,6 +8,8 @@ import { Target, Map, Pencil, CheckCircle, Wrench, TestTube, Clipboard, Users, C
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import onlineSprintImage from "@/assets/online-sprint.jpg";
 const OnlineSprintLanding = () => {
   const structuredData = [createEventSchema("Online Design Sprint", "Flexibler Online Design Sprint über mehrere Wochen. Arbeiten Sie im eigenen Tempo mit KI-Unterstützung und automatisierter Dokumentation.", "https://one-next.de/sprint-uebersicht/online"), createBreadcrumbSchema([{
     name: "Home",
