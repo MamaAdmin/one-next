@@ -1089,15 +1089,16 @@ function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]):
   const acceptedValues = accepted.map((x) => x.trim()).filter(Boolean);
   if (acceptedValues.length === 0) return data;
 
-  const nextEigene = [...(data.eigene ?? [])];
+  // Übernommene Vorschläge landen direkt in "Deine Antworten".
+  const nextAntworten = [...toAntwortenArray(data)];
   const existing = new Set(
-    [...toAntwortenArray(data), ...nextEigene].map((x) => x.trim().toLowerCase()).filter(Boolean),
+    [...nextAntworten, ...(data.eigene ?? [])].map((x) => x.trim().toLowerCase()).filter(Boolean),
   );
 
   for (const value of acceptedValues) {
     const key = value.toLowerCase();
     if (existing.has(key)) continue;
-    nextEigene.push(value);
+    nextAntworten.push(value);
     existing.add(key);
   }
 
@@ -1108,7 +1109,7 @@ function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]):
 
   return {
     ...data,
-    eigene: nextEigene,
+    antworten: nextAntworten,
     vorschlaege: nextVorschlaege,
   };
 }
