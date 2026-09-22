@@ -335,7 +335,7 @@ export default function SprintStepCard({
   function acceptVorschlag(v: string) {
     const next = buildAcceptedSuggestionsData(latestDataRef.current, [v]);
     latestDataRef.current = next;
-    setEigene(next.eigene ?? []);
+    setAntworten(toAntwortenArray(next));
     setVorschlaege(next.vorschlaege ?? []);
     persistSnapshot(next);
   }
@@ -345,7 +345,7 @@ export default function SprintStepCard({
     if (!current.vorschlaege?.length) return;
     const next = buildAcceptedSuggestionsData(current, current.vorschlaege);
     latestDataRef.current = next;
-    setEigene(next.eigene ?? []);
+    setAntworten(toAntwortenArray(next));
     setVorschlaege(next.vorschlaege ?? []);
     persistSnapshot(next);
     toast({ title: "Alle Vorschläge übernommen" });
@@ -1089,15 +1089,16 @@ function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]):
   const acceptedValues = accepted.map((x) => x.trim()).filter(Boolean);
   if (acceptedValues.length === 0) return data;
 
-  const nextEigene = [...(data.eigene ?? [])];
+  // Übernommene Vorschläge landen direkt in "Deine Antworten".
+  const nextAntworten = [...toAntwortenArray(data)];
   const existing = new Set(
-    [...toAntwortenArray(data), ...nextEigene].map((x) => x.trim().toLowerCase()).filter(Boolean),
+    [...nextAntworten, ...(data.eigene ?? [])].map((x) => x.trim().toLowerCase()).filter(Boolean),
   );
 
   for (const value of acceptedValues) {
     const key = value.toLowerCase();
     if (existing.has(key)) continue;
-    nextEigene.push(value);
+    nextAntworten.push(value);
     existing.add(key);
   }
 
@@ -1108,7 +1109,7 @@ function buildAcceptedSuggestionsData(data: SprintStepData, accepted: string[]):
 
   return {
     ...data,
-    eigene: nextEigene,
+    antworten: nextAntworten,
     vorschlaege: nextVorschlaege,
   };
 }
