@@ -23,6 +23,7 @@ export interface FramingStepDef {
   timeboxMin: number;
   variant: FramingVariant;
   nutztDatenAus: string[];
+  pausenHinweis?: string;
 }
 
 // Hinweis: `key` bleibt stabil (Datenmigration-freundlich), `index` wird für die
@@ -42,12 +43,12 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "1",
     index: 1,
-    title: "1. Kick-off & Zielbild",
-    frage: "Was ist der Kontext – und was ist ausdrücklich KEIN Sprint-Ziel?",
+    title: "1. Kick-off, Langfristziel & Abgrenzung",
+    frage: "Wo wollt ihr in zwei Jahren stehen – und was ist ausdrücklich KEIN Sprint-Ziel?",
     arbeit:
-      "Beschreibe kurz die Ausgangslage und grenze ab, was NICHT Gegenstand des Sprints sein soll.",
+      "Langfristziel in einem Satz formulieren ('In zwei Jahren wird …'), Ausgangslage kurz beschreiben und abgrenzen, was NICHT Gegenstand des Sprints ist.",
     nutzen:
-      "Damit dein Team ab jetzt vom gleichen Ausgangspunkt startet und du später keine Diskussionen über den Scope neu aufmachen musst.",
+      "Das Langfristziel ist der Bezugspunkt für alles Weitere: Sprint-Fragen sind die Risiken auf dem Weg dorthin.",
     timeboxMin: 15,
     variant: "context-list",
     nutztDatenAus: [],
@@ -57,11 +58,11 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     key: "2",
     index: 2,
     title: "2. Gegenwart, Vergangenheit & Zukunft",
-    frage: "Wo stehen wir heute, was ist bereits passiert – und was erwartet uns, wenn wir NICHTS tun?",
+    frage: "Warum jetzt, was habt ihr schon versucht – und was passiert, wenn ihr nichts tut?",
     arbeit:
-      "Gegenwart (Warum jetzt?), Vergangenheit (bisher Versuchtes / Erfahrungen) und Zukunft (Standard-Zukunft + Wettbewerb, Trends, Chancen) sichtbar machen.",
+      "Gegenwart (Warum jetzt?), Vergangenheit (bisher Versuchtes und was daraus wurde) und Zukunft (Standard-Zukunft, Wettbewerb, Trends, Chancen) sichtbar machen.",
     nutzen:
-      "Damit klar wird, warum jetzt der richtige Zeitpunkt für diesen Sprint ist – und du erkennst, was passiert, wenn ihr nichts ändert.",
+      "Hier entsteht das Material, aus dem Schritt 4 Treiber, Bremsen und Risiken zieht.",
     timeboxMin: 15,
     variant: "two-fields",
     nutztDatenAus: ["1"],
@@ -70,10 +71,11 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     key: "3",
     index: 3,
     title: "3. Stakeholder & Zielgruppe",
-    frage: "Wer ist beteiligt, wer ist primäre Zielgruppe – wen parken wir?",
-    arbeit: "Stakeholder sammeln, primäre Zielgruppe festlegen, sekundäre bewusst parken.",
+    frage: "Wer ist beteiligt, wer ist primäre Zielgruppe – wen parkt ihr?",
+    arbeit:
+      "Stakeholder sammeln, primäre Zielgruppe festlegen, sekundäre bewusst parken, heutige Workarounds und Pain/Gain festhalten.",
     nutzen:
-      "Damit du weißt, für wen du löst und wessen Meinung im Sprint zählt – bevor du dich in Details verlierst.",
+      "Die primäre Zielgruppe steht später im ersten Satz des Challenge Statements.",
     timeboxMin: 15,
     variant: "stakeholder",
     nutztDatenAus: ["1", "2"],
@@ -81,12 +83,12 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "4",
     index: 4,
-    title: "4. Smart Sailboat",
-    frage: "Wind, Anker, Hafen, Eisberg – wo stehen wir?",
+    title: "4. Smart Sailboat (Verdichtung)",
+    frage: "Wind, Anker, Hafen, Eisberg – stimmt das Bild?",
     arbeit:
-      "Treiber (Wind), Hindernisse (Anker), Ziel (Hafen) und Risiken (Eisberg) zusammentragen.",
+      "Die Felder sind aus den Schritten 1 bis 3 vorbefüllt. Prüfen, streichen, umformulieren, höchstens ergänzen. Keine neue Sammelrunde.",
     nutzen:
-      "Um Treiber, Bremsen, Ziel und Risiken in einem Bild zu sehen, statt sie über zehn Meetings verstreut zu sammeln.",
+      "Ein Bild statt drei Listen – und der Ausgangspunkt für die Ursachensuche in Schritt 5.",
     timeboxMin: 30,
     variant: "sailboat",
     nutztDatenAus: ["1", "2", "3"],
@@ -95,74 +97,79 @@ export const FRAMING_STEPS: FramingStepDef[] = [
     key: "5",
     index: 5,
     title: "5. Root Cause (5 Whys)",
-    frage: "Was steckt wirklich dahinter? – 5 Whys",
+    frage: "Welches Symptom seht ihr – und was steckt wirklich dahinter?",
     arbeit:
-      "Ursachenkette mit 5 Whys vertiefen und die relevanten Ursachen als Liste festhalten.",
+      "Zuerst das beobachtete Symptom in einem Satz festhalten. Darauf aufbauend fünfmal 'Warum?' fragen und die adressierbaren Ursachen markieren.",
     nutzen:
-      "Damit du am echten Problem arbeitest, nicht am Symptom – sonst löst der Sprint das Falsche.",
+      "Ohne festen Startsatz wird die Ursachenkette beliebig. Die markierte Ursache landet im Challenge Statement.",
     timeboxMin: 15,
     variant: "five-whys",
-    nutztDatenAus: ["1", "2", "3", "4"],
+    nutztDatenAus: ["1", "3", "4"],
   },
   {
     key: "6",
     index: 6,
     title: "6. Annahmen & Risiken",
     frage: "Welche Annahmen sind hoch-unsicher UND hoch-wirksam?",
-    arbeit: "Annahmen sammeln und in 2×2-Matrix nach Unsicherheit × Einfluss einordnen.",
+    arbeit: "Annahmen sammeln und in der 2×2-Matrix nach Unsicherheit × Einfluss einordnen.",
     nutzen:
-      "Damit du erkennst, welche unsicheren Annahmen das ganze Vorhaben killen können – genau die musst du im Sprint testen.",
+      "Die Annahmen oben rechts sind das, was der Sprint testen muss – und die Risiken im Challenge Statement.",
     timeboxMin: 20,
     variant: "assumptions",
     nutztDatenAus: ["1", "2", "3", "4", "5"],
+    pausenHinweis:
+      "Guter Zeitpunkt für eine Pause. Der Workshop ist hier etwa zur Hälfte durch, alles bis hierher ist gespeichert.",
   },
   {
     key: "7",
     index: 7,
-    title: "7. Erfolg & Constraints",
-    frage: "Woran messen wir Erfolg in 5 Tagen – was ist gesetzt?",
-    arbeit: "Messbares 5-Tages-Ergebnis definieren und harte Randbedingungen festhalten.",
+    title: "7. Constraints & Rahmenbedingungen",
+    frage: "Was ist gesetzt und darf im Sprint nicht angefasst werden?",
+    arbeit:
+      "Harte Randbedingungen festhalten: Budget, Technik, Zeit, Recht und Compliance, Team.",
     nutzen:
-      "Damit am Ende des Sprints messbar ist, ob er sich gelohnt hat – und du weißt, was du nicht anfassen darfst.",
+      "Constraints begrenzen den Lösungsraum, bevor ihr ihn in Schritt 8 zuschneidet.",
     timeboxMin: 20,
     variant: "success-constraints",
-    nutztDatenAus: ["3", "4"],
+    nutztDatenAus: ["1", "3", "4"],
   },
   {
     key: "8",
     index: 8,
     title: "8. Scope-Cut & Sprint-Fragen",
     frage: "Was gehört rein, was raus – welche Entscheidungsfragen klärt der Sprint?",
-    arbeit: "In/Out of Scope trennen und Sprint-Fragen als 'Können wir …?' formulieren.",
+    arbeit:
+      "In/Out of Scope trennen und Sprint-Fragen als 'Können wir …?' formulieren, jeweils in fünf Tagen entscheidbar.",
     nutzen:
       "Um den Sprint auf eine bearbeitbare Frage einzudampfen, statt fünf Themen halb zu bearbeiten.",
     timeboxMin: 25,
     variant: "scope-questions",
-    nutztDatenAus: ["5", "6", "7"],
+    nutztDatenAus: ["1", "4", "5", "6", "7"],
   },
   {
     key: "9",
     index: 9,
-    title: "9. Priorisierung (NUF)",
-    frage: "Welche Challenge ist Neu, Nützlich und Machbar?",
-    arbeit: "Sprint-Fragen nach Neuheit, Nutzen, Machbarkeit bewerten und Top-1 wählen.",
+    title: "9. Priorisierung (NUF) & Erfolgsmessung",
+    frage: "Welche Frage kommt zuerst – und woran merkt ihr, dass sie beantwortet ist?",
+    arbeit:
+      "Die Sprint-Fragen aus Schritt 8 nach Neu, Nützlich und Realisierbar bewerten, die Top-1 wählen und dafür ein messbares Fünf-Tages-Ergebnis definieren.",
     nutzen:
-      "Damit du auf die eine Frage fokussierst, die neu, nützlich und machbar ist – nicht auf die lauteste.",
+      "Die Erfolgsmessung hängt an der gewählten Frage – deshalb erst hier und nicht vorher.",
     timeboxMin: 15,
     variant: "nuf",
-    nutztDatenAus: ["8"],
+    nutztDatenAus: ["1", "6", "8"],
   },
   {
     key: "10",
     index: 10,
     title: "10. Entscheidung & Next Steps",
     frage: "Sprint-Go? Was muss vorher passieren?",
-    arbeit: "Sprint-Go bestätigen und Pre-Sprint-To-dos festhalten.",
+    arbeit: "Sprint-Go bestätigen und Pre-Sprint-To-dos mit Verantwortlichen und Terminen festhalten.",
     nutzen:
-      "Damit das Framing verbindlich in einen Sprint mündet und nicht als Dokument in der Ablage liegen bleibt.",
+      "Damit das Framing verbindlich in einen Sprint mündet und nicht als Dokument liegen bleibt.",
     timeboxMin: 15,
     variant: "next-steps",
-    nutztDatenAus: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    nutztDatenAus: ["1", "3", "4", "5", "6", "7", "8", "9"],
 
   },
 ];

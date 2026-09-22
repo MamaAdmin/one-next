@@ -13,9 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info, HelpCircle, Lightbulb } from "lucide-react";
+import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info, HelpCircle, Lightbulb, AlertTriangle, Coffee } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { FRAMING_STEPS, type FramingStepDef } from "@/features/framing/steps";
+import { getStepWarnings } from "@/features/framing/validation";
 import type {
   FramingStepData,
   FramingStepRow,
@@ -53,11 +54,13 @@ export default function FramingStepCard({
   const suggest = useFramingSuggest();
   const [vorschlaege, setVorschlaege] = useState<string[]>(initial.vorschlaege ?? []);
   const [pendingBucket, setPendingBucket] = useState<string | null>(null);
+  const [warnings, setWarnings] = useState<string[]>([]);
 
   useEffect(() => {
     const d = (stepRow?.data ?? {}) as FramingStepData;
     setData(d);
-    setVorschlaege(d.vorschlaege ?? []);
+    setVorschlaege([]);
+    setWarnings([]);
   }, [stepRow?.id]);
 
 
@@ -109,9 +112,16 @@ export default function FramingStepCard({
   }
 
   async function handleSave(opts?: { completed?: boolean; next?: boolean }) {
+    if (opts?.completed) {
+      const w = getStepWarnings(step.key, data);
+      setWarnings(w);
+    } else {
+      setWarnings([]);
+    }
     setSaving(true);
     try {
-      await onSave({ ...data, vorschlaege }, { completed: opts?.completed });
+      const { vorschlaege: _discard, ...cleanData } = data as Record<string, unknown>;
+      await onSave(cleanData as FramingStepData, { completed: opts?.completed });
       if (opts?.next && onNext) onNext();
     } finally {
       setSaving(false);
@@ -122,11 +132,24 @@ export default function FramingStepCard({
     return <IntroSlide onNext={onNext} />;
   }
 
+  // In Schritt 9 werden [Erfolg]-Vorschläge direkt im Erfolgsblock angezeigt.
+  const listSuggestions =
+    step.variant === "nuf"
+      ? vorschlaege.filter((v) => bucketOfSuggestion(v) !== "erfolg")
+      : vorschlaege;
+
   const realStepCount = FRAMING_STEPS.filter((s) => s.variant !== "intro").length;
 
   return (
     <Card className="border-none shadow-xl">
       <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6">
+        {step.pausenHinweis ? (
+          <div className="flex items-start gap-2 rounded-lg border border-border-accent bg-accent-soft p-3 text-sm">
+            <Coffee className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+            <span className="text-foreground/80">{step.pausenHinweis}</span>
+          </div>
+        ) : null}
+
         <div className="flex items-start justify-between gap-4">
           <div>
             <Badge variant="secondary" className="mb-2">
@@ -178,6 +201,7 @@ export default function FramingStepCard({
 
         <StepVariant
           step={step}
+          allSteps={allSteps}
           data={data}
           patch={patch}
           suggestions={vorschlaege}
@@ -197,7 +221,7 @@ export default function FramingStepCard({
           }
         />
 
-        {vorschlaege.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
+        {listSuggestions.length > 0 && step.variant !== "two-fields" && step.variant !== "stakeholder" && step.variant !== "context-list" && step.variant !== "sailboat" && step.variant !== "five-whys" && step.variant !== "assumptions" && step.variant !== "success-constraints" && step.variant !== "scope-questions" ? (
           <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-foreground">
             <div className="text-sm font-semibold mb-2 flex items-center gap-2 justify-between">
               <span className="flex items-center gap-2">
@@ -210,9 +234,9 @@ export default function FramingStepCard({
                   size="sm"
                   onClick={() => {
                     const next = { ...data };
-                    vorschlaege.forEach((v) => applySuggestion(step.variant, v, next));
+                    listSuggestions.forEach((v) => applySuggestion(step.variant, v, next));
                     setData(next);
-                    setVorschlaege([]);
+                    setVorschlaege((prev) => prev.filter((v) => !listSuggestions.includes(v)));
                     toast({ title: "Alle Vorschläge übernommen" });
                   }}
                 >
@@ -229,9 +253,9 @@ export default function FramingStepCard({
               </div>
             </div>
             <ul className="space-y-1.5">
-              {vorschlaege.map((v, i) => (
+              {listSuggestions.map((v) => (
                 <li
-                  key={i}
+                  key={v}
                   className="flex items-start gap-2 rounded-md border border-accent/60 bg-accent-soft px-3 py-2 text-sm text-foreground"
                 >
                   <span className="flex-1">{v}</span>
@@ -244,7 +268,7 @@ export default function FramingStepCard({
                       const next = { ...data };
                       applySuggestion(step.variant, v, next);
                       setData(next);
-                      setVorschlaege((prev) => prev.filter((_, j) => j !== i));
+                      setVorschlaege((prev) => prev.filter((x) => x !== v));
                     }}
                   >
                     <Plus className="w-3.5 h-3.5 mr-1" /> Übernehmen
@@ -254,15 +278,30 @@ export default function FramingStepCard({
                     variant="ghost"
                     size="icon"
                     className="h-7 w-7"
-                    onClick={() =>
-                      setVorschlaege((prev) => prev.filter((_, j) => j !== i))
-                    }
+                    onClick={() => setVorschlaege((prev) => prev.filter((x) => x !== v))}
                   >
                     <X className="w-3.5 h-3.5" />
                   </Button>
                 </li>
               ))}
             </ul>
+          </div>
+        ) : null}
+
+        {warnings.length > 0 ? (
+          <div className="rounded-lg border-l-4 border-l-amber-500 border border-amber-500/30 bg-amber-50 p-4 text-sm dark:bg-amber-950/30">
+            <div className="flex items-center gap-2 font-medium mb-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              Noch offen in diesem Schritt
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-foreground/80">
+              {warnings.map((w, i) => (
+                <li key={i}>{w}</li>
+              ))}
+            </ul>
+            <p className="mt-2 text-muted-foreground">
+              Du kannst trotzdem weiter und später zurückkommen.
+            </p>
           </div>
         ) : null}
 
@@ -310,6 +349,7 @@ export default function FramingStepCard({
 
 function StepVariant({
   step,
+  allSteps,
   data,
   patch,
   suggestions,
@@ -320,6 +360,7 @@ function StepVariant({
   pendingBucket,
 }: {
   step: FramingStepDef;
+  allSteps: FramingStepRow[];
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
   suggestions: string[];
@@ -369,6 +410,7 @@ function StepVariant({
     case "sailboat":
       return (
         <VariantSailboat
+          allSteps={allSteps}
           data={data}
           patch={patch}
           suggestions={suggestions}
@@ -381,6 +423,7 @@ function StepVariant({
     case "five-whys":
       return (
         <VariantFiveWhys
+          allSteps={allSteps}
           data={data}
           patch={patch}
           suggestions={suggestions}
@@ -427,7 +470,18 @@ function StepVariant({
         />
       );
     case "nuf":
-      return <VariantNuf data={data} patch={patch} />;
+      return (
+        <VariantNuf
+          allSteps={allSteps}
+          data={data}
+          patch={patch}
+          suggestions={suggestions}
+          onAcceptSuggestion={onAcceptSuggestion}
+          onDismissSuggestion={onDismissSuggestion}
+          onLoadSuggestions={onLoadSuggestions}
+          pendingBucket={pendingBucket}
+        />
+      );
     case "next-steps":
       return <VariantNextSteps data={data} patch={patch} />;
   }
@@ -451,7 +505,9 @@ function applySuggestion(
     case "context-list": {
       const b = bucketOfSuggestion(text);
       const value = b ? stripBucketTag(text) : text;
-      if (b === "kontext") {
+      if (b === "ziel") {
+        data.kiLangfristziel = pushUnique(data.kiLangfristziel, value);
+      } else if (b === "kontext") {
         data.kiKontext = pushUnique(data.kiKontext, value);
       } else {
         data.kiNichtZiele = pushUnique(data.kiNichtZiele, value);
@@ -504,6 +560,11 @@ function applySuggestion(
       return;
     }
     case "five-whys": {
+      const sym = text.match(/^\[(Symptom)\]\s*(.+)$/i);
+      if (sym) {
+        data.kiSymptom = pushUnique(data.kiSymptom, sym[2].trim());
+        return;
+      }
       const m = text.match(/^\[(Why|Warum|Ursache|Cause)\]\s*(.+)$/i);
       const bucket = m ? m[1].toLowerCase() : "why";
       const value = m ? m[2].trim() : text;
@@ -554,12 +615,18 @@ function applySuggestion(
       }
       return;
     }
-    case "nuf":
+    case "nuf": {
+      const erf = text.match(/^\[(Erfolg|Success|KPI|Metrik)\]\s*(.+)$/i);
+      if (erf) {
+        data.kiErfolgsmessung = pushUnique(data.kiErfolgsmessung, erf[2].trim());
+        return;
+      }
       data.nufBewertungen = [
         ...(data.nufBewertungen ?? []),
-        { text, neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: true },
+        { text: stripBucketTag(text), neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: true },
       ];
       return;
+    }
     case "next-steps":
       data.preSprintTodos = [
         ...(data.preSprintTodos ?? []),
@@ -765,12 +832,38 @@ function VariantContextList({
       pending={pendingBucket === bucket}
     />
   );
-  const removeKi = (key: "kiKontext" | "kiNichtZiele", index: number) => {
+  const removeKi = (key: "kiKontext" | "kiNichtZiele" | "kiLangfristziel", index: number) => {
     const cur = (data[key] as string[] | undefined) ?? [];
     patch({ [key]: cur.filter((_, j) => j !== index) } as Partial<FramingStepData>);
   };
   return (
     <div className="space-y-6">
+      <CanvasSection title="Langfristziel – wo wollt ihr in zwei Jahren stehen?">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={2}
+            value={data.langfristziel ?? ""}
+            onChange={(e) => patch({ langfristziel: e.target.value })}
+            placeholder="In zwei Jahren wird …"
+          />
+        </div>
+        <div className="space-y-1.5 mt-3">
+          <Label className="text-xs">Zeithorizont</Label>
+          <Input
+            value={data.langfristzielHorizont ?? ""}
+            onChange={(e) => patch({ langfristzielHorizont: e.target.value })}
+            placeholder="z. B. 2 Jahre oder Ende 2027"
+            className="max-w-xs"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiLangfristziel ?? []}
+          onRemove={(i) => removeKi("kiLangfristziel", i)}
+        />
+        {inline("ziel")}
+      </CanvasSection>
+
       <CanvasSection title="Kontext / Ausgangslage">
         <div className="space-y-1.5">
           <p className="text-sm font-medium">Eigene Anmerkungen</p>
@@ -829,11 +922,11 @@ type TwoFieldsBucket =
 
 type StakeholderBucket = "stakeholder" | "geparkt" | "heute" | "paingain";
 
-type KickoffBucket = "kontext" | "nichtziel";
+type KickoffBucket = "ziel" | "kontext" | "nichtziel";
 
 type SailboatBucket = "wind" | "anker" | "hafen" | "eisberg";
 
-type FiveWhysBucket = "why" | "ursache";
+type FiveWhysBucket = "symptom" | "why" | "ursache";
 
 type AssumptionBucket = "kritisch" | "unsicher" | "einflussreich" | "gering";
 type SuccessBucket = "erfolg" | "constraint";
@@ -863,6 +956,7 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "heute") return "heute";
   if (tag === "paingain" || tag === "pain-gain" || tag === "pain/gain")
     return "paingain";
+  if (tag === "ziel" || tag === "goal" || tag === "langfristziel") return "ziel";
   if (tag === "kontext" || tag === "context") return "kontext";
   if (tag === "nichtziel" || tag === "nicht-ziel" || tag === "nichtziele")
     return "nichtziel";
@@ -870,6 +964,7 @@ function bucketOfSuggestion(raw: string): SuggestionBucket | null {
   if (tag === "anker" || tag === "anchor") return "anker";
   if (tag === "hafen" || tag === "harbor" || tag === "harbour") return "hafen";
   if (tag === "eisberg" || tag === "iceberg") return "eisberg";
+  if (tag === "symptom") return "symptom";
   if (tag === "why" || tag === "warum") return "why";
   if (tag === "ursache" || tag === "cause") return "ursache";
   if (tag === "kritisch" || tag === "critical") return "kritisch";
@@ -1321,6 +1416,7 @@ function VariantStakeholder({
 
 
 function VariantSailboat({
+  allSteps,
   data,
   patch,
   suggestions,
@@ -1329,6 +1425,7 @@ function VariantSailboat({
   onLoadSuggestions,
   pendingBucket,
 }: {
+  allSteps: FramingStepRow[];
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
   suggestions: string[];
@@ -1339,6 +1436,53 @@ function VariantSailboat({
 }) {
   const sb = data.sailboat ?? { wind: [], anker: [], hafen: "", eisberg: [] };
   const set = (upd: Partial<typeof sb>) => patch({ sailboat: { ...sb, ...upd } });
+
+  // Einmalige Vorbefüllung aus den Schritten 1 bis 3 (Verdichtung statt Neuerhebung).
+  useEffect(() => {
+    if (data.sailboatVorbefuellt) return;
+    const s1 = (allSteps.find((s) => s.step_key === "1")?.data ?? {}) as FramingStepData;
+    const s2 = (allSteps.find((s) => s.step_key === "2")?.data ?? {}) as FramingStepData;
+    const s3 = (allSteps.find((s) => s.step_key === "3")?.data ?? {}) as FramingStepData;
+
+    const clean = (list: (string | undefined)[]) =>
+      Array.from(
+        new Set(list.map((t) => (t ?? "").trim()).filter((t) => t.length > 0)),
+      );
+
+    const wind = clean([...(s2.chancen ?? []), ...(s2.trends ?? [])]);
+    const anker = clean([
+      ...(s1.frueherVersucht ?? [])
+        .filter((v) => v.ergebnis === "didnt-work")
+        .map((v) => v.text),
+      ...(s3.kundeVersuchePast ?? [])
+        .filter((v) => v.ergebnis === "didnt-work")
+        .map((v) => v.text),
+      s3.kundePainGain,
+    ]);
+    const eisberg = clean(
+      Array.isArray(s2.defaultFuture) ? s2.defaultFuture : [s2.defaultFuture],
+    );
+    const hafen = (s1.langfristziel ?? "").trim();
+
+    const nextWind = clean([...sb.wind, ...wind]);
+    const nextAnker = clean([...sb.anker, ...anker]);
+    const nextEisberg = clean([...sb.eisberg, ...eisberg]);
+    const nextHafen = sb.hafen?.trim() ? sb.hafen : hafen;
+
+    patch({
+      sailboat: { wind: nextWind, anker: nextAnker, hafen: nextHafen, eisberg: nextEisberg },
+      sailboatVorbefuellt: { wind, anker, eisberg },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const pre = data.sailboatVorbefuellt;
+  const preNote = (items: string[] | undefined) =>
+    items && items.length ? (
+      <p className="mt-1 text-xs text-muted-foreground">
+        Aus den Schritten 1–3 übernommen: {items.join(" · ")}
+      </p>
+    ) : null;
   const hafenItems = sb.hafen ? sb.hafen.split("\n").filter((l) => l.trim().length > 0) : [];
   const inline = (bucket: SailboatBucket) => (
     <InlineSuggestions
@@ -1368,6 +1512,7 @@ function VariantSailboat({
           items={sb.wind}
           onChange={(v) => set({ wind: v })}
         />
+        {preNote(pre?.wind)}
         <AcceptedKiList
           items={data.kiWind ?? []}
           onRemove={(i) => removeKi("kiWind", i)}
@@ -1380,6 +1525,7 @@ function VariantSailboat({
           items={sb.anker}
           onChange={(v) => set({ anker: v })}
         />
+        {preNote(pre?.anker)}
         <AcceptedKiList
           items={data.kiAnker ?? []}
           onRemove={(i) => removeKi("kiAnker", i)}
@@ -1405,6 +1551,7 @@ function VariantSailboat({
           items={sb.eisberg}
           onChange={(v) => set({ eisberg: v })}
         />
+        {preNote(pre?.eisberg)}
         <AcceptedKiList
           items={data.kiEisberg ?? []}
           onRemove={(i) => removeKi("kiEisberg", i)}
@@ -1417,6 +1564,7 @@ function VariantSailboat({
 
 
 function VariantFiveWhys({
+  allSteps,
   data,
   patch,
   suggestions,
@@ -1425,6 +1573,7 @@ function VariantFiveWhys({
   onLoadSuggestions,
   pendingBucket,
 }: {
+  allSteps: FramingStepRow[];
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
   suggestions: string[];
@@ -1446,7 +1595,7 @@ function VariantFiveWhys({
     />
   );
   const removeKi = (
-    key: "kiFiveWhys" | "kiUrsachen",
+    key: "kiFiveWhys" | "kiUrsachen" | "kiSymptom",
     index: number,
   ) => {
     const cur = (data[key] as string[] | undefined) ?? [];
@@ -1459,9 +1608,37 @@ function VariantFiveWhys({
     });
   };
   const [ursacheInput, setUrsacheInput] = useState("");
+
+  // Startsymptom einmalig aus dem ersten Anker in Schritt 4 vorschlagen.
+  useEffect(() => {
+    if (data.symptom !== undefined) return;
+    const s4 = (allSteps.find((s) => s.step_key === "4")?.data ?? {}) as FramingStepData;
+    const ersterAnker = (s4.sailboat?.anker ?? []).map((a) => a.trim()).find((a) => a.length > 0);
+    patch({ symptom: ersterAnker ?? "" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="space-y-6">
+      <CanvasSection title="Beobachtetes Symptom">
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          <Textarea
+            rows={2}
+            value={data.symptom ?? ""}
+            onChange={(e) => patch({ symptom: e.target.value })}
+            placeholder="z. B. Nur 12 Prozent der Testkunden schliessen die Anmeldung ab"
+          />
+        </div>
+        <AcceptedKiList
+          items={data.kiSymptom ?? []}
+          onRemove={(i) => removeKi("kiSymptom", i)}
+        />
+        {inline("symptom")}
+      </CanvasSection>
+
       <CanvasSection title="5 Whys – Warum-Kette">
+        <p className="text-xs text-muted-foreground">Warum passiert das?</p>
         <ListEditor
           label="Eigene Anmerkungen"
           items={whys}
@@ -1814,7 +1991,7 @@ function VariantSuccess({
   onLoadSuggestions: (field?: string) => void;
   pendingBucket: string | null;
 }) {
-  const inline = (bucket: SuccessBucket) => (
+  const inline = (bucket: "constraint") => (
     <InlineSuggestions
       bucket={bucket}
       suggestions={suggestions}
@@ -1824,27 +2001,12 @@ function VariantSuccess({
       pending={pendingBucket === bucket}
     />
   );
-  const removeKi = (key: "kiErfolgsmessung" | "kiConstraints", index: number) => {
+  const removeKi = (key: "kiConstraints", index: number) => {
     const current = (data[key] ?? []) as string[];
     patch({ [key]: current.filter((_, i) => i !== index) } as Partial<FramingStepData>);
   };
   return (
     <div className="space-y-6">
-      <CanvasSection title="Erfolgsmessung – messbar in 5 Tagen">
-        <div className="space-y-1.5">
-          <p className="text-sm font-medium">Eigene Anmerkungen</p>
-          <Textarea
-            rows={3}
-            value={data.erfolgsmessung ?? ""}
-            onChange={(e) => patch({ erfolgsmessung: e.target.value })}
-          />
-        </div>
-        <AcceptedKiList
-          items={data.kiErfolgsmessung ?? []}
-          onRemove={(i) => removeKi("kiErfolgsmessung", i)}
-        />
-        {inline("erfolg")}
-      </CanvasSection>
       <CanvasSection title="Constraints – was ist gesetzt?">
         <ListEditor
           label="Eigene Anmerkungen"
@@ -1939,21 +2101,57 @@ function VariantScope({
 }
 
 function VariantNuf({
+  allSteps,
   data,
   patch,
+  suggestions,
+  onAcceptSuggestion,
+  onDismissSuggestion,
+  onLoadSuggestions,
+  pendingBucket,
 }: {
+  allSteps: FramingStepRow[];
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
+  suggestions: string[];
+  onAcceptSuggestion: (i: number) => void;
+  onDismissSuggestion: (i: number) => void;
+  onLoadSuggestions: (field?: string) => void;
+  pendingBucket: string | null;
 }) {
   const bew = data.nufBewertungen ?? [];
+
+  // Sprint-Fragen aus Schritt 8 einmalig übernehmen, ohne Bewertungen zu überschreiben.
+  useEffect(() => {
+    const step8 = allSteps.find((s) => s.step_key === "8")?.data as
+      | FramingStepData
+      | undefined;
+    if (!step8) return;
+    const eigene = (step8.sprintFragen ?? []).map((t) => t.trim());
+    const ki = (step8.kiSprintFragen ?? []).map((t) => t.trim());
+    const vorhanden = new Set((data.nufBewertungen ?? []).map((b) => b.text.trim()));
+    const neu = [...eigene, ...ki]
+      .filter((t) => t.length > 0 && !vorhanden.has(t))
+      .map((t) => ({ text: t, neuheit: 5, nutzen: 5, machbarkeit: 5, isKi: ki.includes(t) }));
+    if (neu.length) patch({ nufBewertungen: [...(data.nufBewertungen ?? []), ...neu] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="space-y-6">
-      <CanvasSection title="Sprint-Fragen bewerten – Neu (Novelty) / Nützlich (Usefulness) / Realisierbar (Feasibility) je 1–10">
+      <CanvasSection title="Sprint-Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
+        <div className="rounded-lg border-l-4 border-l-primary bg-accent-soft p-3 text-sm text-foreground/80">
+          Ihr bewertet hier Fragen, keine Lösungen. <strong>Neu</strong> heisst: Auf diese Frage
+          habt ihr noch keine belastbare Antwort, ihr würdet sonst raten.{" "}
+          <strong>Nützlich</strong> heisst: Die Antwort verändert eure nächste Entscheidung.{" "}
+          <strong>Realisierbar</strong> heisst: In fünf Sprint-Tagen mit einem Prototyp und fünf
+          Testpersonen beantwortbar.
+        </div>
         <div className="space-y-3">
           <p className="text-sm font-medium">Eigene Anmerkungen</p>
           {bew.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Keine Sprint-Fragen vorhanden. Nutze KI-Vorschläge oder gehe zurück zu Schritt 8.
+              Keine Sprint-Fragen aus Schritt 8 übernommen. Ergänze sie dort oder füge hier eigene hinzu.
             </p>
           ) : null}
           {bew.map((r, i) => {
@@ -1982,11 +2180,11 @@ function VariantNuf({
                 />
                 <div className="flex flex-wrap items-end gap-3">
                   {([
-                    { k: "neuheit", label: "Neu (Novelty)" },
-                    { k: "nutzen", label: "Nützlich (Usefulness)" },
-                    { k: "machbarkeit", label: "Realisierbar (Feasibility)" },
+                    { k: "neuheit", label: "Neu – noch unbeantwortet" },
+                    { k: "nutzen", label: "Nützlich – verändert Entscheidungen" },
+                    { k: "machbarkeit", label: "Realisierbar – in 5 Tagen prüfbar" },
                   ] as const).map(({ k, label }) => (
-                    <div key={k} className="w-40">
+                    <div key={k} className="w-48">
                       <Label className="text-xs">{label}</Label>
 
                       <Input
@@ -2048,6 +2246,43 @@ function VariantNuf({
             <Plus className="w-4 h-4 mr-1" /> Eigene Sprint-Frage hinzufügen
           </Button>
         </div>
+      </CanvasSection>
+
+      <CanvasSection title="Woran messt ihr, dass diese Frage beantwortet ist?">
+        {data.top1Challenge?.trim() ? (
+          <>
+            <p className="rounded-md border border-border-accent bg-accent-soft px-3 py-2 text-sm">
+              Gewählte Top-1-Frage: {data.top1Challenge}
+            </p>
+            <div className="space-y-1.5 mt-3">
+              <p className="text-sm font-medium">Eigene Anmerkungen</p>
+              <Textarea
+                rows={3}
+                value={data.erfolgsmessung ?? ""}
+                onChange={(e) => patch({ erfolgsmessung: e.target.value })}
+                placeholder="z. B. 4 von 5 Testpersonen schliessen die Anmeldung ohne Hilfe ab"
+              />
+            </div>
+            <AcceptedKiList
+              items={data.kiErfolgsmessung ?? []}
+              onRemove={(i) =>
+                patch({
+                  kiErfolgsmessung: (data.kiErfolgsmessung ?? []).filter((_, j) => j !== i),
+                })
+              }
+            />
+            <InlineSuggestions
+              bucket="erfolg"
+              suggestions={suggestions}
+              onAcceptSuggestion={onAcceptSuggestion}
+              onDismissSuggestion={onDismissSuggestion}
+              onLoadSuggestions={() => onLoadSuggestions("erfolg")}
+              pending={pendingBucket === "erfolg"}
+            />
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">Wähle zuerst eine Top-1-Frage.</p>
+        )}
       </CanvasSection>
     </div>
   );

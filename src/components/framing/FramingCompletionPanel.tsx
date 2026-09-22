@@ -109,8 +109,20 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
     }
   }, [result, ownSprintFragen, ownRisiken, storageKey]);
 
+  const step1 = steps.find((s) => s.step_key === "1")?.data as
+    | { langfristziel?: string }
+    | undefined;
+  const step3 = steps.find((s) => s.step_key === "3")?.data as
+    | { primaereZielgruppe?: string }
+    | undefined;
+  const step5 = steps.find((s) => s.step_key === "5")?.data as
+    | { ursachen?: Array<{ text: string; adressierbar: boolean }> }
+    | undefined;
   const step7 = steps.find((s) => s.step_key === "7")?.data as
     | { erfolgsmessung?: string; kiErfolgsmessung?: string[] }
+    | undefined;
+  const step9 = steps.find((s) => s.step_key === "9")?.data as
+    | { erfolgsmessung?: string; kiErfolgsmessung?: string[]; top1Challenge?: string }
     | undefined;
   const step8 = steps.find((s) => s.step_key === "8")?.data as
     | {
@@ -124,13 +136,36 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const scopeOk =
     ((step8?.inScope?.length ?? 0) + (step8?.kiInScope?.length ?? 0)) >= 1 &&
     ((step8?.outOfScope?.length ?? 0) + (step8?.kiOutOfScope?.length ?? 0)) >= 1;
+  const messung = step9?.erfolgsmessung?.trim() || step7?.erfolgsmessung?.trim() || "";
   const measureOk =
-    (step7?.erfolgsmessung?.trim().length ?? 0) > 0 ||
+    messung.length > 0 ||
+    (step9?.kiErfolgsmessung?.length ?? 0) > 0 ||
     (step7?.kiErfolgsmessung?.length ?? 0) > 0;
+  const langfristzielOk = (step1?.langfristziel?.trim().length ?? 0) > 0;
+  const top1Ok = (step9?.top1Challenge?.trim().length ?? 0) > 0;
   const statementOk = !!result?.challenge_statement && signedOff;
   const deciderOk = decider.trim().length > 1;
 
   const allDone = statementOk && scopeOk && measureOk && deciderOk && recruitDone;
+
+  // Sperre nur für Sessions, die nach der Umstellung angelegt wurden.
+  const NEW_SESSION_CUTOFF = Date.parse("2026-09-22T00:00:00Z");
+  const isNewSession = Date.parse(session.created_at) >= NEW_SESSION_CUTOFF;
+  const zielgruppeOk = (step3?.primaereZielgruppe?.trim().length ?? 0) > 0;
+  const ursacheOk = !!step5?.ursachen?.some((u) => u.adressierbar && u.text.trim().length > 0);
+  const sprintFrageOk =
+    ((step8 as { sprintFragen?: string[]; kiSprintFragen?: string[] } | undefined)?.sprintFragen
+      ?.length ?? 0) +
+      ((step8 as { sprintFragen?: string[]; kiSprintFragen?: string[] } | undefined)
+        ?.kiSprintFragen?.length ?? 0) >
+    0;
+  const missing: Array<{ label: string; step: number }> = [];
+  if (!langfristzielOk) missing.push({ label: "Langfristziel", step: 1 });
+  if (!zielgruppeOk) missing.push({ label: "Primäre Zielgruppe", step: 3 });
+  if (!ursacheOk) missing.push({ label: "Adressierbare Ursache", step: 5 });
+  if (!sprintFrageOk) missing.push({ label: "Mindestens eine Sprint-Frage", step: 8 });
+  if (!top1Ok) missing.push({ label: "Top-1-Sprint-Frage", step: 9 });
+  const generateBlocked = isNewSession && missing.length > 0;
 
   async function handleGenerate() {
     try {
@@ -147,7 +182,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
 
   // Auto-generate on first mount if nothing exists yet and not locked
   useEffect(() => {
-    if (!isLocked && !result && !autoTriggered && !generate.isPending) {
+    if (!isLocked && !result && !autoTriggered && !generate.isPending && !generateBlocked) {
       setAutoTriggered(true);
       handleGenerate();
     }
@@ -298,10 +333,33 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
             </p>
           </div>
 
+          {generateBlocked ? (
+            <div className="rounded-lg border-l-4 border-l-amber-500 border border-amber-500/30 bg-amber-50 p-4 text-sm dark:bg-amber-950/30">
+              <p className="font-medium mb-2">
+                Für ein belastbares Challenge Statement fehlen noch Angaben:
+              </p>
+              <ul className="space-y-1">
+                {missing.map((m) => (
+                  <li key={m.label}>
+                    <button
+                      type="button"
+                      className="underline underline-offset-2 hover:text-primary"
+                      onClick={() =>
+                        navigate(`/sprint/framing/${session.id}?step=${m.step}`)
+                      }
+                    >
+                      {m.label} – zu Schritt {m.step}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
           {!result ? (
             <Button
               onClick={handleGenerate}
-              disabled={generate.isPending || isLocked}
+              disabled={generate.isPending || isLocked || generateBlocked}
               className=""
             >
               {generate.isPending ? (
@@ -618,8 +676,10 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
                   )
                 }
               />
+              <Item done={langfristzielOk} label="Langfristziel formuliert (Schritt 1)" />
               <Item done={scopeOk} label="Scope klar (In/Out je ≥1 Punkt – eigene oder KI)" />
-              <Item done={measureOk} label="Messziel definiert (Schritt 7)" />
+              <Item done={top1Ok} label="Top-1-Sprint-Frage gewählt (Schritt 9)" />
+              <Item done={measureOk} label="Messziel definiert (Schritt 9)" />
               <Item
                 done={deciderOk}
                 label="Decider bestätigt"

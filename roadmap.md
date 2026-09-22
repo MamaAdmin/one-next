@@ -61,3 +61,11 @@
 - [x] Gemeinsame Ausarbeitung sowie Jira- und Confluence-Übergabe erklären
 - [x] Ergebnisse, Abschluss und Metadaten angleichen
 - [x] Desktop, Smartphone und Links prüfen
+
+## Problem-Framing-Workshop schärfen
+- [x] Schritttexte, Langfristziel, Startsymptom und Erfolgsmessung ergänzen
+- [x] Smart Sailboat als einmalige Verdichtung, Sprint-Fragen in Schritt 9 vererben
+- [x] Hinweise statt Blockaden, verworfene KI-Vorschläge nicht speichern
+- [x] Abschluss-Panel, Definition of Done und Challenge Statement schärfen
+- [x] Direktsprung zu einem Schritt aus dem Abschluss-Panel
+- [x] KI-Funktionen aktualisieren, veröffentlichen und im Browser prüfen
