@@ -2351,7 +2351,7 @@ function VariantNuf({
   return (
     <div className="space-y-6">
       {/* ---------- 1. Fragen bewerten ---------- */}
-      <CanvasSection defaultOpen title="1. Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
+      <CanvasSection defaultOpen title="1. Fragen bewerten – Neu / Nützlich / Machbar je 1–10">
         <div className="rounded-lg border-l-4 border-l-primary bg-accent-soft p-3 text-sm text-foreground/80 space-y-1.5">
           <p>NUF steht für New, Useful, Feasible – im Deutschen Neu, Nützlich, Machbar. Ihr bewertet hier Fragen, keine Lösungen.</p>
           <p><strong>New (Neu)</strong>: Wurde die Idee so schon einmal ausprobiert? Hebt sie sich von bestehenden Ansätzen oder Mitbewerbern ab?&nbsp;</p>
