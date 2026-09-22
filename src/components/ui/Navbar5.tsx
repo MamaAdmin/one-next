@@ -1,5 +1,4 @@
 import { MenuIcon, type LucideIcon } from "lucide-react";
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import {
@@ -11,11 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import {
@@ -46,7 +43,6 @@ type Navbar5Props = {
 
 export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrolled = false }: Navbar5Props) => {
   const { pathname } = useLocation();
-  const [desktopMenu, setDesktopMenu] = useState("");
 
   return (
   <header
@@ -60,22 +56,17 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
         <img src={logoSrc} alt={logoAlt} className="h-[2.1rem] w-auto" />
       </Link>
 
-      <NavigationMenu
-        value={desktopMenu}
-        onValueChange={(value) => {
-          if (value) setDesktopMenu(value);
-        }}
-        className="hidden lg:flex"
-        onMouseLeave={() => setDesktopMenu("")}
-      >
+      <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
           {items.map((item) => (
-            <NavigationMenuItem key={item.id} value={item.id}>
+            <NavigationMenuItem key={item.id} className="group/nav relative">
               {item.children?.length ? (
                 <>
-                  <NavigationMenuTrigger onMouseEnter={() => setDesktopMenu(item.id)} onFocus={() => setDesktopMenu(item.id)}>{item.label}</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[52rem] grid-cols-5 gap-2 p-5">
+                  <Button variant="ghost" className="h-10 px-4 py-2 text-sm font-medium" aria-haspopup="true">
+                    {item.label}
+                  </Button>
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover/nav:visible group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:opacity-100">
+                    <ul className="grid w-[52rem] grid-cols-5 gap-2 rounded-md border border-border bg-popover p-5 text-popover-foreground shadow-lg">
                       {item.children.map((child) => {
                         const Icon = child.icon;
                         const active = pathname === child.href;
@@ -98,7 +89,7 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
                         </li>
                       )})}
                     </ul>
-                  </NavigationMenuContent>
+                  </div>
                 </>
               ) : item.href ? (
                 <NavigationMenuLink asChild>
