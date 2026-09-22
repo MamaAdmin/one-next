@@ -175,8 +175,8 @@ const CustomAIDevelopment = () => {
               return (
                 <Card key={index} className="hover:shadow-elegant transition-shadow">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-primary-foreground" />
+                    <div className="w-12 h-12 bg-accent-soft border border-border-accent rounded-lg flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-primary" />
                     </div>
                     <CardTitle>{step.title}</CardTitle>
                   </CardHeader>

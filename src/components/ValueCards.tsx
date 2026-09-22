@@ -42,7 +42,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               <CalendarBookingDialog
                 buttonText={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
                 buttonSize="lg"
-                buttonClassName="rounded-full border border-foreground/15 bg-background text-foreground hover:bg-background/90"
+                buttonClassName="rounded-none border border-border-accent bg-background text-foreground hover:bg-background/90"
               />
             </div>
           </div>
@@ -94,7 +94,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               />
             </div>
             <div className="pt-8 md:pt-0">
-              <Button variant="outline" size="lg" className="rounded-full border-background/25 hover:bg-background/10 text-background hover:text-background">
+              <Button variant="outline" size="lg" className="rounded-none border-background/40 hover:bg-background/10 text-background hover:text-background">
                 {isEditMode ? (
                   <InlineTextField
                     value={content.efficiency_button || 'Neuesten Bericht lesen'}
@@ -131,7 +131,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               />
             </div>
             <div className="pt-8 md:pt-0">
-              <Button variant="outline" size="lg" className="rounded-full border-foreground/15 hover:bg-foreground/5">
+              <Button variant="outline" size="lg" className="rounded-none border-border-accent hover:bg-accent-soft">
                 {isEditMode ? (
                   <InlineTextField
                     value={content.success_button || 'Unsere Lösungen'}

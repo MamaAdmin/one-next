@@ -219,8 +219,8 @@ const AIConsultingServices = () => {
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <TargetIcon className="w-8 h-8 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
+                  <TargetIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">KI-Strategie-Entwicklung</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -233,8 +233,8 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <LightbulbIcon className="w-8 h-8 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
+                  <LightbulbIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Machbarkeitsanalysen</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -246,8 +246,8 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <CpuIcon className="w-8 h-8 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
+                  <CpuIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Technologie-Evaluierung</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -259,8 +259,8 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <RocketIcon className="w-8 h-8 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
+                  <RocketIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Implementierungs-Roadmaps</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -272,8 +272,8 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <GraduationCapIcon className="w-8 h-8 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
+                  <GraduationCapIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Team-Training & Workshops</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -285,8 +285,8 @@ const AIConsultingServices = () => {
 
             <Card className="border-2 hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <ScaleIcon className="w-8 h-8 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
+                  <ScaleIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold">Ethik & Governance</h3>
                 <p className="text-muted-foreground leading-relaxed">
