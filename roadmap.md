@@ -47,3 +47,10 @@
 - [x] Modulare Agenda für Desktop und Smartphone angleichen
 - [x] Arbeitsweise und Ergebnisse verdichten
 - [x] Desktop- und Mobilansicht prüfen
+
+## Sprintübersicht als Entscheidungshilfe
+- [x] Drei Angebote und Zielseiten klar gegenüberstellen
+- [x] Übergang von Problem Framing zum Design Sprint erklären
+- [x] Online Design Sprint als modulares System darstellen
+- [x] Auswahl nach Ausgangslage aufbauen
+- [x] Desktop, Smartphone und Links prüfen

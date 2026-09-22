@@ -1,493 +1,286 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowRight,
+  CheckCircle2,
+  FileCheck2,
+  Laptop,
+  Lightbulb,
+  Route,
+  Target,
+  Users,
+} from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Users, Target, Laptop, Check, Lightbulb, Sparkles, Rocket, ArrowRight } from "lucide-react";
-import { usePageContent } from "@/hooks/usePageContent";
+import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
-import { useContentManager } from "@/hooks/useContentManager";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
-import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { SEO } from "@/components/SEO";
-import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { SEO } from "@/components/SEO";
+import { usePageContent } from "@/hooks/usePageContent";
+import { useContentManager } from "@/hooks/useContentManager";
+import { createBreadcrumbSchema, createFAQSchema, createServiceSchema } from "@/config/seoConfig";
 import sprintImage from "@/assets/sprint-overview.jpg";
+
+const offers = [
+  {
+    icon: Target,
+    label: "Startpunkt",
+    title: "Problem-Framing-Workshop",
+    fit: "Wenn Ihre Challenge noch unklar ist",
+    mode: "Moderiert · 1–2 Tage",
+    points: ["Challenge präzise definieren", "Zielgruppe priorisieren", "Scope und Erfolgskriterien klären"],
+    result: "Ein klares Sprint-Briefing",
+    href: "/problem-framing-workshop",
+    cta: "Problem Framing ansehen",
+  },
+  {
+    icon: Users,
+    label: "Nächster Schritt",
+    title: "KI-unterstützter Design Sprint",
+    fit: "Wenn die Challenge klar ist und Sie moderiert arbeiten möchten",
+    mode: "Moderiert · 1–4 Tage",
+    points: ["Lösungsansätze entwickeln und priorisieren", "Prototyp greifbar machen", "Erkenntnisse und nächste Schritte sichern"],
+    result: "Ein getesteter Lösungsansatz",
+    href: "/design-sprint-workshop",
+    cta: "Design Sprint ansehen",
+  },
+  {
+    icon: Laptop,
+    label: "Flexible Alternative",
+    title: "Online Design Sprint",
+    fit: "Wenn Sie flexibel und selbstgeführt arbeiten möchten",
+    mode: "Selbstgeführt · modular",
+    points: ["Problem Framing optional auswählen", "Design-Sprint-Module selbst zusammenstellen", "Allein oder im Team arbeiten"],
+    result: "Einen individuell zusammengestellten Sprint",
+    href: "/sprint-uebersicht/online",
+    cta: "Online Sprint ansehen",
+  },
+];
+
+const transitionSteps = [
+  {
+    number: "01",
+    icon: Target,
+    title: "Challenge schärfen",
+    text: "Ist die Ausgangslage noch nicht klar, schafft das Problem Framing ein gemeinsames Verständnis von Challenge, Zielgruppe, Scope und Erfolg.",
+  },
+  {
+    number: "02",
+    icon: FileCheck2,
+    title: "Briefing übergeben",
+    text: "Das freigegebene Challenge Statement und die weiteren Ergebnisse werden als belastbares Briefing in den Design Sprint übernommen.",
+  },
+  {
+    number: "03",
+    icon: Lightbulb,
+    title: "Lösung entwickeln und testen",
+    text: "Im KI-unterstützten Design Sprint entwickelt das Team daraus einen priorisierten Lösungsansatz und macht ihn als Prototyp testbar.",
+  },
+];
+
 const AIDesignSprint = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const {
-    isContentManager,
-    loading
-  } = useContentManager();
-  const {
-    content,
-    updateContent
-  } = usePageContent('sprint-uebersicht');
-  const structuredData = [createServiceSchema("KI Design Sprint Workshop", "Identifizieren Sie KI-Potenziale und entwickeln Sie innovative Lösungen in einem strukturierten 2-Tage Workshop. Von der Challenge zum getesteten Prototyp.", "https://one-next.de/sprint-uebersicht"), createBreadcrumbSchema([{
-    name: "Home",
-    url: "https://one-next.de/"
-  }, {
-    name: "Services",
-    url: "https://one-next.de/#services"
-  }, {
-    name: "KI Design Sprint",
-    url: "https://one-next.de/sprint-uebersicht"
-  }]), createFAQSchema([{
-    question: "Was ist ein KI Design Sprint?",
-    answer: "Ein KI Design Sprint ist ein strukturierter 2-Tage Workshop, in dem Sie systematisch KI-Potenziale identifizieren, Lösungsansätze entwickeln und einen ersten Prototyp testen."
-  }, {
-    question: "Für wen eignet sich der KI Design Sprint?",
-    answer: "Der Workshop richtet sich an Unternehmen, die KI-Potenziale entdecken, Innovation fördern und schnell validierte Lösungen entwickeln möchten."
-  }, {
-    question: "Was ist der Unterschied zwischen Workshop und Online Sprint?",
-    answer: "Der Workshop findet vor Ort über 2 Tage statt, während der Online Sprint flexibel über mehrere Wochen durchgeführt wird und sich an die Verfügbarkeit Ihres Teams anpasst."
-  }])];
-  return <>
-      <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, KI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
-      <div className="min-h-screen bg-background font-workshop text-foreground">
-      <Navigation />
+  const { isContentManager, loading } = useContentManager();
+  const { content, updateContent } = usePageContent("sprint-uebersicht");
 
-      <ServicePageHero
-        badge="KI Design Sprint"
-        badgeIcon={Target}
-        titleSlot={
-          <InlineTextField value={content.hero_title || 'Von der Vision zum Prototyp – im Design Sprint erleben'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl" placeholder="Titel des Hero-Bereichs" as="h1" />
-        }
-        descriptionSlot={
-          <div className="mt-6 max-w-2xl">
-            <InlineTextArea value={content.hero_description || 'In Stunden (online Sprint) oder zwei bis drei intensiven Tagen (Workshop) zeigt der Design Sprint wie man den Prozess beschleunigen kann \n– von der Ideenfindung bis zum getesteten Prototyp.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg leading-relaxed text-muted-foreground md:text-xl" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
-          </div>
-        }
-        actions={<CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" />}
-        image={sprintImage}
-        imageAlt="Sprint-Team arbeitet an einem Whiteboard mit Skizzen und Haftnotizen"
+  const structuredData = [
+    createServiceSchema(
+      "KI Design Sprint – die passende Sprintform wählen",
+      "Problem Framing, moderierter KI Design Sprint oder modularer Online Design Sprint: Finden Sie den passenden Weg für Ihre Ausgangslage.",
+      "https://one-next.de/sprint-uebersicht",
+    ),
+    createBreadcrumbSchema([
+      { name: "Home", url: "https://one-next.de/" },
+      { name: "Leistungen", url: "https://one-next.de/#services" },
+      { name: "Sprintübersicht", url: "https://one-next.de/sprint-uebersicht" },
+    ]),
+    createFAQSchema([
+      {
+        question: "Wann starte ich mit einem Problem-Framing-Workshop?",
+        answer: "Wenn Challenge, Zielgruppe oder Scope noch nicht klar sind. Das Ergebnis dient als Briefing für den anschliessenden Design Sprint.",
+      },
+      {
+        question: "Wann passt der KI-unterstützte Design Sprint?",
+        answer: "Wenn die Challenge klar ist und ein moderiertes Team in 1–4 Tagen einen priorisierten und getesteten Lösungsansatz entwickeln möchte.",
+      },
+      {
+        question: "Was enthält der Online Design Sprint?",
+        answer: "Der Online Design Sprint ist selbstgeführt und modular. Sie wählen ein nicht moderiertes Problem Framing, den Design-Sprint-Prozess oder beide Module als durchgängigen Weg.",
+      },
+    ]),
+  ];
+
+  return (
+    <>
+      <SEO
+        title="Sprintübersicht | Den passenden KI Design Sprint wählen | one-next"
+        description="Vergleichen Sie Problem Framing, moderierten KI Design Sprint und modularen Online Design Sprint und wählen Sie den passenden Weg für Ihre Challenge."
+        keywords="KI Design Sprint, Problem Framing, Design Sprint Workshop, Online Design Sprint, Entscheidungshilfe"
+        canonical="https://one-next.de/sprint-uebersicht"
+        structuredData={structuredData}
       />
-
-      {/* Wählen Sie Ihren Design Sprint Ansatz - direkt nach Hero */}
-      <section className="py-24 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Wählen Sie Ihren Design Sprint Ansatz</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Drei Wege führen zu KI-Innovation – wählen Sie den Ansatz, der am besten zu Ihrem Team passt.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Problem-Framing-Workshop */}
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-6">
-                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
-                  <Target className="w-7 h-7 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop (mit KI)</h3>
-                  <p className="text-sm text-muted-foreground">Ihre Challenge schärfen</p>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>1-2 Tage intensive Klärung</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Challenge präzise definieren</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Zielgruppe priorisieren</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Sprint-Ready machen</span>
-                  </li>
-                </ul>
-                <div className="pt-4 border-t space-y-4">
-                  <p className="text-sm font-semibold">Preis auf Anfrage</p>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link to="/problem-framing-workshop">Workshop-Details</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Design Sprint Workshop (mit KI) */}
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-6">
-                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
-                  <Users className="w-7 h-7 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (mit KI)</h3>
-                  <p className="text-sm text-muted-foreground">Intensiv, expertengeführt, maßgeschneidert</p>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>2 bis 4 Tage intensive Workshops</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Vor Ort oder Remote mit Team</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Geleitet von KI-Experten und erfahrenen Moderatoren</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Maßgeschneidert für Ihre Bedürfnisse</span>
-                  </li>
-                </ul>
-                <div className="pt-4 border-t space-y-4">
-                  <p className="text-sm font-semibold">Preis auf Anfrage</p>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link to="/design-sprint-workshop">Workshop-Details</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Online Design Sprint */}
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-8 space-y-6">
-                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
-                  <Laptop className="w-7 h-7 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Online Design Sprint</h3>
-                  <p className="text-sm text-muted-foreground">Flexibel, strukturiert – im Solo- oder Team-Modus</p>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Strukturierter, selbstgeführter Prozess</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span><strong>Solo-Modus:</strong> Allein durchlaufen – alle Entscheidungen beim Teilnehmer</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span><strong>Team-Modus:</strong> Gemeinsam mit verteiltem Team, Voting & Decider-Rolle</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Flexibel pausieren & fortsetzen</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Optionaler Experten-Input</span>
-                  </li>
-                </ul>
-                <div className="pt-4 border-t space-y-4">
-                  <p className="text-sm font-semibold">Preis auf Anfrage</p>
-                  <Button className="w-full" asChild>
-                    <Link to="/sprint-uebersicht/online">Sprint entdecken</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Was ist ein KI Design Sprint Workshop? */}
-      <section id="workshop-details" className="py-24 bg-background">
-
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto space-y-12">
-            <div className="text-center space-y-6">
-              <h2 className="text-4xl font-bold">
-                <InlineTextField value={content.what_is_title || 'Was ist ein KI Design Sprint Workshop?'} onSave={value => updateContent('what_is_title', value)} isEditMode={isEditMode} className="text-4xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
-              </h2>
-              <div className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto space-y-6">
-                <p>
-                  <InlineTextArea value={content.what_is_description || 'Ein KI Design Sprint Workshop ist ein intensiver, praxisorientierter Prozess in dem Ihr Team das Potenzial gezielt für Ihr Unternehmen erschließt.\n\n'} onSave={value => updateContent('what_is_description', value)} isEditMode={isEditMode} className="text-xl text-muted-foreground leading-relaxed" placeholder="Beschreibung des Abschnitts" />
-                </p>
-                <ul className="text-left space-y-4 max-w-2xl mx-auto">
-                  <li className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                    <span>Begleitet von erfahrenen Moderatoren mit KI-Expertise durchläuft Ihr Team klar strukturierte Phasen – von der Problemdefinition über die Ideenfindung bis zur Validierung erster Lösungen. Moderne KI-Tools beschleunigen dabei Analyse, Ideenfindung und Prototyping.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                    <span>Das Ziel: in wenigen Tagen konkrete, umsetzbare KI-Anwendungsfälle identifizieren und als Prototyp oder Proof of Concept greifbar machen.</span>
-                  </li>
-                </ul>
+      <div className="min-h-screen bg-background font-workshop text-foreground">
+        <Navigation />
+        <main className="overflow-hidden pt-16">
+          <ServicePageHero
+            badge="Sprintübersicht"
+            badgeIcon={Route}
+            titleSlot={
+              <InlineTextField
+                value={content.hero_title || "Der passende Weg für Ihre Challenge"}
+                onSave={(value) => updateContent("hero_title", value)}
+                isEditMode={isEditMode}
+                className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl"
+                placeholder="Titel des Einstiegs"
+                as="h1"
+              />
+            }
+            descriptionSlot={
+              <div className="mt-6 max-w-2xl">
+                <InlineTextArea
+                  value={content.hero_description || "Problem Framing, moderierter KI Design Sprint oder flexibler Online Design Sprint: Wählen Sie den Aufbau, der zu Ihrer Ausgangslage, Ihrem Team und Ihrer gewünschten Arbeitsweise passt."}
+                  onSave={(value) => updateContent("hero_description", value)}
+                  isEditMode={isEditMode}
+                  className="text-lg leading-relaxed text-muted-foreground md:text-xl"
+                  placeholder="Beschreibung des Einstiegs"
+                  minRows={3}
+                />
               </div>
-            </div>
+            }
+            actions={<CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" />}
+            facts={[
+              { value: "3 Wege", label: "Auswahl" },
+              { value: "Moderiert oder selbstgeführt", label: "Arbeitsweise" },
+              { value: "Modular", label: "Aufbau" },
+            ]}
+            image={sprintImage}
+            imageAlt="Sprint-Team arbeitet an einem Whiteboard mit Skizzen und Haftnotizen"
+          />
 
-            {/* Horizontaler Prozess-Flow: Vier Phasen des KI Design Sprint Workshops */}
-            <div className="pt-8">
-              <div className="flex flex-col md:flex-row md:items-stretch gap-4 md:gap-2">
-                {[
-                  {
-                    icon: Target,
-                    step: "01",
-                    title: "Problem definieren",
-                    desc: "Challenge präzisieren, Zielgruppe und Kontext klären."
-                  },
-                  {
-                    icon: Lightbulb,
-                    step: "02",
-                    title: "Ideen entwickeln",
-                    desc: "Strukturierte Phasen von Ideenfindung bis Validierung – unterstützt durch KI-Tools."
-                  },
-                  {
-                    icon: Sparkles,
-                    step: "03",
-                    title: "Use-Cases identifizieren",
-                    desc: "Konkrete, umsetzbare KI-Anwendungsfälle priorisieren und schärfen."
-                  },
-                  {
-                    icon: Rocket,
-                    step: "04",
-                    title: "Konzept & Prototyp",
-                    desc: "Greifbare Lösung mit klaren nächsten Umsetzungsschritten."
-                  }
-                ].map((phase, idx, arr) => {
-                  const Icon = phase.icon;
-                  return (
-                    <div key={phase.step} className="flex md:flex-1 items-stretch gap-2">
-                      <Card className="flex-1 border-border hover:border-primary/40 hover:shadow-hover transition-all">
-                        <CardContent className="p-5 space-y-3 h-full flex flex-col">
-                          <div className="flex items-center justify-between">
-                            <div className="w-11 h-11 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                              <Icon className="w-5 h-5 text-primary" />
-                            </div>
-                            <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">
-                              {phase.step}
-                            </span>
-                          </div>
-                          <h3 className="text-base font-bold leading-snug">{phase.title}</h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{phase.desc}</p>
-                        </CardContent>
-                      </Card>
-                      {idx < arr.length - 1 && (
-                        <div className="hidden md:flex items-center justify-center px-1 text-primary/60" aria-hidden="true">
-                          <ArrowRight className="w-5 h-5" />
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 max-w-3xl">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Drei Angebote auf einen Blick</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Wählen Sie nach Ihrer Ausgangslage</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">Die drei Angebote greifen ineinander, können aber auch passend zu Ihrer Situation einzeln gewählt werden.</p>
+                </div>
+                <div className="grid overflow-hidden border border-border md:grid-cols-3">
+                  {offers.map((offer, index) => {
+                    const Icon = offer.icon;
+                    return (
+                      <article key={offer.title} className={`flex flex-col p-6 md:p-8 ${index > 0 ? "border-t border-border md:border-l md:border-t-0" : ""}`}>
+                        <div className="mb-7 flex items-center justify-between gap-4">
+                          <p className="text-xs font-bold uppercase text-primary">{offer.label}</p>
+                          <Icon className="size-6 text-primary" />
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Was können Sie erwarten? */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
-              <InlineTextField value={content.expect_title || 'Was können Sie erwarten?'} onSave={value => updateContent('expect_title', value)} isEditMode={isEditMode} className="text-3xl font-bold" placeholder="Titel des Abschnitts" as="h2" />
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="text-center hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <Users className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold">Vor Ort & Remote</h3>
-                <p className="text-muted-foreground text-sm">Flexibel nach Ihren Bedürfnissen</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <Calendar className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold">2 Tage intensiv</h3>
-                <p className="text-muted-foreground text-sm">Fokussierte KI-Konzeptentwicklung</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <Target className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold">Expertenteam</h3>
-                <p className="text-muted-foreground text-sm">KI-Ingenieure und Moderation</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Agenda - Shortened */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Workshop-Agenda</h2>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Tag 1 */}
-              <Card className="hover:shadow-hover transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-12 h-12 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl font-bold text-primary">1</span>
-                    </div>
-                    <h3 className="text-xl font-bold">Verstehen & Definieren</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    Problem analysieren, KI-Potenziale identifizieren, Ziele definieren
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Tag 2 */}
-              <Card className="hover:shadow-hover transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-12 h-12 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl font-bold text-primary">2</span>
-                    </div>
-                    <h3 className="text-xl font-bold">Ideation & Roadmap</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    Lösungen entwickeln, Machbarkeit bewerten, Implementierungsplan erstellen
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Ergebnisse - Reduced */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Was Sie am Ende haben</h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card className="text-center hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="text-3xl mb-2">1</div>
-                <h3 className="text-lg font-bold">Machbarkeitsanalyse</h3>
-                <p className="text-muted-foreground text-sm">Bewertung der Potenziale</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="text-3xl mb-2">2</div>
-                <h3 className="text-lg font-bold">Entwicklungs-Roadmap</h3>
-                <p className="text-muted-foreground text-sm">Klarer Implementierungsplan</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="text-3xl mb-2">3</div>
-                <h3 className="text-lg font-bold">Detaillierter Report</h3>
-                <p className="text-muted-foreground text-sm">Dokumentation & Empfehlungen</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Vorteile - Reduced to 2 */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Warum ein KI Design Sprint Workshop?</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <Target className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold">Potenziale systematisch identifizieren</h3>
-                <p className="text-muted-foreground text-sm">
-                  Mit Expertenbegleitung Chancen erkennen und bewerten
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-hover transition-all">
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <Calendar className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold">Schnell zur umsetzbaren Roadmap</h3>
-                <p className="text-muted-foreground text-sm">
-                  In 2 Tagen von der Idee zum konkreten Implementierungsplan
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-
-      {/* CTA Section - Dual Option */}
-      <section id="cta-section" className="py-24 relative overflow-hidden bg-accent-soft">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <Card className="bg-white border-2 shadow-2xl max-w-5xl mx-auto">
-            <CardContent className="p-12">
-              <div className="text-center space-y-8">
-                <h2 className="text-4xl font-bold">
-                  Bereit für Ihren{" "}
-                  <span className="bg-gradient-primary bg-clip-text text-transparent">
-                    KI Design Sprint?
-                  </span>
-                </h2>
-                
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Wählen Sie den Ansatz, der am besten zu Ihrem Team passt
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto pt-4">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-bold">Workshop buchen</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Moderierter 2-Tage-Workshop mit KI-Experten
-                    </p>
-                    <Button size="lg" className="w-full ">
-                      Kontakt aufnehmen
-                    </Button>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-bold">Online Sprint starten</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Selbstgeführter Online Sprint
-                    </p>
-                    <Button size="lg" variant="outline" className="w-full" asChild>
-                      <Link to="/sprint-uebersicht/online">Mehr erfahren</Link>
-                    </Button>
-                  </div>
+                        <h3 className="font-workshop-heading text-2xl font-bold">{offer.title}</h3>
+                        <p className="mt-4 font-semibold text-primary">{offer.fit}</p>
+                        <p className="mt-2 text-sm text-muted-foreground">{offer.mode}</p>
+                        <div className="my-7 space-y-3">
+                          {offer.points.map((point) => <p key={point} className="flex gap-3 text-sm text-muted-foreground"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />{point}</p>)}
+                        </div>
+                        <div className="mt-auto border-l-2 border-primary bg-accent-soft/40 p-4">
+                          <p className="text-xs font-bold uppercase text-primary">Ergebnis</p>
+                          <p className="mt-1 text-sm font-semibold">{offer.result}</p>
+                        </div>
+                        <Button className="mt-6 w-full" variant="outline" asChild><Link to={offer.href}>{offer.cta} <ArrowRight /></Link></Button>
+                      </article>
+                    );
+                  })}
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+            </div>
+          </section>
 
-      <Footer />
-      
-      {isContentManager && !loading && <EditToggleButton isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />}
-    </div>
-    </>;
+          <section className="border-y border-border bg-muted/35 py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 max-w-3xl">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Vom Problem zur Lösung</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Problem Framing und Design Sprint bauen aufeinander auf</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">Das Problem Framing klärt, woran gearbeitet werden soll. Der Design Sprint nutzt dieses Ergebnis, um eine passende Lösung zu entwickeln, greifbar zu machen und zu prüfen.</p>
+                </div>
+                <div className="grid gap-x-16 md:grid-cols-3">
+                  {transitionSteps.map((step) => {
+                    const Icon = step.icon;
+                    return (
+                      <article key={step.number} className="border-b border-border py-7">
+                        <div className="flex items-start gap-5">
+                          <span className="font-workshop-heading text-3xl font-bold text-border-strong">{step.number}</span>
+                          <Icon className="mt-1 size-6 shrink-0 text-primary" />
+                          <div><h3 className="font-workshop-heading text-lg font-semibold">{step.title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.text}</p></div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+                <div className="mt-10 flex flex-col gap-4 border-l-4 border-primary bg-accent-soft p-6 sm:flex-row sm:items-center sm:justify-between">
+                  <div><h3 className="font-workshop-heading font-semibold">Ihre Challenge ist bereits klar?</h3><p className="mt-1 text-sm text-muted-foreground">Dann können Sie direkt mit dem KI-unterstützten Design Sprint starten.</p></div>
+                  <Button variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint <ArrowRight /></Link></Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="border-b border-border-accent bg-accent-soft/40 py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.8fr_1.2fr]">
+                <div>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Selbstgeführt und modular</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Der Online Design Sprint passt sich Ihrem Weg an</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">Sie stellen selbst zusammen, welche Module Sie benötigen, und bearbeiten diese ohne Moderation in Ihrem eigenen Tempo – allein oder gemeinsam im Team.</p>
+                  <Button className="mt-8" variant="outline" asChild><Link to="/sprint-uebersicht/online">Online Sprint entdecken <ArrowRight /></Link></Button>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-3">
+                  {[
+                    ["Nur Problem Framing", "Die Challenge selbstgeführt klären und als Briefing festhalten."],
+                    ["Nur Design Sprint", "Mit einer bereits klaren Challenge direkt in die Lösungsentwicklung starten."],
+                    ["Beide Module", "Vom nicht moderierten Problem Framing durchgängig bis zum Design Sprint arbeiten."],
+                  ].map(([title, text]) => <div key={title} className="border-t border-border-accent pt-5"><CheckCircle2 className="mb-4 size-5 text-primary" /><h3 className="font-workshop-heading font-semibold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p></div>)}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 text-center">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Entscheidungshilfe</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Welcher Weg passt zu Ihnen?</h2>
+                </div>
+                <div className="grid overflow-hidden border border-border md:grid-cols-3">
+                  {offers.map((offer, index) => (
+                    <article key={offer.fit} className={`flex flex-col p-6 md:p-8 ${index > 0 ? "border-t border-border md:border-l md:border-t-0" : ""}`}>
+                      <p className="font-workshop-heading text-xl font-bold">{offer.fit}</p>
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">Dann passt der <strong className="text-foreground">{offer.title}</strong>. Sie erhalten {offer.result.charAt(0).toLowerCase() + offer.result.slice(1)}.</p>
+                      <Button className="mt-7 w-full" asChild variant={index === 1 ? "default" : "outline"}><Link to={offer.href}>{offer.cta} <ArrowRight /></Link></Button>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="border-t border-border bg-muted/40 py-20 md:py-28">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-4xl text-center">
+                <h2 className="font-workshop-heading text-3xl font-bold md:text-5xl">Noch unsicher, welcher Sprint zu Ihnen passt?</h2>
+                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Wählen Sie oben direkt Ihr Angebot oder klären Sie gemeinsam mit uns, welcher Aufbau zu Ihrer Challenge passt.</p>
+                <div className="mt-9 flex justify-center"><CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" /></div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+        {isContentManager && !loading && <EditToggleButton isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />}
+      </div>
+    </>
+  );
 };
+
 export default AIDesignSprint;
