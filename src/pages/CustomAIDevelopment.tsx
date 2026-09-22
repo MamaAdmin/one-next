@@ -107,9 +107,9 @@ const CustomAIDevelopment = () => {
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-background font-workshop text-foreground">
       <Navigation />
-      
+
       {isContentManager && (
         <EditToggleButton
           isEditMode={isEditMode}
@@ -117,43 +117,33 @@ const CustomAIDevelopment = () => {
         />
       )}
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 border-b border-border-accent bg-accent-soft/40 relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            {/* Badge with Icon */}
-            <div className="inline-flex items-center gap-2 border border-border-accent bg-background text-primary px-4 py-2 rounded-full">
-              <Target className="w-5 h-5" />
-              <span className="font-semibold">Individuelle KI-Entwicklung</span>
-            </div>
-
-            <InlineTextField
-              value={content.hero_title || "Von der Idee zum umsetzungsreifen KI-Projekt"}
-              onSave={(value) => updateContent("hero_title", value, "text")}
-              isEditMode={isEditMode}
-              as="h1"
-              className="text-5xl lg:text-6xl font-bold"
-            />
-
+      <ServicePageHero
+        badge="Individuelle KI-Entwicklung"
+        badgeIcon={Target}
+        titleSlot={
+          <InlineTextField
+            value={content.hero_title || "Von der Idee zum umsetzungsreifen KI-Projekt"}
+            onSave={(value) => updateContent("hero_title", value, "text")}
+            isEditMode={isEditMode}
+            as="h1"
+            className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl"
+          />
+        }
+        descriptionSlot={
+          <div className="mt-6 max-w-2xl">
             <InlineTextArea
               value={content.hero_description || "Nicht jedes Unternehmen hat die Kapazität oder das interne Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Wir bringen Ihre Idee in eine klare, umsetzungsreife Form – von der ersten Problemdefinition bis zum vollständigen Blueprint, mit dem ein Entwicklungsteam direkt starten kann. Strukturiert nach dem BMAD-Framework."}
               onSave={(value) => updateContent("hero_description", value, "text")}
               isEditMode={isEditMode}
-              className="text-xl text-muted-foreground leading-relaxed"
+              className="text-lg leading-relaxed text-muted-foreground md:text-xl"
               minRows={3}
             />
-            
-            {/* CTA Button */}
-            <div className="mt-6">
-              <CalendarBookingDialog
-                buttonText="Erstgespräch buchen"
-                buttonSize="lg"
-                buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6"
-              />
-            </div>
           </div>
-        </div>
-      </section>
+        }
+        actions={<CalendarBookingDialog buttonText="Erstgespräch buchen" buttonSize="lg" />}
+        image={developmentImage}
+        imageAlt="Entwicklungsteam bespricht einen KI-Blueprint am Bildschirm"
+      />
 
       {/* Approach Section */}
       <section id="approach" className="py-20 bg-background">
