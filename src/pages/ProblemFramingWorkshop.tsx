@@ -28,17 +28,27 @@ import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
 
+const preSteps = [
+  { title: "Team-Konstellation", desc: "Decider optional, Rollen und Erwartungen klären.", icon: Users },
+  { title: "Einführung", desc: "Ablauf, Regeln und Ziele des Workshops vorstellen.", icon: Compass },
+  { title: "So arbeitest du hier", desc: "Methoden, Werkzeuge und Zusammenarbeit erklären.", icon: Map },
+];
+
 const agenda = [
-  { title: "Kick-off & Zielbild", time: "10–15'", desc: "Kontext, Ziel des Workshops und die klare Abgrenzung dessen, was kein Sprint-Ziel ist.", icon: Compass },
-  { title: "Warum jetzt? & Default Future", time: "15'", desc: "Wir machen sichtbar, was passiert, wenn nichts verändert wird.", icon: Clock3 },
-  { title: "Stakeholder & Zielgruppe", time: "15'", desc: "Die primäre Zielgruppe wird festgelegt, sekundäre Zielgruppen werden geparkt.", icon: Users },
-  { title: "Smart Sailboat", time: "30'", desc: "Treiber, Hindernisse, Ziel und Risiken ergeben ein gemeinsames Bild der Lage.", icon: Map },
-  { title: "Root Cause", time: "20'", desc: "Mit 5 Whys identifizieren wir Ursachen, die das Team tatsächlich adressieren kann.", icon: Focus },
+  { title: "Kick-off & Zielbild", time: "15'", desc: "Kontext, Ziel des Workshops und die klare Abgrenzung dessen, was kein Sprint-Ziel ist.", icon: Compass },
+  { title: "Gegenwart, Vergangenheit & Zukunft", time: "15'", desc: "Wir machen sichtbar, was passiert, wenn nichts verändert wird.", icon: Clock3 },
+  { title: "Stakeholder & Zielgruppe", time: "30'", desc: "Die primäre Zielgruppe wird festgelegt, sekundäre Zielgruppen werden geparkt.", icon: Users },
+  { title: "Smart Sailboat", time: "15'", desc: "Treiber, Hindernisse, Ziel und Risiken ergeben ein gemeinsames Bild der Lage.", icon: Map },
+  { title: "Root Cause (5 Whys)", time: "15'", desc: "Mit 5 Whys identifizieren wir Ursachen, die das Team tatsächlich adressieren kann.", icon: Focus },
   { title: "Annahmen & Risiken", time: "20'", desc: "Annahmen werden nach Unsicherheit und Einfluss priorisiert.", icon: ShieldCheck },
   { title: "Erfolg & Constraints", time: "20'", desc: "Wir definieren ein messbares Ergebnis und harte Randbedingungen.", icon: Target },
   { title: "Scope-Cut & Sprint-Fragen", time: "25'", desc: "In Scope, Out of Scope und die entscheidenden Sprint-Fragen werden festgehalten.", icon: MessageSquareText },
-  { title: "Priorisierung", time: "15'", desc: "Der NUF-Test führt zur Auswahl der wichtigsten Challenge.", icon: Sparkles },
-  { title: "Entscheidung & nächste Schritte", time: "10–15'", desc: "Sprint-Go und alle notwendigen Vorbereitungen werden verbindlich geklärt.", icon: Route },
+  { title: "Priorisierung (NUF)", time: "15'", desc: "Der NUF-Test führt zur Auswahl der wichtigsten Challenge.", icon: Sparkles },
+  { title: "Entscheidung & Next Steps", time: "15'", desc: "Sprint-Go und alle notwendigen Vorbereitungen werden verbindlich geklärt.", icon: Route },
+];
+
+const postSteps = [
+  { title: "Abschluss · Challenge Statement", desc: "Challenge Statement freigegeben, Scope klar, Messziel definiert.", icon: FileCheck2 },
 ];
 
 const outcomes = [
@@ -161,6 +171,18 @@ const ProblemFramingWorkshop = () => {
                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Zehn Schritte zu maximaler Klarheit</h2>
                   <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Der Kernworkshop dauert 3–4 Stunden und folgt klaren Timeboxes.</p>
                 </div>
+
+                {/* Vor dem Start */}
+                <div className="mb-10 border border-border-accent bg-accent-soft/40">
+                  <div className="border-b border-border-accent px-6 py-3">
+                    <h3 className="font-workshop-heading text-sm font-bold uppercase tracking-wide text-primary">Vor dem Start</h3>
+                  </div>
+                  <div className="grid gap-0 sm:grid-cols-3">
+                    {preSteps.map((step) => { const Icon = step.icon; return <div key={step.title} className="border-b border-border-accent px-6 py-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><div className="flex items-start gap-3"><Icon className="mt-0.5 size-5 shrink-0 text-primary" /><div><h4 className="font-workshop-heading text-sm font-semibold">{step.title}</h4><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{step.desc}</p></div></div></div>; })}
+                  </div>
+                </div>
+
+                {/* Zehn Schritte */}
                 <div className="hidden grid-cols-2 gap-x-16 gap-y-0 md:grid">
                   {agenda.map((step, index) => {
                     const Icon = step.icon;
@@ -172,6 +194,17 @@ const ProblemFramingWorkshop = () => {
                 <Accordion type="single" collapsible className="md:hidden">
                   {agenda.map((step, index) => { const Icon = step.icon; return <AccordionItem key={step.title} value={`step-${index}`}><AccordionTrigger className="gap-3 text-left hover:no-underline"><span className="font-workshop-heading text-muted-foreground">{String(index + 1).padStart(2, "0")}</span><Icon className="size-5 shrink-0 text-primary" /><span className="flex-1 font-workshop-heading">{step.title}</span></AccordionTrigger><AccordionContent><div className="pl-16"><span className="text-xs font-semibold text-primary">{step.time}</span><p className="mt-2 leading-relaxed text-muted-foreground">{step.desc}</p></div></AccordionContent></AccordionItem>; })}
                 </Accordion>
+
+                {/* Abschluss */}
+                <div className="mt-10 border border-border-accent bg-accent-soft/40">
+                  <div className="border-b border-border-accent px-6 py-3">
+                    <h3 className="font-workshop-heading text-sm font-bold uppercase tracking-wide text-primary">Abschluss</h3>
+                  </div>
+                  <div className="px-6 py-5">
+                    {postSteps.map((step) => { const Icon = step.icon; return <div key={step.title} className="flex items-start gap-4"><Icon className="mt-0.5 size-6 shrink-0 text-primary" /><div><h4 className="font-workshop-heading text-base font-semibold">{step.title}</h4><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.desc}</p></div></div>; })}
+                  </div>
+                </div>
+
                 <div className="mt-10 flex gap-4 border-l-4 border-primary bg-accent-soft p-6"><FileCheck2 className="size-7 shrink-0 text-primary" /><div><h3 className="font-workshop-heading font-semibold">Definition of Done</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Challenge Statement freigegeben, Scope klar, Messziel definiert und die Vorbereitung für den Design Sprint angestossen.</p></div></div>
               </div>
             </div>
