@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
+
+import logo from "@/assets/one-next-logo-new.png";
+import { Navbar5, type NavbarItem } from "@/components/ui/Navbar5";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,305 +11,119 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigation, type NavigationItem } from "@/hooks/useNavigation";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { useNavigation } from "@/hooks/useNavigation";
 
+const flattenChildren = (item: NavigationItem, depth = 0): NavbarItem["children"] =>
+  (item.children ?? [])
+    .filter((child) => child.is_active)
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .flatMap((child) => [
+      ...(child.url ? [{ id: child.id, label: child.label, href: child.url, depth }] : []),
+      ...(flattenChildren(child, depth + 1) ?? []),
+    ]);
+
+const fallbackItems: NavbarItem[] = [
+  {
+    id: "leistungen",
+    label: "Leistungen",
+    children: [
+      { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services" },
+      { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
+      { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit" },
+      { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop" },
+      { id: "design-sprint", label: "Design Sprint Workshop", href: "/design-sprint-workshop" },
+    ],
+  },
+  {
+    id: "unternehmen",
+    label: "Unternehmen",
+    children: [
+      { id: "ueber-uns", label: "Über uns", href: "/about-us" },
+      { id: "faq", label: "FAQ", href: "/faq" },
+      { id: "kontakt", label: "Kontakt", href: "/kontakt" },
+    ],
+  },
+  { id: "blog", label: "Blog", href: "/blog" },
+];
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"]>(null);
   const { isAdmin, isBmadUser, isSprintUser } = useUserRoles();
-  
-  // Load navigation dynamically from database
   const { items: headerItems } = useNavigation("header");
-  
-  // Filter top-level items (without parent_id)
-  const topLevelItems = headerItems.filter(item => !item.parent_id && item.is_active);
-
-  // Helper: Get all descendants (children + grandchildren) with depth
-  const getAllDescendants = (item: any): any[] => {
-    const descendants: any[] = [];
-    
-    const traverse = (current: any, depth: number = 0) => {
-      if (current.children) {
-        current.children
-          .filter((child: any) => child.is_active)
-          .sort((a: any, b: any) => a.sort_order - b.sort_order)
-          .forEach((child: any) => {
-            descendants.push({ ...child, depth });
-            traverse(child, depth + 1);
-          });
-      }
-    };
-    
-    traverse(item, 0);
-    return descendants;
-  };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setIsScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
+    return () => data.subscription.unsubscribe();
   }, []);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
+  const items = useMemo<NavbarItem[]>(() => {
+    const dynamic = headerItems
+      .filter((item) => !item.parent_id && item.is_active)
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((item) => ({
+        id: item.id,
+        label: item.label,
+        href: item.url ?? undefined,
+        children: flattenChildren(item),
+      }));
+    return [...(dynamic.length ? dynamic : fallbackItems), { id: "kurse", label: "Kurse", href: "/kurse" }];
+  }, [headerItems]);
 
-  return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
-      isScrolled
-        ? "bg-background/85 backdrop-blur-md border-border/70"
-        : "bg-background/95 backdrop-blur-sm border-transparent"
-    }`}>
-      <div className="container mx-auto px-6">
-        <div className="h-16 flex items-center justify-between w-full">
-          <Link to="/" className="flex items-center">
-            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/Y7p4K5s0ZYMhiUT4kyDR1QHgUs42/uploads/1760245953105-one-next-logo-new.png" alt="one-next Logo" className="h-7 w-auto" />
-          </Link>
+  const portalLinks = useMemo(() => {
+    if (!user) return [];
+    if (isAdmin) return [
+      { label: "Unternehmensprofil", href: "/company/profile" },
+      { label: "Admin-Dashboard", href: "/admin" },
+      { label: "Kunden verwalten", href: "/admin/customers" },
+    ];
+    if (isBmadUser) return [{ label: "BMAD Portal", href: "/bmad" }];
+    if (isSprintUser) return [{ label: "Meine Sprints", href: "/sprint" }];
+    return [{ label: "Meine Kurse", href: "/lms/dashboard" }];
+  }, [isAdmin, isBmadUser, isSprintUser, user]);
 
-          {/* Desktop Navigation - Dynamic */}
-          <nav className="hidden md:flex items-center gap-8">
-            {topLevelItems.map((item) => {
-              // Has children? → Dropdown
-              if (item.children && item.children.length > 0) {
-                return (
-                  <DropdownMenu key={item.id}>
-                    <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors outline-none">
-                      {item.label} <ChevronDown className="w-4 h-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="z-50 bg-background">
-                      {getAllDescendants(item).map((child) => (
-                        <DropdownMenuItem 
-                          key={child.id} 
-                          asChild
-                          className={child.depth > 0 ? "pl-8" : ""}
-                        >
-                          <Link to={child.url || "#"} className="cursor-pointer">
-                            {child.depth > 0 && "└─ "}
-                            {child.label}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                );
-              }
-              
-              // No dropdown → direct link
-              return item.url ? (
-                <Link 
-                  key={item.id} 
-                  to={item.url} 
-                  className="text-foreground hover:text-primary transition-colors"
-                >
-                  {item.label}
-                </Link>
-              ) : null;
-            })}
+  const signOut = () => void supabase.auth.signOut();
 
-            <Link to="/kurse" className="text-foreground hover:text-primary transition-colors">
-              Kurse
-            </Link>
-
-            
-
-
-
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    Konto
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="z-50 bg-background">
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      Mein Profil
-                    </Link>
-                  </DropdownMenuItem>
-                  {/* Regular users (not admin, not bmad_user, not sprint_user) see LMS */}
-                  {!isAdmin && !isBmadUser && !isSprintUser && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/lms/dashboard" className="cursor-pointer">
-                        Meine Kurse
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  {/* Sprint users see their sprints */}
-                  {!isAdmin && isSprintUser && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/sprint" className="cursor-pointer">
-                        Meine Sprints
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  {/* BMAD users (not admin) see BMAD Portal */}
-                  {!isAdmin && isBmadUser && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/bmad" className="cursor-pointer">
-                        BMAD Portal
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  {/* Admin only sees admin links */}
-                  {isAdmin && (
-                    <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/company/profile" className="cursor-pointer">
-                          Unternehmensprofil
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="cursor-pointer">
-                          Admin-Dashboard
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/customers" className="cursor-pointer">
-                          Kunden verwalten
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Abmelden
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link to="/auth">
-                <Button variant="default" size="sm">
-                  Anmelden
-                </Button>
-              </Link>
-            )}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu - Dynamic */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden pb-4 bg-background border-t border-border/60 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            <div className="flex flex-col gap-4">
-              {topLevelItems.map((item) => {
-                const descendants = getAllDescendants(item);
-                if (descendants.length === 0) {
-                  return item.url ? (
-                    <Link
-                      key={item.id}
-                      to={item.url}
-                      className="block py-2 px-4 hover:bg-accent rounded-md font-medium"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ) : null;
-                }
-                return (
-                  <div key={item.id} className="border-b pb-4">
-                    <p className="text-sm font-semibold mb-2 px-4">{item.label}</p>
-                    {descendants.map((child) => (
-                      <Link
-                        key={child.id}
-                        to={child.url || "#"}
-                        className={`block py-2 hover:bg-accent rounded-md ${
-                          child.depth > 0 ? "pl-8" : "pl-4"
-                        }`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {child.depth > 0 && "└─ "}
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                );
-              })}
-
-              <Link
-                to="/kurse"
-                className="block py-2 px-4 hover:bg-accent rounded-md font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Kurse
-              </Link>
-
-              {user ? (
-                <>
-                  {/* Regular users see LMS */}
-                  {!isAdmin && !isBmadUser && !isSprintUser && (
-                    <Link to="/lms/dashboard" className="block py-2 px-4 hover:bg-accent rounded-md">
-                      Meine Kurse
-                    </Link>
-                  )}
-                  {/* Sprint users */}
-                  {!isAdmin && isSprintUser && (
-                    <Link to="/sprint" className="block py-2 px-4 hover:bg-accent rounded-md">
-                      Meine Sprints
-                    </Link>
-                  )}
-                  {/* BMAD users (not admin) see BMAD Portal */}
-                  {!isAdmin && isBmadUser && (
-                    <Link to="/bmad" className="block py-2 px-4 hover:bg-accent rounded-md">
-                      BMAD Portal
-                    </Link>
-                  )}
-                  {/* Admin only sees admin links */}
-                  {isAdmin && (
-                    <Link to="/admin" className="block py-2 px-4 hover:bg-accent rounded-md">
-                      Admin-Dashboard
-                    </Link>
-                  )}
-                  <button
-                    onClick={handleSignOut}
-                    className="block w-full text-left py-2 px-4 hover:bg-accent rounded-md"
-                  >
-                    Abmelden
-                  </button>
-                </>
-              ) : (
-                <Link to="/auth" className="block py-2 px-4 hover:bg-accent rounded-md">
-                  <Button variant="default" size="sm" className="w-full">
-                    Anmelden
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </nav>
+  const account = user ? (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm">
+          <User /> Konto <ChevronDown />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild><Link to="/profile">Mein Profil</Link></DropdownMenuItem>
+        {portalLinks.map((link) => (
+          <DropdownMenuItem asChild key={link.href}><Link to={link.href}>{link.label}</Link></DropdownMenuItem>
+        ))}
+        <DropdownMenuItem onClick={signOut}><LogOut /> Abmelden</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  ) : (
+    <Button size="sm" asChild><Link to="/auth">Anmelden</Link></Button>
   );
+
+  const mobileAccount = user ? (
+    <div className="space-y-1">
+      <Link to="/profile" className="block rounded-md px-3 py-3 font-medium hover:bg-accent-soft">Mein Profil</Link>
+      {portalLinks.map((link) => <Link key={link.href} to={link.href} className="block rounded-md px-3 py-3 hover:bg-accent-soft">{link.label}</Link>)}
+      <Button variant="ghost" className="w-full justify-start" onClick={signOut}><LogOut /> Abmelden</Button>
+    </div>
+  ) : (
+    <Button className="w-full" asChild><Link to="/auth">Anmelden</Link></Button>
+  );
+
+  return <Navbar5 logoSrc={logo} logoAlt="One Next" items={items} account={account} mobileAccount={mobileAccount} scrolled={isScrolled} />;
 };
 
 export default Navigation;
