@@ -29,7 +29,7 @@ const About = ({ isEditMode = false }: AboutProps) => {
             placeholder="Beschreibung des Abschnitts"
             minRows={4}
           />
-          <CalendarBookingDialog buttonClassName="bg-gradient-primary hover:opacity-90 transition-opacity mt-6" />
+          <CalendarBookingDialog />
         </div>
       </div>
     </section>

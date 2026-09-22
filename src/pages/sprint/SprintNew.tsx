@@ -125,7 +125,7 @@ export default function SprintNew() {
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-gradient-primary hover:opacity-90"
+                   
                     disabled={busy}
                   >
                     {busy ? "Wird gestartet …" : "Problem Framing starten"}

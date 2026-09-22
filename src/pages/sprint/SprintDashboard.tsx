@@ -134,7 +134,7 @@ export default function SprintDashboard() {
                   vorbefülltem Challenge Statement und klaren Sprint-Fragen.
                 </p>
                 <div className="pt-2">
-                  <Button asChild className="bg-gradient-primary hover:opacity-90">
+                  <Button asChild>
                     <Link to="/sprint/neu">
                       <Compass className="w-4 h-4 mr-2" />
                       Mit Problem Framing starten
@@ -327,7 +327,7 @@ export default function SprintDashboard() {
                       <Button
                         asChild
                         size="sm"
-                        className="w-fit bg-gradient-primary hover:opacity-90"
+                        className="w-fit"
                       >
                         <Link to={`/sprint/framing/${f.id}`}>
                           <Plus className="h-4 w-4 mr-1.5" />
@@ -434,7 +434,7 @@ export default function SprintDashboard() {
                         Lege dein erstes Vorhaben an – entweder direkt als Design Sprint oder
                         starte mit einem Problem Framing.
                       </p>
-                      <Button asChild className="bg-gradient-primary hover:opacity-90">
+                      <Button asChild>
                         <Link to="/sprint/neu">Ersten Sprint starten</Link>
                       </Button>
                     </CardContent>

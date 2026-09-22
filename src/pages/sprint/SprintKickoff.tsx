@@ -139,7 +139,7 @@ export default function SprintKickoff() {
                   <Link to="/sprint">Später</Link>
                 </Button>
                 <Button
-                  className="bg-gradient-primary hover:opacity-90"
+                 
                   disabled={!canStart || confirmKickoff.isPending}
                   onClick={handleStart}
                 >
