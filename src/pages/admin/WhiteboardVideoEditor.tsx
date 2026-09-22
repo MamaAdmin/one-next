@@ -135,6 +135,18 @@ const WhiteboardVideoEditor = () => {
   const [clipSeconds, setClipSeconds] = useState(DEFAULT_CLIP_SECONDS);
   const [clipDialogOpen, setClipDialogOpen] = useState(false);
   const [aiClipBusy, setAiClipBusy] = useState<string | null>(null);
+  // Abschnitte per Ziehen neu sortieren.
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const moveScene = (from: number, to: number) => {
+    if (from === to) return;
+    setScenes((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  };
   const [subtitles, setSubtitles] = useState(true);
   const [previewLoading, setPreviewLoading] = useState(false);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
