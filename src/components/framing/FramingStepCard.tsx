@@ -635,12 +635,9 @@ function applySuggestion(
       const erf = text.match(/^\[(Erfolg|Success|KPI|Metrik)\]\s*(.+)$/i);
       if (erf) {
         data.kiErfolgsmessung = pushUnique(data.kiErfolgsmessung, erf[2].trim());
-        return;
       }
-      data.nufBewertungen = [
-        ...(data.nufBewertungen ?? []),
-        { text: stripBucketTag(text), neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: true },
-      ];
+      // In Schritt 9 wird priorisiert, nicht gesammelt: Vorschläge ohne
+      // [Erfolg]-Tag erzeugen bewusst keine neue Bewertungszeile.
       return;
     }
     case "next-steps":
