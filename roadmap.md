@@ -56,8 +56,8 @@
 - [x] Desktop, Smartphone und Links prüfen
 
 ## Custom AI Development als dritter Schritt
-- [ ] Seiteneinstieg und Übergang aus den Workshops schärfen
-- [ ] BMAD-Bausteine als High-Level-Plan strukturieren
-- [ ] Gemeinsame Ausarbeitung sowie Jira- und Confluence-Übergabe erklären
-- [ ] Ergebnisse, Abschluss und Metadaten angleichen
-- [ ] Desktop, Smartphone und Links prüfen
+- [x] Seiteneinstieg und Übergang aus den Workshops schärfen
+- [x] BMAD-Bausteine als High-Level-Plan strukturieren
+- [x] Gemeinsame Ausarbeitung sowie Jira- und Confluence-Übergabe erklären
+- [x] Ergebnisse, Abschluss und Metadaten angleichen
+- [x] Desktop, Smartphone und Links prüfen
