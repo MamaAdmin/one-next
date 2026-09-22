@@ -44,7 +44,7 @@ export function locationToAngles(latitude: number, longitude: number): [number, 
   return [-(longitude * Math.PI) / 180, (latitude * Math.PI) / 180];
 }
 
-function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number): ProjectedPoint {
+function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number, zoom: number): ProjectedPoint {
   const toRadians = Math.PI / 180;
   const latitudeRad = latitude * toRadians;
   const longitudeRad = (longitude - centerLongitude) * toRadians;
@@ -52,7 +52,7 @@ function project([latitude, longitude]: GlobeLocation, centerLongitude: number, 
   const x = Math.cos(latitudeRad) * Math.sin(longitudeRad);
   const y = Math.cos(centerLatitudeRad) * Math.sin(latitudeRad) - Math.sin(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
   const z = Math.sin(centerLatitudeRad) * Math.sin(latitudeRad) + Math.cos(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
-  return { x: 300 + x * radius, y: 300 - y * radius, visible: z >= 0 };
+  return { x: 300 + x * radius * zoom, y: 300 - y * radius * zoom, visible: z >= 0 };
 }
 
 function interpolate(from: GlobeLocation, to: GlobeLocation, steps = 32) {
@@ -100,7 +100,7 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
 
   const projectedMarkers = markers.map((marker) => ({
     ...marker,
-    ...project(marker.location, centerLongitude, centerLatitude, radius),
+    ...project(marker.location, centerLongitude, centerLatitude, radius, scale),
   }));
 
   const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
@@ -144,7 +144,7 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
         {graticules.map((line, index) => (
           <path
             key={index}
-            d={pathFromPoints(line.map((point) => project(point, centerLongitude, centerLatitude, radius)))}
+            d={pathFromPoints(line.map((point) => project(point, centerLongitude, centerLatitude, radius, scale)))}
             fill="none"
             className="stroke-primary/15"
             strokeWidth="1.2"
@@ -154,7 +154,7 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
         {arcs.map((arc) => (
           <path
             key={arc.id}
-            d={pathFromPoints(interpolate(arc.from, arc.to).map((point) => project(point, centerLongitude, centerLatitude, radius)))}
+            d={pathFromPoints(interpolate(arc.from, arc.to).map((point) => project(point, centerLongitude, centerLatitude, radius, scale)))}
             fill="none"
             className={arc.color === "destructive" ? "stroke-destructive" : "stroke-primary/65"}
             strokeWidth={arc.color === "destructive" ? 3 : 1.5}
