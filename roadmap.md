@@ -40,4 +40,4 @@
 - [x] Seiteneinstieg und Metadaten eindeutig auf KI ausrichten
 - [x] Erwartungsbild mit ChatGPT und Claude schärfen
 - [x] Modulare Agenda für 1–4 Tage einführen
-- [ ] Desktop- und Mobilansicht prüfen
+- [x] Desktop- und Mobilansicht prüfen

@@ -318,9 +318,9 @@ const DesignSprintWorkshop = () => {
                   <div className="w-14 h-14 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
                     <Rocket className="w-7 h-7 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Machbarkeitsanalyse</h3>
+                  <h3 className="text-lg font-semibold">Priorisierter Lösungsansatz</h3>
                   <p className="text-sm text-muted-foreground">
-                    Technische, wirtschaftliche und organisatorische Bewertung der KI-Potenziale
+                    Eine gemeinsam bewertete Lösung, die zu Challenge, Zielgruppe und Erfolgskriterien passt
                   </p>
                 </CardContent>
               </Card>
@@ -330,9 +330,9 @@ const DesignSprintWorkshop = () => {
                   <div className="w-14 h-14 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
                     <TrendingUp className="w-7 h-7 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Entwicklungs-Roadmap</h3>
+                  <h3 className="text-lg font-semibold">Passender Reifegrad</h3>
                   <p className="text-sm text-muted-foreground">
-                    Klarer Implementierungsplan mit Meilensteinen, Ressourcen und Quick Wins
+                    Je nach Dauer ein klares Konzept, ein Prototyp oder zusätzlich ausgewertetes Nutzerfeedback
                   </p>
                 </CardContent>
               </Card>
@@ -342,9 +342,9 @@ const DesignSprintWorkshop = () => {
                   <div className="w-14 h-14 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
                     <CheckCircle2 className="w-7 h-7 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Detaillierter Report</h3>
+                  <h3 className="text-lg font-semibold">Dokumentierte nächste Schritte</h3>
                   <p className="text-sm text-muted-foreground">
-                    Vollständige Dokumentation aller Erkenntnisse und Empfehlungen
+                    Erkenntnisse, Machbarkeit und nächste Entscheidungen als belastbare Grundlage für die Umsetzung
                   </p>
                 </CardContent>
               </Card>
@@ -353,12 +353,12 @@ const DesignSprintWorkshop = () => {
         </div>
       </section>
 
-      {/* Warum ein KI Design Sprint Workshop? */}
+      {/* Warum ein KI-unterstützter Design Sprint? */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">
-              Warum ein KI Design Sprint <span className="text-primary">Workshop?</span>
+              Warum ein KI-unterstützter <span className="text-primary">Design Sprint?</span>
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="border-border hover:border-primary/50 transition-all">
@@ -379,10 +379,9 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Lightbulb className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Potenziale systematisch identifizieren</h3>
+                  <h3 className="text-lg font-semibold">KI beschleunigt die Denkarbeit</h3>
                   <p className="text-sm text-muted-foreground">
-                    Strukturierte Analyse und Bewertung von KI-Use-Cases, um wirklich wertvolle 
-                    Anwendungsfälle zu erkennen und zu priorisieren.
+                    ChatGPT und Claude recherchieren, verdichten und erzeugen Varianten. Das Team prüft, bewertet und entscheidet.
                   </p>
                 </CardContent>
               </Card>
@@ -392,10 +391,9 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Calendar className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Schnell zur umsetzbaren Roadmap</h3>
+                  <h3 className="text-lg font-semibold">Passender Umfang statt Standardschema</h3>
                   <p className="text-sm text-muted-foreground">
-                    In nur 2 Tagen von der Idee zum konkreten Implementierungsplan mit 
-                    klaren nächsten Schritten.
+                    Ein bis vier Tage werden so zusammengestellt, dass Aufwand, Vorarbeit und gewünschtes Ergebnis zusammenpassen.
                   </p>
                 </CardContent>
               </Card>
@@ -405,10 +403,10 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Team-Alignment & Buy-In</h3>
+                  <h3 className="text-lg font-semibold">Gemeinsame Entscheidungen</h3>
                   <p className="text-sm text-muted-foreground">
                     Alle Stakeholder arbeiten gemeinsam an der Lösung und entwickeln ein 
-                    gemeinsames Verständnis – wichtig für erfolgreiche Umsetzung.
+                    gemeinsames Verständnis – eine wichtige Grundlage für die Umsetzung.
                   </p>
                 </CardContent>
               </Card>
@@ -451,7 +449,7 @@ const DesignSprintWorkshop = () => {
                   <Rocket className="w-8 h-8 text-primary" />
                   <h3 className="text-lg font-semibold">Rapid Prototyping Tools</h3>
                   <p className="text-sm text-muted-foreground">
-                    Figma, Lovable, ChatGPT und weitere KI-Tools für schnelles Prototyping
+                    Figma und Lovable für schnelles Prototyping; ChatGPT und Claude für Inhalte, Varianten und Auswertung
                   </p>
                 </CardContent>
               </Card>
@@ -537,7 +535,7 @@ const DesignSprintWorkshop = () => {
                 <h2 className="text-4xl font-bold">
                   Bereit für Ihren{" "}
                   <span className="bg-gradient-primary bg-clip-text text-transparent">
-                    KI Design Sprint Workshop?
+                    KI-unterstützten Design Sprint?
                   </span>
                 </h2>
                 
@@ -549,7 +547,7 @@ const DesignSprintWorkshop = () => {
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Workshop anfragen</h3>
                     <p className="text-muted-foreground text-sm">
-                      Moderierter 2-Tage-Workshop mit KI-Experten vor Ort oder remote
+                      Moderierter 1–4-Tage-Workshop mit KI-Experten vor Ort oder remote
                     </p>
                     <Link to="/workshop-registration">
                       <Button size="lg" className="w-full ">
