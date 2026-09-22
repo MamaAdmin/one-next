@@ -161,7 +161,16 @@ export default function SprintAdminManager() {
                         <TableCell>{r.member_count}</TableCell>
                         <TableCell className="text-sm">
                           {r.resulting_sprint_id ? (
-                            <Badge variant="outline">Sprint erstellt</Badge>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/sprint/${r.resulting_sprint_id}`);
+                              }}
+                            >
+                              Zum Sprint
+                            </Button>
                           ) : (
                             "—"
                           )}
