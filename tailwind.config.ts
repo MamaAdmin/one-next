@@ -15,10 +15,10 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        serif: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
-        display: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
-        workshop: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        'workshop-heading': ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        workshop: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'workshop-heading': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         'tightest': '-0.03em',
