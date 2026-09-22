@@ -627,18 +627,6 @@ export default function SprintStepCard({
                     rows={3}
                     className="bg-background resize-none text-sm"
                   />
-                  {herkunft[a] && framing ? (
-                    <a
-                      href={`/sprint/framing/${framing.sessionId}?step=${herkunft[a].stepKey}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 inline-flex items-center gap-1 rounded-sm border border-primary/30 px-2 py-0.5 text-[11px] text-primary hover:bg-primary/5"
-                      title="Im Problem Framing ansehen"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      Aus Problem Framing · Schritt {herkunft[a].stepKey}
-                    </a>
-                  ) : null}
                 </li>
               ))}
             </ul>
