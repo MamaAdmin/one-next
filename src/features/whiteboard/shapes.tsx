@@ -41,7 +41,7 @@ const ShapeGlyph: React.FC<{
 export const ShapeBackdrop: React.FC<{ theme: VideoTheme; seed?: number; count?: number }> = ({
   theme,
   seed = 1,
-  count = 5,
+  count = 4,
 }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -50,7 +50,7 @@ export const ShapeBackdrop: React.FC<{ theme: VideoTheme; seed?: number; count?:
       {Array.from({ length: count }).map((_, i) => {
         const s = seed * 7 + i * 13;
         const kind = KINDS[Math.floor(rand(s) * KINDS.length)];
-        const size = 260 + rand(s + 1) * 460;
+        const size = 180 + rand(s + 1) * 300;
         const left = rand(s + 2) * (width - size * 0.4) - size * 0.2;
         const top = rand(s + 3) * (height - size * 0.4) - size * 0.2;
         const speed = 0.12 + rand(s + 4) * 0.22;
@@ -65,7 +65,7 @@ export const ShapeBackdrop: React.FC<{ theme: VideoTheme; seed?: number; count?:
               position: "absolute",
               left,
               top,
-              opacity: 0.07 + rand(s + 5) * 0.05,
+              opacity: 0.05 + rand(s + 5) * 0.03,
               transform: `translate(${drift}px, ${lift}px) rotate(${spin}deg)`,
             }}
           >

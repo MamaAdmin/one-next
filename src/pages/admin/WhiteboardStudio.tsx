@@ -75,7 +75,8 @@ const WhiteboardStudio = () => {
         return;
       }
       const loaded = data as WhiteboardVideoProject;
-      setProject(loaded);
+      // Abgelaufene Musikadresse aus der Datenbank nicht verwenden.
+      setProject(loaded.music_path ? { ...loaded, music_url: null } : loaded);
       setMusicVolume(loaded.music_volume ?? 0.18);
       const loadedScenes = Array.isArray(loaded.scenes) ? loaded.scenes : [];
       setScenes(loadedScenes);
