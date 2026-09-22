@@ -264,7 +264,7 @@ const AIDesignSprint = () => {
                       <Card className="flex-1 border-border hover:border-primary/40 hover:shadow-hover transition-all">
                         <CardContent className="p-5 space-y-3 h-full flex flex-col">
                           <div className="flex items-center justify-between">
-                            <div className="w-11 h-11 rounded-xl bg-gradient-primary flex items-center justify-center">
+                            <div className="w-11 h-11 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                               <Icon className="w-5 h-5 text-primary-foreground" />
                             </div>
                             <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">
@@ -301,7 +301,7 @@ const AIDesignSprint = () => {
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <Card className="text-center hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
+                <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                   <Users className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-bold">Vor Ort & Remote</h3>
@@ -311,7 +311,7 @@ const AIDesignSprint = () => {
 
             <Card className="text-center hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
+                <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                   <Calendar className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-bold">2 Tage intensiv</h3>
@@ -321,7 +321,7 @@ const AIDesignSprint = () => {
 
             <Card className="text-center hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-primary flex items-center justify-center">
+                <div className="w-14 h-14 mx-auto rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                   <Target className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-bold">Expertenteam</h3>
@@ -343,7 +343,7 @@ const AIDesignSprint = () => {
               <Card className="hover:shadow-hover transition-all">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4 mb-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center flex-shrink-0">
                       <span className="text-xl font-bold text-primary-foreground">1</span>
                     </div>
                     <h3 className="text-xl font-bold">Verstehen & Definieren</h3>
@@ -358,7 +358,7 @@ const AIDesignSprint = () => {
               <Card className="hover:shadow-hover transition-all">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4 mb-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center flex-shrink-0">
                       <span className="text-xl font-bold text-primary-foreground">2</span>
                     </div>
                     <h3 className="text-xl font-bold">Ideation & Roadmap</h3>
@@ -418,7 +418,7 @@ const AIDesignSprint = () => {
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
+                <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                   <Target className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-bold">Potenziale systematisch identifizieren</h3>
@@ -430,7 +430,7 @@ const AIDesignSprint = () => {
 
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
+                <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                   <Calendar className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-bold">Schnell zur umsetzbaren Roadmap</h3>

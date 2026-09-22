@@ -267,7 +267,7 @@ const DesignSprintWorkshop = () => {
             <div className="mb-8">
               <div className="flex items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                     <span className="text-2xl font-bold text-primary-foreground">1</span>
                   </div>
                   <h3 className="text-2xl font-bold">Tag 1: Verstehen & Definieren</h3>
@@ -301,7 +301,7 @@ const DesignSprintWorkshop = () => {
             {/* Tag 2 */}
             <div>
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center">
+                <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
                   <span className="text-2xl font-bold text-primary-foreground">2</span>
                 </div>
                 <h3 className="text-2xl font-bold">Tag 2: Konzeption & Validierung</h3>
