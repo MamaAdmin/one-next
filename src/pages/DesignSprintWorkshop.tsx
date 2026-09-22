@@ -33,59 +33,33 @@ const DesignSprintWorkshop = () => {
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
       />
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-background font-workshop text-foreground">
         <Navigation />
-      
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-            <div className="space-y-6 animate-fade-in">
-              <div className="inline-flex items-center gap-2 border border-border-accent bg-accent-soft/50 text-primary px-4 py-2 rounded-full text-sm font-semibold">
-                <Rocket className="w-4 h-4" />
-                Nächster Schritt
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-                Design Sprint Workshop
-                <span className="block mt-2 bg-gradient-primary bg-clip-text text-transparent">
-                  Wenn die Challenge klar ist
-                </span>
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                2–4 Tage intensiver Workshop vor Ort oder remote mit Ihrem Team. 
-                Geleitet von KI-Experten und erfahrenen Moderatoren mit KI-Tools in allen Phasen: 
-                Research, Ideenfindung, Prototyping, Testing.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Link to="/workshop-registration">
-                  <Button size="lg" className="">
-                    Workshop Assessment starten
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
-                </Link>
-                <Button asChild size="lg" variant="outline">
-                  <Link to="/problem-framing-workshop">
-                    Challenge erst klären
-                  </Link>
-                </Button>
-              </div>
-              <div className="bg-primary/10 rounded-lg p-4 mt-6">
-                <p className="text-sm font-semibold flex items-center gap-2">
-                  <ArrowRight className="w-4 h-4 text-primary" />
-                  Ergebnis: Getesteter Prototyp mit klaren Insights
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <img 
-                src={workshopImage} 
-                alt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps" 
-                className="rounded-2xl shadow-2xl w-full h-auto"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+
+        <ServicePageHero
+          badge="Nächster Schritt"
+          badgeIcon={Rocket}
+          title="Design Sprint Workshop"
+          titleAccent="Wenn die Challenge klar ist"
+          description="2–4 Tage intensiver Workshop vor Ort oder remote mit Ihrem Team. Geleitet von KI-Experten und erfahrenen Moderatoren mit KI-Tools in allen Phasen: Research, Ideenfindung, Prototyping, Testing."
+          actions={
+            <>
+              <Button size="lg" asChild>
+                <Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link to="/problem-framing-workshop">Challenge erst klären</Link>
+              </Button>
+            </>
+          }
+          facts={[
+            { value: "2–4 Tage", label: "Dauer" },
+            { value: "Vor Ort oder remote", label: "Format" },
+            { value: "Prototyp", label: "Ergebnis" },
+          ]}
+          image={workshopImage}
+          imageAlt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps"
+        />
 
       {/* Purpose & Outcome */}
       <section className="py-16 bg-muted/30">
