@@ -1,4 +1,5 @@
-import { useMemo, useState, type PointerEvent } from "react";
+import createGlobe from "cobe";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { cn } from "@/lib/utils";
 
 export type GlobeLocation = [number, number];
@@ -39,19 +40,19 @@ type GlobeProps = {
 };
 
 type ProjectedPoint = { x: number; y: number; visible: boolean };
+type View = { phi: number; theta: number };
 
 export function locationToAngles(latitude: number, longitude: number): [number, number] {
   return [-(longitude * Math.PI) / 180, (latitude * Math.PI) / 180];
 }
 
-function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number): ProjectedPoint {
+function project([latitude, longitude]: GlobeLocation, view: View, radius: number): ProjectedPoint {
   const toRadians = Math.PI / 180;
   const latitudeRad = latitude * toRadians;
-  const longitudeRad = (longitude - centerLongitude) * toRadians;
-  const centerLatitudeRad = centerLatitude * toRadians;
+  const longitudeRad = longitude * toRadians + view.phi;
   const x = Math.cos(latitudeRad) * Math.sin(longitudeRad);
-  const y = Math.cos(centerLatitudeRad) * Math.sin(latitudeRad) - Math.sin(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
-  const z = Math.sin(centerLatitudeRad) * Math.sin(latitudeRad) + Math.cos(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
+  const y = Math.cos(view.theta) * Math.sin(latitudeRad) - Math.sin(view.theta) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
+  const z = Math.sin(view.theta) * Math.sin(latitudeRad) + Math.cos(view.theta) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
   return { x: 300 + x * radius, y: 300 - y * radius, visible: z >= 0 };
 }
 
@@ -59,10 +60,7 @@ function interpolate(from: GlobeLocation, to: GlobeLocation, liftDegrees = 7, st
   return Array.from({ length: steps + 1 }, (_, index) => {
     const progress = index / steps;
     const lift = Math.sin(progress * Math.PI) * liftDegrees;
-    return [
-      from[0] + (to[0] - from[0]) * progress + lift,
-      from[1] + (to[1] - from[1]) * progress,
-    ] as GlobeLocation;
+    return [from[0] + (to[0] - from[0]) * progress + lift, from[1] + (to[1] - from[1]) * progress] as GlobeLocation;
   });
 }
 
@@ -79,124 +77,162 @@ function pathFromPoints(points: ProjectedPoint[]) {
   }, "");
 }
 
-export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0.025, focus }: GlobeProps) {
-  const [rotation, setRotation] = useState(0);
-  const [dragStart, setDragStart] = useState<number | null>(null);
-  const center = focus ?? markers[0]?.location ?? ([0, 0] as GlobeLocation);
-  const centerLongitude = center[1] + rotation;
-  const centerLatitude = center[0];
+function hslTokenToRgb(token: string): [number, number, number] {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  const [hueValue, saturationValue, lightnessValue] = raw.split(/\s+/);
+  const hue = Number.parseFloat(hueValue ?? "0") / 360;
+  const saturation = Number.parseFloat(saturationValue ?? "0") / 100;
+  const lightness = Number.parseFloat(lightnessValue ?? "50") / 100;
+  const channel = (offset: number) => {
+    const wave = (offset + hue * 12) % 12;
+    return lightness - saturation * Math.min(lightness, 1 - lightness) * Math.max(-1, Math.min(wave - 3, 9 - wave, 1));
+  };
+  return [channel(0), channel(8), channel(4)];
+}
+
+export function Globe({
+  className,
+  markers,
+  arcs = [],
+  scale = 1,
+  mapSamples = 16000,
+  mapBrightness = 6,
+  markerSize = 0.025,
+  arcHeight = 0.3,
+  phi = 0,
+  theta = 0,
+  focus,
+  dark = 0,
+  speed = 0,
+  opacity = 0.85,
+}: GlobeProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<View>({ phi, theta });
+  const dragStartRef = useRef<number | null>(null);
+  const [view, setView] = useState<View>({ phi, theta });
   const radius = 250;
   const zoom = Math.max(1, scale);
-  const lift = 7 / zoom;
 
-  const graticules = useMemo(() => {
-    const lines: GlobeLocation[][] = [];
-    for (let latitude = -60; latitude <= 60; latitude += 30) {
-      lines.push(Array.from({ length: 73 }, (_, index) => [latitude, -180 + index * 5]));
-    }
-    for (let longitude = -180; longitude < 180; longitude += 30) {
-      lines.push(Array.from({ length: 37 }, (_, index) => [-90 + index * 5, longitude]));
-    }
-    return lines;
-  }, []);
+  useEffect(() => {
+    if (!focus) return;
+    const [nextPhi, nextTheta] = locationToAngles(focus[0], focus[1]);
+    viewRef.current = { phi: nextPhi, theta: nextTheta };
+    setView(viewRef.current);
+  }, [focus]);
 
-  const projectedMarkers = markers.map((marker) => ({
-    ...marker,
-    ...project(marker.location, centerLongitude, centerLatitude, radius),
-  }));
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
-  const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
-    if (dragStart === null) return;
-    const delta = event.clientX - dragStart;
-    setRotation((current) => current - (delta * 0.35) / zoom);
-    setDragStart(event.clientX);
+    let size = container.clientWidth;
+    const pixelRatio = Math.min(window.devicePixelRatio, 2);
+    const primary = hslTokenToRgb("--primary");
+    const destructive = hslTokenToRgb("--destructive");
+    const surface = hslTokenToRgb("--surface-elevated");
+    const glow = hslTokenToRgb("--accent-soft");
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) size = entry.contentRect.width;
+    });
+    observer.observe(container);
+
+    const globe = createGlobe(canvas, {
+      devicePixelRatio: pixelRatio,
+      width: size * pixelRatio,
+      height: size * pixelRatio,
+      phi: viewRef.current.phi,
+      theta: viewRef.current.theta,
+      dark,
+      diffuse: 1.1,
+      scale,
+      mapSamples,
+      mapBrightness,
+      baseColor: surface,
+      markerColor: primary,
+      glowColor: glow,
+      opacity,
+      markers: markers.map((marker) => ({
+        location: marker.location,
+        size: markerSize,
+        color: marker.color === "destructive" ? destructive : primary,
+      })),
+      onRender: (state) => {
+        if (dragStartRef.current === null && speed !== 0) viewRef.current.phi += speed;
+        state.phi = viewRef.current.phi;
+        state.theta = viewRef.current.theta;
+        state.width = size * pixelRatio;
+        state.height = size * pixelRatio;
+      },
+    });
+
+    return () => {
+      observer.disconnect();
+      globe.destroy();
+    };
+  }, [dark, mapBrightness, mapSamples, markerSize, markers, opacity, scale, speed]);
+
+  const projectedMarkers = useMemo(
+    () => markers.map((marker) => ({ ...marker, ...project(marker.location, view, radius) })),
+    [markers, view],
+  );
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (dragStartRef.current === null) return;
+    const delta = event.clientX - dragStartRef.current;
+    viewRef.current = { ...viewRef.current, phi: viewRef.current.phi + (delta * 0.006) / zoom };
+    dragStartRef.current = event.clientX;
+    setView(viewRef.current);
   };
 
   return (
-    <svg
-      viewBox="0 0 600 600"
-      className={cn("aspect-square w-full cursor-grab touch-none text-primary active:cursor-grabbing", className)}
+    <div
+      ref={containerRef}
+      className={cn("relative aspect-square w-full cursor-grab touch-none active:cursor-grabbing", className)}
       onPointerDown={(event) => {
-        setDragStart(event.clientX);
+        dragStartRef.current = event.clientX;
         event.currentTarget.setPointerCapture(event.pointerId);
       }}
       onPointerMove={handlePointerMove}
       onPointerUp={(event) => {
-        setDragStart(null);
+        dragStartRef.current = null;
         event.currentTarget.releasePointerCapture(event.pointerId);
       }}
-      onPointerCancel={() => setDragStart(null)}
+      onPointerCancel={() => { dragStartRef.current = null; }}
       role="img"
-      aria-label="Interaktiver Globus mit Hirzel und ausgewählten europäischen Zielorten"
+      aria-label="Interaktiver Globus mit Weltkarte, Hirzel und ausgewählten europäischen Zielorten"
     >
-      <defs>
-        <clipPath id="globe-clip">
-          <circle cx="300" cy="300" r={radius} />
-        </clipPath>
-        <radialGradient id="globe-surface" cx="35%" cy="30%" r="70%">
-          <stop offset="0%" className="text-surface-elevated" stopColor="currentColor" />
-          <stop offset="100%" className="text-accent-soft" stopColor="currentColor" />
-        </radialGradient>
-      </defs>
-
-      <circle cx="300" cy="300" r={radius + 12} className="fill-accent-soft/50" />
-      <circle cx="300" cy="300" r={radius} fill="url(#globe-surface)" className="stroke-border-strong" strokeWidth="2" />
-
-      <g clipPath="url(#globe-clip)">
-        <g transform={`translate(300 300) scale(${zoom}) translate(-300 -300)`}>
-          {graticules.map((line, index) => (
-            <path
-              key={index}
-              d={pathFromPoints(line.map((point) => project(point, centerLongitude, centerLatitude, radius)))}
-              fill="none"
-              className="stroke-primary/15"
-              strokeWidth={1.2 / zoom}
-            />
-          ))}
-
-          {arcs.map((arc) => (
-            <path
-              key={arc.id}
-              d={pathFromPoints(interpolate(arc.from, arc.to, lift).map((point) => project(point, centerLongitude, centerLatitude, radius)))}
-              fill="none"
-              className={arc.color === "destructive" ? "stroke-destructive" : "stroke-primary/65"}
-              strokeWidth={(arc.color === "destructive" ? 3 : 1.5) / zoom}
-              strokeLinecap="round"
-            />
-          ))}
-
-          {projectedMarkers.filter((marker) => marker.visible).map((marker) => (
-            <g key={marker.id}>
-              <circle
-                cx={marker.x}
-                cy={marker.y}
-                r={Math.max(4, markerSize * 260) / zoom}
-                className={marker.color === "destructive" ? "fill-destructive" : "fill-primary"}
-              />
-              <circle
-                cx={marker.x}
-                cy={marker.y}
-                r={Math.max(8, markerSize * 420) / zoom}
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      <svg viewBox="0 0 600 600" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+        <defs>
+          <clipPath id="globe-overlay-clip"><circle cx="300" cy="300" r={radius} /></clipPath>
+        </defs>
+        <g clipPath="url(#globe-overlay-clip)">
+          <g transform={`translate(300 300) scale(${zoom}) translate(-300 -300)`}>
+            {arcs.map((arc) => (
+              <path
+                key={arc.id}
+                d={pathFromPoints(interpolate(arc.from, arc.to, arcHeight / zoom * 24).map((point) => project(point, view, radius)))}
                 fill="none"
-                className={marker.color === "destructive" ? "stroke-destructive/40" : "stroke-primary/25"}
-                strokeWidth={2 / zoom}
+                className={arc.color === "destructive" ? "stroke-destructive" : "stroke-primary/65"}
+                strokeWidth={(arc.color === "destructive" ? 3 : 1.5) / zoom}
+                strokeLinecap="round"
               />
-              {marker.label && (
-                <text
-                  x={marker.x + 12 / zoom}
-                  y={marker.y - 12 / zoom}
-                  className="fill-foreground font-semibold"
-                  style={{ fontSize: `${16 / zoom}px` }}
-                >
-                  {marker.label}
-                </text>
-              )}
-            </g>
-          ))}
+            ))}
+            {projectedMarkers.filter((marker) => marker.visible).map((marker) => marker.label ? (
+              <text
+                key={marker.id}
+                x={marker.x + 12 / zoom}
+                y={marker.y - 12 / zoom}
+                className="fill-foreground font-semibold"
+                style={{ fontSize: `${16 / zoom}px` }}
+              >
+                {marker.label}
+              </text>
+            ) : null)}
+          </g>
         </g>
-      </g>
-
-      <ellipse cx="300" cy={300 + radius + 16} rx={radius * 0.7} ry="12" className="fill-foreground/10" />
-    </svg>
+      </svg>
+    </div>
   );
 }
