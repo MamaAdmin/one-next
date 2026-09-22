@@ -2415,7 +2415,7 @@ function VariantNuf({
               <div key={i} className="rounded-md border border-accent/60 bg-background/60 p-2 text-sm">
                 <p className="font-medium">{v.frage}</p>
                 <p className="text-muted-foreground">
-                  Neu {v.neuheit} · Nützlich {v.nutzen} · Realisierbar {v.machbarkeit}
+                  Neu {v.neuheit} · Nützlich {v.nutzen} · Machbar {v.machbarkeit}
                   {v.begruendung ? ` – ${v.begruendung}` : ""}
                 </p>
                 <div className="mt-2 flex gap-2">
