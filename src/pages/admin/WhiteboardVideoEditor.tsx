@@ -47,6 +47,7 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  GripVertical,
   Image as ImageIcon,
   Loader2,
   Mic,
