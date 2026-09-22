@@ -2351,12 +2351,12 @@ function VariantNuf({
   return (
     <div className="space-y-6">
       {/* ---------- 1. Fragen bewerten ---------- */}
-      <CanvasSection defaultOpen title="1. Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
+      <CanvasSection defaultOpen title="1. Fragen bewerten – Neu / Nützlich / Machbar je 1–10">
         <div className="rounded-lg border-l-4 border-l-primary bg-accent-soft p-3 text-sm text-foreground/80 space-y-1.5">
           <p>NUF steht für New, Useful, Feasible – im Deutschen Neu, Nützlich, Machbar. Ihr bewertet hier Fragen, keine Lösungen.</p>
-          <p><strong>New (Neu)</strong>: Wurde die Idee so schon einmal ausprobiert? Hebt sie sich von bestehenden Ansätzen oder Mitbewerbern ab? [1, 2, 3]</p>
-          <p><strong>Useful (Nützlich)</strong>: Löst die Idee das eigentliche Kernproblem? Erfüllt sie ein echtes Bedürfnis oder hilft sie dabei, die gesetzten Ziele direkt zu erreichen? [1, 2, 3]</p>
-          <p><strong>Feasible (Machbar)</strong>: Lässt sich die Idee mit den vorhandenen Ressourcen in die Praxis umsetzen? Hierbei werden Budget, technisches Know-how und der zeitliche Rahmen berücksichtigt. [1, 2, 3]</p>
+          <p><strong>New (Neu)</strong>: Wurde die Idee so schon einmal ausprobiert? Hebt sie sich von bestehenden Ansätzen oder Mitbewerbern ab?&nbsp;</p>
+          <p><strong>Useful (Nützlich)</strong>: Löst die Idee das eigentliche Kernproblem? Erfüllt sie ein echtes Bedürfnis oder hilft sie dabei, die gesetzten Ziele direkt zu erreichen?&nbsp;</p>
+          <p><strong>Feasible (Machbar)</strong>: Lässt sich die Idee mit den vorhandenen Ressourcen in die Praxis umsetzen? Hierbei werden Budget, technisches Know-how und der zeitliche Rahmen berücksichtigt.&nbsp;</p>
         </div>
 
         {hatDrift ? (
@@ -2415,7 +2415,7 @@ function VariantNuf({
               <div key={i} className="rounded-md border border-accent/60 bg-background/60 p-2 text-sm">
                 <p className="font-medium">{v.frage}</p>
                 <p className="text-muted-foreground">
-                  Neu {v.neuheit} · Nützlich {v.nutzen} · Realisierbar {v.machbarkeit}
+                  Neu {v.neuheit} · Nützlich {v.nutzen} · Machbar {v.machbarkeit}
                   {v.begruendung ? ` – ${v.begruendung}` : ""}
                 </p>
                 <div className="mt-2 flex gap-2">
@@ -2474,7 +2474,7 @@ function VariantNuf({
                   {([
                     { k: "neuheit", label: "Neu – noch unbeantwortet" },
                     { k: "nutzen", label: "Nützlich – verändert Entscheidungen" },
-                    { k: "machbarkeit", label: "Realisierbar – in 5 Tagen prüfbar" },
+                    { k: "machbarkeit", label: "Machbar – in 5 Tagen prüfbar" },
                   ] as const).map(({ k, label }) => (
                     <div key={k} className={r.bewertet ? "" : "opacity-60"}>
                       <Label className="text-xs">{label}</Label>
