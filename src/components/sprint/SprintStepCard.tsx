@@ -66,6 +66,10 @@ export default function SprintStepCard({
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
+  const [herkunft, setHerkunft] = useState<NonNullable<SprintStepData["herkunft"]>>(
+    initial.herkunft ?? {},
+  );
+  const [framingSeeded, setFramingSeeded] = useState<boolean>(!!initial.framingSeeded);
   const latestDataRef = useRef<SprintStepData>({
     antworten,
     vorschlaege,
@@ -74,6 +78,8 @@ export default function SprintStepCard({
     notes,
     mapZuordnung,
     aiRank,
+    herkunft,
+    framingSeeded,
   });
 
   useEffect(() => {
@@ -86,6 +92,8 @@ export default function SprintStepCard({
     setNotes(d.notes ?? "");
     setMapZuordnung(d.mapZuordnung ?? {});
     setAiRank(d.aiRank);
+    setHerkunft(d.herkunft ?? {});
+    setFramingSeeded(!!d.framingSeeded);
     latestDataRef.current = {
       antworten: toAntwortenArray(d),
       vorschlaege: d.vorschlaege ?? [],
@@ -94,6 +102,8 @@ export default function SprintStepCard({
       notes: d.notes ?? "",
       mapZuordnung: d.mapZuordnung ?? {},
       aiRank: d.aiRank,
+      herkunft: d.herkunft ?? {},
+      framingSeeded: !!d.framingSeeded,
     };
   }, [stepRow?.id]);
 
@@ -106,8 +116,59 @@ export default function SprintStepCard({
       notes,
       mapZuordnung,
       aiRank,
+      herkunft,
+      framingSeeded,
     };
-  }, [antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank]);
+  }, [antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank, herkunft, framingSeeded]);
+
+  /* ---------- Übernahme aus dem Problem Framing (Schritte 1.1–1.5) ---------- */
+  const { data: framing } = useFramingForSprint(sprint.id);
+  const framingSeed = useMemo(
+    () => (framing ? buildFramingSeed(step.key, framing.steps) : []),
+    [framing, step.key],
+  );
+  const missingSeed = useMemo(() => {
+    const vorhanden = new Set(
+      [...antworten, ...eigene].map((x) => x.trim().toLowerCase()),
+    );
+    const bekannt = new Set(Object.keys(herkunft).map((x) => x.trim().toLowerCase()));
+    return framingSeed.filter(
+      (s) => !vorhanden.has(s.text.toLowerCase()) && !bekannt.has(s.text.toLowerCase()),
+    );
+  }, [framingSeed, antworten, eigene, herkunft]);
+
+  function applyFramingSeed(items = framingSeed) {
+    if (items.length === 0) return 0;
+    const vorhanden = new Set([...antworten, ...eigene].map((x) => x.trim().toLowerCase()));
+    const neue = items.filter((s) => !vorhanden.has(s.text.toLowerCase()));
+    if (neue.length === 0) return 0;
+    const nextAntworten = [...antworten, ...neue.map((s) => s.text)];
+    const nextHerkunft = { ...herkunft };
+    for (const s of neue) {
+      nextHerkunft[s.text] = { quelle: "framing", stepKey: s.framingStepKey };
+    }
+    setAntworten(nextAntworten);
+    setHerkunft(nextHerkunft);
+    setFramingSeeded(true);
+    const next: SprintStepData = {
+      ...latestDataRef.current,
+      antworten: nextAntworten,
+      herkunft: nextHerkunft,
+      framingSeeded: true,
+    };
+    latestDataRef.current = next;
+    persistSnapshot(next);
+    return neue.length;
+  }
+
+  // Einmalige automatische Vorbefüllung, solange der Schritt noch leer ist.
+  useEffect(() => {
+    if (framingSeeded) return;
+    if (framingSeed.length === 0) return;
+    if (antworten.length > 0 || eigene.length > 0) return;
+    applyFramingSeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [framingSeed, framingSeeded, stepRow?.id]);
 
 
   const isSolo = sprint.modus === "solo";
