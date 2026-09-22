@@ -362,6 +362,7 @@ export default function FramingStepCard({
 
 function StepVariant({
   step,
+  sessionId,
   allSteps,
   data,
   patch,
@@ -373,6 +374,7 @@ function StepVariant({
   pendingBucket,
 }: {
   step: FramingStepDef;
+  sessionId: string;
   allSteps: FramingStepRow[];
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
