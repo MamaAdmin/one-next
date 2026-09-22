@@ -13,6 +13,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import sprintImage from "@/assets/sprint-overview.jpg";
 const AIDesignSprint = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const {
