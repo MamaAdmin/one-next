@@ -47,8 +47,6 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
-  ChevronDown,
-  ChevronUp,
   GripVertical,
   Image as ImageIcon,
   Loader2,
