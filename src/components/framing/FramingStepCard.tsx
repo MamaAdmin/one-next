@@ -487,6 +487,7 @@ function StepVariant({
     case "nuf":
       return (
         <VariantNuf
+          sessionId={sessionId}
           allSteps={allSteps}
           data={data}
           patch={patch}
