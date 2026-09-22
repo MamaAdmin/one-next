@@ -12,6 +12,8 @@ import { useContentManager } from "@/hooks/useContentManager";
 import { Target, Zap, GitBranch, Check, Users, Database, Layers, Map, FileText, Settings } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import developmentImage from "@/assets/custom-ai-development.jpg";
 
 const CustomAIDevelopment = () => {
   const { content, updateContent } = usePageContent("custom-ai-development");
