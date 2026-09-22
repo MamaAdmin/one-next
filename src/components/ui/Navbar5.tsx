@@ -62,7 +62,11 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
             <NavigationMenuItem key={item.id} className="group/nav relative">
               {item.children?.length ? (
                 <>
-                  <Button variant="ghost" className="h-10 px-4 py-2 text-sm font-medium" aria-haspopup="true">
+                  <Button
+                    variant="ghost"
+                    className="h-10 rounded-none border border-transparent bg-transparent px-4 py-2 text-sm font-medium hover:border-border-accent hover:bg-transparent group-hover/nav:border-border-accent"
+                    aria-haspopup="true"
+                  >
                     {item.label}
                   </Button>
                   <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover/nav:visible group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:opacity-100">
