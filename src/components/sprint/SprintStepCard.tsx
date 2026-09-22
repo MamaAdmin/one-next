@@ -18,6 +18,8 @@ import type { SprintStepDef } from "@/features/sprint/steps";
 import type { SprintRow, SprintStepData, SprintStepRow } from "@/features/sprint/types";
 import { MAP_LANES } from "@/features/sprint/types";
 import Crazy8sMiro from "@/components/sprint/Crazy8sMiro";
+import { buildFramingSeed } from "@/features/sprint/framingSeed";
+import { useFramingForSprint } from "@/hooks/useFramingForSprint";
 import {
   Select,
   SelectContent,
