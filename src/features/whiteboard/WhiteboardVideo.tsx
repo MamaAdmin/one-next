@@ -163,10 +163,12 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({
   const renderer = rendererFor(style);
   const SceneView = SCENE_RENDERERS[renderer];
   const timing = springTiming({ config: { damping: 200 }, durationInFrames: TRANSITION_FRAMES });
+  // Fester Wert je Video: gleiche Formen bei jedem Rendern.
+  const seed = Math.max(1, (title?.length ?? 1) + scenes.length * 3);
 
   return (
     <AbsoluteFill>
-      <Background theme={theme} />
+      <Background theme={theme} seed={seed} />
       {musicUrl ? <Audio src={musicUrl} volume={musicVolume} loop /> : null}
       <TransitionSeries>
         {title ? (
@@ -208,7 +210,7 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({
         })}
       </TransitionSeries>
       <Sequence>
-        <Overlay title={title} sceneCount={scenes.length} theme={theme} />
+        <Overlay title={title} sceneCount={scenes.length} theme={theme} seed={seed} />
       </Sequence>
     </AbsoluteFill>
   );
