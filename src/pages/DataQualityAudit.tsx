@@ -8,6 +8,9 @@ import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema } from "@/config/seoConfig";
+import { Button } from "@/components/ui/button";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import auditImage from "@/assets/workshop-table.jpg";
 
 export default function DataQualityAuditPage() {
   const [isEditMode, setIsEditMode] = useState(false);
