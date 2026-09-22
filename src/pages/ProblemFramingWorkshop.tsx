@@ -171,6 +171,18 @@ const ProblemFramingWorkshop = () => {
                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Zehn Schritte zu maximaler Klarheit</h2>
                   <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Der Kernworkshop dauert 3–4 Stunden und folgt klaren Timeboxes.</p>
                 </div>
+
+                {/* Vor dem Start */}
+                <div className="mb-10 border border-border-accent bg-accent-soft/40">
+                  <div className="border-b border-border-accent px-6 py-3">
+                    <h3 className="font-workshop-heading text-sm font-bold uppercase tracking-wide text-primary">Vor dem Start</h3>
+                  </div>
+                  <div className="grid gap-0 sm:grid-cols-3">
+                    {preSteps.map((step) => { const Icon = step.icon; return <div key={step.title} className="border-b border-border-accent px-6 py-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><div className="flex items-start gap-3"><Icon className="mt-0.5 size-5 shrink-0 text-primary" /><div><h4 className="font-workshop-heading text-sm font-semibold">{step.title}</h4><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{step.desc}</p></div></div></div>; })}
+                  </div>
+                </div>
+
+                {/* Zehn Schritte */}
                 <div className="hidden grid-cols-2 gap-x-16 gap-y-0 md:grid">
                   {agenda.map((step, index) => {
                     const Icon = step.icon;
@@ -182,6 +194,17 @@ const ProblemFramingWorkshop = () => {
                 <Accordion type="single" collapsible className="md:hidden">
                   {agenda.map((step, index) => { const Icon = step.icon; return <AccordionItem key={step.title} value={`step-${index}`}><AccordionTrigger className="gap-3 text-left hover:no-underline"><span className="font-workshop-heading text-muted-foreground">{String(index + 1).padStart(2, "0")}</span><Icon className="size-5 shrink-0 text-primary" /><span className="flex-1 font-workshop-heading">{step.title}</span></AccordionTrigger><AccordionContent><div className="pl-16"><span className="text-xs font-semibold text-primary">{step.time}</span><p className="mt-2 leading-relaxed text-muted-foreground">{step.desc}</p></div></AccordionContent></AccordionItem>; })}
                 </Accordion>
+
+                {/* Abschluss */}
+                <div className="mt-10 border border-border-accent bg-accent-soft/40">
+                  <div className="border-b border-border-accent px-6 py-3">
+                    <h3 className="font-workshop-heading text-sm font-bold uppercase tracking-wide text-primary">Abschluss</h3>
+                  </div>
+                  <div className="px-6 py-5">
+                    {postSteps.map((step) => { const Icon = step.icon; return <div key={step.title} className="flex items-start gap-4"><Icon className="mt-0.5 size-6 shrink-0 text-primary" /><div><h4 className="font-workshop-heading text-base font-semibold">{step.title}</h4><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.desc}</p></div></div>; })}
+                  </div>
+                </div>
+
                 <div className="mt-10 flex gap-4 border-l-4 border-primary bg-accent-soft p-6"><FileCheck2 className="size-7 shrink-0 text-primary" /><div><h3 className="font-workshop-heading font-semibold">Definition of Done</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Challenge Statement freigegeben, Scope klar, Messziel definiert und die Vorbereitung für den Design Sprint angestossen.</p></div></div>
               </div>
             </div>
