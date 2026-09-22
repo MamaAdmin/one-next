@@ -44,7 +44,7 @@ export function locationToAngles(latitude: number, longitude: number): [number, 
   return [-(longitude * Math.PI) / 180, (latitude * Math.PI) / 180];
 }
 
-function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number, zoom: number): ProjectedPoint {
+function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number): ProjectedPoint {
   const toRadians = Math.PI / 180;
   const latitudeRad = latitude * toRadians;
   const longitudeRad = (longitude - centerLongitude) * toRadians;
@@ -52,13 +52,13 @@ function project([latitude, longitude]: GlobeLocation, centerLongitude: number, 
   const x = Math.cos(latitudeRad) * Math.sin(longitudeRad);
   const y = Math.cos(centerLatitudeRad) * Math.sin(latitudeRad) - Math.sin(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
   const z = Math.sin(centerLatitudeRad) * Math.sin(latitudeRad) + Math.cos(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
-  return { x: 300 + x * radius * zoom, y: 300 - y * radius * zoom, visible: z >= 0 };
+  return { x: 300 + x * radius, y: 300 - y * radius, visible: z >= 0 };
 }
 
-function interpolate(from: GlobeLocation, to: GlobeLocation, steps = 32) {
+function interpolate(from: GlobeLocation, to: GlobeLocation, liftDegrees = 7, steps = 32) {
   return Array.from({ length: steps + 1 }, (_, index) => {
     const progress = index / steps;
-    const lift = Math.sin(progress * Math.PI) * 7;
+    const lift = Math.sin(progress * Math.PI) * liftDegrees;
     return [
       from[0] + (to[0] - from[0]) * progress + lift,
       from[1] + (to[1] - from[1]) * progress,
@@ -85,7 +85,9 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
   const center = focus ?? markers[0]?.location ?? ([0, 0] as GlobeLocation);
   const centerLongitude = center[1] + rotation;
   const centerLatitude = center[0];
-  const radius = scale > 1.5 ? 270 : 240;
+  const radius = 250;
+  const zoom = Math.max(1, scale);
+  const lift = 7 / zoom;
 
   const graticules = useMemo(() => {
     const lines: GlobeLocation[][] = [];
@@ -100,13 +102,13 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
 
   const projectedMarkers = markers.map((marker) => ({
     ...marker,
-    ...project(marker.location, centerLongitude, centerLatitude, radius, scale),
+    ...project(marker.location, centerLongitude, centerLatitude, radius),
   }));
 
   const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
     if (dragStart === null) return;
     const delta = event.clientX - dragStart;
-    setRotation((current) => current - delta * 0.35);
+    setRotation((current) => current - (delta * 0.35) / zoom);
     setDragStart(event.clientX);
   };
 
@@ -141,50 +143,57 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
       <circle cx="300" cy="300" r={radius} fill="url(#globe-surface)" className="stroke-border-strong" strokeWidth="2" />
 
       <g clipPath="url(#globe-clip)">
-        {graticules.map((line, index) => (
-          <path
-            key={index}
-            d={pathFromPoints(line.map((point) => project(point, centerLongitude, centerLatitude, radius, scale)))}
-            fill="none"
-            className="stroke-primary/15"
-            strokeWidth="1.2"
-          />
-        ))}
-
-        {arcs.map((arc) => (
-          <path
-            key={arc.id}
-            d={pathFromPoints(interpolate(arc.from, arc.to).map((point) => project(point, centerLongitude, centerLatitude, radius, scale)))}
-            fill="none"
-            className={arc.color === "destructive" ? "stroke-destructive" : "stroke-primary/65"}
-            strokeWidth={arc.color === "destructive" ? 3 : 1.5}
-            strokeLinecap="round"
-          />
-        ))}
-
-        {projectedMarkers.filter((marker) => marker.visible).map((marker) => (
-          <g key={marker.id}>
-            <circle
-              cx={marker.x}
-              cy={marker.y}
-              r={Math.max(4, markerSize * 260)}
-              className={marker.color === "destructive" ? "fill-destructive" : "fill-primary"}
-            />
-            <circle
-              cx={marker.x}
-              cy={marker.y}
-              r={Math.max(8, markerSize * 420)}
+        <g transform={`translate(300 300) scale(${zoom}) translate(-300 -300)`}>
+          {graticules.map((line, index) => (
+            <path
+              key={index}
+              d={pathFromPoints(line.map((point) => project(point, centerLongitude, centerLatitude, radius)))}
               fill="none"
-              className={marker.color === "destructive" ? "stroke-destructive/40" : "stroke-primary/25"}
-              strokeWidth="2"
+              className="stroke-primary/15"
+              strokeWidth={1.2 / zoom}
             />
-            {marker.label && (
-              <text x={marker.x + 12} y={marker.y - 12} className="fill-foreground text-[16px] font-semibold">
-                {marker.label}
-              </text>
-            )}
-          </g>
-        ))}
+          ))}
+
+          {arcs.map((arc) => (
+            <path
+              key={arc.id}
+              d={pathFromPoints(interpolate(arc.from, arc.to, lift).map((point) => project(point, centerLongitude, centerLatitude, radius)))}
+              fill="none"
+              className={arc.color === "destructive" ? "stroke-destructive" : "stroke-primary/65"}
+              strokeWidth={(arc.color === "destructive" ? 3 : 1.5) / zoom}
+              strokeLinecap="round"
+            />
+          ))}
+
+          {projectedMarkers.filter((marker) => marker.visible).map((marker) => (
+            <g key={marker.id}>
+              <circle
+                cx={marker.x}
+                cy={marker.y}
+                r={Math.max(4, markerSize * 260) / zoom}
+                className={marker.color === "destructive" ? "fill-destructive" : "fill-primary"}
+              />
+              <circle
+                cx={marker.x}
+                cy={marker.y}
+                r={Math.max(8, markerSize * 420) / zoom}
+                fill="none"
+                className={marker.color === "destructive" ? "stroke-destructive/40" : "stroke-primary/25"}
+                strokeWidth={2 / zoom}
+              />
+              {marker.label && (
+                <text
+                  x={marker.x + 12 / zoom}
+                  y={marker.y - 12 / zoom}
+                  className="fill-foreground font-semibold"
+                  style={{ fontSize: `${16 / zoom}px` }}
+                >
+                  {marker.label}
+                </text>
+              )}
+            </g>
+          ))}
+        </g>
       </g>
 
       <ellipse cx="300" cy={300 + radius + 16} rx={radius * 0.7} ry="12" className="fill-foreground/10" />
