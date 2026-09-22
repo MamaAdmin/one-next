@@ -135,11 +135,7 @@ export default function SprintAdminManager() {
                       <TableRow
                         key={r.id}
                         className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => navigate(
-                          r.resulting_sprint_id
-                            ? `/sprint/${r.resulting_sprint_id}`
-                            : `/sprint/framing/${r.id}`
-                        )}
+                        onClick={() => navigate(`/sprint/framing/${r.id}`)}
                       >
                         <TableCell className="font-medium">{r.titel_arbeitstitel}</TableCell>
                         <TableCell>
