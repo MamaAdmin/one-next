@@ -9,6 +9,7 @@ import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
 import workshopImage from "@/assets/design-sprint-workshop.jpg";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
 
 const DesignSprintWorkshop = () => {
   const structuredData = [
