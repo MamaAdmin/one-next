@@ -1032,7 +1032,7 @@ function InlineSuggestions({
         ) : (
           <Sparkles className="w-3.5 h-3.5 mr-1.5" />
         )}
-        KI-Vorschläge
+        {label ?? "KI-Vorschläge"}
       </Button>
       {matches.length > 0 ? (
         <ul className="space-y-1.5">
