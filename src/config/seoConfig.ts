@@ -14,16 +14,44 @@ export const organizationSchema = {
   },
   "address": {
     "@type": "PostalAddress",
-    "addressCountry": "DE"
+    "streetAddress": "Feldstrasse 2",
+    "postalCode": "8816",
+    "addressLocality": "Hirzel",
+    "addressCountry": "CH"
   },
+  "email": "info@one-next.com",
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
-    "email": "info@one-next.de",
+    "email": "info@one-next.com",
     "availableLanguage": ["de", "en"]
   },
   "sameAs": [
     "https://linkedin.com/company/one-next"
+  ]
+};
+
+export const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "one-next",
+  "description": "KI-Beratung, Problem Framing, KI Design Sprints und individuelle KI-Entwicklung.",
+  "url": "https://one-next.com/",
+  "email": "info@one-next.com",
+  "founder": {
+    "@type": "Person",
+    "name": "Julia Haitz"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Feldstrasse 2",
+    "postalCode": "8816",
+    "addressLocality": "Hirzel",
+    "addressCountry": "CH"
+  },
+  "areaServed": [
+    { "@type": "Country", "name": "Schweiz" },
+    { "@type": "Country", "name": "Deutschland" }
   ]
 };
 
