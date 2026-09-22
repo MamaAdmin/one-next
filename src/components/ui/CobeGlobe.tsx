@@ -55,10 +55,10 @@ function project([latitude, longitude]: GlobeLocation, centerLongitude: number, 
   return { x: 300 + x * radius, y: 300 - y * radius, visible: z >= 0 };
 }
 
-function interpolate(from: GlobeLocation, to: GlobeLocation, steps = 32) {
+function interpolate(from: GlobeLocation, to: GlobeLocation, liftDegrees = 7, steps = 32) {
   return Array.from({ length: steps + 1 }, (_, index) => {
     const progress = index / steps;
-    const lift = Math.sin(progress * Math.PI) * 7;
+    const lift = Math.sin(progress * Math.PI) * liftDegrees;
     return [
       from[0] + (to[0] - from[0]) * progress + lift,
       from[1] + (to[1] - from[1]) * progress,
