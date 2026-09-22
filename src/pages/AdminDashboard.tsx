@@ -83,8 +83,8 @@ const AdminDashboard = () => {
             <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-5">
               <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
-              <TabsTrigger value="bmad">BMAD</TabsTrigger>
               <TabsTrigger value="sprints">Sprints</TabsTrigger>
+              <TabsTrigger value="bmad">BMAD</TabsTrigger>
               <TabsTrigger value="users">Benutzer</TabsTrigger>
             </TabsList>
 
