@@ -28,17 +28,27 @@ import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
 
+const preSteps = [
+  { title: "Team-Konstellation", desc: "Decider optional, Rollen und Erwartungen klären.", icon: Users },
+  { title: "Einführung", desc: "Ablauf, Regeln und Ziele des Workshops vorstellen.", icon: Compass },
+  { title: "So arbeitest du hier", desc: "Methoden, Werkzeuge und Zusammenarbeit erklären.", icon: Map },
+];
+
 const agenda = [
-  { title: "Kick-off & Zielbild", time: "10–15'", desc: "Kontext, Ziel des Workshops und die klare Abgrenzung dessen, was kein Sprint-Ziel ist.", icon: Compass },
-  { title: "Warum jetzt? & Default Future", time: "15'", desc: "Wir machen sichtbar, was passiert, wenn nichts verändert wird.", icon: Clock3 },
-  { title: "Stakeholder & Zielgruppe", time: "15'", desc: "Die primäre Zielgruppe wird festgelegt, sekundäre Zielgruppen werden geparkt.", icon: Users },
-  { title: "Smart Sailboat", time: "30'", desc: "Treiber, Hindernisse, Ziel und Risiken ergeben ein gemeinsames Bild der Lage.", icon: Map },
-  { title: "Root Cause", time: "20'", desc: "Mit 5 Whys identifizieren wir Ursachen, die das Team tatsächlich adressieren kann.", icon: Focus },
+  { title: "Kick-off & Zielbild", time: "15'", desc: "Kontext, Ziel des Workshops und die klare Abgrenzung dessen, was kein Sprint-Ziel ist.", icon: Compass },
+  { title: "Gegenwart, Vergangenheit & Zukunft", time: "15'", desc: "Wir machen sichtbar, was passiert, wenn nichts verändert wird.", icon: Clock3 },
+  { title: "Stakeholder & Zielgruppe", time: "30'", desc: "Die primäre Zielgruppe wird festgelegt, sekundäre Zielgruppen werden geparkt.", icon: Users },
+  { title: "Smart Sailboat", time: "15'", desc: "Treiber, Hindernisse, Ziel und Risiken ergeben ein gemeinsames Bild der Lage.", icon: Map },
+  { title: "Root Cause (5 Whys)", time: "15'", desc: "Mit 5 Whys identifizieren wir Ursachen, die das Team tatsächlich adressieren kann.", icon: Focus },
   { title: "Annahmen & Risiken", time: "20'", desc: "Annahmen werden nach Unsicherheit und Einfluss priorisiert.", icon: ShieldCheck },
   { title: "Erfolg & Constraints", time: "20'", desc: "Wir definieren ein messbares Ergebnis und harte Randbedingungen.", icon: Target },
   { title: "Scope-Cut & Sprint-Fragen", time: "25'", desc: "In Scope, Out of Scope und die entscheidenden Sprint-Fragen werden festgehalten.", icon: MessageSquareText },
-  { title: "Priorisierung", time: "15'", desc: "Der NUF-Test führt zur Auswahl der wichtigsten Challenge.", icon: Sparkles },
-  { title: "Entscheidung & nächste Schritte", time: "10–15'", desc: "Sprint-Go und alle notwendigen Vorbereitungen werden verbindlich geklärt.", icon: Route },
+  { title: "Priorisierung (NUF)", time: "15'", desc: "Der NUF-Test führt zur Auswahl der wichtigsten Challenge.", icon: Sparkles },
+  { title: "Entscheidung & Next Steps", time: "15'", desc: "Sprint-Go und alle notwendigen Vorbereitungen werden verbindlich geklärt.", icon: Route },
+];
+
+const postSteps = [
+  { title: "Abschluss · Challenge Statement", desc: "Challenge Statement freigegeben, Scope klar, Messziel definiert.", icon: FileCheck2 },
 ];
 
 const outcomes = [
