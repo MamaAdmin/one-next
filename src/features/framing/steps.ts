@@ -149,13 +149,13 @@ export const FRAMING_STEPS: FramingStepDef[] = [
   {
     key: "9",
     index: 9,
-    title: "9. Priorisierung (NUF) & Erfolgsmessung",
+    title: "9. Sprint-Frage wählen & messbar machen",
     frage: "Welche Frage kommt zuerst – und woran merkt ihr, dass sie beantwortet ist?",
     arbeit:
-      "Die Sprint-Fragen aus Schritt 8 nach Neu, Nützlich und Realisierbar bewerten, die Top-1 wählen und dafür ein messbares Fünf-Tages-Ergebnis definieren.",
+      "In drei Etappen: die Sprint-Fragen aus Schritt 8 nach Neu, Nützlich und Realisierbar bewerten, danach bewusst die Top-1-Frage wählen und sie zum Schluss mit Messgrösse, Zielwert und Messmethode messbar machen.",
     nutzen:
       "Die Erfolgsmessung hängt an der gewählten Frage – deshalb erst hier und nicht vorher.",
-    timeboxMin: 15,
+    timeboxMin: 25,
     variant: "nuf",
     nutztDatenAus: ["1", "6", "8"],
   },
