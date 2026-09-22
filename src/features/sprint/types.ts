@@ -84,6 +84,10 @@ export interface SprintStepData {
   notes?: string;
   /** Map-Variante (1.8): Zuordnung Item-Text → Lane-ID. */
   mapZuordnung?: Record<string, string>;
+  /** Herkunft übernommener Einträge: Eintragstext → Quelle (Problem Framing). */
+  herkunft?: Record<string, { quelle: "framing"; stepKey: string }>;
+  /** true, sobald einmalig aus dem Problem Framing vorbefüllt wurde. */
+  framingSeeded?: boolean;
   /** KI-Ranking + Marktrecherche (Solo-Modus). */
   aiRank?: {
     marktrecherche: string;
