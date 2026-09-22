@@ -1,23 +1,12 @@
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Target, Rocket } from "lucide-react";
+import { ArrowRight, CheckCircle2, Target, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
-import workshopImage from "@/assets/workshop-collaboration.jpg";
 export const WorkshopComparisonSection = () => {
-  return <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4">
-        {/* Hero Image */}
-        <div className="mb-12 rounded-2xl overflow-hidden shadow-lg">
-          <img
-            src={workshopImage}
-            alt="Workshop-Zusammenarbeit"
-            className="w-full h-auto object-cover"
-          />
-        </div>
-
-        {/* Section Header */}
+  return <section className="border-y border-border bg-muted/35 py-16 md:py-24">
+      <div className="container px-4 md:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <p className="mb-3 text-sm font-bold uppercase text-primary">Die richtige Fortsetzung</p>
+          <h2 className="font-workshop-heading text-3xl md:text-4xl font-bold mb-4">
             Ihr Weg zum erfolgreichen Design Sprint
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -25,19 +14,13 @@ export const WorkshopComparisonSection = () => {
           </p>
         </div>
 
-        {/* Comparison Cards */}
-        <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-6xl mx-auto">
-          {/* Problem Framing Workshop */}
-          <Card className="p-8 relative border-2 border-secondary hover:shadow-xl transition-all duration-300">
-            <div className="absolute -top-4 left-8">
-              <span className="bg-secondary text-secondary-foreground px-4 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2">
+        <div className="mx-auto grid max-w-6xl overflow-hidden rounded-lg border border-border bg-card md:grid-cols-2">
+          <article className="p-7 md:p-9">
+              <span className="mb-7 inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground">
                 <Target className="w-4 h-4" />
                 Startpunkt
               </span>
-            </div>
-            
-            <div className="mt-4">
-              <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <h3 className="font-workshop-heading text-2xl font-bold mb-4">
                 Problem-Framing-Workshop
               </h3>
               
@@ -45,28 +28,11 @@ export const WorkshopComparisonSection = () => {
                 Wenn Ihre Challenge noch unklar ist
               </p>
               
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">1–2 Tage intensive Klärung</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">Challenge präzise definieren</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">Zielgruppe und Business Value priorisieren</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">Sprint-Ready machen</p>
-                </div>
-              </div>
+              <div className="space-y-3 mb-6">{["1–2 Tage intensive Klärung", "Challenge präzise definieren", "Zielgruppe und Business Value priorisieren", "Sprint-ready machen"].map((item) => <p key={item} className="flex items-start gap-3 text-muted-foreground"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />{item}</p>)}</div>
               
               <p className="text-sm font-semibold mb-4">Preis auf Anfrage</p>
               
-              <div className="bg-muted/50 rounded-lg p-4 mb-6">
+              <div className="border-l-2 border-primary bg-muted/50 p-4 mb-6">
                 <p className="text-sm font-semibold flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
                   Ergebnis: Ein klares Sprint-Briefing für den Design Sprint
@@ -85,20 +51,14 @@ export const WorkshopComparisonSection = () => {
                   </Link>
                 </Button>
               </div>
-            </div>
-          </Card>
+          </article>
 
-          {/* Design Sprint Workshop */}
-          <Card className="p-8 relative border-2 border-primary hover:shadow-xl transition-all duration-300">
-            <div className="absolute -top-4 left-8">
-              <span className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2">
+          <article className="border-t border-border bg-background p-7 md:border-l md:border-t-0 md:p-9">
+              <span className="mb-7 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
                 <Rocket className="w-4 h-4" />
                 Nächster Schritt
               </span>
-            </div>
-            
-            <div className="mt-4">
-              <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <h3 className="font-workshop-heading text-2xl font-bold mb-4">
                 Design Sprint Workshop
               </h3>
               
@@ -106,28 +66,11 @@ export const WorkshopComparisonSection = () => {
                 Wenn die Challenge klar ist
               </p>
               
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">2–4 Tage intensiver Workshop</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">Vor Ort oder remote mit Team</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">Geleitet von KI-Experten und erfahrenen Moderatoren</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2" />
-                  <p className="text-muted-foreground">KI-Tools in allen Phasen integriert</p>
-                </div>
-              </div>
+              <div className="space-y-3 mb-6">{["2–4 Tage intensiver Workshop", "Vor Ort oder remote mit Team", "Geleitet von KI-Experten und erfahrenen Moderatoren", "KI-Tools in allen Phasen integriert"].map((item) => <p key={item} className="flex items-start gap-3 text-muted-foreground"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />{item}</p>)}</div>
               
               <p className="text-sm font-semibold mb-4">Preis auf Anfrage</p>
               
-              <div className="bg-primary/10 rounded-lg p-4 mb-6">
+              <div className="border-l-2 border-primary bg-primary/10 p-4 mb-6">
                 <p className="text-sm font-semibold flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
                   Ergebnis: Getesteter Prototyp mit klaren Insights
@@ -146,13 +89,11 @@ export const WorkshopComparisonSection = () => {
                   </Link>
                 </Button>
               </div>
-            </div>
-          </Card>
+          </article>
         </div>
 
-        {/* Flow Indicator */}
         <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-4 bg-muted/50 rounded-full px-6 py-3">
+          <div className="inline-flex flex-wrap items-center justify-center gap-4 border-y border-border px-6 py-3">
             <span className="text-sm font-semibold">So funktioniert es:</span>
             <span className="text-sm">Unklar?</span>
             <ArrowRight className="w-4 h-4 text-primary" />
