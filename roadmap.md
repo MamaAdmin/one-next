@@ -16,3 +16,10 @@
 - [x] Bewegte KI-Clips aus der Zeichnung (Bild zu Video)
 - [x] Editor: Clip-Erzeugung, Musik, Untertitel, Länge mit Übergängen
 - [x] Listenansicht: nur Titel zeigen, kein Skripttext
+
+# Interaktiver Globus auf der Kontaktseite
+
+- [x] Globus-Grundkomponente und Darstellung ergänzen
+- [x] Hirzel, Zielorte und Entfernungen einbinden
+- [x] Globus unter den Kontaktinformationen platzieren
+- [x] Darstellung und Bedienung auf Desktop und Mobilgeräten prüfen
