@@ -54,7 +54,7 @@ export const WorkshopComparisonSection = () => {
           </article>
 
           <article className="border-t border-border bg-background p-7 md:border-l md:border-t-0 md:p-9">
-              <span className="mb-7 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+              <span className="mb-7 inline-flex items-center gap-2 rounded-full border border-border-accent bg-accent-soft/50 px-4 py-2 text-sm font-semibold text-primary">
                 <Rocket className="w-4 h-4" />
                 Nächster Schritt
               </span>
