@@ -83,8 +83,8 @@ const AdminDashboard = () => {
             <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-5">
               <TabsTrigger value="cms">CMS</TabsTrigger>
               <TabsTrigger value="lms">LMS</TabsTrigger>
-              <TabsTrigger value="bmad">BMAD</TabsTrigger>
               <TabsTrigger value="sprints">Sprints</TabsTrigger>
+              <TabsTrigger value="bmad">BMAD</TabsTrigger>
               <TabsTrigger value="users">Benutzer</TabsTrigger>
             </TabsList>
 
@@ -223,6 +223,20 @@ const AdminDashboard = () => {
               </Card>
             </TabsContent>
 
+            <TabsContent value="sprints">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Problem Framing und Design Sprints</CardTitle>
+                  <CardDescription>
+                    Erst das Problem Framing, dann der Design Sprint: wer sie erstellt hat, Status, Fortschritt und Abschluss.
+                  </CardDescription>
+                </CardHeader>
+                <div className="p-6">
+                  <SprintAdminManager />
+                </div>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="bmad">
               <Card>
                 <CardHeader>
@@ -232,6 +246,13 @@ const AdminDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <div className="p-6">
+                  <div className="mb-6 border-l-2 border-primary bg-accent-soft p-4">
+                    <p className="text-sm text-muted-foreground">
+                      BMAD ist der dritte Schritt und baut auf den Ergebnissen aus Problem Framing und Design Sprint auf.
+                      Eine Session entsteht aus einem abgeschlossenen Sprint – oder eigenständig.{" "}
+                      <Link to="/admin?tab=sprints" className="underline">Zu Problem Framing und Sprints</Link>
+                    </p>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                     <Link to="/admin/bmad/sessions">
                       <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-2">
@@ -259,20 +280,6 @@ const AdminDashboard = () => {
                     </Link>
                   </div>
                   <BMADInvitationManager />
-                </div>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="sprints">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Design Sprint Statistiken</CardTitle>
-                  <CardDescription>
-                    Übersicht aller Design Sprints: wer sie erstellt hat, Status, Fortschritt und Abschluss.
-                  </CardDescription>
-                </CardHeader>
-                <div className="p-6">
-                  <SprintAdminManager />
                 </div>
               </Card>
             </TabsContent>

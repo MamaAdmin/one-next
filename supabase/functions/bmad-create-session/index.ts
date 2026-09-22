@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,9 +25,50 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { title, description, project_context, settings } = await req.json();
+    const { title, description, project_context, settings, sprint_id, framing_session_id } = await req.json();
 
-    console.log('Creating BMAD session:', { title, user_id: user.id });
+    console.log('Creating BMAD session:', { title, user_id: user.id, sprint_id });
+
+    let linkedSprintId: string | null = null;
+    let linkedFramingId: string | null = null;
+
+    if (sprint_id) {
+      const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+
+      const { data: sprint, error: sprintError } = await supabase
+        .from('sprints')
+        .select('id, owner_id, status, deleted_at')
+        .eq('id', sprint_id)
+        .maybeSingle();
+
+      if (sprintError) throw sprintError;
+      if (!sprint || sprint.deleted_at) {
+        throw new Error('Sprint nicht gefunden');
+      }
+      if (!isAdmin && sprint.owner_id !== user.id) {
+        throw new Error('Kein Zugriff auf diesen Sprint');
+      }
+      if (sprint.status !== 'done') {
+        throw new Error('Der Design Sprint ist noch nicht abgeschlossen');
+      }
+
+      linkedSprintId = sprint.id;
+
+      const { data: framing } = await supabase
+        .from('framing_sessions')
+        .select('id, status')
+        .eq('resulting_sprint_id', sprint.id)
+        .eq('status', 'done')
+        .maybeSingle();
+
+      if (!framing) {
+        throw new Error('Das zugehörige Problem Framing ist noch nicht abgeschlossen');
+      }
+      if (framing_session_id && framing_session_id !== framing.id) {
+        throw new Error('Problem Framing passt nicht zum Sprint');
+      }
+      linkedFramingId = framing.id;
+    }
 
     // Create the session
     const { data: session, error: sessionError } = await supabase
@@ -39,6 +80,8 @@ serve(async (req) => {
         status: 'planning',
         current_phase: 'business_analyst',
         created_by: user.id,
+        sprint_id: linkedSprintId,
+        framing_session_id: linkedFramingId,
         settings: settings || {
           ai_model: 'google/gemini-2.5-flash',
           auto_progress: false,

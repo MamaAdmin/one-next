@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -10,19 +10,119 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAdminAllSprints, useAdminAllFramingSessions } from "@/hooks/useAdminSprints";
 
-export const BMADSessionCreator = () => {
+type Mode = "sprint" | "standalone";
+
+const defaultForm = {
+  title: "",
+  description: "",
+  project_context: "",
+  ai_model: "google/gemini-2.5-flash",
+  auto_progress: false,
+  require_approval: true,
+};
+
+interface BMADSessionCreatorProps {
+  /** Sprint that should be preselected when the dialog opens. */
+  initialSprintId?: string | null;
+  /** Open the dialog immediately (used when coming from the sprint list). */
+  autoOpen?: boolean;
+  onOpenChangeExternal?: (open: boolean) => void;
+}
+
+function buildContext(sprint: Record<string, unknown>, framingChallenge?: string | null) {
+  const parts: string[] = [];
+  const push = (label: string, value: unknown) => {
+    if (typeof value === "string" && value.trim()) parts.push(`${label}:\n${value.trim()}`);
+  };
+  const pushList = (label: string, value: unknown) => {
+    if (Array.isArray(value) && value.length > 0) {
+      const lines = value
+        .map((entry) => {
+          if (typeof entry === "string") return entry;
+          if (entry && typeof entry === "object") {
+            const obj = entry as Record<string, unknown>;
+            const text = obj.text ?? obj.frage ?? obj.titel ?? obj.beschreibung;
+            return typeof text === "string" ? text : JSON.stringify(entry);
+          }
+          return String(entry);
+        })
+        .filter(Boolean)
+        .map((line) => `- ${line}`);
+      if (lines.length) parts.push(`${label}:\n${lines.join("\n")}`);
+    }
+  };
+
+  push("Challenge Statement", sprint.challenge_statement ?? framingChallenge);
+  push("Problemstellung", sprint.problemstellung);
+  push("Zielgruppe", sprint.zielgruppe);
+  push("Erfolgsmessung", sprint.erfolgsmessung);
+  pushList("Sprint-Fragen", sprint.sprint_fragen);
+  pushList("Risiken", sprint.risiken);
+
+  return parts.join("\n\n");
+}
+
+export const BMADSessionCreator = ({
+  initialSprintId = null,
+  autoOpen = false,
+  onOpenChangeExternal,
+}: BMADSessionCreatorProps = {}) => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(autoOpen);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    project_context: "",
-    ai_model: "google/gemini-2.5-flash",
-    auto_progress: false,
-    require_approval: true
-  });
+  const [mode, setMode] = useState<Mode>(initialSprintId ? "sprint" : "sprint");
+  const [selectedSprintId, setSelectedSprintId] = useState<string>(initialSprintId ?? "");
+  const [formData, setFormData] = useState(defaultForm);
+
+  const { data: sprints = [] } = useAdminAllSprints();
+  const { data: framings = [] } = useAdminAllFramingSessions();
+
+  /** Sprints that are finished and whose problem framing is finished too. */
+  const eligibleSprints = useMemo(() => {
+    const doneFramingBySprint = new Map<string, { id: string; challenge_statement: string | null }>();
+    framings.forEach((f) => {
+      if (f.resulting_sprint_id && f.status === "done") {
+        doneFramingBySprint.set(f.resulting_sprint_id, {
+          id: f.id,
+          challenge_statement: f.challenge_statement ?? null,
+        });
+      }
+    });
+    return sprints
+      .filter((s) => s.status === "done" && doneFramingBySprint.has(s.id))
+      .map((s) => ({ sprint: s, framing: doneFramingBySprint.get(s.id)! }));
+  }, [sprints, framings]);
+
+  const selected = eligibleSprints.find((e) => e.sprint.id === selectedSprintId) ?? null;
+
+  useEffect(() => {
+    if (autoOpen) setOpen(true);
+  }, [autoOpen]);
+
+  useEffect(() => {
+    if (initialSprintId) {
+      setMode("sprint");
+      setSelectedSprintId(initialSprintId);
+    }
+  }, [initialSprintId]);
+
+  // Prefill title and context from the selected sprint.
+  useEffect(() => {
+    if (mode !== "sprint" || !selected) return;
+    const sprint = selected.sprint as unknown as Record<string, unknown>;
+    setFormData((prev) => ({
+      ...prev,
+      title: String(sprint.titel ?? ""),
+      project_context: buildContext(sprint, selected.framing.challenge_statement),
+    }));
+  }, [mode, selectedSprintId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    onOpenChangeExternal?.(next);
+  };
 
   const handleCreate = async () => {
     if (!formData.title.trim()) {
@@ -33,38 +133,35 @@ export const BMADSessionCreator = () => {
       toast.error("Bitte geben Sie einen Projekt-Kontext ein");
       return;
     }
+    if (mode === "sprint" && !selected) {
+      toast.error("Bitte wählen Sie einen abgeschlossenen Sprint aus");
+      return;
+    }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('bmad-create-session', {
+      const { data, error } = await supabase.functions.invoke("bmad-create-session", {
         body: {
           title: formData.title,
           description: formData.description,
           project_context: formData.project_context,
+          sprint_id: mode === "sprint" ? selected?.sprint.id ?? null : null,
+          framing_session_id: mode === "sprint" ? selected?.framing.id ?? null : null,
           settings: {
             ai_model: formData.ai_model,
             auto_progress: formData.auto_progress,
-            require_approval: formData.require_approval
-          }
-        }
+            require_approval: formData.require_approval,
+          },
+        },
       });
 
       if (error) throw error;
 
       toast.success("BMAD Session erfolgreich erstellt");
-      setOpen(false);
-      
-      // Reset form
-      setFormData({
-        title: "",
-        description: "",
-        project_context: "",
-        ai_model: "google/gemini-2.5-flash",
-        auto_progress: false,
-        require_approval: true
-      });
+      handleOpenChange(false);
+      setFormData(defaultForm);
+      setSelectedSprintId("");
 
-      // Navigate to the session detail page
       navigate(`/admin/bmad/session/${data.session.id}`);
     } catch (error) {
       console.error("Error creating session:", error);
@@ -75,7 +172,7 @@ export const BMADSessionCreator = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -86,8 +183,61 @@ export const BMADSessionCreator = () => {
         <DialogHeader>
           <DialogTitle>Neue BMAD Session erstellen</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label>Grundlage</Label>
+            <Select value={mode} onValueChange={(v) => setMode(v as Mode)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sprint">Aus abgeschlossenem Sprint (empfohlen)</SelectItem>
+                <SelectItem value="standalone">Eigenständig</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
+              BMAD baut auf den Ergebnissen aus Problem Framing und Design Sprint auf.
+            </p>
+          </div>
+
+          {mode === "sprint" ? (
+            <div className="space-y-2">
+              <Label htmlFor="sprint">Abgeschlossener Sprint *</Label>
+              <Select
+                value={selectedSprintId}
+                onValueChange={setSelectedSprintId}
+                disabled={eligibleSprints.length === 0}
+              >
+                <SelectTrigger id="sprint">
+                  <SelectValue
+                    placeholder={
+                      eligibleSprints.length === 0
+                        ? "Noch kein abgeschlossener Sprint vorhanden"
+                        : "Sprint auswählen"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {eligibleSprints.map(({ sprint }) => (
+                    <SelectItem key={sprint.id} value={sprint.id}>
+                      {sprint.titel}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-muted-foreground">
+                {eligibleSprints.length === 0
+                  ? "Erst wenn Problem Framing und Design Sprint abgeschlossen sind, kann eine Session daraus entstehen."
+                  : "Titel und Projekt-Kontext werden aus dem Sprint übernommen und bleiben bearbeitbar."}
+              </p>
+            </div>
+          ) : (
+            <p className="rounded-none border-l-2 border-primary bg-accent-soft p-3 text-sm text-muted-foreground">
+              Ohne vorangegangenes Problem Framing und ohne Design Sprint fliesst weniger Vorwissen in die Session ein.
+            </p>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="title">Projekt-Titel *</Label>
             <Input
@@ -119,12 +269,12 @@ export const BMADSessionCreator = () => {
               rows={6}
             />
             <p className="text-sm text-muted-foreground">
-              Je detaillierter, desto bessere Ergebnisse liefert die AI
+              Je detaillierter, desto bessere Ergebnisse liefert die KI
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="ai_model">AI Modell</Label>
+            <Label htmlFor="ai_model">KI-Modell</Label>
             <Select
               value={formData.ai_model}
               onValueChange={(value) => setFormData({ ...formData, ai_model: value })}
@@ -140,7 +290,7 @@ export const BMADSessionCreator = () => {
                   <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
                   <SelectItem value="o1">O1</SelectItem>
                 </SelectGroup>
-                
+
                 <SelectGroup>
                   <SelectLabel>Anthropic Direct (Keine Lovable Credits)</SelectLabel>
                   <SelectItem value="claude-sonnet-4-5">Claude Sonnet 4.5 (Empfohlen)</SelectItem>
@@ -148,7 +298,7 @@ export const BMADSessionCreator = () => {
                   <SelectItem value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</SelectItem>
                   <SelectItem value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</SelectItem>
                 </SelectGroup>
-                
+
                 <SelectGroup>
                   <SelectLabel>Lovable AI Gateway (Lovable Credits)</SelectLabel>
                   <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
@@ -193,10 +343,13 @@ export const BMADSessionCreator = () => {
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={loading}>
             Abbrechen
           </Button>
-          <Button onClick={handleCreate} disabled={loading}>
+          <Button
+            onClick={handleCreate}
+            disabled={loading || (mode === "sprint" && !selected)}
+          >
             {loading ? "Erstelle..." : "Session erstellen"}
           </Button>
         </div>
@@ -204,3 +357,5 @@ export const BMADSessionCreator = () => {
     </Dialog>
   );
 };
+
+export default BMADSessionCreator;

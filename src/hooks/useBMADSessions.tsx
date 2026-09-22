@@ -13,6 +13,8 @@ export type BMADSession = {
   planning_completed_at: string | null;
   development_started_at: string | null;
   settings: any;
+  sprint_id: string | null;
+  framing_session_id: string | null;
   created_at: string;
   updated_at: string;
 };

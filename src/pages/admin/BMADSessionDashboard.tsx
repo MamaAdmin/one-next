@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useBMADSessions } from "@/hooks/useBMADSessions";
 import Navigation from "@/components/Navigation";
@@ -128,6 +128,8 @@ const getPhaseLabel = (phase: string) => {
 
 const BMADSessionDashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sprintParam = searchParams.get("sprint");
   const queryClient = useQueryClient();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { sessions, isLoading } = useBMADSessions();
@@ -198,7 +200,11 @@ const BMADSessionDashboard = () => {
         ]}
       />
       <DashboardPage>
-          <DashboardHeader title="BMAD-Sessions" description="Alle KI-gestützten Entwicklungssessions verwalten und überwachen." action={<BMADSessionCreator />} />
+          <DashboardHeader
+            title="BMAD-Sessions"
+            description="BMAD baut auf Problem Framing und Design Sprint auf. Eine Session entsteht aus einem abgeschlossenen Sprint – oder eigenständig."
+            action={<BMADSessionCreator initialSprintId={sprintParam} autoOpen={!!sprintParam} />}
+          />
 
           <BMADInfo />
 
@@ -263,6 +269,7 @@ const BMADSessionDashboard = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Titel</TableHead>
+                        <TableHead>Herkunft</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Phase</TableHead>
                         <TableHead>Erstellt</TableHead>
@@ -280,6 +287,15 @@ const BMADSessionDashboard = () => {
                             onClick={() => navigate(`/admin/bmad/session/${session.id}`)}
                           >
                             {session.title}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {session.sprint_id ? (
+                              <Link to={`/sprint/${session.sprint_id}`} className="underline">
+                                Aus Sprint
+                              </Link>
+                            ) : (
+                              <span className="text-muted-foreground">Eigenständig</span>
+                            )}
                           </TableCell>
                           <TableCell onClick={() => navigate(`/admin/bmad/session/${session.id}`)} className="cursor-pointer">
                             <Badge className={getStatusColor(session.status)}>

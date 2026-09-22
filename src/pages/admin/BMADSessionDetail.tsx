@@ -455,6 +455,14 @@ export default function BMADSessionDetail() {
                     {getAgentIcon(session.current_phase)}
                     {PHASE_NAMES[session.current_phase as keyof typeof PHASE_NAMES]}
                   </Badge>
+                  {(session as { sprint_id?: string | null }).sprint_id ? (
+                    <a
+                      href={`/sprint/${(session as { sprint_id?: string | null }).sprint_id}`}
+                      className="text-sm underline self-center"
+                    >
+                      Aus abgeschlossenem Sprint
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </CardHeader>
