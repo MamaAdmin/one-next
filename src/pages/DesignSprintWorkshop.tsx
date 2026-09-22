@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, Target, Users, Lightbulb, ArrowRight, Calendar, Rocket, TrendingUp } from "lucide-react";
+import { CheckCircle2, Target, Users, Lightbulb, ArrowRight, Calendar, Rocket, TrendingUp, BrainCircuit, FileCheck2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
 import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
@@ -14,23 +14,23 @@ import { ServicePageHero } from "@/components/service/ServicePageHero";
 const DesignSprintWorkshop = () => {
   const structuredData = [
     createEventSchema(
-      "Design Sprint Workshop",
-      "Strukturierter 2-Tage Workshop zur Entwicklung und Testung innovativer Lösungen mit dem Design Sprint Framework.",
+      "KI-unterstützter Design Sprint",
+      "Moderierter 1–4-Tage-Workshop zur Entwicklung und Validierung tragfähiger Lösungen – beschleunigt mit ChatGPT, Claude und weiteren KI-Werkzeugen.",
       "https://one-next.de/design-sprint-workshop"
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
       { name: "Workshops", url: "https://one-next.de/sprint-uebersicht" },
-      { name: "Design Sprint Workshop", url: "https://one-next.de/design-sprint-workshop" }
+      { name: "KI-unterstützter Design Sprint", url: "https://one-next.de/design-sprint-workshop" }
     ])
   ];
 
   return (
     <>
       <SEO
-        title="Design Sprint Workshop | 2-Tage Intensiv-Workshop | one-next"
-        description="Strukturierter Design Sprint Workshop über 2 Tage. Von der Challenge zum getesteten Prototyp mit erfahrenen Moderatoren."
-        keywords="Design Sprint Workshop, Innovation Workshop, Prototyping, Design Thinking Workshop"
+        title="KI-unterstützter Design Sprint | 1–4 Tage | one-next"
+        description="Moderierter KI-unterstützter Design Sprint über 1–4 Tage. Mit ChatGPT und Claude schneller von der klaren Challenge zum getesteten Lösungsansatz."
+        keywords="KI-unterstützter Design Sprint, KI Design Sprint, ChatGPT Workshop, Claude Workshop, Prototyping"
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
       />
@@ -40,9 +40,9 @@ const DesignSprintWorkshop = () => {
         <ServicePageHero
           badge="Nächster Schritt"
           badgeIcon={Rocket}
-          title="Design Sprint Workshop"
-          titleAccent="Wenn die Challenge klar ist"
-          description="2–4 Tage intensiver Workshop vor Ort oder remote mit Ihrem Team. Geleitet von KI-Experten und erfahrenen Moderatoren mit KI-Tools in allen Phasen: Research, Ideenfindung, Prototyping, Testing."
+          title="KI-unterstützter Design Sprint"
+          titleAccent="Von der klaren Challenge zum getesteten Lösungsansatz"
+          description="Moderierter Workshop über 1–4 Tage, vor Ort oder remote. ChatGPT, Claude und weitere KI-Werkzeuge beschleunigen Recherche, Verdichtung, Ideenentwicklung, Prototyping und Auswertung."
           actions={
             <>
               <Button size="lg" asChild>
@@ -54,7 +54,7 @@ const DesignSprintWorkshop = () => {
             </>
           }
           facts={[
-            { value: "2–4 Tage", label: "Dauer" },
+            { value: "1–4 Tage", label: "Dauer" },
             { value: "Vor Ort oder remote", label: "Format" },
             { value: "Prototyp", label: "Ergebnis" },
           ]}
@@ -77,8 +77,8 @@ const DesignSprintWorkshop = () => {
                   </div>
                   <h3 className="text-xl font-semibold">Ziel</h3>
                   <p className="text-muted-foreground">
-                    Von der <strong>Challenge zur umsetzbaren KI-Lösung</strong> in 2 Tagen – 
-                    mit validiertem Konzept, Machbarkeitsanalyse und klarem Implementierungsplan.
+                    Von der <strong>klaren Challenge zum tragfähigen Lösungsansatz</strong> –
+                    je nach Format mit priorisiertem Konzept, Prototyp, Nutzerfeedback und Umsetzungsplan.
                   </p>
                 </CardContent>
               </Card>
@@ -186,15 +186,15 @@ const DesignSprintWorkshop = () => {
             <h2 className="text-3xl font-bold text-center mb-12">
               Was können Sie <span className="text-primary">erwarten?</span>
             </h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               <Card className="border-border hover:border-primary/50 transition-all">
                 <CardContent className="p-6 space-y-3">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Vor Ort & Remote</h3>
+                  <h3 className="text-lg font-semibold">Klare Entscheidungen</h3>
                   <p className="text-sm text-muted-foreground">
-                    Flexibel nach Ihren Bedürfnissen – vor Ort bei Ihnen oder vollständig remote
+                    Moderation, Timeboxes und ein gemeinsames Zielbild bringen das Team schneller von Diskussionen zu tragfähigen Entscheidungen.
                   </p>
                 </CardContent>
               </Card>
@@ -202,11 +202,11 @@ const DesignSprintWorkshop = () => {
               <Card className="border-border hover:border-primary/50 transition-all">
                 <CardContent className="p-6 space-y-3">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-primary" />
+                    <BrainCircuit className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">2 Tage intensiv</h3>
+                  <h3 className="text-lg font-semibold">KI als Beschleuniger</h3>
                   <p className="text-sm text-muted-foreground">
-                    Fokussierte KI-Konzeptentwicklung mit strukturiertem Sprint-Prozess
+                    ChatGPT und Claude unterstützen Recherche, strukturieren Erkenntnisse und erweitern Ideen sowie Konzeptvarianten.
                   </p>
                 </CardContent>
               </Card>
@@ -216,94 +216,76 @@ const DesignSprintWorkshop = () => {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Expertenteam</h3>
+                  <h3 className="text-lg font-semibold">Greifbarer Lösungsansatz</h3>
                   <p className="text-sm text-muted-foreground">
-                    KI-Ingenieure & erfahrene Moderatoren begleiten Sie durch den Sprint
+                    Je nach Dauer entsteht ein priorisiertes Konzept, ein schneller Prototyp oder eine mit Nutzer:innen geprüfte Lösung.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border hover:border-primary/50 transition-all">
+                <CardContent className="p-6 space-y-3">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <FileCheck2 className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Direkter Transfer</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Dokumentierte Erkenntnisse, Machbarkeitscheck und klare nächste Schritte schaffen eine belastbare Grundlage für die Umsetzung.
                   </p>
                 </CardContent>
               </Card>
             </div>
+            <p className="mt-8 border-l-2 border-primary pl-5 text-sm leading-relaxed text-muted-foreground">
+              KI liefert Vorschläge und beschleunigt Arbeitsschritte. Auswahl, Bewertung und Entscheidungen bleiben jederzeit bei Ihrem Team.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Workshop Agenda - Detailed 2 Days */}
+      {/* Workshop Agenda - Modular 1–4 days */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-4">
-              Workshop-Agenda <span className="text-primary">(2 Tage intensiv)</span>
+              Workshop-Agenda <span className="text-primary">(1–4 Tage modular)</span>
             </h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Strukturierter Prozess von der Challenge zur umsetzbaren KI-Lösung
+              Die Module werden passend zu Challenge, Vorarbeit und gewünschtem Ergebnis zusammengestellt.
             </p>
 
-            {/* Tag 1 */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary">1</span>
-                  </div>
-                  <h3 className="text-2xl font-bold">Tag 1: Verstehen & Definieren</h3>
-                </div>
-              </div>
-              
-              <div className="space-y-4 ml-18">
-                {[
-                  { title: "Challenge-Mapping", time: "60'", desc: "Problem verstehen, Kontext klären, Zielgruppe definieren" },
-                  { title: "KI-Potenzial-Analyse", time: "90'", desc: "Wo kann KI wirklich Mehrwert schaffen? Use Cases identifizieren und bewerten" },
-                  { title: "Zieldefinition & Erfolgskriterien", time: "60'", desc: "Konkrete, messbare Ziele für den Sprint festlegen" },
-                  { title: "Lösungs-Ideation", time: "120'", desc: "Brainstorming, Crazy 8s, erste Lösungsansätze entwickeln" }
-                ].map((step, index) => (
-                  <Card key={index} className="border-border hover:border-primary/30 transition-colors">
-                    <CardContent className="p-4 flex gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between gap-4 mb-2">
-                          <h4 className="font-semibold">{step.title}</h4>
-                          <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded whitespace-nowrap">
-                            {step.time}
-                          </span>
-                        </div>
-                        <p className="text-muted-foreground text-sm">{step.desc}</p>
+            <div className="grid gap-6 md:grid-cols-2">
+              {[
+                { day: "1", title: "Verstehen & fokussieren", desc: "Challenge und Sprint-Ziel ausrichten, Zielgruppe und Nutzerreise verstehen, vorhandene Erkenntnisse mit ChatGPT und Claude recherchieren und verdichten sowie Sprint-Fragen festlegen." },
+                { day: "2", title: "Ideen entwickeln & entscheiden", desc: "Lösungsräume öffnen, Inspiration und Varianten KI-unterstützt erweitern, Ideen skizzieren, bewerten und zu einem gemeinsamen Storyboard verdichten." },
+                { day: "3", title: "Prototyp entwickeln", desc: "Nutzerfluss, Inhalte und Interaktionen ausarbeiten. KI-Werkzeuge unterstützen Texte und Varianten; Figma oder Lovable beschleunigen den testbaren Prototyp." },
+                { day: "4", title: "Testen & nächste Schritte sichern", desc: "Prototyp mit Nutzer:innen prüfen, Rückmeldungen strukturiert auswerten, Machbarkeit einordnen und Roadmap sowie nächste Entscheidungen festhalten." },
+              ].map((module) => (
+                <Card key={module.day} className="border-border hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="mb-5 flex items-center gap-4">
+                      <div className="flex size-12 shrink-0 items-center justify-center rounded-none border border-border-accent bg-accent-soft">
+                        <span className="text-xl font-bold text-primary">{module.day}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      <h3 className="font-workshop-heading text-xl font-bold">Tag {module.day}: {module.title}</h3>
+                    </div>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{module.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
-            {/* Tag 2 */}
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-none bg-accent-soft border border-border-accent flex items-center justify-center">
-                  <span className="text-2xl font-bold text-primary">2</span>
+            <div className="mt-10 grid border border-border-accent bg-accent-soft/30 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                ["1 Tag", "Fokus, priorisierter Lösungsansatz und nächste Schritte"],
+                ["2 Tage", "Konzept und schneller Prototyp"],
+                ["3 Tage", "Ausgearbeiteter Prototyp und vorbereiteter Test"],
+                ["4 Tage", "Nutzerfeedback, Auswertung und Umsetzungsplan"],
+              ].map(([duration, result]) => (
+                <div key={duration} className="border-b border-border-accent p-5 last:border-b-0 sm:border-r sm:even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0">
+                  <p className="font-workshop-heading font-semibold text-primary">{duration}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{result}</p>
                 </div>
-                <h3 className="text-2xl font-bold">Tag 2: Konzeption & Validierung</h3>
-              </div>
-              
-              <div className="space-y-4 ml-18">
-                {[
-                  { title: "Konzept-Entwicklung", time: "90'", desc: "Lösungsansätze konkretisieren, Storyboard erstellen, Nutzerflüsse definieren" },
-                  { title: "Prototyping/Visualisierung", time: "120'", desc: "Click-Dummy oder KI-Mock-up erstellen mit KI-Tools (Figma, Lovable, etc.)" },
-                  { title: "Machbarkeits-Check", time: "60'", desc: "Technische, wirtschaftliche und organisatorische Machbarkeit bewerten" },
-                  { title: "Roadmap & Next Steps", time: "60'", desc: "Implementierungsplan mit Meilensteinen, Quick Wins und Ressourcen" }
-                ].map((step, index) => (
-                  <Card key={index} className="border-border hover:border-primary/30 transition-colors">
-                    <CardContent className="p-4 flex gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between gap-4 mb-2">
-                          <h4 className="font-semibold">{step.title}</h4>
-                          <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-1 rounded whitespace-nowrap">
-                            {step.time}
-                          </span>
-                        </div>
-                        <p className="text-muted-foreground text-sm">{step.desc}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              ))}
             </div>
             
             <Card className="mt-8 border-primary/20 bg-primary/5">
@@ -313,8 +295,7 @@ const DesignSprintWorkshop = () => {
                   <div>
                     <p className="font-semibold mb-2">Definition of Done</p>
                     <p className="text-sm text-muted-foreground">
-                      Validiertes Konzept, Machbarkeitsanalyse, Entwicklungs-Roadmap, detaillierter Report 
-                      mit allen Erkenntnissen und Empfehlungen.
+                      Ein gemeinsam priorisierter Lösungsansatz mit dokumentierten Erkenntnissen und klaren nächsten Schritten – je nach gewähltem Umfang ergänzt um Prototyp, Nutzerfeedback und Umsetzungsplan.
                     </p>
                   </div>
                 </div>

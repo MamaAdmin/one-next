@@ -35,3 +35,9 @@
 - [x] Gemeinsame Hero-Komponente ServicePageHero
 - [x] Problem Framing, Design Sprint, KI-Beratung, KI-Entwicklung, Sprint-Übersicht, Online-Sprint, Datenqualitäts-Audit umgestellt
 - [x] Prüfung Desktop und Mobile
+
+## Inhalte des KI-unterstützten Design Sprints
+- [x] Seiteneinstieg und Metadaten eindeutig auf KI ausrichten
+- [x] Erwartungsbild mit ChatGPT und Claude schärfen
+- [x] Modulare Agenda für 1–4 Tage einführen
+- [ ] Desktop- und Mobilansicht prüfen

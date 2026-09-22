@@ -66,9 +66,9 @@ export const WorkshopFlowDiagram = () => {
                   <span className="text-xl">JA</span>
                   <ArrowRight className="w-5 h-5" />
                 </div>
-                  <h4 className="mb-3 font-workshop-heading text-xl font-bold">Design Sprint Workshop</h4>
+                  <h4 className="mb-3 font-workshop-heading text-xl font-bold">KI-unterstützter Design Sprint</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    2–4 Tage intensiver Workshop
+                    1–4 Tage modularer Workshop
                   </p>
                   
                   <ul className="space-y-2 mb-6">
