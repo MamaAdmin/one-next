@@ -183,77 +183,85 @@ export default function DataQualityAuditPage() {
         canonical="https://one-next.de/data-quality-audit"
         structuredData={structuredData}
       />
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background font-workshop text-foreground">
       <Navigation />
 
-      {/* Hero */}
-      <section className="bg-gradient-hero pt-24">
-        <div className="mx-auto max-w-7xl px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <p className="inline-block rounded-full bg-accent text-accent-foreground text-xs font-medium px-3 py-1 mb-4">
-              Data Quality Audit · 1-12 Wochen · Messbar · Umsetzbar
-            </p>
-            {isEditMode ? (
-              <InlineTextArea
-                value={content.hero_title || 'Datenqualität messbar machen und strategisch verbessern'}
-                onSave={(value) => updateContent('hero_title', value)}
-                isEditMode={isEditMode}
-                placeholder="Hero title"
-                minRows={2}
-              />
-            ) : (
-              <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
-                {content.hero_title || 'Datenqualität messbar machen und strategisch verbessern'}
-              </h1>
-            )}
+      <ServicePageHero
+        badge="Data Quality Audit"
+        titleSlot={
+          isEditMode ? (
+            <InlineTextArea
+              value={content.hero_title || 'Datenqualität messbar machen und strategisch verbessern'}
+              onSave={(value) => updateContent('hero_title', value)}
+              isEditMode={isEditMode}
+              placeholder="Hero title"
+              minRows={2}
+            />
+          ) : (
+            <h1 className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl">
+              {content.hero_title || 'Datenqualität messbar machen und strategisch verbessern'}
+            </h1>
+          )
+        }
+        descriptionSlot={
+          <div className="mt-6 max-w-2xl">
             <InlineTextArea
               value={content.hero_description || 'Systematische Analyse Ihrer Datenlandschaft mit klaren Handlungsempfehlungen für nachhaltige Verbesserungen. Von Quick Scan bis umfassendem Assessment.'}
               onSave={(value) => updateContent('hero_description', value)}
               isEditMode={isEditMode}
-              className="mt-4 text-lg text-muted-foreground"
+              className="text-lg leading-relaxed text-muted-foreground md:text-xl"
               placeholder="Hero description"
               minRows={3}
             />
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#termin" className="rounded-2xl px-5 py-3 bg-primary text-primary-foreground font-medium shadow hover:bg-primary-glow transition-colors">
-                Erstgespräch buchen
-              </a>
-              <a href="#pakete" className="rounded-2xl px-5 py-3 bg-card border border-border font-medium hover:bg-secondary transition-colors">
-                Pakete & Preise
-              </a>
-            </div>
+          </div>
+        }
+        actions={
+          <>
+            <Button size="lg" asChild><a href="#termin">Erstgespräch buchen</a></Button>
+            <Button size="lg" variant="outline" asChild><a href="#pakete">Pakete &amp; Preise</a></Button>
+          </>
+        }
+        facts={[
+          { value: "1–12 Wochen", label: "Dauer" },
+          { value: "Messbar", label: "Bewertung" },
+          { value: "Umsetzbar", label: "Ergebnis" },
+        ]}
+        image={auditImage}
+        imageAlt="Team analysiert Datenqualität gemeinsam am Arbeitstisch"
+      />
+
+      <section className="py-14 border-t border-border">
+        <div className="mx-auto max-w-7xl px-4 grid gap-10 md:grid-cols-2 md:items-start">
+          <div>
+            <p className="mb-3 text-sm font-bold uppercase text-primary">Ausgangslage</p>
+            <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Warum Data Quality?</h2>
+            <p className="mt-5 leading-relaxed text-muted-foreground">
+              Schlechte Datenqualität kostet Unternehmen durchschnittlich 15-25% ihres Umsatzes
+              und führt zu Fehlinvestitionen in KI/Analytics. Ein systematisches Audit schafft
+              Transparenz und eine fundierte Grundlage für Verbesserungen.
+            </p>
             <ul className="mt-6 text-sm text-muted-foreground list-disc pl-5">
               <li>DSGVO/DSG-konform · Need-to-know-Prinzip</li>
               <li>Tool-gestützte Analysen mit etablierten Standards</li>
               <li>Von Quick Wins bis langfristige Roadmap</li>
             </ul>
           </div>
-          <div className="md:pl-8">
-            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
-              <h3 className="font-semibold text-lg">Warum Data Quality?</h3>
-              <p className="mt-2 text-muted-foreground text-sm">
-                Schlechte Datenqualität kostet Unternehmen durchschnittlich 15-25% ihres Umsatzes 
-                und führt zu Fehlinvestitionen in KI/Analytics. Ein systematisches Audit schafft 
-                Transparenz und eine fundierte Grundlage für Verbesserungen.
-              </p>
-              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-xl border border-border p-3">
-                  <span className="font-medium">Kosten ↓</span>
-                  <p className="text-muted-foreground">Fehler und Nacharbeit reduzieren</p>
-                </div>
-                <div className="rounded-xl border border-border p-3">
-                  <span className="font-medium">Vertrauen ↑</span>
-                  <p className="text-muted-foreground">Verlässliche Daten für Entscheidungen</p>
-                </div>
-                <div className="rounded-xl border border-border p-3">
-                  <span className="font-medium">Compliance ✓</span>
-                  <p className="text-muted-foreground">DSGVO/DSG-konform und audit-ready</p>
-                </div>
-                <div className="rounded-xl border border-border p-3">
-                  <span className="font-medium">KI-Ready ✓</span>
-                  <p className="text-muted-foreground">Fundament für erfolgreiche KI-Projekte</p>
-                </div>
-              </div>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="border border-border p-4">
+              <span className="font-workshop-heading font-semibold">Kosten ↓</span>
+              <p className="text-muted-foreground">Fehler und Nacharbeit reduzieren</p>
+            </div>
+            <div className="border border-border p-4">
+              <span className="font-workshop-heading font-semibold">Vertrauen ↑</span>
+              <p className="text-muted-foreground">Verlässliche Daten für Entscheidungen</p>
+            </div>
+            <div className="border border-border p-4">
+              <span className="font-workshop-heading font-semibold">Compliance ✓</span>
+              <p className="text-muted-foreground">DSGVO/DSG-konform und audit-ready</p>
+            </div>
+            <div className="border border-border p-4">
+              <span className="font-workshop-heading font-semibold">KI-Ready ✓</span>
+              <p className="text-muted-foreground">Fundament für erfolgreiche KI-Projekte</p>
             </div>
           </div>
         </div>
