@@ -575,7 +575,29 @@ export default function SprintStepCard({
             <p className="text-xs text-muted-foreground">
               Erfasse mehrere kurze Antworten — eine pro Sticky-Note.
             </p>
+            {missingSeed.length > 0 ? (
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <p className="text-xs text-muted-foreground">
+                  {missingSeed.length} Antwort{missingSeed.length === 1 ? "" : "en"} aus dem
+                  Problem Framing {missingSeed.length === 1 ? "passt" : "passen"} zu dieser Frage.
+                </p>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7"
+                  onClick={() => {
+                    const n = applyFramingSeed(missingSeed);
+                    if (n > 0) toast({ title: `${n} Antwort${n === 1 ? "" : "en"} übernommen` });
+                  }}
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Aus Problem Framing übernehmen
+                </Button>
+              </div>
+            ) : null}
           </div>
+
 
           {antworten.length > 0 ? (
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
