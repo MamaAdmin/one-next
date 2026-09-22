@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin } from "lucide-react";
 import { HirzelGlobe } from "@/components/HirzelGlobe";
+import { localBusinessSchema } from "@/config/seoConfig";
 
 const Contact = () => {
   return (
@@ -14,6 +15,7 @@ const Contact = () => {
         title="Kontakt | One Next" 
         description="Kontaktieren Sie uns für KI-Beratung und Innovation. Wir helfen Ihnen bei Ihren KI-Projekten." 
         canonical="/kontakt" 
+        structuredData={[localBusinessSchema]}
       />
       <Navigation />
       <div className="min-h-screen pt-20">
