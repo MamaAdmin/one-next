@@ -1,286 +1,305 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowRight,
+  BrainCircuit,
+  CheckCircle2,
+  Database,
+  FileCheck2,
+  FileText,
+  GitBranch,
+  Layers,
+  Map,
+  Settings,
+  Target,
+  Users,
+} from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { SEO } from "@/components/SEO";
 import { usePageContent } from "@/hooks/usePageContent";
 import { useContentManager } from "@/hooks/useContentManager";
-import { Target, Zap, GitBranch, Check, Users, Database, Layers, Map, FileText, Settings } from "lucide-react";
-import { SEO } from "@/components/SEO";
-import { createServiceSchema, createBreadcrumbSchema } from "@/config/seoConfig";
-import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { createBreadcrumbSchema, createServiceSchema } from "@/config/seoConfig";
 import developmentImage from "@/assets/custom-ai-development.jpg";
+
+const processSteps = [
+  {
+    number: "01",
+    icon: Target,
+    title: "Problem Framing",
+    description: "Challenge, Zielgruppe, Scope, Erfolgskriterien sowie Risiken und Annahmen bilden das fachliche Fundament.",
+    result: "Eine klar definierte und priorisierte Challenge.",
+    href: "/problem-framing-workshop",
+    linkLabel: "Zum Problem Framing",
+  },
+  {
+    number: "02",
+    icon: BrainCircuit,
+    title: "KI-unterstützter Design Sprint",
+    description: "Der priorisierte Lösungsansatz, Prototyp und gewonnene Erkenntnisse machen die Richtung greifbar und überprüfbar.",
+    result: "Ein gemeinsam bewerteter Lösungsansatz.",
+    href: "/design-sprint-workshop",
+    linkLabel: "Zum Design Sprint",
+  },
+  {
+    number: "03",
+    icon: GitBranch,
+    title: "BMAD-Integration",
+    description: "Die Ergebnisse beider Workshops werden zu einem fachlichen und technischen High-Level-Plan für die Umsetzung verbunden.",
+    result: "Ein abgestimmter BMAD-Blueprint für die nächsten Schritte.",
+  },
+] as const;
+
+const bmadModules = [
+  { icon: Target, title: "Business Alignment", description: "Die KI-Lösung wird klar mit den strategischen Unternehmenszielen und dem erwarteten Nutzen verbunden." },
+  { icon: FileText, title: "Use Case Definition", description: "Die validierten Anwendungsfälle werden präzisiert, priorisiert und gegeneinander abgegrenzt." },
+  { icon: Database, title: "Datenanforderungen", description: "Relevante Datenquellen, Qualität, Volumen sowie erste Datenschutz- und Compliance-Fragen werden eingeordnet." },
+  { icon: Settings, title: "KI Solution Design", description: "Passende Lösungs- und Modellansätze werden aus den validierten Use Cases abgeleitet und auf hoher Ebene beschrieben." },
+  { icon: Layers, title: "Architektur-Blueprint", description: "Systemarchitektur, Schnittstellen und Integrationspunkte werden als verständliche High-Level-Skizze festgehalten." },
+  { icon: Users, title: "Rollen und Verantwortlichkeiten", description: "Verantwortlichkeiten für Analyse, Produkt, Architektur, Koordination und Entwicklung werden sichtbar zugeordnet." },
+  { icon: Map, title: "Roadmap und Milestones", description: "Die Umsetzung wird in nachvollziehbare Schritte, Meilensteine und Akzeptanzkriterien gegliedert." },
+] as const;
+
+const outcomes = [
+  ["Gemeinsames Zielbild", "Fachliche Ziele, Nutzen und technische Richtung sind aufeinander abgestimmt."],
+  ["Klare Entscheidungsgrundlage", "Annahmen, Abhängigkeiten und offene Entscheidungen sind transparent dokumentiert."],
+  ["Strukturierte Umsetzung", "Roadmap, Meilensteine und Verantwortlichkeiten schaffen Orientierung für die nächsten Schritte."],
+  ["Nachvollziehbare Übergabe", "Ergebnisse werden für die weitere Arbeit in Jira und Confluence Cloud strukturiert aufbereitet."],
+] as const;
 
 const CustomAIDevelopment = () => {
   const { content, updateContent } = usePageContent("custom-ai-development");
   const { isContentManager } = useContentManager();
   const [isEditMode, setIsEditMode] = useState(false);
 
-
   const structuredData = [
     createServiceSchema(
       "Individuelle KI-Entwicklung mit BMAD",
-      "Maßgeschneiderte KI-Lösungen von der Konzeption bis zur Umsetzung. Strukturiert nach dem BMAD-Framework für klare, umsetzungsreife KI-Projekte.",
-      "https://one-next.de/custom-ai-development"
+      "Vom validierten Lösungsansatz zum umsetzungsreifen High-Level-Plan: one-next überführt die Ergebnisse aus Problem Framing und Design Sprint in einen strukturierten BMAD-Blueprint.",
+      "https://one-next.de/custom-ai-development",
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
-      { name: "Services", url: "https://one-next.de/#services" },
-      { name: "Individuelle KI-Entwicklung", url: "https://one-next.de/custom-ai-development" }
-    ])
-  ];
-
-  const approachSteps = [
-    {
-      icon: Target,
-      title: "Problem Framing",
-      description: "Gemeinsam identifizieren wir die relevanten Herausforderungen, Nutzerbedürfnisse und Geschäftspotenziale.",
-      result: "Klar definierte Opportunity Statements und priorisierte Problemfelder."
-    },
-    {
-      icon: Zap,
-      title: "Design Sprint",
-      description: "In nur wenigen Tagen entwickeln wir konkrete Lösungsideen, erste Prototypen und sammeln Nutzerfeedback.",
-      result: "Validiertes Konzept mit ersten User Journeys und Use Cases."
-    },
-    {
-      icon: GitBranch,
-      title: "BMAD-Integration",
-      description: "Die Ergebnisse aus Problem Framing und Design Sprint überführen wir in einen strukturierten BMAD-Blueprint – einen vollständigen Bauplan für die KI-Entwicklung.",
-      result: "Vollständiger Blueprint für externe Entwickler."
-    }
-  ];
-
-  const bmadAdvantages = [
-    {
-      icon: Target,
-      title: "Business Alignment",
-      description: "Klare Verbindung von KI-Projekt zu strategischen Unternehmenszielen."
-    },
-    {
-      icon: FileText,
-      title: "Use Case Definition",
-      description: "Präzise beschriebene KI-Anwendungsfälle mit Mehrwert, Priorisierung und Abgrenzung."
-    },
-    {
-      icon: Database,
-      title: "Datenanforderungen",
-      description: "Übersicht über relevante Datenquellen, Qualität, Volumen und erste Datenschutz-/Compliance-Bewertung."
-    },
-    {
-      icon: Settings,
-      title: "KI Solution Design",
-      description: "Vorstrukturierte Modell-Ideen (z. B. Klassifikation, Generative KI, Empfehlungssysteme) basierend auf den validierten Use Cases."
-    },
-    {
-      icon: Layers,
-      title: "Architektur-Blueprint",
-      description: "High-Level-Skizze von Systemarchitektur, Schnittstellen und Integrationspunkten."
-    },
-    {
-      icon: Users,
-      title: "Rollen & Verantwortlichkeiten",
-      description: "Zuweisung nach BMAD-Methodik (Analyst, Product Manager, Architect, Orchestrator, Developer)."
-    },
-    {
-      icon: Map,
-      title: "Roadmap & Milestones",
-      description: "Klare Umsetzungsschritte für externe Entwickler, ergänzt durch Akzeptanzkriterien."
-    }
-  ];
-
-  const benefits = [
-    "Zeit sparen durch klare Vorgaben",
-    "Risiken reduzieren durch validierte Konzepte",
-    "Business-Relevanz von Anfang an sicherstellen",
-    "Nahtlose Übergabe an externe Entwickler"
+      { name: "Leistungen", url: "https://one-next.de/#services" },
+      { name: "Individuelle KI-Entwicklung", url: "https://one-next.de/custom-ai-development" },
+    ]),
   ];
 
   return (
     <>
       <SEO
-        title="Individuelle KI-Entwicklung | KI-Lösungen mit BMAD | one-next"
-        description="Von der Idee zum umsetzungsreifen KI-Projekt: Mit dem BMAD-Ansatz bringt one-next Ihr Unternehmen mit maßgeschneiderten KI-Lösungen auf die nächste Stufe."
-        keywords="KI-Entwicklung, Individuelle KI-Entwicklung, BMAD Framework, KI-Beratung, KI-Lösungen, Blueprint"
+        title="Individuelle KI-Entwicklung mit BMAD | one-next"
+        description="Problem Framing und Design Sprint werden zum High-Level-Plan: BMAD strukturiert Business Alignment, Architektur, Roadmap und Milestones für Ihre KI-Lösung."
+        keywords="Individuelle KI-Entwicklung, BMAD, KI-Lösung, High-Level-Plan, Business Alignment, Roadmap, Jira, Confluence Cloud"
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
-      <div className="min-h-screen flex flex-col bg-background font-workshop text-foreground">
-      <Navigation />
+      <div className="min-h-screen bg-background font-workshop text-foreground">
+        <Navigation />
 
-      {isContentManager && (
-        <EditToggleButton
-          isEditMode={isEditMode}
-          onToggle={() => setIsEditMode(!isEditMode)}
-        />
-      )}
+        {isContentManager && (
+          <EditToggleButton isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />
+        )}
 
-      <ServicePageHero
-        badge="Individuelle KI-Entwicklung"
-        badgeIcon={Target}
-        titleSlot={
-          <InlineTextField
-            value={content.hero_title || "Von der Idee zum umsetzungsreifen KI-Projekt"}
-            onSave={(value) => updateContent("hero_title", value, "text")}
-            isEditMode={isEditMode}
-            as="h1"
-            className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl"
+        <main className="overflow-hidden pt-16">
+          <ServicePageHero
+            badge="Der nächste Schritt"
+            badgeIcon={GitBranch}
+            titleSlot={
+              <div>
+                <InlineTextField
+                  value={content.hero_title || "Individuelle KI-Entwicklung mit BMAD"}
+                  onSave={(value) => updateContent("hero_title", value, "text")}
+                  isEditMode={isEditMode}
+                  as="h1"
+                  className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl"
+                />
+                <p className="mt-3 font-workshop-heading text-2xl font-semibold text-primary-glow md:text-3xl">
+                  Vom validierten Lösungsansatz zum umsetzungsreifen High-Level-Plan
+                </p>
+              </div>
+            }
+            descriptionSlot={
+              <div className="mt-6 max-w-2xl">
+                <InlineTextArea
+                  value={content.hero_description || "Nach Problem Framing und KI-unterstütztem Design Sprint überführen wir die erarbeiteten Ergebnisse in einen strukturierten BMAD-Blueprint. So erhalten Sie einen verständlichen Überblick über die Zukunft Ihrer KI-Systeme und eine belastbare Grundlage für die weitere Umsetzung."}
+                  onSave={(value) => updateContent("hero_description", value, "text")}
+                  isEditMode={isEditMode}
+                  className="text-lg leading-relaxed text-muted-foreground md:text-xl"
+                  minRows={3}
+                />
+              </div>
+            }
+            actions={
+              <>
+                <CalendarBookingDialog buttonText="Erstgespräch buchen" buttonSize="lg" />
+                <Button size="lg" variant="outline" asChild>
+                  <Link to="/design-sprint-workshop">Zum Design Sprint</Link>
+                </Button>
+              </>
+            }
+            facts={[
+              { value: "BMAD", label: "Methode" },
+              { value: "High-Level", label: "Planung" },
+              { value: "Jira & Confluence", label: "Übergabe" },
+            ]}
+            image={developmentImage}
+            imageAlt="Entwicklungsteam bespricht einen High-Level-Plan für eine individuelle KI-Lösung"
           />
-        }
-        descriptionSlot={
-          <div className="mt-6 max-w-2xl">
-            <InlineTextArea
-              value={content.hero_description || "Nicht jedes Unternehmen hat die Kapazität oder das interne Know-how, KI-Lösungen selbst zu entwickeln. Genau hier setzen wir an: Wir bringen Ihre Idee in eine klare, umsetzungsreife Form – von der ersten Problemdefinition bis zum vollständigen Blueprint, mit dem ein Entwicklungsteam direkt starten kann. Strukturiert nach dem BMAD-Framework."}
-              onSave={(value) => updateContent("hero_description", value, "text")}
-              isEditMode={isEditMode}
-              className="text-lg leading-relaxed text-muted-foreground md:text-xl"
-              minRows={3}
-            />
-          </div>
-        }
-        actions={<CalendarBookingDialog buttonText="Erstgespräch buchen" buttonSize="lg" />}
-        image={developmentImage}
-        imageAlt="Entwicklungsteam bespricht einen KI-Blueprint am Bildschirm"
-      />
 
-      {/* Approach Section */}
-      <section id="approach" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <InlineTextField
-                value={content.approach_title || "🔹 So funktioniert es"}
-                onSave={(value) => updateContent("approach_title", value, "text")}
-                isEditMode={isEditMode}
-                as="h2"
-                className="text-3xl md:text-4xl font-bold"
-              />
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {approachSteps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <Card key={index} className="hover:shadow-elegant transition-shadow">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-accent-soft border border-border-accent rounded-lg flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle>{step.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">{step.description}</p>
-                    <div className="pt-2 border-t">
-                      <p className="text-sm font-medium">→ Ergebnis:</p>
-                      <p className="text-sm text-muted-foreground">{step.result}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 max-w-2xl">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Ausgangslage und Ziel</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Aus Workshop-Ergebnissen wird ein gemeinsamer Umsetzungsplan</h2>
+                </div>
+                <div className="grid gap-8 md:grid-cols-2">
+                  <div className="border-l-2 border-primary pl-6 md:pl-8">
+                    <Target className="mb-5 size-8 text-primary" />
+                    <h3 className="font-workshop-heading text-2xl font-semibold">Zweck</h3>
+                    <p className="mt-3 leading-relaxed text-muted-foreground">Die Ergebnisse aus Problem Framing und Design Sprint werden zu einem <strong className="text-foreground">gemeinsamen fachlichen und technischen Zielbild</strong> verbunden.</p>
+                  </div>
+                  <div className="border-l-2 border-border pl-6 md:pl-8">
+                    <FileCheck2 className="mb-5 size-8 text-primary" />
+                    <h3 className="font-workshop-heading text-2xl font-semibold">Ergebnis</h3>
+                    <p className="mt-3 leading-relaxed text-muted-foreground">Ein verständlicher High-Level-Plan für KI-Lösung, Architektur, Daten, Verantwortlichkeiten, Roadmap und Milestones.</p>
+                  </div>
+                </div>
+                <div className="mt-16 grid gap-5 md:grid-cols-3">
+                  {[
+                    [FileCheck2, "Validierte Grundlage", "Challenge, Zielgruppe und Lösungsansatz sind bereits gemeinsam erarbeitet und bewertet."],
+                    [Layers, "Technische Orientierung", "Die fachlichen Ergebnisse werden mit Architektur, Daten und Integrationspunkten verbunden."],
+                    [Map, "Blick nach vorn", "Roadmap und Milestones machen Abhängigkeiten, Entscheidungen und nächste Schritte sichtbar."],
+                  ].map(([Icon, title, text]) => {
+                    const ItemIcon = Icon as typeof FileCheck2;
+                    return <Card key={title as string} className="border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-hover"><CardContent className="p-6"><ItemIcon className="mb-5 size-7 text-primary" /><h3 className="font-workshop-heading text-lg font-semibold">{title as string}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text as string}</p></CardContent></Card>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
 
-      {/* BMAD Advantages Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <InlineTextField
-                value={content.bmad_title || "✅ Das ist in Ihrem BMAD-Blueprint bereits enthalten"}
-                onSave={(value) => updateContent("bmad_title", value, "text")}
-                isEditMode={isEditMode}
-                as="h2"
-                className="text-3xl md:text-4xl font-bold"
-              />
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bmadAdvantages.map((advantage, index) => {
-              const Icon = advantage.icon;
-              return (
-                <Card key={index} className="hover:shadow-elegant transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-lg">{advantage.title}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{advantage.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+          <section className="border-y border-border bg-muted/35 py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 max-w-2xl">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Ein zusammenhängender Prozess</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Drei Schritte von der Challenge zur Umsetzung</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">BMAD setzt nicht wieder bei null an. Die bereits getroffenen Entscheidungen und erarbeiteten Ergebnisse werden konsequent weitergeführt.</p>
+                </div>
+                <div className="grid gap-x-12 md:grid-cols-3">
+                  {processSteps.map((step) => {
+                    const Icon = step.icon;
+                    return (
+                      <article key={step.number} className="border-t border-border-accent py-7">
+                        <div className="flex items-center justify-between gap-4"><span className="font-workshop-heading text-3xl font-bold text-border-strong">{step.number}</span><Icon className="size-6 text-primary" /></div>
+                        <h3 className="mt-5 font-workshop-heading text-xl font-semibold">{step.title}</h3>
+                        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
+                        <p className="mt-5 border-l-2 border-border-accent pl-4 text-sm"><strong>Ergebnis:</strong> {step.result}</p>
+                        {"href" in step && step.href ? <Button variant="link" className="mt-4 h-auto p-0" asChild><Link to={step.href}>{step.linkLabel}<ArrowRight className="ml-2 size-4" /></Link></Button> : null}
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
 
-      {/* Next Steps Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-              Nächster Schritt: Externe Umsetzung
-            </h2>
-            <Card className="bg-muted/50">
-              <CardContent className="pt-6">
-                <p className="text-lg mb-6">
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 text-center">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">BMAD-Blueprint</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Vom Business Alignment zur Roadmap</h2>
+                  <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Sieben aufeinander abgestimmte Bausteine schaffen einen verständlichen Überblick über die geplante KI-Lösung.</p>
+                </div>
+
+                <div className="hidden grid-cols-2 gap-x-16 md:grid">
+                  {bmadModules.map((module, index) => {
+                    const Icon = module.icon;
+                    return <article key={module.title} className="border-b border-border py-7"><div className="flex items-start gap-5"><span className="font-workshop-heading text-3xl font-bold text-border-strong">{String(index + 1).padStart(2, "0")}</span><Icon className="mt-1 size-6 shrink-0 text-primary" /><div><h3 className="font-workshop-heading text-lg font-semibold">{module.title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{module.description}</p></div></div></article>;
+                  })}
+                </div>
+                <Accordion type="single" collapsible className="md:hidden">
+                  {bmadModules.map((module, index) => {
+                    const Icon = module.icon;
+                    return <AccordionItem key={module.title} value={`module-${index}`}><AccordionTrigger className="gap-3 text-left hover:no-underline"><span className="font-workshop-heading text-muted-foreground">{String(index + 1).padStart(2, "0")}</span><Icon className="size-5 shrink-0 text-primary" /><span className="flex-1 font-workshop-heading">{module.title}</span></AccordionTrigger><AccordionContent><p className="pl-16 leading-relaxed text-muted-foreground">{module.description}</p></AccordionContent></AccordionItem>;
+                  })}
+                </Accordion>
+
+                <div className="mt-10 flex gap-4 border-l-4 border-primary bg-accent-soft p-6">
+                  <FileCheck2 className="size-7 shrink-0 text-primary" />
+                  <div><h3 className="font-workshop-heading font-semibold">Definition of Done</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Der High-Level-Plan ist gemeinsam abgestimmt. Ziele, Lösungsrichtung, Architektur, Datenanforderungen, Verantwortlichkeiten, Abhängigkeiten und nächste Meilensteine sind nachvollziehbar dokumentiert.</p></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="border-y border-border-accent bg-accent-soft/40 py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+                <div>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Gemeinsame Ausarbeitung</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Ihre Ergebnisse bleiben der Ausgangspunkt</h2>
+                  <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">Wir prüfen, ergänzen und priorisieren die Workshop-Ergebnisse gemeinsam mit Ihnen. So bleibt der Plan fachlich anschlussfähig, technisch verständlich und auf Ihre Organisation ausgerichtet.</p>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {[
+                    [Users, "Gemeinsame Abstimmung"],
+                    [CheckCircle2, "Nachvollziehbare Entscheidungen"],
+                    [FileText, "Dokumentation in Confluence Cloud"],
+                    [Map, "Arbeitsplanung in Jira"],
+                  ].map(([Icon, item]) => {
+                    const ItemIcon = Icon as typeof Users;
+                    return <div key={item as string} className="border-t border-border-accent pt-4"><ItemIcon className="mb-3 size-5 text-primary" /><p className="font-workshop-heading font-semibold">{item as string}</p></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.8fr_1.2fr]">
+                <div>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Ihr Ergebnis</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Bereit für den nächsten Umsetzungsschritt</h2>
                   <InlineTextArea
-                    value={content.benefits_description || "Mit diesem vollständig vorbereiteten BMAD-Blueprint können externe Entwickler und Experten sofort produktiv starten – ohne Umwege, ohne offene Grundsatzfragen."}
+                    value={content.benefits_description || "Am Ende steht kein loses Konzept, sondern ein gemeinsam abgestimmter High-Level-Plan. Er gibt Ihrem Team und den beteiligten Umsetzungspartnern Orientierung für die nächsten Entscheidungen."}
                     onSave={(value) => updateContent("benefits_description", value, "text")}
                     isEditMode={isEditMode}
-                    className="text-lg"
+                    className="mt-5 leading-relaxed text-muted-foreground"
                   />
-                </p>
-                <div className="space-y-3">
-                  {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span>{benefit}</span>
-                    </div>
-                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 relative overflow-hidden bg-accent-soft">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Bereit für Ihre individuelle KI-Lösung?
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Vereinbaren Sie ein unverbindliches Erstgespräch und erfahren Sie, wie der BMAD-Ansatz Ihr KI-Projekt zum Erfolg führt.
-            </p>
-            <div className="pt-4">
-              <CalendarBookingDialog
-                buttonText="Jetzt Erstgespräch buchen"
-                buttonSize="lg"
-                buttonClassName=" text-lg px-8 py-6"
-              />
+                <div>{outcomes.map(([title, text]) => <div key={title} className="flex gap-4 border-b border-border py-5 first:pt-0"><CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" /><p className="text-muted-foreground"><strong className="font-workshop-heading text-foreground">{title}:</strong> {text}</p></div>)}</div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <Footer />
+          <section className="border-t border-border bg-muted/40 py-20 md:py-28">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-4xl text-center">
+                <h2 className="font-workshop-heading text-3xl font-bold md:text-5xl">Bereit für Ihren BMAD-Blueprint?</h2>
+                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Nutzen Sie die Ergebnisse aus Problem Framing und Design Sprint, um Ihre KI-Lösung strukturiert für die Umsetzung vorzubereiten.</p>
+                <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+                  <CalendarBookingDialog buttonText="Jetzt Erstgespräch buchen" buttonSize="lg" />
+                  <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Design Sprint ansehen</Link></Button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <Footer />
       </div>
     </>
   );
