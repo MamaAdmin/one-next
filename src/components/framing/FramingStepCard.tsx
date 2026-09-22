@@ -22,7 +22,9 @@ import type {
   FramingStepRow,
 } from "@/features/framing/types";
 
-import { useFramingSuggest } from "@/hooks/useFraming";
+import { useFramingSuggest, useFramingRatingSuggest } from "@/hooks/useFraming";
+import type { NufRatingSuggestion } from "@/hooks/useFraming";
+import { Slider } from "@/components/ui/slider";
 import { CanvasSection } from "./CanvasSection";
 import { StakeholderMap } from "./StakeholderMap";
 import { SailboatIllustration } from "@/components/lms/SailboatIllustration";
