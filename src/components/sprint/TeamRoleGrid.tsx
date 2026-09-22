@@ -294,6 +294,12 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                     ) : null}
                   </div>
                 )}
+                {isModerator && filled.length === 0 ? (
+                  <p className="text-[11px] text-muted-foreground italic">
+                    Jede Person hat genau eine Rolle: Wer die Moderation übernimmt, gibt eine
+                    bisherige Rolle dafür ab.
+                  </p>
+                ) : null}
                 {role.multi ? (
                   <p className="text-[11px] text-muted-foreground italic">
                     Mehrere Einladungen möglich. Empfohlen: maximal {RECOMMENDED_TEAM_SIZE}{" "}
