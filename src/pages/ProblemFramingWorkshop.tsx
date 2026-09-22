@@ -26,6 +26,7 @@ import workshopImage from "@/assets/workshop-collaboration.jpg";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
 
 const agenda = [
   { title: "Kick-off & Zielbild", time: "10–15'", desc: "Kontext, Ziel des Workshops und die klare Abgrenzung dessen, was kein Sprint-Ziel ist.", icon: Compass },
