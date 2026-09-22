@@ -20,7 +20,7 @@ const serviceMeta: Record<string, { description: string; icon: LucideIcon }> = {
   "/custom-ai-development": { description: "Von der Idee zur Lösung", icon: Code2 },
   "/data-quality-audit": { description: "Fundament für verlässliche KI", icon: Database },
   "/problem-framing-workshop": { description: "Die richtige Challenge definieren", icon: Focus },
-  "/design-sprint-workshop": { description: "Vom Problem zum Prototyp", icon: Rocket },
+  "/design-sprint-workshop": { description: "KI-unterstützt zur getesteten Lösung", icon: Rocket },
 };
 
 const flattenChildren = (item: NavigationItem, depth = 0): NavbarItem["children"] =>
@@ -41,7 +41,7 @@ const fallbackItems: NavbarItem[] = [
       { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development", ...serviceMeta["/custom-ai-development"] },
       { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit", ...serviceMeta["/data-quality-audit"] },
       { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop", ...serviceMeta["/problem-framing-workshop"] },
-      { id: "design-sprint", label: "Design Sprint Workshop", href: "/design-sprint-workshop", ...serviceMeta["/design-sprint-workshop"] },
+      { id: "design-sprint", label: "KI Design Sprint", href: "/design-sprint-workshop", ...serviceMeta["/design-sprint-workshop"] },
     ],
   },
   {

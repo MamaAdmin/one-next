@@ -34,7 +34,7 @@ export const ServicePageHero = ({
   image,
   imageAlt,
 }: ServicePageHeroProps) => (
-  <section className="border-b border-border bg-gradient-hero py-16 md:py-24">
+  <section className="overflow-hidden border-b border-border bg-gradient-hero py-16 md:py-24">
     <div className="container px-4 md:px-6">
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
         <div className="animate-fade-in">

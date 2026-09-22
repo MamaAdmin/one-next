@@ -59,14 +59,14 @@ export const WorkshopComparisonSection = () => {
                 Nächster Schritt
               </span>
               <h3 className="font-workshop-heading text-2xl font-bold mb-4">
-                Design Sprint Workshop
+                KI-unterstützter Design Sprint
               </h3>
               
               <p className="text-lg font-semibold text-primary mb-4">
                 Wenn die Challenge klar ist
               </p>
               
-              <div className="space-y-3 mb-6">{["2–4 Tage intensiver Workshop", "Vor Ort oder remote mit Team", "Geleitet von KI-Experten und erfahrenen Moderatoren", "KI-Tools in allen Phasen integriert"].map((item) => <p key={item} className="flex items-start gap-3 text-muted-foreground"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />{item}</p>)}</div>
+              <div className="space-y-3 mb-6">{["1–4 Tage, passend zum gewünschten Ergebnis", "Vor Ort oder remote mit Team", "Geleitet von KI-Experten und erfahrenen Moderatoren", "ChatGPT und Claude beschleunigen zentrale Arbeitsschritte"].map((item) => <p key={item} className="flex items-start gap-3 text-muted-foreground"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />{item}</p>)}</div>
               
               <p className="text-sm font-semibold mb-4">Preis auf Anfrage</p>
               

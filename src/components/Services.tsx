@@ -8,7 +8,7 @@ const Services = () => {
     icon: StarburstIcon,
     step: "Schritt 1/4 – Vom Workshop zum Entwurf",
     title: "Digitale Transformation mit KI starten",
-    description: "Identifizieren Sie KI-Chancen durch unsere KI Design Sprints - als facilitierter 2-Tage Workshop oder flexibler Online Sprint. Challenge noch unklar? Unser Problem-Framing-Workshop bereitet Sie optimal vor."
+    description: "Identifizieren Sie KI-Chancen in einem moderierten, KI-unterstützten Design Sprint über 1–4 Tage oder in einem flexiblen Online Sprint. Challenge noch unklar? Unser Problem-Framing-Workshop bereitet Sie optimal vor."
   }, {
     icon: ArrowsOutIcon,
     step: "Schritt 2/4 – Vom Entwurf zur ersten Version",
