@@ -2351,7 +2351,7 @@ function VariantNuf({
   return (
     <div className="space-y-6">
       {/* ---------- 1. Fragen bewerten ---------- */}
-      <CanvasSection title="1. Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
+      <CanvasSection defaultOpen title="1. Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
         <div className="rounded-lg border-l-4 border-l-primary bg-accent-soft p-3 text-sm text-foreground/80">
           NUF steht für New, Useful, Feasible – im Deutschen Neu, Nützlich, Realisierbar. Ihr
           bewertet hier Fragen, keine Lösungen. <strong>Neu</strong> heisst: Auf diese Frage habt
@@ -2550,7 +2550,7 @@ function VariantNuf({
       </CanvasSection>
 
       {/* ---------- 2. Top-1 wählen ---------- */}
-      <CanvasSection title="2. Top-1 wählen">
+      <CanvasSection defaultOpen title="2. Top-1 wählen">
         {!anyBewertet ? (
           <p className="text-sm text-muted-foreground mb-2">
             Sobald mindestens eine Frage bewertet ist, wählt ihr hier die eine Frage, die der
@@ -2591,7 +2591,7 @@ function VariantNuf({
       </CanvasSection>
 
       {/* ---------- 3. Messbar machen ---------- */}
-      <CanvasSection title="3. Messbar machen">
+      <CanvasSection defaultOpen title="3. Messbar machen">
         {!top1 ? (
           <p className="text-sm text-muted-foreground mb-2">
             Sobald die Top-1-Frage steht, legt ihr hier fest, was ihr messt, welchen Zielwert ihr
