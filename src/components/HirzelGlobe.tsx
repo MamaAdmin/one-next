@@ -21,7 +21,7 @@ const ZIELE: Ziel[] = [
 
 type Stufe = "alpenraum" | "welt";
 const ZOOM: Record<Stufe, { scale: number; mapSamples: number; markerSize: number; bright: number }> = {
-  alpenraum: { scale: 8, mapSamples: 42000, markerSize: 0.02, bright: 3.2 },
+  alpenraum: { scale: 2.6, mapSamples: 42000, markerSize: 0.02, bright: 3.2 },
   welt: { scale: 1, mapSamples: 16000, markerSize: 0.025, bright: 8 },
 };
 
