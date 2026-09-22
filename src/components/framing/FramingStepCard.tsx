@@ -636,7 +636,9 @@ function applySuggestion(
     case "nuf": {
       const erf = text.match(/^\[(Erfolg|Success|KPI|Metrik)\]\s*(.+)$/i);
       if (erf) {
-        data.kiErfolgsmessung = pushUnique(data.kiErfolgsmessung, erf[2].trim());
+        const wert = erf[2].trim();
+        data.kiErfolgsmessung = pushUnique(data.kiErfolgsmessung, wert);
+        if (!(data.erfolgsmessung ?? "").trim()) data.erfolgsmessung = wert;
       }
       // In Schritt 9 wird priorisiert, nicht gesammelt: Vorschläge ohne
       // [Erfolg]-Tag erzeugen bewusst keine neue Bewertungszeile.

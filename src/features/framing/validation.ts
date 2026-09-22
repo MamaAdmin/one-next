@@ -48,7 +48,8 @@ export function getStepWarnings(stepKey: string, d: FramingStepData): string[] {
       if (!d.nufBewertungen?.some((b) => b.bewertet))
         w.push("Keine Frage bewertet – die Auswahl beruht dann auf Bauchgefühl.");
       if (leer(d.top1Challenge)) w.push("Keine Top-1-Frage gewählt.");
-      if (leer(d.erfolgsmessung)) w.push("Erfolgsmessung fehlt.");
+      if (leer(d.erfolgsmessung) && !d.kiErfolgsmessung?.length)
+        w.push("Erfolgsmessung fehlt.");
       if (!leer(d.erfolgsZielwert) && !/\d/.test(d.erfolgsZielwert ?? ""))
         w.push(
           "Der Zielwert enthält keine Zahl – am Tag 5 ist dann nicht entscheidbar, ob die Frage beantwortet ist.",
