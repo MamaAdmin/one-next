@@ -2,7 +2,18 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, Target, Users, Lightbulb, ArrowRight, Calendar, Rocket, TrendingUp, BrainCircuit, FileCheck2 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  ArrowRight,
+  BrainCircuit,
+  Calendar,
+  CheckCircle2,
+  FileCheck2,
+  Lightbulb,
+  Rocket,
+  Target,
+  Users,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
 import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
@@ -11,18 +22,49 @@ import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
 
+const roles = [
+  ["Decider", "Entscheidungsbefugt für Sprint-Ziele"],
+  ["Product Owner", "Strategische Produktperspektive"],
+  ["UX/Design", "Nutzerzentrierte Perspektive"],
+  ["Tech Lead / KI-Expert", "Technische und KI-Machbarkeit"],
+  ["Fachexperten", "Domänenwissen und Use Cases"],
+  ["Moderator (wir stellen)", "Expertenmoderation und KI-Werkzeuge"],
+];
+
+const agenda = [
+  { day: "1", title: "Verstehen & fokussieren", icon: Target, desc: "Challenge und Sprint-Ziel ausrichten, Zielgruppe und Nutzerreise verstehen, vorhandene Erkenntnisse mit ChatGPT und Claude recherchieren und verdichten sowie Sprint-Fragen festlegen." },
+  { day: "2", title: "Ideen entwickeln & entscheiden", icon: Lightbulb, desc: "Lösungsräume öffnen, Inspiration und Varianten KI-unterstützt erweitern, Ideen skizzieren, bewerten und zu einem gemeinsamen Storyboard verdichten." },
+  { day: "3", title: "Prototyp entwickeln", icon: Rocket, desc: "Nutzerfluss, Inhalte und Interaktionen ausarbeiten. KI-Werkzeuge unterstützen Texte und Varianten; Figma oder Lovable beschleunigen den testbaren Prototyp." },
+  { day: "4", title: "Testen & nächste Schritte sichern", icon: FileCheck2, desc: "Prototyp mit Nutzer:innen prüfen, Rückmeldungen strukturiert auswerten, Machbarkeit einordnen und Roadmap sowie nächste Entscheidungen festhalten." },
+];
+
+const formats = [
+  ["1 Tag", "Fokus, priorisierter Lösungsansatz und nächste Schritte"],
+  ["2 Tage", "Konzept und schneller Prototyp"],
+  ["3 Tage", "Ausgearbeiteter Prototyp und vorbereiteter Test"],
+  ["4 Tage", "Nutzerfeedback, Auswertung und Umsetzungsplan"],
+];
+
+const outcomes = [
+  ["Priorisierter Lösungsansatz", "Eine gemeinsam bewertete Lösung, die zu Challenge, Zielgruppe und Erfolgskriterien passt."],
+  ["Passender Reifegrad", "Je nach Dauer ein klares Konzept, ein Prototyp oder zusätzlich ausgewertetes Nutzerfeedback."],
+  ["Geprüfte Machbarkeit", "Technische und wirtschaftliche Rahmenbedingungen sind eingeordnet."],
+  ["Dokumentierte Erkenntnisse", "Die Ergebnisse und Bewertungen aus dem Sprint sind nachvollziehbar festgehalten."],
+  ["Klare nächste Schritte", "Die nächsten Entscheidungen und Meilensteine bilden eine belastbare Grundlage für die Umsetzung."],
+];
+
 const DesignSprintWorkshop = () => {
   const structuredData = [
     createEventSchema(
       "KI-unterstützter Design Sprint",
       "Moderierter 1–4-Tage-Workshop zur Entwicklung und Validierung tragfähiger Lösungen – beschleunigt mit ChatGPT, Claude und weiteren KI-Werkzeugen.",
-      "https://one-next.de/design-sprint-workshop"
+      "https://one-next.de/design-sprint-workshop",
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
       { name: "Workshops", url: "https://one-next.de/sprint-uebersicht" },
-      { name: "KI-unterstützter Design Sprint", url: "https://one-next.de/design-sprint-workshop" }
-    ])
+      { name: "KI-unterstützter Design Sprint", url: "https://one-next.de/design-sprint-workshop" },
+    ]),
   ];
 
   return (
@@ -34,545 +76,152 @@ const DesignSprintWorkshop = () => {
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
       />
-      <div className="min-h-screen flex flex-col bg-background font-workshop text-foreground">
+      <div className="min-h-screen bg-background font-workshop text-foreground">
         <Navigation />
+        <main className="overflow-hidden pt-16">
+          <ServicePageHero
+            badge="Nächster Schritt"
+            badgeIcon={Rocket}
+            title="KI-unterstützter Design Sprint"
+            titleAccent="Von der klaren Challenge zum getesteten Lösungsansatz"
+            description="Moderierter Workshop über 1–4 Tage, vor Ort oder remote. ChatGPT, Claude und weitere KI-Werkzeuge beschleunigen Recherche, Verdichtung, Ideenentwicklung, Prototyping und Auswertung."
+            actions={
+              <>
+                <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
+                <Button size="lg" variant="outline" asChild><Link to="/problem-framing-workshop">Challenge erst klären</Link></Button>
+              </>
+            }
+            facts={[
+              { value: "1–4 Tage", label: "Dauer" },
+              { value: "Vor Ort oder remote", label: "Format" },
+              { value: "Prototyp", label: "Ergebnis" },
+            ]}
+            image={workshopImage}
+            imageAlt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps"
+          />
 
-        <ServicePageHero
-          badge="Nächster Schritt"
-          badgeIcon={Rocket}
-          title="KI-unterstützter Design Sprint"
-          titleAccent="Von der klaren Challenge zum getesteten Lösungsansatz"
-          description="Moderierter Workshop über 1–4 Tage, vor Ort oder remote. ChatGPT, Claude und weitere KI-Werkzeuge beschleunigen Recherche, Verdichtung, Ideenentwicklung, Prototyping und Auswertung."
-          actions={
-            <>
-              <Button size="lg" asChild>
-                <Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/problem-framing-workshop">Challenge erst klären</Link>
-              </Button>
-            </>
-          }
-          facts={[
-            { value: "1–4 Tage", label: "Dauer" },
-            { value: "Vor Ort oder remote", label: "Format" },
-            { value: "Prototyp", label: "Ergebnis" },
-          ]}
-          image={workshopImage}
-          imageAlt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps"
-        />
-
-      {/* Purpose & Outcome */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Zweck & <span className="text-primary">Ergebnis</span>
-            </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card className="border-border">
-                <CardContent className="p-6 space-y-4">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Target className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold">Ziel</h3>
-                  <p className="text-muted-foreground">
-                    Von der <strong>klaren Challenge zum tragfähigen Lösungsansatz</strong> –
-                    je nach Format mit priorisiertem Konzept, Prototyp, Nutzerfeedback und Umsetzungsplan.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border">
-                <CardContent className="p-6 space-y-4">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold">Deliverables</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Validierter Prototyp oder Konzept</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Machbarkeitsanalyse (technisch & wirtschaftlich)</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Entwicklungs-Roadmap mit Meilensteinen</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Detaillierter Report mit Empfehlungen</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Participants & Roles */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Teilnehmer & <span className="text-primary">Rollen</span>
-            </h2>
-            <Card className="border-border">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <Users className="w-8 h-8 text-primary" />
-                  <p className="text-lg text-muted-foreground">
-                    <strong className="text-foreground">6–8 Personen</strong> für optimale Zusammenarbeit
-                  </p>
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 max-w-2xl">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Ausgangslage und Ziel</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Von der klaren Challenge zur tragfähigen Lösung</h2>
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">Decider</p>
-                      <p className="text-sm text-muted-foreground">Entscheidungsbefugt für Sprint-Ziele</p>
-                    </div>
+                <div className="grid gap-8 md:grid-cols-2">
+                  <div className="border-l-2 border-primary pl-6 md:pl-8">
+                    <Target className="mb-5 size-8 text-primary" />
+                    <h3 className="font-workshop-heading text-2xl font-semibold">Zweck</h3>
+                    <p className="mt-3 leading-relaxed text-muted-foreground">Von der <strong className="text-foreground">klaren Challenge zum tragfähigen Lösungsansatz</strong> – fokussiert, gemeinsam entschieden und schnell greifbar gemacht.</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">Product Owner</p>
-                      <p className="text-sm text-muted-foreground">Strategische Produktperspektive</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">UX/Design</p>
-                      <p className="text-sm text-muted-foreground">Nutzerzentrierte Perspektive</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">Tech Lead / KI-Expert</p>
-                      <p className="text-sm text-muted-foreground">Technische & KI-Machbarkeit</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">Fachexperten</p>
-                      <p className="text-sm text-muted-foreground">Domänenwissen & Use Cases</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">Moderator (wir stellen)</p>
-                      <p className="text-sm text-muted-foreground">Expertenmoderation & KI-Tools</p>
-                    </div>
+                  <div className="border-l-2 border-border pl-6 md:pl-8">
+                    <FileCheck2 className="mb-5 size-8 text-primary" />
+                    <h3 className="font-workshop-heading text-2xl font-semibold">Ergebnis</h3>
+                    <p className="mt-3 leading-relaxed text-muted-foreground">Je nach Format entstehen ein priorisiertes Konzept, ein Prototyp, Nutzerfeedback sowie ein Machbarkeitscheck und klare nächste Schritte.</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Was können Sie erwarten? */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Was können Sie <span className="text-primary">erwarten?</span>
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Users className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Klare Entscheidungen</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Moderation, Timeboxes und ein gemeinsames Zielbild bringen das Team schneller von Diskussionen zu tragfähigen Entscheidungen.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <BrainCircuit className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">KI als Beschleuniger</h3>
-                  <p className="text-sm text-muted-foreground">
-                    ChatGPT und Claude unterstützen Recherche, strukturieren Erkenntnisse und erweitern Ideen sowie Konzeptvarianten.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Target className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Greifbarer Lösungsansatz</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Je nach Dauer entsteht ein priorisiertes Konzept, ein schneller Prototyp oder eine mit Nutzer:innen geprüfte Lösung.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileCheck2 className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Direkter Transfer</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Dokumentierte Erkenntnisse, Machbarkeitscheck und klare nächste Schritte schaffen eine belastbare Grundlage für die Umsetzung.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <p className="mt-8 border-l-2 border-primary pl-5 text-sm leading-relaxed text-muted-foreground">
-              KI liefert Vorschläge und beschleunigt Arbeitsschritte. Auswahl, Bewertung und Entscheidungen bleiben jederzeit bei Ihrem Team.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Workshop Agenda - Modular 1–4 days */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-4">
-              Workshop-Agenda <span className="text-primary">(1–4 Tage modular)</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Die Module werden passend zu Challenge, Vorarbeit und gewünschtem Ergebnis zusammengestellt.
-            </p>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              {[
-                { day: "1", title: "Verstehen & fokussieren", desc: "Challenge und Sprint-Ziel ausrichten, Zielgruppe und Nutzerreise verstehen, vorhandene Erkenntnisse mit ChatGPT und Claude recherchieren und verdichten sowie Sprint-Fragen festlegen." },
-                { day: "2", title: "Ideen entwickeln & entscheiden", desc: "Lösungsräume öffnen, Inspiration und Varianten KI-unterstützt erweitern, Ideen skizzieren, bewerten und zu einem gemeinsamen Storyboard verdichten." },
-                { day: "3", title: "Prototyp entwickeln", desc: "Nutzerfluss, Inhalte und Interaktionen ausarbeiten. KI-Werkzeuge unterstützen Texte und Varianten; Figma oder Lovable beschleunigen den testbaren Prototyp." },
-                { day: "4", title: "Testen & nächste Schritte sichern", desc: "Prototyp mit Nutzer:innen prüfen, Rückmeldungen strukturiert auswerten, Machbarkeit einordnen und Roadmap sowie nächste Entscheidungen festhalten." },
-              ].map((module) => (
-                <Card key={module.day} className="border-border hover:border-primary/30 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="mb-5 flex items-center gap-4">
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-none border border-border-accent bg-accent-soft">
-                        <span className="text-xl font-bold text-primary">{module.day}</span>
-                      </div>
-                      <h3 className="font-workshop-heading text-xl font-bold">Tag {module.day}: {module.title}</h3>
-                    </div>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{module.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <div className="mt-10 grid border border-border-accent bg-accent-soft/30 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                ["1 Tag", "Fokus, priorisierter Lösungsansatz und nächste Schritte"],
-                ["2 Tage", "Konzept und schneller Prototyp"],
-                ["3 Tage", "Ausgearbeiteter Prototyp und vorbereiteter Test"],
-                ["4 Tage", "Nutzerfeedback, Auswertung und Umsetzungsplan"],
-              ].map(([duration, result]) => (
-                <div key={duration} className="border-b border-border-accent p-5 last:border-b-0 sm:border-r sm:even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0">
-                  <p className="font-workshop-heading font-semibold text-primary">{duration}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{result}</p>
-                </div>
-              ))}
-            </div>
-            
-            <Card className="mt-8 border-primary/20 bg-primary/5">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold mb-2">Definition of Done</p>
-                    <p className="text-sm text-muted-foreground">
-                      Ein gemeinsam priorisierter Lösungsansatz mit dokumentierten Erkenntnissen und klaren nächsten Schritten – je nach gewähltem Umfang ergänzt um Prototyp, Nutzerfeedback und Umsetzungsplan.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Was Sie am Ende haben */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Was Sie am Ende <span className="text-primary">haben</span>
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="border-border hover:border-primary/50 transition-all text-center">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-14 h-14 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Rocket className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Priorisierter Lösungsansatz</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Eine gemeinsam bewertete Lösung, die zu Challenge, Zielgruppe und Erfolgskriterien passt
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all text-center">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-14 h-14 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
-                    <TrendingUp className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Passender Reifegrad</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Je nach Dauer ein klares Konzept, ein Prototyp oder zusätzlich ausgewertetes Nutzerfeedback
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all text-center">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-14 h-14 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Dokumentierte nächste Schritte</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Erkenntnisse, Machbarkeit und nächste Entscheidungen als belastbare Grundlage für die Umsetzung
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Warum ein KI-unterstützter Design Sprint? */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Warum ein KI-unterstützter <span className="text-primary">Design Sprint?</span>
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Target className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Expertengeführt für maximale Qualität</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Erfahrene KI-Experten und Moderatoren begleiten Sie durch den gesamten Prozess 
-                    und bringen Best Practices aus zahlreichen Projekten ein.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Lightbulb className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">KI beschleunigt die Denkarbeit</h3>
-                  <p className="text-sm text-muted-foreground">
-                    ChatGPT und Claude recherchieren, verdichten und erzeugen Varianten. Das Team prüft, bewertet und entscheidet.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Passender Umfang statt Standardschema</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Ein bis vier Tage werden so zusammengestellt, dass Aufwand, Vorarbeit und gewünschtes Ergebnis zusammenpassen.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border hover:border-primary/50 transition-all">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Users className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Gemeinsame Entscheidungen</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Alle Stakeholder arbeiten gemeinsam an der Lösung und entwickeln ein 
-                    gemeinsames Verständnis – eine wichtige Grundlage für die Umsetzung.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Vorlagen & Methoden */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Vorlagen & <span className="text-primary">Methoden</span>
-            </h2>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="border-border">
-                <CardContent className="p-6 space-y-3">
-                  <Lightbulb className="w-8 h-8 text-primary" />
-                  <h3 className="text-lg font-semibold">Design Sprint Canvas</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Strukturierte Dokumentation des gesamten Sprint-Prozesses
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border">
-                <CardContent className="p-6 space-y-3">
-                  <Target className="w-8 h-8 text-primary" />
-                  <h3 className="text-lg font-semibold">KI Opportunity Matrix</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Systematische Bewertung von KI-Potenzialen nach Wert und Machbarkeit
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border">
-                <CardContent className="p-6 space-y-3">
-                  <Rocket className="w-8 h-8 text-primary" />
-                  <h3 className="text-lg font-semibold">Rapid Prototyping Tools</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Figma und Lovable für schnelles Prototyping; ChatGPT und Claude für Inhalte, Varianten und Auswertung
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Wann Workshop statt Online Sprint? */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Wann Workshop statt <span className="text-primary">Online Sprint?</span>
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-primary/20 bg-primary/5">
-                <CardContent className="p-6 space-y-3">
-                  <CheckCircle2 className="w-8 h-8 text-primary" />
-                  <h3 className="text-lg font-semibold">Workshop (facilitiert)</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      <span>Komplexe oder strategische Challenge</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      <span>High-Stakes-Entscheidung mit großer Tragweite</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      <span>Expertenwissen & externe Perspektive gewünscht</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      <span>Team-Alignment und Buy-In besonders wichtig</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border">
-                <CardContent className="p-6 space-y-3">
-                  <Lightbulb className="w-8 h-8 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold">Online Sprint (selbstgeführt)</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-muted-foreground">•</span>
-                      <span>Klar definierte, mittlere Komplexität</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-muted-foreground">•</span>
-                      <span>Interne Prozesse oder Kundenerlebnisse optimieren</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-muted-foreground">•</span>
-                      <span>Team hat Sprint-Erfahrung oder ist selbstorganisiert</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-muted-foreground">•</span>
-                      <span>Budget oder Zeitrahmen begrenzt</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Workshop Flow */}
-      <WorkshopFlowDiagram />
-
-      {/* Comparison Section */}
-      <WorkshopComparisonSection />
-
-      {/* CTA Section - Dual Option */}
-      <section className="py-24 border-y border-border-accent bg-accent-soft/40 relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <Card className="bg-background border border-border-accent shadow-card max-w-5xl mx-auto">
-            <CardContent className="p-12">
-              <div className="text-center space-y-8">
-                <h2 className="text-4xl font-bold">
-                  Bereit für Ihren{" "}
-                  <span className="bg-gradient-primary bg-clip-text text-transparent">
-                    KI-unterstützten Design Sprint?
-                  </span>
-                </h2>
-                
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Lassen Sie uns gemeinsam Ihre KI-Potenziale systematisch erschließen
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto pt-4">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-bold">Workshop anfragen</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Moderierter 1–4-Tage-Workshop mit KI-Experten vor Ort oder remote
-                    </p>
-                    <Link to="/workshop-registration">
-                      <Button size="lg" className="w-full ">
-                        Jetzt anfragen
-                      </Button>
-                    </Link>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-bold">Online Sprint als Alternative</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Selbstgeführter Online Sprint für einfachere Challenges
-                    </p>
-                    <Button size="lg" variant="outline" className="w-full" asChild>
-                      <Link to="/sprint-uebersicht/online">Mehr zum Online Sprint</Link>
-                    </Button>
-                  </div>
+                <div className="mt-16 grid gap-5 md:grid-cols-3">
+                  {[
+                    [Target, "Klare Challenge", "Das Team startet mit einem gemeinsamen Zielbild und klaren Sprint-Fragen."],
+                    [Lightbulb, "Lösungsrichtung entscheiden", "Ideen werden erweitert, bewertet und zu einem gemeinsamen Ansatz verdichtet."],
+                    [Rocket, "Schnell testen", "Ein greifbarer Prototyp schafft früh belastbare Erkenntnisse für die Umsetzung."],
+                  ].map(([Icon, title, text]) => {
+                    const ItemIcon = Icon as typeof Target;
+                    return <Card key={title as string} className="border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-hover"><CardContent className="p-6"><ItemIcon className="mb-5 size-7 text-primary" /><h3 className="font-workshop-heading text-lg font-semibold">{title as string}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text as string}</p></CardContent></Card>;
+                  })}
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+            </div>
+          </section>
 
-      <Footer />
+          <section className="border-y border-border bg-muted/35 py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.7fr_1.3fr] lg:items-start">
+                <div className="lg:sticky lg:top-28">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Team und Rollen</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Die richtigen Perspektiven im Sprint</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">Optimal sind 6–8 Personen. Das interdisziplinäre Team verbindet Entscheidungskompetenz, Nutzerperspektive, Fachwissen und technische Machbarkeit.</p>
+                </div>
+                <div className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                  {roles.map(([role, detail]) => <div key={role} className="flex gap-4 border-b border-border py-5"><CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" /><div><h3 className="font-workshop-heading font-semibold">{role}</h3><p className="mt-1 text-sm text-muted-foreground">{detail}</p></div></div>)}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-6xl">
+                <div className="mb-12 text-center">
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Moderierter Ablauf</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Eine modulare Agenda für 1–4 Tage</h2>
+                  <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Die Module werden passend zu Challenge, Vorarbeit und gewünschtem Ergebnis zusammengestellt.</p>
+                </div>
+
+                <div className="mb-10 border border-border-accent bg-accent-soft/40">
+                  <div className="border-b border-border-accent px-6 py-3"><h3 className="font-workshop-heading text-sm font-bold uppercase tracking-wide text-primary">Passender Umfang</h3></div>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4">
+                    {formats.map(([duration, result]) => <div key={duration} className="border-b border-border-accent p-5 last:border-b-0 sm:border-r sm:even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0"><p className="font-workshop-heading font-semibold text-primary">{duration}</p><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{result}</p></div>)}
+                  </div>
+                </div>
+
+                <div className="hidden grid-cols-2 gap-x-16 md:grid">
+                  {agenda.map((step) => { const Icon = step.icon; return <article key={step.day} className="border-b border-border py-7"><div className="flex items-start gap-5"><span className="font-workshop-heading text-3xl font-bold text-border-strong">0{step.day}</span><Icon className="mt-1 size-6 shrink-0 text-primary" /><div><h3 className="font-workshop-heading text-lg font-semibold">Tag {step.day}: {step.title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.desc}</p></div></div></article>; })}
+                </div>
+                <Accordion type="single" collapsible className="md:hidden">
+                  {agenda.map((step) => { const Icon = step.icon; return <AccordionItem key={step.day} value={`day-${step.day}`}><AccordionTrigger className="gap-3 text-left hover:no-underline"><span className="font-workshop-heading text-muted-foreground">0{step.day}</span><Icon className="size-5 shrink-0 text-primary" /><span className="flex-1 font-workshop-heading">Tag {step.day}: {step.title}</span></AccordionTrigger><AccordionContent><p className="pl-16 leading-relaxed text-muted-foreground">{step.desc}</p></AccordionContent></AccordionItem>; })}
+                </Accordion>
+
+                <div className="mt-10 flex gap-4 border-l-4 border-primary bg-accent-soft p-6"><FileCheck2 className="size-7 shrink-0 text-primary" /><div><h3 className="font-workshop-heading font-semibold">Definition of Done</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Ein gemeinsam priorisierter Lösungsansatz mit dokumentierten Erkenntnissen und klaren nächsten Schritten – je nach gewähltem Umfang ergänzt um Prototyp, Nutzerfeedback und Umsetzungsplan.</p></div></div>
+              </div>
+            </div>
+          </section>
+
+          <section className="border-y border-border-accent bg-accent-soft/40 py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+                <div>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Arbeitsweise</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Moderation und KI im Zusammenspiel</h2>
+                  <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">ChatGPT und Claude unterstützen Recherche, strukturieren Erkenntnisse und erweitern Ideen sowie Varianten. KI liefert Vorschläge und beschleunigt Arbeitsschritte; Auswahl, Bewertung und Entscheidungen bleiben jederzeit bei Ihrem Team.</p>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {[
+                    [Users, "Moderation und Timeboxes"],
+                    [BrainCircuit, "ChatGPT und Claude"],
+                    [Rocket, "Schnelles Prototyping"],
+                    [CheckCircle2, "Entscheidungen durch das Team"],
+                  ].map(([Icon, item]) => { const ItemIcon = Icon as typeof Users; return <div key={item as string} className="border-t border-border-accent pt-4"><ItemIcon className="mb-3 size-5 text-primary" /><p className="font-workshop-heading font-semibold">{item as string}</p></div>; })}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.8fr_1.2fr]">
+                <div><p className="mb-3 text-sm font-bold uppercase text-primary">Ihr Ergebnis</p><h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Bereit für die Umsetzung</h2><p className="mt-5 leading-relaxed text-muted-foreground">Am Ende steht keine lose Ideensammlung, sondern ein gemeinsam bewerteter Lösungsansatz mit dem passenden Reifegrad.</p></div>
+                <div>{outcomes.map(([title, text]) => <div key={title} className="flex gap-4 border-b border-border py-5 first:pt-0"><CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" /><p className="text-muted-foreground"><strong className="font-workshop-heading text-foreground">{title}:</strong> {text}</p></div>)}</div>
+              </div>
+            </div>
+          </section>
+
+          <WorkshopComparisonSection />
+          <WorkshopFlowDiagram />
+
+          <section className="border-t border-border bg-muted/40 py-20 md:py-28">
+            <div className="container px-4 md:px-6">
+              <div className="mx-auto max-w-4xl text-center">
+                <h2 className="font-workshop-heading text-3xl font-bold md:text-5xl">Bereit für Ihren KI-unterstützten Design Sprint?</h2>
+                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Starten Sie mit einem moderierten 1–4-Tage-Workshop oder wählen Sie für einfachere Challenges den selbstgeführten Online Sprint.</p>
+                <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+                  <Button size="lg" asChild><Link to="/workshop-registration">Jetzt Workshop anfragen <ArrowRight /></Link></Button>
+                  <Button size="lg" variant="outline" asChild><Link to="/sprint-uebersicht/online">Mehr zum Online Sprint</Link></Button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
       </div>
     </>
   );
