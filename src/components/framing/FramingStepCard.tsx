@@ -1003,6 +1003,7 @@ function InlineSuggestions({
   onDismissSuggestion,
   onLoadSuggestions,
   pending,
+  label,
 }: {
   bucket: SuggestionBucket;
   suggestions: string[];
@@ -1010,6 +1011,7 @@ function InlineSuggestions({
   onDismissSuggestion: (i: number) => void;
   onLoadSuggestions: () => void;
   pending: boolean;
+  label?: string;
 }) {
   const matches = suggestions
     .map((v, i) => ({ v, i }))
