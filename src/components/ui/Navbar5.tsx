@@ -1,5 +1,5 @@
-import { MenuIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MenuIcon, type LucideIcon } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 import {
   Accordion,
@@ -10,11 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import {
@@ -31,7 +29,7 @@ export type NavbarItem = {
   id: string;
   label: string;
   href?: string;
-  children?: Array<{ id: string; label: string; href: string; depth?: number }>;
+  children?: Array<{ id: string; label: string; href: string; depth?: number; description?: string; icon?: LucideIcon }>;
 };
 
 type Navbar5Props = {
@@ -43,7 +41,10 @@ type Navbar5Props = {
   scrolled?: boolean;
 };
 
-export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrolled = false }: Navbar5Props) => (
+export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrolled = false }: Navbar5Props) => {
+  const { pathname } = useLocation();
+
+  return (
   <header
     className={cn(
       "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
@@ -58,29 +59,37 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
       <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
           {items.map((item) => (
-            <NavigationMenuItem key={item.id}>
+            <NavigationMenuItem key={item.id} className="group/nav relative">
               {item.children?.length ? (
                 <>
-                  <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[34rem] grid-cols-2 gap-1 p-3">
-                      {item.children.map((child) => (
+                  <Button variant="ghost" className="h-10 px-4 py-2 text-sm font-medium" aria-haspopup="true">
+                    {item.label}
+                  </Button>
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover/nav:visible group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:opacity-100">
+                    <ul className="grid w-[52rem] grid-cols-5 gap-2 rounded-md border border-border bg-popover p-5 text-popover-foreground shadow-lg">
+                      {item.children.map((child) => {
+                        const Icon = child.icon;
+                        const active = pathname === child.href;
+                        return (
                         <li key={child.id}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={child.href}
                               className={cn(
-                                "block rounded-md px-4 py-3 text-sm text-foreground transition-colors hover:bg-accent-soft focus:bg-accent-soft focus:outline-none",
+                                "group/service block h-full rounded-lg border px-4 py-4 text-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                active ? "border-primary bg-primary text-primary-foreground" : "border-transparent text-foreground",
                                 child.depth ? "pl-7" : "font-medium",
                               )}
                             >
-                              {child.label}
+                              {Icon && <span className={cn("mb-4 flex size-10 items-center justify-center rounded-md bg-muted", active && "bg-primary-foreground/10")}><Icon className="size-5" /></span>}
+                              <span className="block font-workshop-heading text-sm font-semibold leading-snug">{child.label}</span>
+                              {child.description && <span className={cn("mt-2 block text-xs font-normal leading-relaxed", active ? "text-primary-foreground/75" : "text-muted-foreground")}>{child.description}</span>}
                             </Link>
                           </NavigationMenuLink>
                         </li>
-                      ))}
+                      )})}
                     </ul>
-                  </NavigationMenuContent>
+                  </div>
                 </>
               ) : item.href ? (
                 <NavigationMenuLink asChild>
@@ -118,16 +127,19 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
                   <AccordionTrigger className="text-base hover:no-underline">{item.label}</AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-1">
-                      {item.children.map((child) => (
+                      {item.children.map((child) => {
+                        const Icon = child.icon;
+                        return (
                         <SheetClose asChild key={child.id}>
                           <Link
                             to={child.href}
-                            className={cn("block rounded-md px-3 py-3 text-sm hover:bg-accent-soft", child.depth && "pl-7")}
+                            className={cn("flex min-h-14 items-start gap-3 rounded-md px-3 py-3 text-sm hover:bg-accent-soft", pathname === child.href && "bg-accent-soft", child.depth && "pl-7")}
                           >
-                            {child.label}
+                            {Icon && <Icon className="mt-0.5 size-5 shrink-0 text-primary" />}
+                            <span><span className="block font-workshop-heading font-semibold">{child.label}</span>{child.description && <span className="mt-1 block text-xs text-muted-foreground">{child.description}</span>}</span>
                           </Link>
                         </SheetClose>
-                      ))}
+                      )})}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -146,4 +158,5 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
       </Sheet>
     </div>
   </header>
-);
+  );
+};

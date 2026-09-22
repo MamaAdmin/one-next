@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, LogOut, User } from "lucide-react";
+import { BarChart3, ChevronDown, Code2, Database, Focus, LogOut, Rocket, User, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import logo from "@/assets/one-next-logo-new.png";
@@ -15,12 +15,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigation, type NavigationItem } from "@/hooks/useNavigation";
 import { useUserRoles } from "@/hooks/useUserRoles";
 
+const serviceMeta: Record<string, { description: string; icon: LucideIcon }> = {
+  "/ai-consulting-services": { description: "Strategie und Roadmap", icon: BarChart3 },
+  "/custom-ai-development": { description: "Von der Idee zur Lösung", icon: Code2 },
+  "/data-quality-audit": { description: "Fundament für verlässliche KI", icon: Database },
+  "/problem-framing-workshop": { description: "Die richtige Challenge definieren", icon: Focus },
+  "/design-sprint-workshop": { description: "Vom Problem zum Prototyp", icon: Rocket },
+};
+
 const flattenChildren = (item: NavigationItem, depth = 0): NavbarItem["children"] =>
   (item.children ?? [])
     .filter((child) => child.is_active)
     .sort((a, b) => a.sort_order - b.sort_order)
     .flatMap((child) => [
-      ...(child.url ? [{ id: child.id, label: child.label, href: child.url, depth }] : []),
+      ...(child.url ? [{ id: child.id, label: child.label, href: child.url, depth, ...serviceMeta[child.url] }] : []),
       ...(flattenChildren(child, depth + 1) ?? []),
     ]);
 
@@ -29,11 +37,11 @@ const fallbackItems: NavbarItem[] = [
     id: "leistungen",
     label: "Leistungen",
     children: [
-      { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services" },
-      { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
-      { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit" },
-      { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop" },
-      { id: "design-sprint", label: "Design Sprint Workshop", href: "/design-sprint-workshop" },
+      { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services", ...serviceMeta["/ai-consulting-services"] },
+      { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development", ...serviceMeta["/custom-ai-development"] },
+      { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit", ...serviceMeta["/data-quality-audit"] },
+      { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop", ...serviceMeta["/problem-framing-workshop"] },
+      { id: "design-sprint", label: "Design Sprint Workshop", href: "/design-sprint-workshop", ...serviceMeta["/design-sprint-workshop"] },
     ],
   },
   {

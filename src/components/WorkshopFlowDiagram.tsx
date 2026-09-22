@@ -1,40 +1,34 @@
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const WorkshopFlowDiagram = () => {
   return (
-    <section className="py-16 bg-muted/20">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+    <section className="py-16 md:py-24">
+      <div className="container px-4 md:px-6">
+        <div className="mx-auto max-w-5xl">
+          <p className="mb-3 text-center text-sm font-bold uppercase text-primary">Orientierung</p>
+          <h2 className="mb-12 text-center font-workshop-heading text-3xl font-bold md:text-4xl">
             Welcher Workshop passt zu Ihnen?
           </h2>
 
-          {/* Decision Tree */}
-          <div className="space-y-8">
-            {/* Question */}
-            <Card className="p-8 bg-background border-2">
+          <div className="space-y-10">
+            <div className="border-y border-border bg-muted/35 p-7 md:p-9">
               <div className="flex items-center gap-4 justify-center">
                 <HelpCircle className="w-8 h-8 text-primary" />
-                <h3 className="text-2xl font-bold">
+                <h3 className="font-workshop-heading text-xl font-bold md:text-2xl">
                   Ist Ihre Challenge klar definiert?
                 </h3>
               </div>
-            </Card>
+            </div>
 
-            {/* Branches */}
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* NEIN Branch */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-center gap-2 text-destructive font-semibold">
+            <div className="grid overflow-hidden rounded-lg border border-border bg-card md:grid-cols-2">
+              <div className="p-7 md:p-9">
+                <div className="mb-5 flex items-center gap-2 font-semibold text-primary">
                   <span className="text-xl">NEIN</span>
                   <ArrowRight className="w-5 h-5" />
                 </div>
-                
-                <Card className="p-6 border-2 border-secondary hover:shadow-lg transition-all">
-                  <h4 className="text-xl font-bold mb-3">Problem-Framing-Workshop</h4>
+                  <h4 className="mb-3 font-workshop-heading text-xl font-bold">Problem-Framing-Workshop</h4>
                   <p className="text-sm text-muted-foreground mb-4">
                     1–2 Tage intensive Klärung
                   </p>
@@ -54,8 +48,8 @@ export const WorkshopFlowDiagram = () => {
                     </li>
                   </ul>
 
-                  <div className="border-t pt-4 mb-4">
-                    <p className="text-sm font-semibold text-center">
+                  <div className="mb-4 border-t border-border pt-4">
+                    <p className="text-sm font-semibold">
                       Dann weiter zum Design Sprint →
                     </p>
                   </div>
@@ -65,18 +59,14 @@ export const WorkshopFlowDiagram = () => {
                       Workshop anfragen
                     </Link>
                   </Button>
-                </Card>
               </div>
 
-              {/* JA Branch */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-center gap-2 text-green-600 font-semibold">
+              <div className="border-t border-border bg-background p-7 md:border-l md:border-t-0 md:p-9">
+                <div className="mb-5 flex items-center gap-2 font-semibold text-primary">
                   <span className="text-xl">JA</span>
                   <ArrowRight className="w-5 h-5" />
                 </div>
-                
-                <Card className="p-6 border-2 border-primary hover:shadow-lg transition-all">
-                  <h4 className="text-xl font-bold mb-3">Design Sprint Workshop</h4>
+                  <h4 className="mb-3 font-workshop-heading text-xl font-bold">Design Sprint Workshop</h4>
                   <p className="text-sm text-muted-foreground mb-4">
                     2–4 Tage intensiver Workshop
                   </p>
@@ -96,8 +86,8 @@ export const WorkshopFlowDiagram = () => {
                     </li>
                   </ul>
 
-                  <div className="border-t pt-4 mb-4">
-                    <p className="text-sm font-semibold text-center">
+                  <div className="mb-4 border-t border-border pt-4">
+                    <p className="text-sm font-semibold">
                       Direkt starten!
                     </p>
                   </div>
@@ -107,7 +97,6 @@ export const WorkshopFlowDiagram = () => {
                       Workshop buchen
                     </Link>
                   </Button>
-                </Card>
               </div>
             </div>
           </div>
