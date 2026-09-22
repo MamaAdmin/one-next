@@ -48,7 +48,7 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
   <header
     className={cn(
       "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
-      scrolled ? "border-border/70 bg-background/90 backdrop-blur-md" : "border-transparent bg-background/95 backdrop-blur-sm",
+      scrolled ? "border-border/70 bg-white/80 backdrop-blur-md" : "border-transparent bg-white/60 backdrop-blur-sm",
     )}
   >
     <div className="container flex h-16 items-center justify-between px-4 md:px-6">
