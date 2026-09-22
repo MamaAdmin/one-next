@@ -53,4 +53,4 @@
 - [x] Übergang von Problem Framing zum Design Sprint erklären
 - [x] Online Design Sprint als modulares System darstellen
 - [x] Auswahl nach Ausgangslage aufbauen
-- [ ] Desktop, Smartphone und Links prüfen
+- [x] Desktop, Smartphone und Links prüfen

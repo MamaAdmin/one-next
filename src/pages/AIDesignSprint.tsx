@@ -54,7 +54,7 @@ const offers = [
     fit: "Wenn Sie flexibel und selbstgeführt arbeiten möchten",
     mode: "Selbstgeführt · modular",
     points: ["Problem Framing optional auswählen", "Design-Sprint-Module selbst zusammenstellen", "Allein oder im Team arbeiten"],
-    result: "Ihr individuell zusammengestellter Sprint",
+    result: "Einen individuell zusammengestellten Sprint",
     href: "/sprint-uebersicht/online",
     cta: "Online Sprint ansehen",
   },
