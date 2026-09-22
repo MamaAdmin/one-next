@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { WorkshopComparisonSection } from "@/components/WorkshopComparisonSection";
+import { WorkshopFlowDiagram } from "@/components/WorkshopFlowDiagram";
 import workshopImage from "@/assets/workshop-collaboration.jpg";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
@@ -211,6 +212,8 @@ const ProblemFramingWorkshop = () => {
           </section>
 
           <WorkshopComparisonSection />
+
+          <WorkshopFlowDiagram />
 
           <section className="border-t border-border bg-muted/40 py-20 md:py-28">
             <div className="container px-4 md:px-6">

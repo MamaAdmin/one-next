@@ -25,16 +25,17 @@ const Services = () => {
     title: "KI Consulting Services",
     description: "Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan, der Ihre digitale Transformation nachhaltig vorantreibt."
   }];
-  return <section id="services" className="py-24 bg-muted/30">
+  return <section id="services" className="border-y border-border bg-muted/30 py-20 md:py-24">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center space-y-3 md:space-y-4 mb-12 md:mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold">In kleinen Schritten zum Ziel</h2>
+          <p className="text-sm font-bold uppercase text-primary">Unsere Leistungen</p>
+          <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">In kleinen Schritten zum Ziel</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
           {services.map((service, index) => {
           const Icon = service.icon;
-          return <Card key={index} className="group hover:shadow-hover transition-all duration-300 border-border hover:border-primary/50 animate-scale-in overflow-hidden" style={{
+          return <Card key={index} className="group overflow-hidden border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-hover animate-scale-in" style={{
             animationDelay: `${index * 0.1}s`
           }}>
                 <CardContent className="p-6 md:p-8 space-y-3 md:space-y-4">
@@ -43,7 +44,7 @@ const Services = () => {
                   </div>
                   <div className="space-y-1 md:space-y-2">
                     <p className="text-xs md:text-sm font-semibold text-primary leading-tight">{service.step}</p>
-                    <h3 className="text-xl md:text-2xl font-bold">{service.title}</h3>
+                    <h3 className="font-workshop-heading text-xl font-bold md:text-2xl">{service.title}</h3>
                   </div>
                   <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                     {service.description}
