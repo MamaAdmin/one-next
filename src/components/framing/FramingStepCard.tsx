@@ -2284,7 +2284,15 @@ function VariantNuf({
   }
 
   function chooseTop1(r: NufRow) {
-    patch({ top1Id: r.id, top1Challenge: r.text });
+    let id = r.id;
+    const p: Partial<FramingStepData> = {};
+    if (!id) {
+      id = newId();
+      p.nufBewertungen = bew.map((x) => (x === r ? { ...x, id } : x));
+    }
+    p.top1Id = id;
+    p.top1Challenge = r.text;
+    patch(p);
   }
 
   function removeRow(i: number) {
@@ -2551,11 +2559,10 @@ function VariantNuf({
       <CanvasSection defaultOpen title="2. Top-1 wählen">
         {!anyBewertet ? (
           <p className="text-sm text-muted-foreground mb-2">
-            Sobald mindestens eine Frage bewertet ist, wählt ihr hier die eine Frage, die der
-            Sprint beantwortet.
+            Bewertet die Fragen zuerst – ihr könnt die Top-1-Frage aber auch jetzt schon wählen.
           </p>
         ) : null}
-        <div className={anyBewertet ? "" : gedimmt} aria-disabled={!anyBewertet}>
+        <div>
           <p className="text-sm text-muted-foreground mb-2">
             Die Punkte sind Orientierung. Die Entscheidung trifft der Decider.
           </p>
@@ -2573,7 +2580,6 @@ function VariantNuf({
                     type="radio"
                     name="nuf-top1"
                     className="mt-1"
-                    disabled={!anyBewertet}
                     checked={!!r.id && r.id === data.top1Id}
                     onChange={() => chooseTop1(r)}
                   />
