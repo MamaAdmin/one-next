@@ -1521,6 +1521,28 @@ const WhiteboardVideoEditor = () => {
                       >
                         <GripVertical className="w-4 h-4" />
                       </span>
+                      <div className="flex flex-col">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5"
+                          aria-label="Nach oben"
+                          disabled={index === 0}
+                          onClick={() => moveScene(index, index - 1)}
+                        >
+                          <ChevronUp className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5"
+                          aria-label="Nach unten"
+                          disabled={index === scenes.length - 1}
+                          onClick={() => moveScene(index, index + 1)}
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
+                      </div>
                       <AccordionTrigger className="flex-1 hover:no-underline">
                         <div className="flex items-center gap-3 text-left">
                           <Badge variant="secondary">Abschnitt {index + 1}</Badge>
