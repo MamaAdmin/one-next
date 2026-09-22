@@ -2113,7 +2113,27 @@ function VariantScope({
   );
 }
 
+type NufRow = NonNullable<FramingStepData["nufBewertungen"]>[number];
+
+function newId(): string {
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `nuf-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+  }
+}
+
+function composeErfolgssatz(d: FramingStepData): string {
+  const metrik = (d.erfolgsMetrik ?? "").trim();
+  const ziel = (d.erfolgsZielwert ?? "").trim();
+  const methode = (d.erfolgsMethode ?? "").trim();
+  if (!metrik && !ziel && !methode) return "";
+  const kern = [ziel, metrik].filter(Boolean).join(" ");
+  return methode ? `${kern}, gemessen durch ${methode}`.trim() : kern;
+}
+
 function VariantNuf({
+  sessionId,
   allSteps,
   data,
   patch,
@@ -2123,6 +2143,7 @@ function VariantNuf({
   onLoadSuggestions,
   pendingBucket,
 }: {
+  sessionId: string;
   allSteps: FramingStepRow[];
   data: FramingStepData;
   patch: (p: Partial<FramingStepData>) => void;
@@ -2133,110 +2154,357 @@ function VariantNuf({
   pendingBucket: string | null;
 }) {
   const bew = data.nufBewertungen ?? [];
+  const ratingSuggest = useFramingRatingSuggest();
+  const [ratingVorschlaege, setRatingVorschlaege] = useState<NufRatingSuggestion[]>([]);
 
-  // Sprint-Fragen aus Schritt 8 einmalig übernehmen, ohne Bewertungen zu überschreiben.
+  const step8 = allSteps.find((s) => s.step_key === "8")?.data as FramingStepData | undefined;
+  const step8Fragen = useMemo(() => {
+    const eigene = (step8?.sprintFragen ?? []).map((t) => t.trim());
+    const ki = (step8?.kiSprintFragen ?? []).map((t) => t.trim());
+    return [...eigene, ...ki].filter((t) => t.length > 0);
+  }, [step8]);
+  const step8Ki = useMemo(
+    () => new Set((step8?.kiSprintFragen ?? []).map((t) => t.trim())),
+    [step8],
+  );
+
+  // Erstbefüllung + Migration bestehender Sessions (ids, top1Id).
   useEffect(() => {
-    const step8 = allSteps.find((s) => s.step_key === "8")?.data as
-      | FramingStepData
-      | undefined;
-    if (!step8) return;
-    const eigene = (step8.sprintFragen ?? []).map((t) => t.trim());
-    const ki = (step8.kiSprintFragen ?? []).map((t) => t.trim());
-    const vorhanden = new Set((data.nufBewertungen ?? []).map((b) => b.text.trim()));
-    const neu = [...eigene, ...ki]
-      .filter((t) => t.length > 0 && !vorhanden.has(t))
-      .map((t) => ({ text: t, neuheit: 5, nutzen: 5, machbarkeit: 5, isKi: ki.includes(t) }));
-    if (neu.length) patch({ nufBewertungen: [...(data.nufBewertungen ?? []), ...neu] });
+    const vorhanden = data.nufBewertungen ?? [];
+    let next: NufRow[] = vorhanden.map((r) => (r.id ? r : { ...r, id: newId() }));
+    let changed = next.some((r, i) => r !== vorhanden[i]);
+
+    if (vorhanden.length === 0 && step8Fragen.length > 0) {
+      next = step8Fragen.map((t) => ({
+        id: newId(),
+        text: t,
+        sourceText: t,
+        neuheit: 5,
+        nutzen: 5,
+        machbarkeit: 5,
+        bewertet: false,
+        isKi: step8Ki.has(t),
+      }));
+      changed = true;
+    }
+
+    const p: Partial<FramingStepData> = {};
+    if (changed) p.nufBewertungen = next;
+    if (!data.top1Id && data.top1Challenge?.trim()) {
+      const hit = next.find((r) => r.text.trim() === data.top1Challenge?.trim());
+      if (hit?.id) p.top1Id = hit.id;
+    }
+    if (Object.keys(p).length) patch(p);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ---- Abgleich mit Schritt 8 ---- */
+  const bekannt = useMemo(() => {
+    const set = new Set<string>();
+    bew.forEach((r) => {
+      if (r.text.trim()) set.add(r.text.trim());
+      if (r.sourceText?.trim()) set.add(r.sourceText.trim());
+    });
+    return set;
+  }, [bew]);
+  const neueFragen = useMemo(
+    () => step8Fragen.filter((t) => !bekannt.has(t)),
+    [step8Fragen, bekannt],
+  );
+  const step8Set = useMemo(() => new Set(step8Fragen), [step8Fragen]);
+  const verschwundene = useMemo(
+    () => bew.filter((r) => r.sourceText?.trim() && !step8Set.has(r.sourceText.trim())),
+    [bew, step8Set],
+  );
+  const hatDrift = neueFragen.length > 0 || verschwundene.length > 0;
+
+  function abgleichen() {
+    const next: NufRow[] = bew.map((r) =>
+      r.sourceText?.trim() && !step8Set.has(r.sourceText.trim())
+        ? { ...r, missing: true }
+        : { ...r, missing: false },
+    );
+    neueFragen.forEach((t) =>
+      next.push({
+        id: newId(),
+        text: t,
+        sourceText: t,
+        neuheit: 5,
+        nutzen: 5,
+        machbarkeit: 5,
+        bewertet: false,
+        isKi: step8Ki.has(t),
+      }),
+    );
+    patch({ nufBewertungen: next });
+    toast({
+      title: "Liste abgeglichen",
+      description:
+        neueFragen.length > 0
+          ? `${neueFragen.length} Frage(n) ergänzt. Bewertungen blieben unverändert.`
+          : "Nicht mehr vorhandene Fragen sind markiert.",
+    });
+  }
+
+  /* ---- Ableitungen ---- */
+  const sumOf = (r: NufRow) => r.neuheit + r.nutzen + r.machbarkeit;
+  const bewertetCount = bew.filter((r) => r.bewertet).length;
+  const anyBewertet = bewertetCount > 0;
+  const rangById = useMemo(() => {
+    const sorted = [...bew].sort((a, b) => sumOf(b) - sumOf(a));
+    const map = new Map<string, number>();
+    sorted.forEach((r, i) => map.set(r.id ?? r.text, i + 1));
+    return map;
+  }, [bew]);
+
+  const alleBewertet = bew.length > 0 && bewertetCount === bew.length;
+  const spitze = useMemo(() => {
+    if (!alleBewertet) return null;
+    const sorted = [...bew].sort((a, b) => sumOf(b) - sumOf(a));
+    const top = sorted[0];
+    const gleichstand = sorted.length > 1 && sumOf(sorted[1]) === sumOf(top);
+    return { top, gleichstand };
+  }, [bew, alleBewertet]);
+
+  const top1 = bew.find((r) => r.id && r.id === data.top1Id);
+
+  function setRow(i: number, patchRow: Partial<NufRow>) {
+    const next = [...bew];
+    const merged = { ...next[i], ...patchRow };
+    next[i] = merged;
+    const p: Partial<FramingStepData> = { nufBewertungen: next };
+    if (merged.id && merged.id === data.top1Id && patchRow.text !== undefined) {
+      p.top1Challenge = merged.text;
+    }
+    patch(p);
+  }
+
+  function chooseTop1(r: NufRow) {
+    patch({ top1Id: r.id, top1Challenge: r.text });
+  }
+
+  function removeRow(i: number) {
+    const r = bew[i];
+    const next = bew.filter((_, j) => j !== i);
+    const p: Partial<FramingStepData> = { nufBewertungen: next };
+    if (r.id && r.id === data.top1Id) {
+      p.top1Id = "";
+      p.top1Challenge = "";
+    }
+    patch(p);
+  }
+
+  async function ladeBewertungsvorschlaege() {
+    const fragen = bew.map((r) => r.text.trim()).filter(Boolean);
+    if (!fragen.length) {
+      toast({ title: "Keine Fragen vorhanden", description: "Ergänze zuerst Sprint-Fragen." });
+      return;
+    }
+    try {
+      const res = await ratingSuggest.mutateAsync({ session_id: sessionId, fragen });
+      setRatingVorschlaege(res.bewertungen);
+      if (!res.bewertungen.length) toast({ title: "Keine Einschätzung erhalten" });
+    } catch (e) {
+      toast({
+        title: "KI-Einschätzung fehlgeschlagen",
+        description: e instanceof Error ? e.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    }
+  }
+
+  function uebernehmeBewertung(v: NufRatingSuggestion) {
+    const i = bew.findIndex((r) => r.text.trim() === v.frage.trim());
+    if (i < 0) {
+      setRatingVorschlaege((prev) => prev.filter((x) => x !== v));
+      return;
+    }
+    setRow(i, {
+      neuheit: clamp10(v.neuheit),
+      nutzen: clamp10(v.nutzen),
+      machbarkeit: clamp10(v.machbarkeit),
+      bewertet: true,
+    });
+    setRatingVorschlaege((prev) => prev.filter((x) => x !== v));
+  }
+
+  /* ---- Erfolgsmessung ---- */
+  const neueFelderLeer =
+    !(data.erfolgsMetrik ?? "").trim() &&
+    !(data.erfolgsZielwert ?? "").trim() &&
+    !(data.erfolgsMethode ?? "").trim();
+  const legacyFreitext = neueFelderLeer && !!(data.erfolgsmessung ?? "").trim();
+
+  function patchErfolg(p: Partial<FramingStepData>) {
+    const merged = { ...data, ...p };
+    const satz = composeErfolgssatz(merged);
+    patch({ ...p, ...(satz ? { erfolgsmessung: satz } : {}) });
+  }
+  const vorschau = composeErfolgssatz(data);
+
+  const gedimmt = "opacity-50 pointer-events-none select-none";
+
   return (
     <div className="space-y-6">
-      <CanvasSection title="Sprint-Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
+      {/* ---------- 1. Fragen bewerten ---------- */}
+      <CanvasSection title="1. Fragen bewerten – Neu / Nützlich / Realisierbar je 1–10">
         <div className="rounded-lg border-l-4 border-l-primary bg-accent-soft p-3 text-sm text-foreground/80">
-          Ihr bewertet hier Fragen, keine Lösungen. <strong>Neu</strong> heisst: Auf diese Frage
-          habt ihr noch keine belastbare Antwort, ihr würdet sonst raten.{" "}
-          <strong>Nützlich</strong> heisst: Die Antwort verändert eure nächste Entscheidung.{" "}
+          NUF steht für New, Useful, Feasible – im Deutschen Neu, Nützlich, Realisierbar. Ihr
+          bewertet hier Fragen, keine Lösungen. <strong>Neu</strong> heisst: Auf diese Frage habt
+          ihr noch keine belastbare Antwort, ihr würdet sonst raten. <strong>Nützlich</strong>{" "}
+          heisst: Die Antwort verändert eure nächste Entscheidung.{" "}
           <strong>Realisierbar</strong> heisst: In fünf Sprint-Tagen mit einem Prototyp und fünf
           Testpersonen beantwortbar.
         </div>
-        <div className="space-y-3">
-          <p className="text-sm font-medium">Eigene Anmerkungen</p>
+
+        {hatDrift ? (
+          <div className="mt-3 flex flex-wrap items-center gap-3 rounded-md border border-border-accent bg-accent-soft px-3 py-2 text-sm">
+            <span className="text-foreground/80">
+              Schritt 8 hat sich geändert:{" "}
+              {neueFragen.length > 0
+                ? `${neueFragen.length} neue ${neueFragen.length === 1 ? "Frage" : "Fragen"}`
+                : null}
+              {neueFragen.length > 0 && verschwundene.length > 0 ? ", " : null}
+              {verschwundene.length > 0 ? `${verschwundene.length} nicht mehr vorhanden` : null}
+            </span>
+            <Button variant="outline" size="sm" className="ml-auto" onClick={abgleichen}>
+              Liste abgleichen
+            </Button>
+          </div>
+        ) : null}
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <p className="text-sm font-medium">
+            {bewertetCount} von {bew.length} {bew.length === 1 ? "Frage" : "Fragen"} bewertet
+          </p>
+          <div className="ml-auto flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={ladeBewertungsvorschlaege}
+              disabled={ratingSuggest.isPending}
+            >
+              {ratingSuggest.isPending ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4 mr-2" />
+              )}
+              Bewertung vorschlagen
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={bew.length < 2}
+              onClick={() =>
+                patch({ nufBewertungen: [...bew].sort((a, b) => sumOf(b) - sumOf(a)) })
+              }
+            >
+              Nach Punkten sortieren
+            </Button>
+          </div>
+        </div>
+
+        {ratingVorschlaege.length > 0 ? (
+          <div className="mt-3 space-y-2 rounded-lg border border-accent/60 bg-accent-soft p-3">
+            <p className="text-sm font-semibold flex items-center gap-2">
+              <Sparkles className="w-4 h-4" /> KI-Einschätzung je Frage
+            </p>
+            {ratingVorschlaege.map((v, i) => (
+              <div key={i} className="rounded-md border border-accent/60 bg-background/60 p-2 text-sm">
+                <p className="font-medium">{v.frage}</p>
+                <p className="text-muted-foreground">
+                  Neu {v.neuheit} · Nützlich {v.nutzen} · Realisierbar {v.machbarkeit}
+                  {v.begruendung ? ` – ${v.begruendung}` : ""}
+                </p>
+                <div className="mt-2 flex gap-2">
+                  <Button size="sm" variant="outline" className="h-7" onClick={() => uebernehmeBewertung(v)}>
+                    Übernehmen
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7"
+                    onClick={() => setRatingVorschlaege((prev) => prev.filter((x) => x !== v))}
+                  >
+                    Verwerfen
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="space-y-3 mt-3">
           {bew.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               Keine Sprint-Fragen aus Schritt 8 übernommen. Ergänze sie dort oder füge hier eigene hinzu.
             </p>
           ) : null}
           {bew.map((r, i) => {
-            const sum = r.neuheit + r.nutzen + r.machbarkeit;
-            const isTop = data.top1Challenge === r.text;
-            const isKi = r.isKi === true || (data.kiSprintFragen ?? []).includes(r.text);
-            const base = isKi
-              ? "border-accent/60 bg-accent-soft"
-              : "";
+            const sum = sumOf(r);
+            const rid = r.id ?? r.text;
+            const isTop = !!r.id && r.id === data.top1Id;
+            const isKi = r.isKi === true;
+            const base = isKi ? "border-accent/60 bg-accent-soft" : "";
             return (
               <div
-                key={i}
+                key={rid}
                 className={`rounded-md border p-3 space-y-2 ${
                   isTop ? "border-primary bg-primary/5" : base
-                }`}
+                } ${r.missing ? "border-dashed" : ""}`}
               >
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary">{rangById.get(rid)}.</Badge>
+                  {r.missing ? (
+                    <span className="text-xs text-muted-foreground">
+                      In Schritt 8 nicht mehr vorhanden
+                    </span>
+                  ) : null}
+                  {isTop ? <Badge>Top-1</Badge> : null}
+                </div>
                 <Textarea
                   rows={2}
                   value={r.text}
                   className={isKi ? "bg-background/60" : ""}
-                  onChange={(e) => {
-                    const next = [...bew];
-                    next[i] = { ...r, text: e.target.value };
-                    patch({ nufBewertungen: next });
-                  }}
+                  onChange={(e) => setRow(i, { text: e.target.value })}
                 />
-                <div className="flex flex-wrap items-end gap-3">
+                <div className="grid gap-3 sm:grid-cols-3">
                   {([
                     { k: "neuheit", label: "Neu – noch unbeantwortet" },
                     { k: "nutzen", label: "Nützlich – verändert Entscheidungen" },
                     { k: "machbarkeit", label: "Realisierbar – in 5 Tagen prüfbar" },
                   ] as const).map(({ k, label }) => (
-                    <div key={k} className="w-48">
+                    <div key={k} className={r.bewertet ? "" : "opacity-60"}>
                       <Label className="text-xs">{label}</Label>
-
-                      <Input
-                        type="number"
-                        min={1}
-                        max={10}
-                        value={r[k]}
-                        onChange={(e) => {
-                          const next = [...bew];
-                          next[i] = { ...r, [k]: clamp10(+e.target.value) };
-                          patch({ nufBewertungen: next });
-                        }}
-                      />
-
+                      <div className="flex items-center gap-3 mt-2">
+                        <Slider
+                          className="flex-1"
+                          min={1}
+                          max={10}
+                          step={1}
+                          value={[r[k]]}
+                          onValueChange={(v) =>
+                            setRow(i, { [k]: clamp10(v[0]), bewertet: true } as Partial<NufRow>)
+                          }
+                        />
+                        <span className="w-6 text-right text-sm font-medium tabular-nums">
+                          {r[k]}
+                        </span>
+                      </div>
                     </div>
                   ))}
-                  <div className="flex flex-col items-center">
-                    <Label className="text-xs">Summe</Label>
-                    <div className="text-sm font-semibold h-10 flex items-center px-2">{sum}</div>
-                  </div>
-                  <Button
-                    variant={isTop ? "default" : "outline"}
-                    size="sm"
-                    className="ml-auto"
-                    onClick={() => patch({ top1Challenge: r.text })}
-                  >
-                    Top-1
-                  </Button>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <span className="text-sm">
+                    Summe:{" "}
+                    <span className="font-semibold">{r.bewertet ? sum : "–"}</span>
+                  </span>
                   <Button
                     variant="ghost"
                     size="icon"
                     aria-label="Sprint-Frage entfernen"
                     title="Entfernen"
-                    onClick={() => {
-                      const next = bew.filter((_, j) => j !== i);
-                      const patchObj: Partial<typeof data> = { nufBewertungen: next };
-                      if (data.top1Challenge === r.text) patchObj.top1Challenge = "";
-                      patch(patchObj);
-                    }}
+                    onClick={() => removeRow(i)}
                   >
                     <X className="w-4 h-4" />
                   </Button>
@@ -2251,51 +2519,155 @@ function VariantNuf({
               patch({
                 nufBewertungen: [
                   ...bew,
-                  { text: "", neuheit: 3, nutzen: 3, machbarkeit: 3, isKi: false },
+                  {
+                    id: newId(),
+                    text: "",
+                    neuheit: 5,
+                    nutzen: 5,
+                    machbarkeit: 5,
+                    bewertet: false,
+                    isKi: false,
+                  },
                 ],
               })
             }
           >
             <Plus className="w-4 h-4 mr-1" /> Eigene Sprint-Frage hinzufügen
           </Button>
+
+          {spitze ? (
+            <p className="text-sm text-muted-foreground">
+              {spitze.gleichstand
+                ? "Zwei Fragen liegen gleichauf. Entscheidet bewusst, die Punkte nehmen euch das nicht ab."
+                : `Höchste Punktzahl: ${spitze.top.text} (${sumOf(spitze.top)} von 30).`}
+            </p>
+          ) : null}
         </div>
       </CanvasSection>
 
-      <CanvasSection title="Woran messt ihr, dass diese Frage beantwortet ist?">
-        {data.top1Challenge?.trim() ? (
-          <>
-            <p className="rounded-md border border-border-accent bg-accent-soft px-3 py-2 text-sm">
-              Gewählte Top-1-Frage: {data.top1Challenge}
+      {/* ---------- 2. Top-1 wählen ---------- */}
+      <CanvasSection title="2. Top-1 wählen">
+        {!anyBewertet ? (
+          <p className="text-sm text-muted-foreground mb-2">
+            Sobald mindestens eine Frage bewertet ist, wählt ihr hier die eine Frage, die der
+            Sprint beantwortet.
+          </p>
+        ) : null}
+        <div className={anyBewertet ? "" : gedimmt} aria-disabled={!anyBewertet}>
+          <p className="text-sm text-muted-foreground mb-2">
+            Die Punkte sind Orientierung. Die Entscheidung trifft der Decider.
+          </p>
+          <div className="space-y-2">
+            {bew.map((r) => {
+              const rid = r.id ?? r.text;
+              return (
+                <label
+                  key={rid}
+                  className={`flex items-start gap-3 rounded-md border p-3 text-sm cursor-pointer ${
+                    r.id && r.id === data.top1Id ? "border-primary bg-primary/5" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="nuf-top1"
+                    className="mt-1"
+                    disabled={!anyBewertet}
+                    checked={!!r.id && r.id === data.top1Id}
+                    onChange={() => chooseTop1(r)}
+                  />
+                  <span className="flex-1">{r.text || "(ohne Text)"}</span>
+                  <span className="text-muted-foreground tabular-nums">
+                    {r.bewertet ? `${sumOf(r)} / 30` : "–"}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      </CanvasSection>
+
+      {/* ---------- 3. Messbar machen ---------- */}
+      <CanvasSection title="3. Messbar machen">
+        {!top1 ? (
+          <p className="text-sm text-muted-foreground mb-2">
+            Sobald die Top-1-Frage steht, legt ihr hier fest, was ihr messt, welchen Zielwert ihr
+            erreichen wollt und wie gemessen wird.
+          </p>
+        ) : (
+          <p className="rounded-md border border-border-accent bg-accent-soft px-3 py-2 text-sm">
+            Gewählte Top-1-Frage: {data.top1Challenge}
+          </p>
+        )}
+        <div className={top1 ? "" : gedimmt} aria-disabled={!top1}>
+          <div className="grid gap-3 sm:grid-cols-3 mt-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Was messt ihr?</Label>
+              <Input
+                value={data.erfolgsMetrik ?? ""}
+                disabled={!top1}
+                placeholder="z. B. Testpersonen, die die Anmeldung ohne Hilfe abschliessen"
+                onChange={(e) => patchErfolg({ erfolgsMetrik: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Zielwert</Label>
+              <Input
+                value={data.erfolgsZielwert ?? ""}
+                disabled={!top1}
+                placeholder="z. B. 4 von 5"
+                onChange={(e) => patchErfolg({ erfolgsZielwert: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Wie gemessen?</Label>
+              <Input
+                value={data.erfolgsMethode ?? ""}
+                disabled={!top1}
+                placeholder="z. B. 5 Nutzertests am Sprint-Tag 5"
+                onChange={(e) => patchErfolg({ erfolgsMethode: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {vorschau ? (
+            <p className="mt-3 rounded-md border border-border-accent bg-accent-soft px-3 py-2 text-sm">
+              Vorschau: {vorschau}
             </p>
-            <div className="space-y-1.5 mt-3">
-              <p className="text-sm font-medium">Eigene Anmerkungen</p>
+          ) : null}
+
+          {legacyFreitext ? (
+            <div className="mt-3 space-y-1.5">
+              <Label className="text-xs">
+                Bisherige Erfolgsmessung (Freitext) – du kannst die Angabe oben in die drei Felder
+                aufteilen
+              </Label>
               <Textarea
                 rows={3}
                 value={data.erfolgsmessung ?? ""}
+                disabled={!top1}
                 onChange={(e) => patch({ erfolgsmessung: e.target.value })}
-                placeholder="z. B. 4 von 5 Testpersonen schliessen die Anmeldung ohne Hilfe ab"
               />
             </div>
-            <AcceptedKiList
-              items={data.kiErfolgsmessung ?? []}
-              onRemove={(i) =>
-                patch({
-                  kiErfolgsmessung: (data.kiErfolgsmessung ?? []).filter((_, j) => j !== i),
-                })
-              }
-            />
-            <InlineSuggestions
-              bucket="erfolg"
-              suggestions={suggestions}
-              onAcceptSuggestion={onAcceptSuggestion}
-              onDismissSuggestion={onDismissSuggestion}
-              onLoadSuggestions={() => onLoadSuggestions("erfolg")}
-              pending={pendingBucket === "erfolg"}
-            />
-          </>
-        ) : (
-          <p className="text-sm text-muted-foreground">Wähle zuerst eine Top-1-Frage.</p>
-        )}
+          ) : null}
+
+          <AcceptedKiList
+            items={data.kiErfolgsmessung ?? []}
+            onRemove={(i) =>
+              patch({
+                kiErfolgsmessung: (data.kiErfolgsmessung ?? []).filter((_, j) => j !== i),
+              })
+            }
+          />
+          <InlineSuggestions
+            bucket="erfolg"
+            suggestions={suggestions}
+            onAcceptSuggestion={onAcceptSuggestion}
+            onDismissSuggestion={onDismissSuggestion}
+            onLoadSuggestions={() => onLoadSuggestions("erfolg")}
+            pending={pendingBucket === "erfolg"}
+            label="Erfolgsmessung vorschlagen"
+          />
+        </div>
       </CanvasSection>
     </div>
   );
