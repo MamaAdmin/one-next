@@ -441,11 +441,30 @@ export default function SprintStepCard({
   }
 
   function removeAntwort(idx: number) {
+    const alt = antworten[idx];
     setAntworten((prev) => prev.filter((_, i) => i !== idx));
+    if (alt && herkunft[alt]) {
+      setHerkunft((prev) => {
+        const next = { ...prev };
+        delete next[alt];
+        return next;
+      });
+    }
   }
 
   function updateAntwort(idx: number, value: string) {
+    const alt = antworten[idx];
     setAntworten((prev) => prev.map((a, i) => (i === idx ? value : a)));
+    // Herkunft mitziehen, damit die Markierung beim Umformulieren erhalten bleibt.
+    if (alt && alt !== value && herkunft[alt]) {
+      setHerkunft((prev) => {
+        const next = { ...prev };
+        const src = next[alt];
+        delete next[alt];
+        if (value.trim()) next[value] = src;
+        return next;
+      });
+    }
   }
 
   const allOptions = useMemo(
