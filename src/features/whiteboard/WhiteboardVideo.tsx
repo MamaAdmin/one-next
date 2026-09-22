@@ -21,6 +21,7 @@ import {
   SceneAudio,
   SceneCaptions,
 } from "./renderers";
+import { AccentRing, ProgressArc, ShapeBackdrop, TravellingShape } from "./shapes";
 
 export const TITLE_SECONDS = 2.4;
 export const TITLE_FRAMES = Math.round(TITLE_SECONDS * FPS);
@@ -50,7 +51,7 @@ export const compositionFrames = (title: string, scenes: WhiteboardScene[]): num
   return Math.max(FPS, total - overlaps);
 };
 
-const Background: React.FC<{ theme: VideoTheme }> = ({ theme }) => {
+const Background: React.FC<{ theme: VideoTheme; seed: number }> = ({ theme, seed }) => {
   const frame = useCurrentFrame();
   const drift = Math.sin(frame / 90) * 10;
   return (
@@ -64,6 +65,7 @@ const Background: React.FC<{ theme: VideoTheme }> = ({ theme }) => {
           }}
         />
       ) : null}
+      <ShapeBackdrop theme={theme} seed={seed} />
     </AbsoluteFill>
   );
 };
