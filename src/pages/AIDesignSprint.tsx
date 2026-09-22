@@ -79,7 +79,7 @@ const AIDesignSprint = () => {
             {/* Problem-Framing-Workshop */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
                   <Target className="w-8 h-8 text-white" />
                 </div>
                 <div>
@@ -116,7 +116,7 @@ const AIDesignSprint = () => {
             {/* Design Sprint Workshop (mit KI) */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
                   <Users className="w-8 h-8 text-white" />
                 </div>
                 <div>
@@ -153,7 +153,7 @@ const AIDesignSprint = () => {
             {/* Online Design Sprint */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
                   <Laptop className="w-8 h-8 text-white" />
                 </div>
                 <div>
