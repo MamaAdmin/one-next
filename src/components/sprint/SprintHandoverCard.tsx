@@ -279,7 +279,7 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-gradient-primary hover:opacity-90"
+                    className=""
                     onClick={handleConfirm}
                     disabled={update.isPending}
                   >

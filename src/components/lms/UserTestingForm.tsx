@@ -123,7 +123,7 @@ export const UserTestingForm = ({
           <VoiceBotDialog 
             buttonText="Voice Assistant starten"
             buttonSize="default"
-            buttonClassName="bg-gradient-primary hover:opacity-90 shrink-0 w-full sm:w-auto"
+            buttonClassName=" shrink-0 w-full sm:w-auto"
             voiceBotUrl="https://one-next.lovable.app/voice-bot"
           />
         </div>

@@ -133,25 +133,25 @@ export function PublicCourseView({
 
       {/* Stats */}
       {(course.price_chf != null || dates.length > 0 || course.max_participants) && (
-        <section className="bg-primary text-primary-foreground">
+        <section className="border-y border-border-accent bg-accent-soft/40">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-3 max-w-5xl mx-auto">
               {course.price_chf != null && (
-                <div className="py-10 px-8 border-r border-primary-foreground/10">
+                <div className="py-10 px-8 border-r border-border-accent">
                   <div className="text-4xl font-bold mb-1">CHF {Number(course.price_chf).toFixed(0)}</div>
-                  <div className="text-sm opacity-60">Kurspreis</div>
+                  <div className="text-sm text-muted-foreground">Kurspreis</div>
                 </div>
               )}
               {dates.length > 0 && (
-                <div className="py-10 px-8 border-r border-primary-foreground/10">
+                <div className="py-10 px-8 border-r border-border-accent">
                   <div className="text-4xl font-bold mb-1">{dates.length}</div>
-                  <div className="text-sm opacity-60">Termine</div>
+                  <div className="text-sm text-muted-foreground">Termine</div>
                 </div>
               )}
               {course.max_participants && (
                 <div className="py-10 px-8">
                   <div className="text-4xl font-bold mb-1">{course.max_participants}</div>
-                  <div className="text-sm opacity-60">Max. Teilnehmer</div>
+                  <div className="text-sm text-muted-foreground">Max. Teilnehmer</div>
                 </div>
               )}
             </div>

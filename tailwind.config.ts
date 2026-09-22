@@ -58,6 +58,7 @@ export default {
           hover: "hsl(var(--link-hover))",
         },
         "border-strong": "hsl(var(--border-strong))",
+        "border-accent": "hsl(var(--border-accent))",
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",

@@ -167,7 +167,7 @@ export default function AcceptSprintInvitation() {
                   </div>
                 ) : (
                   <Button
-                    className="bg-gradient-primary hover:opacity-90"
+                   
                     onClick={handleAccept}
                     disabled={accepting}
                   >

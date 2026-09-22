@@ -65,7 +65,7 @@ export default function FramingTeamGate({ sprintId, onContinue }: Props) {
               : "Moderator fehlt — bitte Seite neu laden."}
           </p>
           <Button
-            className="bg-gradient-primary hover:opacity-90"
+            className=""
             onClick={onContinue}
             disabled={!hasModerator}
           >

@@ -41,7 +41,7 @@ const DesignSprintWorkshop = () => {
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             <div className="space-y-6 animate-fade-in">
-              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold">
+              <div className="inline-flex items-center gap-2 border border-border-accent bg-accent-soft/50 text-primary px-4 py-2 rounded-full text-sm font-semibold">
                 <Rocket className="w-4 h-4" />
                 Nächster Schritt
               </div>
@@ -58,7 +58,7 @@ const DesignSprintWorkshop = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Link to="/workshop-registration">
-                  <Button size="lg" className="bg-gradient-primary hover:opacity-90">
+                  <Button size="lg" className="">
                     Workshop Assessment starten
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
@@ -573,14 +573,9 @@ const DesignSprintWorkshop = () => {
       <WorkshopComparisonSection />
 
       {/* CTA Section - Dual Option */}
-      <section className="py-24 bg-gradient-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
-        </div>
-
+      <section className="py-24 border-y border-border-accent bg-accent-soft/40 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
-          <Card className="bg-background/95 backdrop-blur-sm border-none shadow-2xl max-w-5xl mx-auto">
+          <Card className="bg-background border border-border-accent shadow-card max-w-5xl mx-auto">
             <CardContent className="p-12">
               <div className="text-center space-y-8">
                 <h2 className="text-4xl font-bold">
@@ -601,7 +596,7 @@ const DesignSprintWorkshop = () => {
                       Moderierter 2-Tage-Workshop mit KI-Experten vor Ort oder remote
                     </p>
                     <Link to="/workshop-registration">
-                      <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
+                      <Button size="lg" className="w-full ">
                         Jetzt anfragen
                       </Button>
                     </Link>

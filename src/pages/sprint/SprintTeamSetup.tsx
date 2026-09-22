@@ -87,7 +87,7 @@ export default function SprintTeamSetup() {
               <Button variant="ghost" asChild>
                 <Link to="/sprint">Später</Link>
               </Button>
-              <Button className="bg-gradient-primary hover:opacity-90" onClick={goToFraming}>
+              <Button onClick={goToFraming}>
                 Weiter zum Problem Framing
               </Button>
             </div>

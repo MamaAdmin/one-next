@@ -126,7 +126,7 @@ export default function Crazy8sMiro({ sprint, stepKey, onImportedItems }: Props)
             </div>
             <Badge variant="secondary">Miro verbunden{connQ.data?.miro_name ? ` · ${connQ.data.miro_name}` : ""}</Badge>
           </div>
-          <Button onClick={handleCreate} disabled={createMut.isPending} className="bg-gradient-primary hover:opacity-90">
+          <Button onClick={handleCreate} disabled={createMut.isPending} className="">
             {createMut.isPending ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (

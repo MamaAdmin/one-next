@@ -13,7 +13,7 @@ interface VoiceBotDialogProps {
 export function VoiceBotDialog({ 
   buttonText = "Voice Bot öffnen",
   buttonSize = "lg",
-  buttonClassName = "bg-gradient-primary hover:opacity-90 transition-opacity",
+  buttonClassName = "",
   voiceBotUrl
 }: VoiceBotDialogProps) {
   return (

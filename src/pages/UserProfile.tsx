@@ -222,7 +222,7 @@ const UserProfile = () => {
                       <p className="text-muted-foreground">
                         Du hast noch keinen Sprint angelegt.
                       </p>
-                      <Button asChild className="bg-gradient-primary hover:opacity-90">
+                      <Button asChild className="">
                         <Link to="/sprint/neu">
                           <Plus className="w-4 h-4 mr-2" />
                           Mit Problem Framing starten
