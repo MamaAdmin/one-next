@@ -80,7 +80,7 @@ const AIDesignSprint = () => {
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
                 <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
-                  <Target className="w-8 h-8 text-white" />
+                  <Target className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop (mit KI)</h3>
@@ -117,7 +117,7 @@ const AIDesignSprint = () => {
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
                 <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
-                  <Users className="w-8 h-8 text-white" />
+                  <Users className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (mit KI)</h3>
@@ -154,7 +154,7 @@ const AIDesignSprint = () => {
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
                 <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
-                  <Laptop className="w-8 h-8 text-white" />
+                  <Laptop className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Online Design Sprint</h3>
@@ -184,7 +184,7 @@ const AIDesignSprint = () => {
                 </ul>
                 <div className="pt-4 border-t space-y-4">
                   <p className="text-sm font-semibold">Preis auf Anfrage</p>
-                  <Button className="w-full bg-black hover:bg-black/90 text-white" asChild>
+                  <Button className="w-full" asChild>
                     <Link to="/sprint-uebersicht/online">Sprint entdecken</Link>
                   </Button>
                 </div>
