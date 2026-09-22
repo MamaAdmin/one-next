@@ -46,4 +46,4 @@
 - [x] Ausgangslage, Ziel und Rollen in das gemeinsame Seitenraster übertragen
 - [x] Modulare Agenda für Desktop und Smartphone angleichen
 - [x] Arbeitsweise und Ergebnisse verdichten
-- [ ] Desktop- und Mobilansicht prüfen
+- [x] Desktop- und Mobilansicht prüfen
