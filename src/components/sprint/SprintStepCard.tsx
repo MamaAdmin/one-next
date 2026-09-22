@@ -376,11 +376,11 @@ export default function SprintStepCard({
   }
 
   async function handleRank() {
-    const opts = Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean)));
+    const opts = Array.from(new Set(antworten.map((x) => x.trim()).filter(Boolean)));
     if (opts.length < 2) {
       toast({
-        title: "Zu wenige Optionen",
-        description: "Mindestens 2 Vorschläge nötig für ein Ranking.",
+        title: "Zu wenige Antworten",
+        description: "Mindestens 2 Einträge unter „Deine Antworten“ nötig für ein Ranking.",
       });
       return;
     }
@@ -468,8 +468,8 @@ export default function SprintStepCard({
   }
 
   const allOptions = useMemo(
-    () => Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean))),
-    [antworten, vorschlaege, eigene],
+    () => Array.from(new Set(antworten.map((x) => x.trim()).filter(Boolean))),
+    [antworten],
   );
   const rankByOption = useMemo(() => {
     const m = new Map<string, { rang: number; begruendung: string }>();
