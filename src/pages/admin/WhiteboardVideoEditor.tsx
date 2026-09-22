@@ -636,6 +636,101 @@ const WhiteboardVideoEditor = () => {
     }
   };
 
+  /** Einzelnen Abschnitt neu zeichnen lassen. */
+  const runSceneImage = async (sceneId: string) => {
+    if (!videoId) return;
+    const index = scenes.findIndex((s) => s.id === sceneId);
+    if (index < 0) return;
+    const scene = scenes[index];
+    const prompt = scene.imagePrompt || scene.heading;
+    if (!prompt) {
+      toast({ title: "Bitte zuerst eine Bildbeschreibung eintragen", variant: "destructive" });
+      return;
+    }
+    const perImage = rateFor(models, imageModel);
+    setSceneBusy({ id: sceneId, kind: "image" });
+    try {
+      await ensureBudget(perImage);
+      const styleRefUrl = scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
+      const result = await generateImage(prompt, style, {
+        model: imageModel,
+        seed: project?.seed ?? null,
+        styleRefUrl,
+      });
+      const next = scenes.map((s) => (s.id === sceneId ? { ...s, imageUrl: result.url } : s));
+      setScenes(next);
+      await save({ scenes: next });
+      await logJob({
+        usageId: null,
+        videoId,
+        kind: "image",
+        model: imageModel,
+        units: 1,
+        estimatedCredits: perImage,
+        status: "done",
+        taskId: result.taskId ?? null,
+      });
+      await refreshCredits();
+      toast({ title: `Zeichnung ${index + 1} neu erstellt` });
+    } catch (error) {
+      toast({
+        title: `Zeichnung ${index + 1} fehlgeschlagen`,
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setSceneBusy(null);
+    }
+  };
+
+  /** Einzelnen Abschnitt neu vertonen. */
+  const runSceneVoice = async (sceneId: string) => {
+    if (!videoId) return;
+    const index = scenes.findIndex((s) => s.id === sceneId);
+    if (index < 0) return;
+    const scene = scenes[index];
+    if (!scene.narration.trim()) {
+      toast({ title: "Bitte zuerst einen Sprechtext eintragen", variant: "destructive" });
+      return;
+    }
+    const rate = rateFor(models, voiceModel);
+    const cost = Math.round((scene.narration.length / 1000) * rate * 100) / 100;
+    setSceneBusy({ id: sceneId, kind: "voice" });
+    try {
+      await ensureBudget(cost);
+      const result = await generateVoice(scene.narration, voice, voiceModel);
+      const next = scenes.map((s) =>
+        s.id === sceneId
+          ? { ...s, audioUrl: result.url, durationInSeconds: estimateDuration(s) }
+          : s,
+      );
+      setScenes(next);
+      await save({ scenes: next });
+      await logJob({
+        usageId: null,
+        videoId,
+        kind: "voice",
+        model: voiceModel,
+        units: Math.round((scene.narration.length / 1000) * 100) / 100,
+        estimatedCredits: cost,
+        status: "done",
+        taskId: result.taskId ?? null,
+      });
+      await refreshCredits();
+      toast({ title: `Vertonung ${index + 1} neu erstellt` });
+    } catch (error) {
+      toast({
+        title: `Vertonung ${index + 1} fehlgeschlagen`,
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setSceneBusy(null);
+    }
+  };
+
+
+
   const runKieVideo = async () => {
     if (!videoId) return;
     const estimate = estimateCost({
