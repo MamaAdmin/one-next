@@ -94,7 +94,7 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               />
             </div>
             <div className="pt-8 md:pt-0">
-              <Button variant="outline" size="lg" className="rounded-full border-background/25 hover:bg-background/10 text-foreground hover:text-background">
+              <Button variant="outline" size="lg" className="rounded-full border-background/25 hover:bg-background/10 text-background hover:text-background">
                 {isEditMode ? (
                   <InlineTextField
                     value={content.efficiency_button || 'Neuesten Bericht lesen'}
