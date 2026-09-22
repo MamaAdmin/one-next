@@ -258,7 +258,7 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                   </ul>
                 )}
 
-                {isModerator || (!canTakeSelf && !canInviteMore) ? null : (
+                {(isModerator && filled.length > 0) || (!canTakeSelf && !canInviteMore) ? null : (
                   <div className="flex flex-wrap gap-2 pt-1">
                     {canTakeSelf ? (
                       <Button
