@@ -60,7 +60,14 @@ export const Navbar5 = ({ logoSrc, logoAlt, items, account, mobileAccount, scrol
         <img src={logoSrc} alt={logoAlt} className="h-[2.1rem] w-auto" />
       </Link>
 
-      <NavigationMenu value={desktopMenu} onValueChange={setDesktopMenu} className="hidden lg:flex" onMouseLeave={() => setDesktopMenu("")}>
+      <NavigationMenu
+        value={desktopMenu}
+        onValueChange={(value) => {
+          if (value) setDesktopMenu(value);
+        }}
+        className="hidden lg:flex"
+        onMouseLeave={() => setDesktopMenu("")}
+      >
         <NavigationMenuList>
           {items.map((item) => (
             <NavigationMenuItem key={item.id} value={item.id}>
