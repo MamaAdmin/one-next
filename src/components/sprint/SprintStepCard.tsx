@@ -18,6 +18,8 @@ import type { SprintStepDef } from "@/features/sprint/steps";
 import type { SprintRow, SprintStepData, SprintStepRow } from "@/features/sprint/types";
 import { MAP_LANES } from "@/features/sprint/types";
 import Crazy8sMiro from "@/components/sprint/Crazy8sMiro";
+import { buildFramingSeed } from "@/features/sprint/framingSeed";
+import { useFramingForSprint } from "@/hooks/useFramingForSprint";
 import {
   Select,
   SelectContent,
@@ -64,6 +66,10 @@ export default function SprintStepCard({
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
+  const [herkunft, setHerkunft] = useState<NonNullable<SprintStepData["herkunft"]>>(
+    initial.herkunft ?? {},
+  );
+  const [framingSeeded, setFramingSeeded] = useState<boolean>(!!initial.framingSeeded);
   const latestDataRef = useRef<SprintStepData>({
     antworten,
     vorschlaege,
@@ -72,6 +78,8 @@ export default function SprintStepCard({
     notes,
     mapZuordnung,
     aiRank,
+    herkunft,
+    framingSeeded,
   });
 
   useEffect(() => {
@@ -84,6 +92,8 @@ export default function SprintStepCard({
     setNotes(d.notes ?? "");
     setMapZuordnung(d.mapZuordnung ?? {});
     setAiRank(d.aiRank);
+    setHerkunft(d.herkunft ?? {});
+    setFramingSeeded(!!d.framingSeeded);
     latestDataRef.current = {
       antworten: toAntwortenArray(d),
       vorschlaege: d.vorschlaege ?? [],
@@ -92,6 +102,8 @@ export default function SprintStepCard({
       notes: d.notes ?? "",
       mapZuordnung: d.mapZuordnung ?? {},
       aiRank: d.aiRank,
+      herkunft: d.herkunft ?? {},
+      framingSeeded: !!d.framingSeeded,
     };
   }, [stepRow?.id]);
 
@@ -104,8 +116,59 @@ export default function SprintStepCard({
       notes,
       mapZuordnung,
       aiRank,
+      herkunft,
+      framingSeeded,
     };
-  }, [antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank]);
+  }, [antworten, vorschlaege, eigene, auswahl, notes, mapZuordnung, aiRank, herkunft, framingSeeded]);
+
+  /* ---------- Übernahme aus dem Problem Framing (Schritte 1.1–1.5) ---------- */
+  const { data: framing } = useFramingForSprint(sprint.id);
+  const framingSeed = useMemo(
+    () => (framing ? buildFramingSeed(step.key, framing.steps) : []),
+    [framing, step.key],
+  );
+  const missingSeed = useMemo(() => {
+    const vorhanden = new Set(
+      [...antworten, ...eigene].map((x) => x.trim().toLowerCase()),
+    );
+    const bekannt = new Set(Object.keys(herkunft).map((x) => x.trim().toLowerCase()));
+    return framingSeed.filter(
+      (s) => !vorhanden.has(s.text.toLowerCase()) && !bekannt.has(s.text.toLowerCase()),
+    );
+  }, [framingSeed, antworten, eigene, herkunft]);
+
+  function applyFramingSeed(items = framingSeed) {
+    if (items.length === 0) return 0;
+    const vorhanden = new Set([...antworten, ...eigene].map((x) => x.trim().toLowerCase()));
+    const neue = items.filter((s) => !vorhanden.has(s.text.toLowerCase()));
+    if (neue.length === 0) return 0;
+    const nextAntworten = [...antworten, ...neue.map((s) => s.text)];
+    const nextHerkunft = { ...herkunft };
+    for (const s of neue) {
+      nextHerkunft[s.text] = { quelle: "framing", stepKey: s.framingStepKey };
+    }
+    setAntworten(nextAntworten);
+    setHerkunft(nextHerkunft);
+    setFramingSeeded(true);
+    const next: SprintStepData = {
+      ...latestDataRef.current,
+      antworten: nextAntworten,
+      herkunft: nextHerkunft,
+      framingSeeded: true,
+    };
+    latestDataRef.current = next;
+    persistSnapshot(next);
+    return neue.length;
+  }
+
+  // Einmalige automatische Vorbefüllung, solange der Schritt noch leer ist.
+  useEffect(() => {
+    if (framingSeeded) return;
+    if (framingSeed.length === 0) return;
+    if (antworten.length > 0 || eigene.length > 0) return;
+    applyFramingSeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [framingSeed, framingSeeded, stepRow?.id]);
 
 
   const isSolo = sprint.modus === "solo";
@@ -378,11 +441,30 @@ export default function SprintStepCard({
   }
 
   function removeAntwort(idx: number) {
+    const alt = antworten[idx];
     setAntworten((prev) => prev.filter((_, i) => i !== idx));
+    if (alt && herkunft[alt]) {
+      setHerkunft((prev) => {
+        const next = { ...prev };
+        delete next[alt];
+        return next;
+      });
+    }
   }
 
   function updateAntwort(idx: number, value: string) {
+    const alt = antworten[idx];
     setAntworten((prev) => prev.map((a, i) => (i === idx ? value : a)));
+    // Herkunft mitziehen, damit die Markierung beim Umformulieren erhalten bleibt.
+    if (alt && alt !== value && herkunft[alt]) {
+      setHerkunft((prev) => {
+        const next = { ...prev };
+        const src = next[alt];
+        delete next[alt];
+        if (value.trim()) next[value] = src;
+        return next;
+      });
+    }
   }
 
   const allOptions = useMemo(
@@ -493,7 +575,29 @@ export default function SprintStepCard({
             <p className="text-xs text-muted-foreground">
               Erfasse mehrere kurze Antworten — eine pro Sticky-Note.
             </p>
+            {missingSeed.length > 0 ? (
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <p className="text-xs text-muted-foreground">
+                  {missingSeed.length} Antwort{missingSeed.length === 1 ? "" : "en"} aus dem
+                  Problem Framing {missingSeed.length === 1 ? "passt" : "passen"} zu dieser Frage.
+                </p>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7"
+                  onClick={() => {
+                    const n = applyFramingSeed(missingSeed);
+                    if (n > 0) toast({ title: `${n} Antwort${n === 1 ? "" : "en"} übernommen` });
+                  }}
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Aus Problem Framing übernehmen
+                </Button>
+              </div>
+            ) : null}
           </div>
+
 
           {antworten.length > 0 ? (
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -523,6 +627,18 @@ export default function SprintStepCard({
                     rows={3}
                     className="bg-background resize-none text-sm"
                   />
+                  {herkunft[a] && framing ? (
+                    <a
+                      href={`/sprint/framing/${framing.sessionId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 rounded-sm border border-primary/30 px-2 py-0.5 text-[11px] text-primary hover:bg-primary/5"
+                      title="Im Problem Framing ansehen"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      Aus Problem Framing · Schritt {herkunft[a].stepKey}
+                    </a>
+                  ) : null}
                 </li>
               ))}
             </ul>
