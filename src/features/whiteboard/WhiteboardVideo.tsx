@@ -21,6 +21,7 @@ import {
   SceneAudio,
   SceneCaptions,
 } from "./renderers";
+import { AccentRing, ProgressArc, ShapeBackdrop, TravellingShape } from "./shapes";
 
 export const TITLE_SECONDS = 2.4;
 export const TITLE_FRAMES = Math.round(TITLE_SECONDS * FPS);
@@ -50,7 +51,7 @@ export const compositionFrames = (title: string, scenes: WhiteboardScene[]): num
   return Math.max(FPS, total - overlaps);
 };
 
-const Background: React.FC<{ theme: VideoTheme }> = ({ theme }) => {
+const Background: React.FC<{ theme: VideoTheme; seed: number }> = ({ theme, seed }) => {
   const frame = useCurrentFrame();
   const drift = Math.sin(frame / 90) * 10;
   return (
@@ -64,6 +65,7 @@ const Background: React.FC<{ theme: VideoTheme }> = ({ theme }) => {
           }}
         />
       ) : null}
+      <ShapeBackdrop theme={theme} seed={seed} />
     </AbsoluteFill>
   );
 };
@@ -85,6 +87,7 @@ const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boole
         opacity: interpolate(frame, [0, 8], [0, 1], { extrapolateRight: "clamp" }),
       }}
     >
+      <AccentRing theme={theme} delay={4} size={620} left={-140} top={180} />
       <div style={{ transform: `translateY(${interpolate(s, [0, 1], [40, 0])}px)` }}>
         <HandWriteText
           text={title}
@@ -103,11 +106,12 @@ const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boole
 };
 
 /** Durchgehende Ebene: Fortschritt, Kapitel und Titel – sorgt für Serienlook. */
-const Overlay: React.FC<{ title: string; sceneCount: number; theme: VideoTheme }> = ({
-  title,
-  sceneCount,
-  theme,
-}) => {
+const Overlay: React.FC<{
+  title: string;
+  sceneCount: number;
+  theme: VideoTheme;
+  seed: number;
+}> = ({ title, sceneCount, theme, seed }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const progress = interpolate(frame, [0, Math.max(1, durationInFrames)], [0, 1], {
@@ -139,17 +143,9 @@ const Overlay: React.FC<{ title: string; sceneCount: number; theme: VideoTheme }
           </span>
         ) : null}
       </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: 8,
-          background: `${theme.muted}33`,
-        }}
-      >
-        <div style={{ width: `${progress * 100}%`, height: "100%", background: theme.accent }} />
+      <TravellingShape theme={theme} seed={seed} />
+      <div style={{ position: "absolute", right: 56, bottom: 44 }}>
+        <ProgressArc progress={progress} theme={theme} />
       </div>
     </AbsoluteFill>
   );
@@ -167,10 +163,12 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({
   const renderer = rendererFor(style);
   const SceneView = SCENE_RENDERERS[renderer];
   const timing = springTiming({ config: { damping: 200 }, durationInFrames: TRANSITION_FRAMES });
+  // Fester Wert je Video: gleiche Formen bei jedem Rendern.
+  const seed = Math.max(1, (title?.length ?? 1) + scenes.length * 3);
 
   return (
     <AbsoluteFill>
-      <Background theme={theme} />
+      <Background theme={theme} seed={seed} />
       {musicUrl ? <Audio src={musicUrl} volume={musicVolume} loop /> : null}
       <TransitionSeries>
         {title ? (
@@ -212,7 +210,7 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({
         })}
       </TransitionSeries>
       <Sequence>
-        <Overlay title={title} sceneCount={scenes.length} theme={theme} />
+        <Overlay title={title} sceneCount={scenes.length} theme={theme} seed={seed} />
       </Sequence>
     </AbsoluteFill>
   );
