@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin } from "lucide-react";
+import { HirzelGlobe } from "@/components/HirzelGlobe";
 
 const Contact = () => {
   return (
@@ -68,6 +69,8 @@ const Contact = () => {
                 </div>
               </div>
             </div>
+
+            <HirzelGlobe />
           </div>
         </div>
       </div>
