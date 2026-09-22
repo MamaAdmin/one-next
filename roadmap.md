@@ -54,3 +54,10 @@
 - [x] Online Design Sprint als modulares System darstellen
 - [x] Auswahl nach Ausgangslage aufbauen
 - [x] Desktop, Smartphone und Links prüfen
+
+## Custom AI Development als dritter Schritt
+- [ ] Seiteneinstieg und Übergang aus den Workshops schärfen
+- [ ] BMAD-Bausteine als High-Level-Plan strukturieren
+- [ ] Gemeinsame Ausarbeitung sowie Jira- und Confluence-Übergabe erklären
+- [ ] Ergebnisse, Abschluss und Metadaten angleichen
+- [ ] Desktop, Smartphone und Links prüfen
