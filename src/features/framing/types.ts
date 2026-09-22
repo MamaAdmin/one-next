@@ -28,6 +28,15 @@ export interface FramingStepRow {
 export interface FramingStepData {
   // Step 1
   kontext?: string;
+  // Step 1 – Langfristziel
+  langfristziel?: string;
+  langfristzielHorizont?: string; // z. B. "2 Jahre", "Ende 2027"
+  kiLangfristziel?: string[];
+  // Step 5 – Startsymptom für die 5 Whys
+  symptom?: string;
+  kiSymptom?: string[];
+  // Step 4 – Herkunft der vorbefüllten Einträge (nur UI-Kennzeichnung)
+  sailboatVorbefuellt?: { wind: string[]; anker: string[]; eisberg: string[] };
   nichtZiele?: string[];
   kiNichtZiele?: string[];
   kiKontext?: string[];
