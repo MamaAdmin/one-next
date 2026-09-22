@@ -67,6 +67,7 @@ import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import WhiteboardVideoDashboard from "./pages/admin/WhiteboardVideoDashboard";
 import WhiteboardVideoEditor from "./pages/admin/WhiteboardVideoEditor";
+import WhiteboardStudio from "./pages/admin/WhiteboardStudio";
 import WhiteboardSeriesDetail from "./pages/admin/WhiteboardSeriesDetail";
 import KieModelCatalog from "./pages/admin/KieModelCatalog";
 import StyleLibrary from "./pages/admin/StyleLibrary";
@@ -138,6 +139,7 @@ const App = () => (
           <Route path="/admin/whiteboard-videos" element={<WhiteboardVideoDashboard />} />
           <Route path="/admin/whiteboard-videos/serie/:seriesId" element={<WhiteboardSeriesDetail />} />
           <Route path="/admin/whiteboard-videos/:videoId" element={<WhiteboardVideoEditor />} />
+          <Route path="/admin/whiteboard-videos/:videoId/studio" element={<WhiteboardStudio />} />
           <Route path="/admin/ki-modelle" element={<KieModelCatalog />} />
           <Route path="/admin/stilbibliothek" element={<StyleLibrary />} />
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
