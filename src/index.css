@@ -42,6 +42,7 @@ All colors MUST be HSL.
 
     --border: 30 14% 82%;                  /* warm stone */
     --border-strong: 28 12% 68%;
+    --border-accent: 208 35% 72%;          /* thin light-blue border */
     --input: 30 14% 82%;
     --ring: 208 26% 48%;
 
@@ -168,6 +169,7 @@ All colors MUST be HSL.
 
     --border: 210 14% 22%;
     --border-strong: 210 14% 32%;
+    --border-accent: 208 35% 42%;
     --input: 210 14% 22%;
     --ring: 208 40% 62%;
 
