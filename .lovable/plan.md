@@ -1,7 +1,7 @@
 # Leistungen und Problem-Framing-Workshop neu gestalten
 
 ## Zielbild
-Die gewählte Richtung „Structured Editorial Clarity“ wird auf den bestehenden Markenauftritt übertragen: Cream & Slate, Sora für Überschriften, Manrope für Fliesstext und ein geführter Wechsel von links nach rechts. Inhalte, Buchungswege, Rollenlogik und SEO bleiben erhalten.
+Die Ursprungsseite bleibt in Aufbau und Wiedererkennung klar erhalten. Cream & Slate, die vorhandene Bildsprache, Inhaltsreihenfolge und vertrauten Seitenmuster werden gezielt verfeinert; aus „Structured Editorial Clarity“ fliessen nur bessere Hierarchie, Icons und Führung ein. Inhalte, Buchungswege, Rollenlogik und SEO bleiben erhalten.
 
 ## Umsetzung
 
@@ -12,14 +12,14 @@ Die gewählte Richtung „Structured Editorial Clarity“ wird auf den bestehend
 - Mobile Navigation im gleichen Stil weiterführen: gut lesbare Einträge, klare Aufklappbereiche und ausreichend grosse Berührungsflächen.
 - Dynamische Navigation und rollenabhängige Konto-/Portal-Links unverändert beibehalten.
 
-### 2. Workshop-Seite als geführte Reise neu ordnen
-- Einstieg mit klarer Nutzenbotschaft, bestehender Workshop-Aufnahme, Dauer, Teamgrösse, Ergebnis und den vorhandenen Handlungsaufforderungen gestalten.
-- Die umfangreichen Inhalte in eine verständliche Reise überführen:
+### 2. Workshop-Seite behutsam weiterentwickeln
+- Den bestehenden zweispaltigen Einstieg mit Workshop-Aufnahme, Nutzenbotschaft und vorhandenen Handlungsaufforderungen beibehalten und visuell schärfen.
+- Die bestehende Reihenfolge und den vertrauten Abschnittswechsel erhalten, innerhalb dessen die Inhalte klarer führen:
   1. Ausgangslage und Eignung
   2. Team und Rollen
   3. moderierter Ablauf
   4. Ergebnis und Sprint-Bereitschaft
-- Den Ablauf als wechselnde Links-rechts-Komposition mit feiner visueller Verbindung und passenden Icons darstellen.
+- Den Ablauf innerhalb der bestehenden Seitenlogik mit einer feinen visuellen Verbindung und passenden Icons lesbarer darstellen, ohne die Seite grundlegend neu zu strukturieren.
 - Die zehn bestehenden Workshop-Schritte vollständig erhalten, aber übersichtlicher gruppieren und auf kleinen Bildschirmen kompakt aufklappbar machen.
 - Ergebnis, Deliverables, Vergleich zum Design Sprint und Entscheidungsweg ohne Wiederholungen zu einer klaren Schlussstrecke zusammenführen.
 - Abschluss als breite, ruhige Handlungszone mit „Workshop anfragen“ und „Kostenlose Beratung“ gestalten.
