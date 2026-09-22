@@ -108,7 +108,7 @@ const OnlineSprintLanding = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center pt-6">
-              <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
+              <Button size="lg" className=" text-lg px-8 py-6" asChild>
                 <Link to="/sprint">Jetzt starten</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
@@ -296,7 +296,7 @@ const OnlineSprintLanding = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6" asChild>
+                <Button size="lg" className=" text-lg px-8 py-6" asChild>
                   <Link to="/sprint">Sprint starten</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">

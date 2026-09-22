@@ -449,7 +449,7 @@ const AIConsultingServices = () => {
             <CalendarBookingDialog
               buttonText="Kostenloses Beratungsgespräch vereinbaren"
               buttonSize="lg"
-              buttonClassName="bg-gradient-primary hover:opacity-90 transition-opacity text-lg px-8 py-6"
+              buttonClassName=" text-lg px-8 py-6"
             />
           </div>
         </div>

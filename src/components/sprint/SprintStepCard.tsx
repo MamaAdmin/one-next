@@ -850,7 +850,7 @@ export default function SprintStepCard({
                 {saving ? "Speichert …" : "Zwischenspeichern"}
               </Button>
               <Button
-                className="bg-gradient-primary hover:opacity-90"
+                className=""
                 onClick={() => persist(true)}
                 disabled={saving}
               >

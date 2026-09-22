@@ -132,7 +132,7 @@ export default function SprintBasicsEditDialog({ sprint, open, onOpenChange }: P
           <Button
             onClick={onSave}
             disabled={update.isPending}
-            className="bg-gradient-primary hover:opacity-90"
+            className=""
           >
             {update.isPending ? "Speichert …" : "Speichern"}
           </Button>

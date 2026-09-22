@@ -472,7 +472,7 @@ const AIDesignSprint = () => {
                     <p className="text-muted-foreground text-sm">
                       Moderierter 2-Tage-Workshop mit KI-Experten
                     </p>
-                    <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
+                    <Button size="lg" className="w-full ">
                       Kontakt aufnehmen
                     </Button>
                   </div>

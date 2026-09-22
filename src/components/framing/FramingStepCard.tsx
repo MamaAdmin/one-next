@@ -296,7 +296,7 @@ export default function FramingStepCard({
             {saving ? "Speichert …" : "Speichern"}
           </Button>
           <Button
-            className="bg-gradient-primary hover:opacity-90"
+            className=""
             onClick={() => handleSave({ completed: true, next: true })}
             disabled={saving}
           >
@@ -2232,7 +2232,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
 
         <div className="flex justify-end pt-2 border-t">
           {onNext ? (
-            <Button className="bg-gradient-primary hover:opacity-90" onClick={onNext}>
+            <Button className="" onClick={onNext}>
               Los geht's <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : null}

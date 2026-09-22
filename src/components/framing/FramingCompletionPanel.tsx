@@ -302,7 +302,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
             <Button
               onClick={handleGenerate}
               disabled={generate.isPending || isLocked}
-              className="bg-gradient-primary hover:opacity-90"
+              className=""
             >
               {generate.isPending ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -664,7 +664,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
               <Button
                 disabled={!allDone || busy}
                 onClick={handleFinish}
-                className="bg-gradient-primary hover:opacity-90"
+                className=""
               >
                 {busy ? "Legt Sprint an …" : "Workshop abschließen & Sprint anlegen"}
               </Button>
@@ -686,7 +686,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
               <Button
                 disabled={busy || !result}
                 onClick={handleFinish}
-                className="bg-gradient-primary hover:opacity-90"
+                className=""
               >
                 {busy ? "Legt Sprint an …" : "Sprint aus Framing erzeugen"}
               </Button>
