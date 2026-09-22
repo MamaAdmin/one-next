@@ -87,6 +87,7 @@ const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boole
         opacity: interpolate(frame, [0, 8], [0, 1], { extrapolateRight: "clamp" }),
       }}
     >
+      <AccentRing theme={theme} delay={4} size={620} left={-140} top={180} />
       <div style={{ transform: `translateY(${interpolate(s, [0, 1], [40, 0])}px)` }}>
         <HandWriteText
           text={title}
@@ -105,11 +106,12 @@ const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boole
 };
 
 /** Durchgehende Ebene: Fortschritt, Kapitel und Titel – sorgt für Serienlook. */
-const Overlay: React.FC<{ title: string; sceneCount: number; theme: VideoTheme }> = ({
-  title,
-  sceneCount,
-  theme,
-}) => {
+const Overlay: React.FC<{
+  title: string;
+  sceneCount: number;
+  theme: VideoTheme;
+  seed: number;
+}> = ({ title, sceneCount, theme, seed }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const progress = interpolate(frame, [0, Math.max(1, durationInFrames)], [0, 1], {
