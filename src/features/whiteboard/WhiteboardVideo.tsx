@@ -143,17 +143,9 @@ const Overlay: React.FC<{
           </span>
         ) : null}
       </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: 8,
-          background: `${theme.muted}33`,
-        }}
-      >
-        <div style={{ width: `${progress * 100}%`, height: "100%", background: theme.accent }} />
+      <TravellingShape theme={theme} seed={seed} />
+      <div style={{ position: "absolute", right: 56, bottom: 44 }}>
+        <ProgressArc progress={progress} theme={theme} />
       </div>
     </AbsoluteFill>
   );
