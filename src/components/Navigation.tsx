@@ -24,6 +24,30 @@ const flattenChildren = (item: NavigationItem, depth = 0): NavbarItem["children"
       ...(flattenChildren(child, depth + 1) ?? []),
     ]);
 
+const fallbackItems: NavbarItem[] = [
+  {
+    id: "leistungen",
+    label: "Leistungen",
+    children: [
+      { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services" },
+      { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development" },
+      { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit" },
+      { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop" },
+      { id: "design-sprint", label: "Design Sprint Workshop", href: "/design-sprint-workshop" },
+    ],
+  },
+  {
+    id: "unternehmen",
+    label: "Unternehmen",
+    children: [
+      { id: "ueber-uns", label: "Über uns", href: "/about-us" },
+      { id: "faq", label: "FAQ", href: "/faq" },
+      { id: "kontakt", label: "Kontakt", href: "/kontakt" },
+    ],
+  },
+  { id: "blog", label: "Blog", href: "/blog" },
+];
+
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"]>(null);
@@ -53,7 +77,7 @@ const Navigation = () => {
         href: item.url ?? undefined,
         children: flattenChildren(item),
       }));
-    return [...dynamic, { id: "kurse", label: "Kurse", href: "/kurse" }];
+    return [...(dynamic.length ? dynamic : fallbackItems), { id: "kurse", label: "Kurse", href: "/kurse" }];
   }, [headerItems]);
 
   const portalLinks = useMemo(() => {
