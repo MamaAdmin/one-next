@@ -50,46 +50,38 @@ const AIConsultingServices = () => {
         canonical="https://one-next.de/ai-consulting-services"
         structuredData={structuredData}
       />
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background font-workshop text-foreground">
       <Navigation />
-      
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 border-b border-border-accent bg-accent-soft/40 relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <div className="inline-flex items-center gap-2 border border-border-accent bg-background text-primary px-4 py-2 rounded-full">
-              <SparklesIcon className="w-5 h-5" />
-              <span className="font-semibold">KI Consulting Services</span>
-            </div>
 
-            <InlineTextField
-              value={content.hero_title || 'Strategische KI-Beratung für Ihren nachhaltigen Wettbewerbsvorteil'}
-              onSave={(value) => updateContent('hero_title', value)}
-              isEditMode={isEditMode}
-              className="text-5xl lg:text-6xl font-bold"
-              placeholder="Hero title"
-              as="h1"
-            />
-
+      <ServicePageHero
+        badge="KI Consulting Services"
+        badgeIcon={SparklesIcon}
+        titleSlot={
+          <InlineTextField
+            value={content.hero_title || 'Strategische KI-Beratung für Ihren nachhaltigen Wettbewerbsvorteil'}
+            onSave={(value) => updateContent('hero_title', value)}
+            isEditMode={isEditMode}
+            className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl"
+            placeholder="Hero title"
+            as="h1"
+          />
+        }
+        descriptionSlot={
+          <div className="mt-6 max-w-2xl">
             <InlineTextArea
               value={content.hero_description || 'Entwickeln Sie eine maßgeschneiderte KI-Roadmap für Ihr Unternehmen. Wir analysieren Ihre Geschäftsziele, identifizieren strategische KI-Potenziale und erstellen einen langfristigen Implementierungsplan für Ihre erfolgreiche digitale Transformation.'}
               onSave={(value) => updateContent('hero_description', value)}
               isEditMode={isEditMode}
-              className="text-xl text-muted-foreground leading-relaxed"
+              className="text-lg leading-relaxed text-muted-foreground md:text-xl"
               placeholder="Hero description"
               minRows={3}
             />
-
-            <div className="mt-6">
-              <CalendarBookingDialog
-                buttonText="Beratungsgespräch vereinbaren"
-                buttonSize="lg"
-                buttonClassName="text-lg px-8 py-6"
-              />
-            </div>
           </div>
-        </div>
-      </section>
+        }
+        actions={<CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" />}
+        image={consultingImage}
+        imageAlt="Beratungsteam entwickelt eine KI-Roadmap an einer Wandübersicht"
+      />
 
       {/* What is KI Consulting Section */}
       <section className="py-24 bg-background">
