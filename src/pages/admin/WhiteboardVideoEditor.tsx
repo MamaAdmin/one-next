@@ -17,6 +17,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -1347,73 +1353,93 @@ const WhiteboardVideoEditor = () => {
                 <Plus className="w-4 h-4 mr-2" /> Abschnitt
               </Button>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {scenes.map((scene, index) => (
-                <div key={scene.id} className="rounded-lg border p-4 space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <Badge variant="secondary">Abschnitt {index + 1}</Badge>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setScenes((prev) => prev.filter((s) => s.id !== scene.id))}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <Label>Überschrift</Label>
-                      <Input
-                        value={scene.heading}
-                        onChange={(e) => updateScene(scene.id, { heading: e.target.value })}
-                      />
+            <CardContent>
+              <Accordion type="multiple" className="space-y-3">
+                {scenes.map((scene, index) => (
+                  <AccordionItem
+                    key={scene.id}
+                    value={scene.id}
+                    className="rounded-lg border px-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <AccordionTrigger className="flex-1 hover:no-underline">
+                        <div className="flex items-center gap-3 text-left">
+                          <Badge variant="secondary">Abschnitt {index + 1}</Badge>
+                          <span className="font-medium">
+                            {scene.heading?.trim() || "Ohne Überschrift"}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {scene.durationInSeconds || 0} s
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setScenes((prev) => prev.filter((s) => s.id !== scene.id))}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Dauer (Sekunden)</Label>
-                      <Input
-                        type="number"
-                        min={2}
-                        max={30}
-                        step={0.5}
-                        value={scene.durationInSeconds}
-                        onChange={(e) =>
-                          updateScene(scene.id, { durationInSeconds: Number(e.target.value) })
-                        }
+                    <AccordionContent className="space-y-3 pb-4">
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label>Überschrift</Label>
+                          <Input
+                            value={scene.heading}
+                            onChange={(e) => updateScene(scene.id, { heading: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Dauer (Sekunden)</Label>
+                          <Input
+                            type="number"
+                            min={2}
+                            max={30}
+                            step={0.5}
+                            value={scene.durationInSeconds}
+                            onChange={(e) =>
+                              updateScene(scene.id, { durationInSeconds: Number(e.target.value) })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Sprechtext</Label>
+                        <Textarea
+                          rows={3}
+                          value={scene.narration}
+                          onChange={(e) => updateScene(scene.id, { narration: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Stichpunkte (eine Zeile pro Punkt)</Label>
+                        <Textarea
+                          rows={3}
+                          value={scene.bullets.join("\n")}
+                          onChange={(e) =>
+                            updateScene(scene.id, {
+                              bullets: e.target.value
+                                .split("\n")
+                                .filter((b) => b.trim().length > 0),
+                            })
+                          }
+                        />
+                      </div>
+                      <SceneMediaEditor
+                        scene={scene}
+                        videoId={videoId ?? ""}
+                        onChange={(patch) => updateScene(scene.id, patch)}
+                        onGenerateAiClip={() => void runAiClip(scene.id)}
+                        aiClipBusy={aiClipBusy === scene.id}
                       />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Sprechtext</Label>
-                    <Textarea
-                      rows={3}
-                      value={scene.narration}
-                      onChange={(e) => updateScene(scene.id, { narration: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Stichpunkte (eine Zeile pro Punkt)</Label>
-                    <Textarea
-                      rows={3}
-                      value={scene.bullets.join("\n")}
-                      onChange={(e) =>
-                        updateScene(scene.id, {
-                          bullets: e.target.value.split("\n").filter((b) => b.trim().length > 0),
-                        })
-                      }
-                    />
-                  </div>
-                  <SceneMediaEditor
-                    scene={scene}
-                    videoId={videoId ?? ""}
-                    onChange={(patch) => updateScene(scene.id, patch)}
-                    onGenerateAiClip={() => void runAiClip(scene.id)}
-                    aiClipBusy={aiClipBusy === scene.id}
-                  />
-                  <div className="flex items-center gap-4">
-                    {scene.audioUrl && <audio src={scene.audioUrl} controls className="h-10" />}
-                  </div>
-                </div>
-              ))}
+                      <div className="flex items-center gap-4">
+                        {scene.audioUrl && <audio src={scene.audioUrl} controls className="h-10" />}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </CardContent>
           </Card>
         </div>
