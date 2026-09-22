@@ -1221,6 +1221,15 @@ const WhiteboardVideoEditor = () => {
                   </div>
                 </div>
               </div>
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/admin/whiteboard-videos/${project.id}/studio`)}
+                >
+                  Studio öffnen
+                </Button>
+              </div>
               <div className="rounded-lg overflow-hidden border">
                 <Player
                   component={WhiteboardVideo as never}
