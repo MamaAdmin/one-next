@@ -41,7 +41,7 @@ const DesignSprintWorkshop = () => {
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             <div className="space-y-6 animate-fade-in">
-              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold">
+              <div className="inline-flex items-center gap-2 border border-border-accent bg-accent-soft/50 text-primary px-4 py-2 rounded-full text-sm font-semibold">
                 <Rocket className="w-4 h-4" />
                 Nächster Schritt
               </div>
