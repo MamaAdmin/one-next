@@ -135,6 +135,8 @@ const WhiteboardVideoEditor = () => {
   const [clipSeconds, setClipSeconds] = useState(DEFAULT_CLIP_SECONDS);
   const [clipDialogOpen, setClipDialogOpen] = useState(false);
   const [aiClipBusy, setAiClipBusy] = useState<string | null>(null);
+  // Läuft gerade eine Einzelaktion an einem Abschnitt?
+  const [sceneBusy, setSceneBusy] = useState<{ id: string; kind: "image" | "voice" } | null>(null);
   // Abschnitte per Ziehen neu sortieren.
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -650,7 +652,17 @@ const WhiteboardVideoEditor = () => {
     const perImage = rateFor(models, imageModel);
     setSceneBusy({ id: sceneId, kind: "image" });
     try {
-      await ensureBudget(perImage);
+      await ensureBudget(
+        estimateCost({
+          models,
+          sceneCount: 1,
+          scenes: [scene],
+          includeScript: false,
+          includeImages: true,
+          includeVoices: false,
+          imageModel,
+        }),
+      );
       const styleRefUrl = scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
       const result = await generateImage(prompt, style, {
         model: imageModel,
@@ -697,7 +709,17 @@ const WhiteboardVideoEditor = () => {
     const cost = Math.round((scene.narration.length / 1000) * rate * 100) / 100;
     setSceneBusy({ id: sceneId, kind: "voice" });
     try {
-      await ensureBudget(cost);
+      await ensureBudget(
+        estimateCost({
+          models,
+          sceneCount: 1,
+          scenes: [scene],
+          includeScript: false,
+          includeImages: false,
+          includeVoices: true,
+          voiceModel,
+        }),
+      );
       const result = await generateVoice(scene.narration, voice, voiceModel);
       const next = scenes.map((s) =>
         s.id === sceneId
