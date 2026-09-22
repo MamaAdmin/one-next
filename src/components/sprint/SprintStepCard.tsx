@@ -468,8 +468,8 @@ export default function SprintStepCard({
   }
 
   const allOptions = useMemo(
-    () => Array.from(new Set([...antworten, ...vorschlaege, ...eigene].map((x) => x.trim()).filter(Boolean))),
-    [antworten, vorschlaege, eigene],
+    () => Array.from(new Set(antworten.map((x) => x.trim()).filter(Boolean))),
+    [antworten],
   );
   const rankByOption = useMemo(() => {
     const m = new Map<string, { rang: number; begruendung: string }>();
