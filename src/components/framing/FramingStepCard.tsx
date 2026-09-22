@@ -2474,7 +2474,7 @@ function VariantNuf({
                   {([
                     { k: "neuheit", label: "Neu – noch unbeantwortet" },
                     { k: "nutzen", label: "Nützlich – verändert Entscheidungen" },
-                    { k: "machbarkeit", label: "Realisierbar – in 5 Tagen prüfbar" },
+                    { k: "machbarkeit", label: "Machbar – in 5 Tagen prüfbar" },
                   ] as const).map(({ k, label }) => (
                     <div key={k} className={r.bewertet ? "" : "opacity-60"}>
                       <Label className="text-xs">{label}</Label>
