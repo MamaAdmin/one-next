@@ -282,7 +282,7 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                         Ich übernehme das
                       </Button>
                     ) : null}
-                    {canInviteMore ? (
+                    {canInviteMore && !isModerator ? (
                       <Button
                         size="sm"
                         variant="outline"
