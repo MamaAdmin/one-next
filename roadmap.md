@@ -30,3 +30,8 @@
 - [x] Leistungen-Menü mit Icons und Einordnungen aufwerten
 - [x] Workshop-Seite im vertrauten Aufbau visuell verfeinern
 - [x] Desktop- und Mobilansicht sowie Links prüfen
+
+## Leistungsseiten im Stil der Problem-Framing-Seite
+- [x] Gemeinsame Hero-Komponente ServicePageHero
+- [x] Problem Framing, Design Sprint, KI-Beratung, KI-Entwicklung, Sprint-Übersicht, Online-Sprint, Datenqualitäts-Audit umgestellt
+- [x] Prüfung Desktop und Mobile

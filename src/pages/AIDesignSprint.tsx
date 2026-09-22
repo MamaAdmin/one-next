@@ -13,6 +13,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import sprintImage from "@/assets/sprint-overview.jpg";
 const AIDesignSprint = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const {
@@ -44,35 +46,24 @@ const AIDesignSprint = () => {
   }])];
   return <>
       <SEO title="KI Design Sprint Workshop | Innovation in 2 Tagen | one-next" description="Entdecken Sie KI-Potenziale mit unserem strukturierten Design Sprint. 2-Tage Workshop oder flexibler Online Sprint. Von der Challenge zum getesteten Prototyp." keywords="KI Design Sprint, Design Sprint Workshop, Innovation Workshop, KI Potenziale, Design Thinking, Prototyping" canonical="https://one-next.de/sprint-uebersicht" structuredData={structuredData} />
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background font-workshop text-foreground">
       <Navigation />
-      
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            {/* Badge with Icon */}
-            <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
-              <Target className="w-5 h-5" />
-              <span className="font-semibold">KI Design Sprint</span>
-            </div>
-            
-            <InlineTextField value={content.hero_title || 'Von der Vision zum Prototyp – im Design Sprint erleben'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="text-5xl lg:text-6xl font-bold text-white" placeholder="Titel des Hero-Bereichs" as="h1" />
-            
-            <InlineTextArea value={content.hero_description || 'In Stunden (online Sprint) oder zwei bis drei intensiven Tagen (Workshop) zeigt der Design Sprint wie man den Prozess beschleunigen kann \n– von der Ideenfindung bis zum getesteten Prototyp.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-xl text-white/90 leading-relaxed" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
-            
-            {/* CTA Button */}
-            <div className="mt-6">
-              <CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" buttonClassName="bg-background text-foreground hover:bg-background/90 transition-opacity text-lg px-8 py-6" />
-            </div>
+
+      <ServicePageHero
+        badge="KI Design Sprint"
+        badgeIcon={Target}
+        titleSlot={
+          <InlineTextField value={content.hero_title || 'Von der Vision zum Prototyp – im Design Sprint erleben'} onSave={value => updateContent('hero_title', value)} isEditMode={isEditMode} className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl" placeholder="Titel des Hero-Bereichs" as="h1" />
+        }
+        descriptionSlot={
+          <div className="mt-6 max-w-2xl">
+            <InlineTextArea value={content.hero_description || 'In Stunden (online Sprint) oder zwei bis drei intensiven Tagen (Workshop) zeigt der Design Sprint wie man den Prozess beschleunigen kann \n– von der Ideenfindung bis zum getesteten Prototyp.'} onSave={value => updateContent('hero_description', value)} isEditMode={isEditMode} className="text-lg leading-relaxed text-muted-foreground md:text-xl" placeholder="Beschreibung des Hero-Bereichs" minRows={3} />
           </div>
-        </div>
-      </section>
+        }
+        actions={<CalendarBookingDialog buttonText="Beratungsgespräch vereinbaren" buttonSize="lg" />}
+        image={sprintImage}
+        imageAlt="Sprint-Team arbeitet an einem Whiteboard mit Skizzen und Haftnotizen"
+      />
 
       {/* Wählen Sie Ihren Design Sprint Ansatz - direkt nach Hero */}
       <section className="py-24 bg-muted/30">
@@ -88,8 +79,8 @@ const AIDesignSprint = () => {
             {/* Problem-Framing-Workshop */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
-                  <Target className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
+                  <Target className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Problem-Framing-Workshop (mit KI)</h3>
@@ -125,8 +116,8 @@ const AIDesignSprint = () => {
             {/* Design Sprint Workshop (mit KI) */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
-                  <Users className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
+                  <Users className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Design Sprint Workshop (mit KI)</h3>
@@ -162,8 +153,8 @@ const AIDesignSprint = () => {
             {/* Online Design Sprint */}
             <Card className="hover:shadow-hover transition-all">
               <CardContent className="p-8 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
-                  <Laptop className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 border border-border-accent bg-background flex items-center justify-center">
+                  <Laptop className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Online Design Sprint</h3>
@@ -193,7 +184,7 @@ const AIDesignSprint = () => {
                 </ul>
                 <div className="pt-4 border-t space-y-4">
                   <p className="text-sm font-semibold">Preis auf Anfrage</p>
-                  <Button className="w-full bg-black hover:bg-black/90 text-white" asChild>
+                  <Button className="w-full" asChild>
                     <Link to="/sprint-uebersicht/online">Sprint entdecken</Link>
                   </Button>
                 </div>

@@ -26,6 +26,7 @@ import workshopImage from "@/assets/workshop-collaboration.jpg";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
 
 const agenda = [
   { title: "Kick-off & Zielbild", time: "10–15'", desc: "Kontext, Ziel des Workshops und die klare Abgrenzung dessen, was kein Sprint-Ziel ist.", icon: Compass },
@@ -79,37 +80,26 @@ const ProblemFramingWorkshop = () => {
       <div className="min-h-screen bg-background font-workshop text-foreground">
         <Navigation />
         <main className="overflow-hidden pt-16">
-          <section className="border-b border-border bg-gradient-hero py-16 md:py-24">
-            <div className="container px-4 md:px-6">
-              <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
-                <div className="animate-fade-in">
-                  <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-4 py-2 text-sm font-semibold text-primary">
-                    <Target className="size-4" /> Der Startpunkt
-                  </div>
-                  <h1 className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl">
-                    Problem-Framing-Workshop
-                    <span className="mt-3 block text-primary-glow">Wenn Ihre Challenge noch unklar ist</span>
-                  </h1>
-                  <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-                    1–2 Tage intensive Klärung, um Ihre Challenge präzise zu definieren, die Zielgruppe zu priorisieren und Ihr Team optimal auf den Design Sprint vorzubereiten.
-                  </p>
-                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
-                    <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint</Link></Button>
-                  </div>
-                  <div className="mt-8 grid max-w-xl grid-cols-3 divide-x divide-border border-y border-border py-4">
-                    <div className="pr-4"><span className="block font-workshop-heading text-lg font-semibold">1–2 Tage</span><span className="text-xs text-muted-foreground">Dauer</span></div>
-                    <div className="px-4"><span className="block font-workshop-heading text-lg font-semibold">6–8</span><span className="text-xs text-muted-foreground">Personen</span></div>
-                    <div className="pl-4"><span className="block font-workshop-heading text-lg font-semibold">1 Briefing</span><span className="text-xs text-muted-foreground">Ergebnis</span></div>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute -inset-4 translate-x-6 translate-y-6 rounded-xl border border-border" aria-hidden="true" />
-                  <img src={workshopImage} alt="Team bei einem kollaborativen Problem-Framing-Workshop" className="relative aspect-[4/3] w-full rounded-lg object-cover shadow-hover" />
-                </div>
-              </div>
-            </div>
-          </section>
+          <ServicePageHero
+            badge="Der Startpunkt"
+            badgeIcon={Target}
+            title="Problem-Framing-Workshop"
+            titleAccent="Wenn Ihre Challenge noch unklar ist"
+            description="1–2 Tage intensive Klärung, um Ihre Challenge präzise zu definieren, die Zielgruppe zu priorisieren und Ihr Team optimal auf den Design Sprint vorzubereiten."
+            actions={
+              <>
+                <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
+                <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint</Link></Button>
+              </>
+            }
+            facts={[
+              { value: "1–2 Tage", label: "Dauer" },
+              { value: "6–8", label: "Personen" },
+              { value: "1 Briefing", label: "Ergebnis" },
+            ]}
+            image={workshopImage}
+            imageAlt="Team bei einem kollaborativen Problem-Framing-Workshop"
+          />
 
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">

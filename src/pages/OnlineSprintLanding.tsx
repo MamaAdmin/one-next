@@ -8,6 +8,8 @@ import { Target, Map, Pencil, CheckCircle, Wrench, TestTube, Clipboard, Users, C
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
+import { ServicePageHero } from "@/components/service/ServicePageHero";
+import onlineSprintImage from "@/assets/online-sprint.jpg";
 const OnlineSprintLanding = () => {
   const structuredData = [createEventSchema("Online Design Sprint", "Flexibler Online Design Sprint über mehrere Wochen. Arbeiten Sie im eigenen Tempo mit KI-Unterstützung und automatisierter Dokumentation.", "https://one-next.de/sprint-uebersicht/online"), createBreadcrumbSchema([{
     name: "Home",
@@ -86,38 +88,28 @@ const OnlineSprintLanding = () => {
   }];
   return <>
       <SEO title="Online Design Sprint | Flexibel & Remote | one-next" description="Flexibler Online Design Sprint mit KI-Unterstützung. Arbeiten Sie im eigenen Tempo über mehrere Wochen mit automatisierten Tools und Reports." keywords="Online Design Sprint, Remote Sprint, Digital Design Sprint, KI-gestützt, Async Sprint" canonical="https://one-next.de/sprint-uebersicht/online" structuredData={structuredData} />
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background font-workshop text-foreground">
       <Navigation />
-      
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center bg-gradient-hero pt-20">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-secondary rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary-glow rounded-full blur-3xl" />
-        </div>
-        
-        <div className="container mx-auto px-6 py-20 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h1 className="text-5xl lg:text-7xl font-bold">
-              Online Design Sprint
-              <span className="block mt-4 bg-gradient-primary bg-clip-text text-transparent">zur Problemlösung</span>
-            </h1>
 
-            <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Selbstgeführter, strukturierter Prozess für verteilte Teams – flexibel, digital, mit Schritt-für-Schritt-Anleitung.
-            </p>
-
-            <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center pt-6">
-              <Button size="lg" className=" text-lg px-8 py-6" asChild>
-                <Link to="/sprint">Jetzt starten</Link>
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-                <Link to="/sprint-uebersicht">Workshop-Variante ansehen</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ServicePageHero
+        badge="Online Sprint"
+        badgeIcon={Zap}
+        title="Online Design Sprint"
+        titleAccent="zur Problemlösung"
+        description="Selbstgeführter, strukturierter Prozess für verteilte Teams – flexibel, digital, mit Schritt-für-Schritt-Anleitung."
+        actions={
+          <>
+            <Button size="lg" asChild>
+              <Link to="/sprint">Jetzt starten</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/sprint-uebersicht">Workshop-Variante ansehen</Link>
+            </Button>
+          </>
+        }
+        image={onlineSprintImage}
+        imageAlt="Person arbeitet remote am Laptop in einer Videokonferenz mit dem Sprint-Team"
+      />
 
       {/* Was ist es? */}
       <section className="py-24 bg-background">
