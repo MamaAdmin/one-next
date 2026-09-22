@@ -44,7 +44,7 @@ export function locationToAngles(latitude: number, longitude: number): [number, 
   return [-(longitude * Math.PI) / 180, (latitude * Math.PI) / 180];
 }
 
-function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number, zoom: number): ProjectedPoint {
+function project([latitude, longitude]: GlobeLocation, centerLongitude: number, centerLatitude: number, radius: number): ProjectedPoint {
   const toRadians = Math.PI / 180;
   const latitudeRad = latitude * toRadians;
   const longitudeRad = (longitude - centerLongitude) * toRadians;
@@ -52,7 +52,7 @@ function project([latitude, longitude]: GlobeLocation, centerLongitude: number, 
   const x = Math.cos(latitudeRad) * Math.sin(longitudeRad);
   const y = Math.cos(centerLatitudeRad) * Math.sin(latitudeRad) - Math.sin(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
   const z = Math.sin(centerLatitudeRad) * Math.sin(latitudeRad) + Math.cos(centerLatitudeRad) * Math.cos(latitudeRad) * Math.cos(longitudeRad);
-  return { x: 300 + x * radius * zoom, y: 300 - y * radius * zoom, visible: z >= 0 };
+  return { x: 300 + x * radius, y: 300 - y * radius, visible: z >= 0 };
 }
 
 function interpolate(from: GlobeLocation, to: GlobeLocation, steps = 32) {
