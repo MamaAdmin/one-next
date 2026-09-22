@@ -45,8 +45,14 @@ export function getStepWarnings(stepKey: string, d: FramingStepData): string[] {
         w.push("Keine Sprint-Frage formuliert – Schritt 9 bleibt sonst leer.");
       break;
     case "9":
+      if (!d.nufBewertungen?.some((b) => b.bewertet))
+        w.push("Keine Frage bewertet – die Auswahl beruht dann auf Bauchgefühl.");
       if (leer(d.top1Challenge)) w.push("Keine Top-1-Frage gewählt.");
       if (leer(d.erfolgsmessung)) w.push("Erfolgsmessung fehlt.");
+      if (!leer(d.erfolgsZielwert) && !/\d/.test(d.erfolgsZielwert ?? ""))
+        w.push(
+          "Der Zielwert enthält keine Zahl – am Tag 5 ist dann nicht entscheidbar, ob die Frage beantwortet ist.",
+        );
       break;
     case "10":
       if (!d.preSprintTodos?.length) w.push("Keine Pre-Sprint-To-dos.");
