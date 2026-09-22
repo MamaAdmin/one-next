@@ -104,8 +104,27 @@ export interface FramingStepData {
   kiOutOfScope?: string[];
   kiSprintFragen?: string[];
   // Step 9
-  nufBewertungen?: Array<{ text: string; neuheit: number; nutzen: number; machbarkeit: number; isKi?: boolean }>;
+  nufBewertungen?: Array<{
+    id?: string;
+    text: string;
+    neuheit: number;
+    nutzen: number;
+    machbarkeit: number;
+    isKi?: boolean;
+    /** true, sobald die Zeile bewusst bewertet wurde */
+    bewertet?: boolean;
+    /** Wortlaut aus Schritt 8 zum Zeitpunkt der Übernahme */
+    sourceText?: string;
+    /** in Schritt 8 nicht mehr vorhanden */
+    missing?: boolean;
+  }>;
   top1Challenge?: string;
+  /** stabile Auswahl der Top-1-Frage (Text kann sich ändern) */
+  top1Id?: string;
+  // Step 9 – strukturierte Erfolgsmessung
+  erfolgsMetrik?: string;
+  erfolgsZielwert?: string;
+  erfolgsMethode?: string;
   // Step 10
   sprintGo?: boolean;
   preSprintTodos?: Array<{ text: string; wer: string; wann: string }>;

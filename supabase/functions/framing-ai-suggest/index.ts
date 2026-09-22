@@ -32,7 +32,7 @@ const STEP_META: Record<string, { title: string; task: string }> = {
   "6": { title: "Annahmen & Risiken", task: "Schlage kritische Annahmen zum Framing vor, verteilt auf 4 Quadranten der 2×2-Matrix (Unsicherheit × Einfluss): Kritisch (hoch/hoch), Einflussreich (niedrige Unsicherheit / hoher Einfluss), Unsicher (hohe Unsicherheit / niedriger Einfluss), Gering (niedrig/niedrig). Gib GENAU 3 Punkte je Quadrant (insgesamt 12 Items). Prefixe JEDES Item mit '[Kritisch]', '[Einflussreich]', '[Unsicher]' oder '[Gering]'." },
   "7": { title: "Constraints & Rahmenbedingungen", task: "Schlage harte Randbedingungen vor, die gesetzt sind – z. B. Budget, Technik, Zeit, Recht/Compliance, Team. Gib GENAU 5 Punkte auf Deutsch. Prefixe JEDES Item mit '[Constraint]'." },
   "8": { title: "Scope-Cut & Sprint-Fragen", task: "Schlage Punkte zu drei Kategorien vor: InScope (was gehört klar in den Sprint-Fokus – konkrete Themen, Deliverables, Aktivitäten), OutScope (was wird bewusst ausgeklammert – typische Abgrenzungen, Nice-to-haves, Folgeprojekte) und Sprintfrage (Decision Questions als 'Können wir …?'-Fragen, in 5 Tagen entscheidbar). Gib GENAU 3 Punkte je Kategorie (insgesamt 9 Items) auf Deutsch. Prefixe JEDES Item mit '[InScope]', '[OutScope]' oder '[Sprintfrage]'." },
-  "9": { title: "Priorisierung (NUF) & Erfolgsmessung", task: "Schlage messbare Erfolgskriterien für die gewählte Sprint-Frage vor, in fünf Tagen mit Prototyp und fünf Testpersonen prüfbar. Prefixe JEDES Item mit '[Erfolg]'. Ergänze danach prägnante Sprint-Fragen für die NUF-Priorisierung. WICHTIG: Gib ausschliesslich den reinen Fragetext aus – KEINE NUF-Einschätzungen, KEINE Klammer-Zusätze wie '(N: Hoch, U: Hoch, F: Hoch)', keine Bewertungen, keine Tags." },
+  "9": { title: "Sprint-Frage wählen & messbar machen", task: "Schlage AUSSCHLIESSLICH messbare Erfolgskriterien für die gewählte Sprint-Frage vor, in fünf Tagen mit Prototyp und fünf Testpersonen prüfbar. Keine neuen Sprint-Fragen – gesammelt wird in Schritt 8. Prefixe JEDES Item mit '[Erfolg]'." },
   "10": { title: "Entscheidung & Next Steps", task: "Schlage Standard-Pre-Sprint-To-dos vor (Decider, ≥5 Testnutzer:innen, Datenzugang, Constraints)." },
 };
 
@@ -215,6 +215,70 @@ Deno.serve(async (req) => {
         task: `Schlage GENAU 3 Punkte NUR für die Kategorie ${SCOPE_BUCKETS[field]} vor. Keine anderen Kategorien. Antworte auf Deutsch. Prefixe JEDES Item mit '${scopeTag[field]}'.`,
       };
     }
+    // Schritt 9: strukturierte NUF-Einschätzung je bestehender Sprint-Frage.
+    if (step_key === "9" && field === "bewertung") {
+      const fragen = Array.isArray(body?.fragen)
+        ? (body.fragen as unknown[])
+            .filter((x): x is string => typeof x === "string" && x.trim().length > 0)
+            .map((s) => s.trim())
+            .slice(0, 20)
+        : [];
+      if (!fragen.length) return json({ bewertungen: [] });
+      let ratingContent = "{}";
+      try {
+        const result = await callGemini({
+          model: "gemini-2.5-flash",
+          json: true,
+          temperature: 0.4,
+          messages: [
+            {
+              role: "system",
+              content:
+                "Du bist ein erfahrener Design-Sprint-Facilitator und bewertest Sprint-Fragen nach NUF (Neu, Nützlich, Realisierbar), je auf einer Skala von 1 bis 10. Neu = darauf gibt es noch keine belastbare Antwort. Nützlich = die Antwort verändert die nächste Entscheidung. Realisierbar = in fünf Sprint-Tagen mit Prototyp und fünf Testpersonen beantwortbar. Antworte AUSSCHLIESSLICH als JSON im Format {\"bewertungen\": [{\"frage\": string, \"neuheit\": number, \"nutzen\": number, \"machbarkeit\": number, \"begruendung\": string}]}. Übernimm den Fragetext wörtlich. Die Begründung ist genau ein kurzer Satz auf Deutsch.",
+            },
+            {
+              role: "user",
+              content: `Workshop-Kontext:\n${context}\n\nBewerte genau diese Fragen:\n${fragen
+                .map((f, i) => `${i + 1}. ${f}`)
+                .join("\n")}`,
+            },
+          ],
+        });
+        ratingContent = result.content || "{}";
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "AI error";
+        return json({ error: msg }, geminiErrorStatus(e));
+      }
+      let parsedRatings: { bewertungen?: unknown } = {};
+      try {
+        const cleaned = ratingContent
+          .replace(/^```(?:json)?\s*/i, "")
+          .replace(/```\s*$/i, "")
+          .trim();
+        parsedRatings = JSON.parse(cleaned);
+      } catch {
+        parsedRatings = {};
+      }
+      const clamp10 = (n: unknown) => {
+        const v = Math.round(Number(n));
+        if (!Number.isFinite(v)) return 5;
+        return Math.min(10, Math.max(1, v));
+      };
+      const bewertungen = Array.isArray(parsedRatings.bewertungen)
+        ? (parsedRatings.bewertungen as Record<string, unknown>[])
+            .filter((b) => b && typeof b.frage === "string")
+            .map((b) => ({
+              frage: String(b.frage).trim(),
+              neuheit: clamp10(b.neuheit),
+              nutzen: clamp10(b.nutzen),
+              machbarkeit: clamp10(b.machbarkeit),
+              begruendung: typeof b.begruendung === "string" ? b.begruendung.trim() : "",
+            }))
+            .slice(0, 20)
+        : [];
+      return json({ bewertungen, vorschlaege: [] });
+    }
+
     let aiContent = "{}";
     try {
       const result = await callGemini({
