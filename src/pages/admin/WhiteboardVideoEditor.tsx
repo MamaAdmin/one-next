@@ -47,6 +47,8 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  ChevronDown,
+  ChevronUp,
   GripVertical,
   Image as ImageIcon,
   Loader2,
@@ -135,6 +137,8 @@ const WhiteboardVideoEditor = () => {
   const [clipSeconds, setClipSeconds] = useState(DEFAULT_CLIP_SECONDS);
   const [clipDialogOpen, setClipDialogOpen] = useState(false);
   const [aiClipBusy, setAiClipBusy] = useState<string | null>(null);
+  // Läuft gerade eine Einzelaktion an einem Abschnitt?
+  const [sceneBusy, setSceneBusy] = useState<{ id: string; kind: "image" | "voice" } | null>(null);
   // Abschnitte per Ziehen neu sortieren.
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -635,6 +639,121 @@ const WhiteboardVideoEditor = () => {
       });
     }
   };
+
+  /** Einzelnen Abschnitt neu zeichnen lassen. */
+  const runSceneImage = async (sceneId: string) => {
+    if (!videoId) return;
+    const index = scenes.findIndex((s) => s.id === sceneId);
+    if (index < 0) return;
+    const scene = scenes[index];
+    const prompt = scene.imagePrompt || scene.heading;
+    if (!prompt) {
+      toast({ title: "Bitte zuerst eine Bildbeschreibung eintragen", variant: "destructive" });
+      return;
+    }
+    const perImage = rateFor(models, imageModel);
+    setSceneBusy({ id: sceneId, kind: "image" });
+    try {
+      await ensureBudget(
+        estimateCost({
+          models,
+          sceneCount: 1,
+          scenes: [scene],
+          includeScript: false,
+          includeImages: true,
+          includeVoices: false,
+          imageModel,
+        }),
+      );
+      const styleRefUrl = scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
+      const result = await generateImage(prompt, style, {
+        model: imageModel,
+        seed: project?.seed ?? null,
+        styleRefUrl,
+      });
+      const next = scenes.map((s) => (s.id === sceneId ? { ...s, imageUrl: result.url } : s));
+      setScenes(next);
+      await save({ scenes: next });
+      await logJob({
+        usageId: null,
+        videoId,
+        kind: "image",
+        model: imageModel,
+        units: 1,
+        estimatedCredits: perImage,
+        status: "done",
+        taskId: result.taskId ?? null,
+      });
+      await refreshCredits();
+      toast({ title: `Zeichnung ${index + 1} neu erstellt` });
+    } catch (error) {
+      toast({
+        title: `Zeichnung ${index + 1} fehlgeschlagen`,
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setSceneBusy(null);
+    }
+  };
+
+  /** Einzelnen Abschnitt neu vertonen. */
+  const runSceneVoice = async (sceneId: string) => {
+    if (!videoId) return;
+    const index = scenes.findIndex((s) => s.id === sceneId);
+    if (index < 0) return;
+    const scene = scenes[index];
+    if (!scene.narration.trim()) {
+      toast({ title: "Bitte zuerst einen Sprechtext eintragen", variant: "destructive" });
+      return;
+    }
+    const rate = rateFor(models, voiceModel);
+    const cost = Math.round((scene.narration.length / 1000) * rate * 100) / 100;
+    setSceneBusy({ id: sceneId, kind: "voice" });
+    try {
+      await ensureBudget(
+        estimateCost({
+          models,
+          sceneCount: 1,
+          scenes: [scene],
+          includeScript: false,
+          includeImages: false,
+          includeVoices: true,
+          voiceModel,
+        }),
+      );
+      const result = await generateVoice(scene.narration, voice, voiceModel);
+      const next = scenes.map((s) =>
+        s.id === sceneId
+          ? { ...s, audioUrl: result.url, durationInSeconds: estimateDuration(s) }
+          : s,
+      );
+      setScenes(next);
+      await save({ scenes: next });
+      await logJob({
+        usageId: null,
+        videoId,
+        kind: "voice",
+        model: voiceModel,
+        units: Math.round((scene.narration.length / 1000) * 100) / 100,
+        estimatedCredits: cost,
+        status: "done",
+        taskId: result.taskId ?? null,
+      });
+      await refreshCredits();
+      toast({ title: `Vertonung ${index + 1} neu erstellt` });
+    } catch (error) {
+      toast({
+        title: `Vertonung ${index + 1} fehlgeschlagen`,
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setSceneBusy(null);
+    }
+  };
+
+
 
   const runKieVideo = async () => {
     if (!videoId) return;
@@ -1404,6 +1523,28 @@ const WhiteboardVideoEditor = () => {
                       >
                         <GripVertical className="w-4 h-4" />
                       </span>
+                      <div className="flex flex-col">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5"
+                          aria-label="Nach oben"
+                          disabled={index === 0}
+                          onClick={() => moveScene(index, index - 1)}
+                        >
+                          <ChevronUp className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5"
+                          aria-label="Nach unten"
+                          disabled={index === scenes.length - 1}
+                          onClick={() => moveScene(index, index + 1)}
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
+                      </div>
                       <AccordionTrigger className="flex-1 hover:no-underline">
                         <div className="flex items-center gap-3 text-left">
                           <Badge variant="secondary">Abschnitt {index + 1}</Badge>
@@ -1467,6 +1608,34 @@ const WhiteboardVideoEditor = () => {
                             })
                           }
                         />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={sceneBusy !== null || working !== null}
+                          onClick={() => void runSceneImage(scene.id)}
+                        >
+                          {sceneBusy?.id === scene.id && sceneBusy.kind === "image" ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <ImageIcon className="w-4 h-4 mr-2" />
+                          )}
+                          Zeichnung neu erzeugen
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={sceneBusy !== null || working !== null}
+                          onClick={() => void runSceneVoice(scene.id)}
+                        >
+                          {sceneBusy?.id === scene.id && sceneBusy.kind === "voice" ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Mic className="w-4 h-4 mr-2" />
+                          )}
+                          Vertonung neu erzeugen
+                        </Button>
                       </div>
                       <SceneMediaEditor
                         scene={scene}
