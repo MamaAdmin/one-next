@@ -160,7 +160,7 @@ export default function FramingStepCard({
   const realStepCount = FRAMING_STEPS.filter((s) => s.variant !== "intro").length;
 
   return (
-    <Card className="border-none shadow-xl">
+    <Card className="border-none shadow-xl workshop-type">
       <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6">
         {step.pausenHinweis ? (
           <div className="flex items-start gap-2 rounded-lg border border-border-accent bg-accent-soft p-3 text-sm">
@@ -175,8 +175,8 @@ export default function FramingStepCard({
               Timebox {step.timeboxMin} Min · Schritt {step.index} von {realStepCount}
             </Badge>
 
-            <h2 className="text-xl sm:text-2xl font-bold">{step.title}</h2>
-            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
+            <h2 className="text-2xl sm:text-3xl font-bold">{step.title}</h2>
+            <p className="text-base sm:text-lg text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
               <span>{step.frage}</span>
               {step.variant === "nuf" ? (
                 <a
@@ -192,7 +192,7 @@ export default function FramingStepCard({
               ) : null}
 
             </p>
-            <p className="text-sm text-muted-foreground mt-2">{step.arbeit}</p>
+            <p className="text-base text-muted-foreground mt-2">{step.arbeit}</p>
 
             {step.nutzen ? (
               <div className="mt-3 flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
