@@ -21,6 +21,8 @@ import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 
 
 import type { SprintStepData } from "@/features/sprint/types";
+import { WorkspaceSidebar, useWorkspaceSidebar, workspaceGridClass } from "@/components/sprint/WorkspaceSidebar";
+
 
 
 const DAY_LAST_STEP: Record<number, string> = {
