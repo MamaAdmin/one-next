@@ -3,6 +3,9 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ChevronDown, Play } from "lucide-react";
 import { INTRO_VIDEO_URL } from "@/config/framingConfig";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useVideoSlot } from "@/hooks/useVideoLibrary";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
