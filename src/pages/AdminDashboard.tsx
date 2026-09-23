@@ -18,6 +18,8 @@ import BMADInvitationManager from "@/components/admin/BMADInvitationManager";
 import UserRoleManager from "@/components/admin/UserRoleManager";
 import AppFeedbackTab from "@/components/admin/AppFeedbackTab";
 import SprintAdminManager from "@/components/admin/SprintAdminManager";
+import VideoLibraryManager from "@/components/admin/VideoLibraryManager";
+
 import { 
   BMADSessionIcon, 
   BMADArtifactIcon, 
@@ -29,7 +31,7 @@ import {
   CompassIcon,
   LinkIcon
 } from "@/components/ui/custom-icons";
-import { Clapperboard, FileText, UserPlus } from "lucide-react";
+import { Clapperboard, FileText, UserPlus, Video } from "lucide-react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 
@@ -161,6 +163,15 @@ const AdminDashboard = () => {
                       <span>SEO & Redirects</span>
                     </Button>
 
+                    <Button
+                      variant="outline"
+                      className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      onClick={() => setCmsSection('videos')}
+                    >
+                      <Video className="w-14 h-14 text-primary" />
+                      <span>Video-Bibliothek</span>
+                    </Button>
+
                     <Link to="/admin/whiteboard-videos" className="w-full">
                       <Button
                         variant="outline"
@@ -172,6 +183,7 @@ const AdminDashboard = () => {
                     </Link>
                   </div>
 
+
                   {cmsSection === 'articles' && <ArticleManagerEnhanced />}
                   {cmsSection === 'media' && <MediaManager />}
                   {cmsSection === 'pages' && <PageContentManager />}
@@ -179,6 +191,8 @@ const AdminDashboard = () => {
                   {cmsSection === 'navigation' && <NavigationManager />}
                   {cmsSection === 'page-templates' && <PageTemplateManager />}
                   {cmsSection === 'seo' && <RedirectManager />}
+                  {cmsSection === 'videos' && <VideoLibraryManager />}
+
                 </div>
               </Card>
             </TabsContent>
