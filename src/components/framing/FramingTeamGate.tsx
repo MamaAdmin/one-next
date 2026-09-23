@@ -33,20 +33,20 @@ export default function FramingTeamGate({ sprintId, onContinue }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 workshop-type">
       <Card className="border-none shadow-xl">
         <CardContent className="p-6 lg:p-8 space-y-4">
           <div>
             <Badge variant="secondary" className="mb-2">
               <Users className="w-3 h-3 mr-1" /> Schritt 0 · Team-Konstellation
             </Badge>
-            <h2 className="text-2xl font-bold">Wer macht mit?</h2>
-            <p className="text-sm text-muted-foreground mt-2">
+            <h2 className="text-2xl sm:text-3xl font-bold">Wer macht mit?</h2>
+            <p className="text-base text-muted-foreground mt-2">
               Als <strong>Moderator</strong> stellst du dein Team zusammen und lädst per E-Mail ein.
               Ein <strong>Decider</strong> wird empfohlen, damit der Sprint verbindlich bleibt. Eine
               Person kann mehrere Rollen halten – trage sie dann für jede Rolle einzeln ein.
             </p>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               Steht dein Team noch nicht komplett? Du kannst jederzeit später zurückkehren und
               Rollen ergänzen — beim Sprint-Start (Kickoff) wird die Team-Konstellation nochmal
               abgefragt, falls sie leer ist.
