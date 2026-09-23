@@ -19,6 +19,8 @@ import FramingStepCard from "@/components/framing/FramingStepCard";
 import FramingCompletionPanel from "@/components/framing/FramingCompletionPanel";
 import FramingTeamGate from "@/components/framing/FramingTeamGate";
 import type { FramingStepData } from "@/features/framing/types";
+import { WorkspaceSidebar, useWorkspaceSidebar, workspaceGridClass } from "@/components/sprint/WorkspaceSidebar";
+
 
 export default function FramingWorkspace() {
   const { id } = useParams<{ id: string }>();
