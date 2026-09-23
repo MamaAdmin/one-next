@@ -42,7 +42,9 @@ export default function SprintWorkspace() {
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
+  const sidebar = useWorkspaceSidebar("sprint-sidebar");
+  const { setNavOpen } = sidebar;
+
   const contentRef = useRef<HTMLDivElement>(null);
 
   function afterNavAction() {
