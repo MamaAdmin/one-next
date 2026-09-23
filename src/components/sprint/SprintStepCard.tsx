@@ -508,7 +508,7 @@ export default function SprintStepCard({
   }, [allOptions, rankByOption]);
 
   return (
-    <Card className="border-none shadow-xl">
+    <Card className="border-none shadow-xl workshop-type">
       <CardContent className="p-4 sm:p-6 lg:p-12 space-y-6 sm:space-y-8">
         {/* Progress + Day */}
         <div className="flex items-center justify-between flex-wrap gap-2">
