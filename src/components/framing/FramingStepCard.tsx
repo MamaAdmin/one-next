@@ -2862,7 +2862,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
         {/* Block 2 – KI-Vorschläge */}
         <div className="rounded-lg border border-accent/60 bg-accent-soft p-4 text-foreground">
           <div className="flex items-center gap-2 font-semibold mb-2">
-            <Sparkles className="w-4 h-4" /> KI-Vorschläge (im Pink-Akzent)
+            <Sparkles className="w-4 h-4" /> KI-Vorschläge (im Hellblau-Akzent)
           </div>
           <ul className="text-sm space-y-1 list-disc pl-5">
             <li>
