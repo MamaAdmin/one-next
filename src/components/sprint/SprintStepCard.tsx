@@ -535,6 +535,7 @@ export default function SprintStepCard({
 
         {/* 2. Anweisungsblock */}
         <div className="rounded-lg bg-muted/40 p-5 space-y-3 text-sm">
+          <h3 className="font-semibold text-base">Anleitung</h3>
           <p>
             <span className="font-semibold">
               {sprint.modus === "solo" ? "Allein arbeiten" : "Zusammen arbeiten"}:
@@ -566,13 +567,13 @@ export default function SprintStepCard({
         </div>
 
         {/* 2a. Daten aus früheren Schritten */}
-        {contextEntries.length > 0 ? (
-          <Accordion type="single" collapsible className="border rounded-lg">
-            <AccordionItem value="ctx" className="border-none">
-              <AccordionTrigger className="px-4">
-                Daten aus früheren Schritten
-              </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
+        <Accordion type="single" collapsible className="border rounded-lg">
+          <AccordionItem value="ctx" className="border-none">
+            <AccordionTrigger className="px-4">
+              Daten aus früheren Schritten
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              {contextEntries.length > 0 ? (
                 <ul className="space-y-3 text-sm">
                   {contextEntries.map((e) => (
                     <li key={e.key}>
@@ -583,10 +584,12 @@ export default function SprintStepCard({
                     </li>
                   ))}
                 </ul>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        ) : null}
+              ) : (
+                <p className="text-sm text-muted-foreground">Für diesen Schritt sind keine früheren Daten hinterlegt.</p>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* 2b. Miro-Board für Crazy 8s – vorübergehend ausgeblendet, Code bleibt erhalten */}
         {false && step.variant === "crazy8s" ? (
