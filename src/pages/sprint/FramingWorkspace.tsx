@@ -166,8 +166,9 @@ export default function FramingWorkspace() {
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Problem Framing", active: true }]} />
 
-      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 pt-28 sm:pt-32 pb-4 sm:pb-6 lg:pb-16">
+      <main className="flex-1 w-full max-w-[1340px] mx-auto pl-3 sm:pl-4 lg:pl-6 pr-6 sm:pr-10 lg:pr-16 pt-28 sm:pt-32 pb-28 lg:pb-32">
         <div className="mb-6">
+
           <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
             ← Sprint-Übersicht
           </Link>
