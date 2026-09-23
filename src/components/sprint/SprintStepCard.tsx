@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy } from "lucide-react";
+import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
@@ -20,6 +20,7 @@ import { MAP_LANES } from "@/features/sprint/types";
 import Crazy8sMiro from "@/components/sprint/Crazy8sMiro";
 import { buildFramingSeed } from "@/features/sprint/framingSeed";
 import { useFramingForSprint } from "@/hooks/useFramingForSprint";
+import { getSprintStepWarnings } from "@/features/sprint/validation";
 import {
   Select,
   SelectContent,
@@ -66,6 +67,7 @@ export default function SprintStepCard({
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
+  const [warnings, setWarnings] = useState<string[]>([]);
   const [herkunft, setHerkunft] = useState<NonNullable<SprintStepData["herkunft"]>>(
     initial.herkunft ?? {},
   );
@@ -94,6 +96,7 @@ export default function SprintStepCard({
     setAiRank(d.aiRank);
     setHerkunft(d.herkunft ?? {});
     setFramingSeeded(!!d.framingSeeded);
+    setWarnings([]);
     latestDataRef.current = {
       antworten: toAntwortenArray(d),
       vorschlaege: d.vorschlaege ?? [],
@@ -364,10 +367,27 @@ export default function SprintStepCard({
 
 
 
-  async function persist(completed: boolean) {
+  async function persist(completed: boolean, force = false) {
+    const data = latestDataRef.current;
+    if (completed) {
+      const w = getSprintStepWarnings(step, data);
+      setWarnings(w);
+      // Bei offenen Punkten speichern wir als abgeschlossen, bleiben aber stehen,
+      // damit der gelbe Hinweis sichtbar ist. Erst "Trotzdem weiter" navigiert.
+      if (w.length > 0 && !force) {
+        setSaving(true);
+        try {
+          await onSave(data, { completed: true });
+        } finally {
+          setSaving(false);
+        }
+        return;
+      }
+    } else {
+      setWarnings([]);
+    }
     setSaving(true);
     try {
-      const data = latestDataRef.current;
       await onSave(data, { completed });
       if (completed && onNext) onNext();
     } finally {
@@ -943,6 +963,23 @@ export default function SprintStepCard({
           </Accordion>
         ) : null}
 
+        {warnings.length > 0 ? (
+          <div className="rounded-lg border-l-4 border-l-amber-500 border border-amber-500/30 bg-amber-50 p-4 text-sm dark:bg-amber-950/30">
+            <div className="flex items-center gap-2 font-medium mb-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              Noch offen in diesem Schritt
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-foreground/80">
+              {warnings.map((w, i) => (
+                <li key={i}>{w}</li>
+              ))}
+            </ul>
+            <p className="mt-2 text-muted-foreground">
+              Du kannst trotzdem weiter und später zurückkommen.
+            </p>
+          </div>
+        ) : null}
+
         {/* 6. Buttons */}
         <div className="flex justify-between items-center pt-4 border-t">
           <Button variant="ghost" onClick={onPrev} disabled={!onPrev || saving}>
@@ -955,10 +992,16 @@ export default function SprintStepCard({
               </Button>
               <Button
                 className=""
-                onClick={() => persist(true)}
+                onClick={() => persist(true, warnings.length > 0)}
                 disabled={saving}
               >
-                {saving ? "Speichert …" : onNext ? "Weiter" : "Sprint abschließen"}
+                {saving
+                  ? "Speichert …"
+                  : warnings.length > 0
+                    ? "Trotzdem weiter"
+                    : onNext
+                      ? "Weiter"
+                      : "Sprint abschließen"}
               </Button>
             </div>
             {typeof step.stimmenLimit === "number" && auswahl.length === 0 &&
