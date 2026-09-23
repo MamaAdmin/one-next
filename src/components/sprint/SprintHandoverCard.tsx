@@ -162,14 +162,14 @@ export default function SprintHandoverCard({ sprint, onEdit }: Props) {
               </p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Zuklappen" : "Aufklappen"}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary transition-colors duration-200 hover:bg-primary/20"
           >
             {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </Button>
+          </button>
         </div>
 
         {open ? (
