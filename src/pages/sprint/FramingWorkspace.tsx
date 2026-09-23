@@ -49,7 +49,7 @@ export default function FramingWorkspace() {
   const session = sessionQ.data;
   const steps = stepsQ.data ?? [];
 
-  const currentIndex = session?.current_step ?? 1;
+  const currentIndex = session?.current_step ?? 0;
   const currentDef = getFramingStepByIndex(currentIndex) ?? FRAMING_STEPS[0];
   const currentRow = steps.find((s) => s.step_key === currentDef.key);
 
@@ -121,6 +121,10 @@ export default function FramingWorkspace() {
   }
 
   async function handleNext() {
+    if (currentDef.variant === "intro") {
+      openTeamView();
+      return;
+    }
     if (currentDef.index === realSteps.length) {
       setShowCompletion(true);
       return;
@@ -226,6 +230,27 @@ export default function FramingWorkspace() {
             }
           >
 
+              {FRAMING_STEPS.filter((s) => s.variant === "intro").map((def) => {
+                const isCurrent = def.key === currentDef.key && !showCompletion && !showTeam;
+                return (
+                  <button
+                    key={def.key}
+                    type="button"
+                    onClick={() => goTo(def.index)}
+                    className={`w-full flex items-start gap-2 text-left text-sm px-2 py-1.5 rounded-md transition-colors ${
+                      isCurrent
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "hover:bg-muted"
+                    }`}
+                  >
+                    <Info className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                    <span>
+                      <span className="text-xs text-muted-foreground block">Einführung</span>
+                      {def.title}
+                    </span>
+                  </button>
+                );
+              })}
               <button
                 type="button"
                 onClick={openTeamView}
@@ -241,11 +266,10 @@ export default function FramingWorkspace() {
                   Team-Konstellation
                 </span>
               </button>
-              {FRAMING_STEPS.map((def) => {
+              {FRAMING_STEPS.filter((s) => s.variant !== "intro").map((def) => {
                 const row = steps.find((s) => s.step_key === def.key);
                 const done = !!row?.completed_at;
                 const isCurrent = def.key === currentDef.key && !showCompletion && !showTeam;
-                const isIntro = def.variant === "intro";
                 return (
                   <button
                     key={def.key}
@@ -257,9 +281,7 @@ export default function FramingWorkspace() {
                         : "hover:bg-muted"
                     }`}
                   >
-                    {isIntro ? (
-                      <Info className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
-                    ) : done ? (
+                    {done ? (
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
                     ) : isCurrent ? (
                       <Dot className="w-4 h-4 mt-0.5 shrink-0" />
@@ -267,13 +289,9 @@ export default function FramingWorkspace() {
                       <Circle className="w-4 h-4 mt-0.5 text-muted-foreground/40 shrink-0" />
                     )}
                     <span>
-                      {isIntro ? (
-                        <span className="text-xs text-muted-foreground block">Einführung</span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground block">
-                          {def.timeboxMin}′
-                        </span>
-                      )}
+                      <span className="text-xs text-muted-foreground block">
+                        {def.timeboxMin}′
+                      </span>
                       {def.title}
                     </span>
                   </button>

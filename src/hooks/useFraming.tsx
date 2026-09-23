@@ -83,7 +83,7 @@ export function useCreateFramingSession() {
       if (!owner_id) throw new Error("Nicht angemeldet.");
       const { data, error } = await supabase
         .from(SESSIONS)
-        .insert({ owner_id, titel_arbeitstitel: input.titel_arbeitstitel })
+        .insert({ owner_id, titel_arbeitstitel: input.titel_arbeitstitel, current_step: 0 })
         .select("*")
         .single();
       if (error) throw error;
