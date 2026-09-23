@@ -30,7 +30,9 @@ export default function FramingWorkspace() {
   const saveStep = useSaveFramingStep(id ?? "");
   const setCurrent = useSetFramingCurrentStep(id ?? "");
   const [showCompletion, setShowCompletion] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
+  const sidebar = useWorkspaceSidebar("framing-sidebar");
+  const { setNavOpen } = sidebar;
+
   const contentRef = useRef<HTMLDivElement>(null);
   const showTeam = searchParams.get("view") === "team";
 
