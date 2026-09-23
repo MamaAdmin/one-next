@@ -14,7 +14,7 @@ import {
 import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import type { SprintStepDef } from "@/features/sprint/steps";
+import { getStepDef, type SprintStepDef } from "@/features/sprint/steps";
 import type { SprintRow, SprintStepData, SprintStepRow } from "@/features/sprint/types";
 import { MAP_LANES } from "@/features/sprint/types";
 import Crazy8sMiro from "@/components/sprint/Crazy8sMiro";
@@ -1061,8 +1061,9 @@ function buildContextEntries(
       continue;
     }
     const row = byKey.get(ref);
+    const stepLabel = getStepDef(ref)?.title ?? `Schritt ${ref}`;
     if (!row) {
-      entries.push({ key: ref, label: `Schritt ${ref}`, value: "(noch nicht ausgefüllt)" });
+      entries.push({ key: ref, label: stepLabel, value: "(noch nicht ausgefüllt)" });
       continue;
     }
     const d = row.data as SprintStepData;
@@ -1073,7 +1074,7 @@ function buildContextEntries(
     if (chosen) value.auswahl = chosen;
     entries.push({
       key: ref,
-      label: `Schritt ${ref}`,
+      label: stepLabel,
       value: Object.keys(value).length > 0 ? value : "(noch keine Eingaben)",
     });
   }
