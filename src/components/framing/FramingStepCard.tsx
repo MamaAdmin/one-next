@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode, type DragEvent } from "react";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { ChevronDown, Play } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+
 import { INTRO_VIDEO_URL } from "@/config/framingConfig";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { useVideoSlot } from "@/hooks/useVideoLibrary";
