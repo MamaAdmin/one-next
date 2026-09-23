@@ -291,8 +291,8 @@ export default function FramingWorkspace() {
                 <Flag className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>Abschluss · Challenge Statement</span>
               </button>
-            </nav>
-          </aside>
+          </WorkspaceSidebar>
+
 
           <div ref={contentRef} className="space-y-6 scroll-mt-20">
             {showTeam ? (
