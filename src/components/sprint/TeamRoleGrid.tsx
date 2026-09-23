@@ -169,7 +169,7 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold">{role.title}</h3>
+                      <h3 className="font-semibold text-base">{role.title}</h3>
                       {isModerator ? (
                         <Badge className="text-[10px]">Sprint-Owner</Badge>
                       ) : role.required ? (
@@ -180,7 +180,7 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
                         <Badge variant="outline" className="text-[10px]">Optional</Badge>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                       {role.description}
                     </p>
                   </div>
