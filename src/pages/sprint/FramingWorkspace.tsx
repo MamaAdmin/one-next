@@ -19,6 +19,8 @@ import FramingStepCard from "@/components/framing/FramingStepCard";
 import FramingCompletionPanel from "@/components/framing/FramingCompletionPanel";
 import FramingTeamGate from "@/components/framing/FramingTeamGate";
 import type { FramingStepData } from "@/features/framing/types";
+import { WorkspaceSidebar, useWorkspaceSidebar, workspaceGridClass } from "@/components/sprint/WorkspaceSidebar";
+
 
 export default function FramingWorkspace() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +30,9 @@ export default function FramingWorkspace() {
   const saveStep = useSaveFramingStep(id ?? "");
   const setCurrent = useSetFramingCurrentStep(id ?? "");
   const [showCompletion, setShowCompletion] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
+  const sidebar = useWorkspaceSidebar("framing-sidebar");
+  const { setNavOpen } = sidebar;
+
   const contentRef = useRef<HTMLDivElement>(null);
   const showTeam = searchParams.get("view") === "team";
 
@@ -166,8 +170,9 @@ export default function FramingWorkspace() {
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Problem Framing", active: true }]} />
 
-      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 pt-28 sm:pt-32 pb-4 sm:pb-6 lg:pb-16">
+      <main className="flex-1 w-full max-w-[1340px] mx-auto pl-3 sm:pl-4 lg:pl-6 pr-6 sm:pr-10 lg:pr-16 pt-28 sm:pt-32 pb-28 lg:pb-32">
         <div className="mb-6">
+
           <Link to="/sprint" className="text-sm text-muted-foreground hover:underline">
             ← Sprint-Übersicht
           </Link>
@@ -209,24 +214,18 @@ export default function FramingWorkspace() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr] gap-6 lg:gap-8">
-          <aside className="md:sticky md:top-24 md:self-start space-y-3">
-            <button
-              type="button"
-              onClick={() => setNavOpen((o) => !o)}
-              className="lg:hidden w-full flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm"
-              aria-expanded={navOpen}
-            >
-              <span className="truncate">
-                {showTeam
-                  ? "Team-Konstellation"
-                  : showCompletion
-                    ? "Abschluss · Challenge Statement"
-                    : `Schritt ${currentDef.index}: ${currentDef.title}`}
-              </span>
-              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
-            </button>
-            <nav className={`space-y-1 ${navOpen ? "block" : "hidden"} lg:block`}>
+        <div className={workspaceGridClass(sidebar)}>
+          <WorkspaceSidebar
+            state={sidebar}
+            mobileLabel={
+              showTeam
+                ? "Team-Konstellation"
+                : showCompletion
+                  ? "Abschluss · Challenge Statement"
+                  : `Schritt ${currentDef.index}: ${currentDef.title}`
+            }
+          >
+
               <button
                 type="button"
                 onClick={openTeamView}
@@ -296,8 +295,8 @@ export default function FramingWorkspace() {
                 <Flag className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>Abschluss · Challenge Statement</span>
               </button>
-            </nav>
-          </aside>
+          </WorkspaceSidebar>
+
 
           <div ref={contentRef} className="space-y-6 scroll-mt-20">
             {showTeam ? (

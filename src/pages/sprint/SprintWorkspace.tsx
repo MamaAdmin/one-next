@@ -21,6 +21,8 @@ import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 
 
 import type { SprintStepData } from "@/features/sprint/types";
+import { WorkspaceSidebar, useWorkspaceSidebar, workspaceGridClass } from "@/components/sprint/WorkspaceSidebar";
+
 
 
 const DAY_LAST_STEP: Record<number, string> = {
@@ -40,7 +42,9 @@ export default function SprintWorkspace() {
   const setCurrentStep = useSetCurrentStep(id ?? "");
   const [summaryDay, setSummaryDay] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
+  const sidebar = useWorkspaceSidebar("sprint-sidebar");
+  const { setNavOpen } = sidebar;
+
   const contentRef = useRef<HTMLDivElement>(null);
 
   function afterNavAction() {
@@ -127,59 +131,55 @@ export default function SprintWorkspace() {
       <Navigation />
       <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint" }, { label: "Sprint", active: true }]} />
 
-      <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 pt-28 sm:pt-32 pb-4 sm:pb-6 lg:pb-16">
-        <div className="grid md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] gap-6 lg:gap-8">
+      <main className="flex-1 w-full max-w-[1340px] mx-auto pl-3 sm:pl-4 lg:pl-6 pr-6 sm:pr-10 lg:pr-16 pt-28 sm:pt-32 pb-28 lg:pb-32">
+        <div className={workspaceGridClass(sidebar)}>
           {/* Side-Nav */}
-          <aside className="md:sticky md:top-24 md:self-start space-y-4">
-            <Link
-              to="/sprint"
-              className="text-sm text-muted-foreground hover:underline block"
-            >
-              ← Übersicht
-            </Link>
-            <div>
-              <div className="flex items-start justify-between gap-2">
-                <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
-                <div className="flex items-center gap-0.5 shrink-0">
-                  <Button
+          <WorkspaceSidebar
+            state={sidebar}
+            mobileLabel={
+              summaryDay !== null
+                ? `One Pager · Tag ${summaryDay}`
+                : `${currentDef.day}. ${currentDef.title}`
+            }
+            header={
+              <div className="space-y-4">
+                <Link
+                  to="/sprint"
+                  className="text-sm text-muted-foreground hover:underline block"
+                >
+                  ← Übersicht
+                </Link>
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <h2 className="text-xl font-bold leading-tight">{sprint.titel}</h2>
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7"
+                        onClick={() => setEditOpen(true)}
+                        title="Sprint-Grundlagen bearbeiten"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Modus: {sprint.modus === "solo" ? "Solo" : "Team"}
+                  </p>
+                  <button
                     type="button"
-                    size="icon"
-                    variant="ghost"
-                    className="h-7 w-7"
                     onClick={() => setEditOpen(true)}
-                    title="Sprint-Grundlagen bearbeiten"
+                    className="mt-2 text-xs text-primary hover:underline"
                   >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </Button>
+                    Titel & Problemstellung bearbeiten
+                  </button>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Modus: {sprint.modus === "solo" ? "Solo" : "Team"}
-              </p>
-              <button
-                type="button"
-                onClick={() => setEditOpen(true)}
-                className="mt-2 text-xs text-primary hover:underline"
-              >
-                Titel & Problemstellung bearbeiten
-              </button>
-            </div>
+            }
+          >
 
-            <button
-              type="button"
-              onClick={() => setNavOpen((o) => !o)}
-              className="lg:hidden w-full flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm"
-              aria-expanded={navOpen}
-            >
-              <span className="truncate">
-                {summaryDay !== null
-                  ? `One Pager · Tag ${summaryDay}`
-                  : `${currentDef.day}. ${currentDef.title}`}
-              </span>
-              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            <nav className={`space-y-4 ${navOpen ? "block" : "hidden"} lg:block`}>
               {DAYS.map((d) => {
                 const dayStepDefs = SPRINT_STEPS.filter((s) => s.day === d.day);
                 return (
@@ -244,8 +244,8 @@ export default function SprintWorkspace() {
                   </div>
                 );
               })}
-            </nav>
-          </aside>
+          </WorkspaceSidebar>
+
 
           {/* Step card or One Pager */}
           <div ref={contentRef} className="space-y-6 scroll-mt-20">
