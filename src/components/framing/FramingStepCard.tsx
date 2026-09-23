@@ -160,7 +160,7 @@ export default function FramingStepCard({
   const realStepCount = FRAMING_STEPS.filter((s) => s.variant !== "intro").length;
 
   return (
-    <Card className="border-none shadow-xl">
+    <Card className="border-none shadow-xl workshop-type">
       <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6">
         {step.pausenHinweis ? (
           <div className="flex items-start gap-2 rounded-lg border border-border-accent bg-accent-soft p-3 text-sm">
