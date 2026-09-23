@@ -121,6 +121,10 @@ export default function FramingWorkspace() {
   }
 
   async function handleNext() {
+    if (currentDef.variant === "intro") {
+      openTeamView();
+      return;
+    }
     if (currentDef.index === realSteps.length) {
       setShowCompletion(true);
       return;
