@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState, type ReactNode, type DragEvent } from "react";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { ChevronDown, Play } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+
 import { INTRO_VIDEO_URL } from "@/config/framingConfig";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useVideoSlot } from "@/hooks/useVideoLibrary";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -2756,61 +2759,12 @@ function VariantNextSteps({
 
 /* ---------- Intro / How-To slide ---------- */
 
-/** Wandelt YouTube-/Vimeo-URLs in Embed-URLs um. Ungültig → null. */
-function toEmbedUrl(raw: string): string | null {
-  const url = raw.trim();
-  if (!url) return null;
-  try {
-    const u = new URL(url);
-    // YouTube: youtube.com/watch?v=, youtu.be/
-    if (u.hostname.includes("youtube.com")) {
-      const v = u.searchParams.get("v");
-      if (v) return `https://www.youtube-nocookie.com/embed/${v}`;
-      return null;
-    }
-    if (u.hostname === "youtu.be" || u.hostname === "www.youtu.be") {
-      const id = u.pathname.replace(/^\//, "");
-      if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
-      return null;
-    }
-    // Vimeo: vimeo.com/ID
-    if (u.hostname.includes("vimeo.com")) {
-      const id = u.pathname.replace(/^\//, "").split("/")[0];
-      if (id && /^\d+$/.test(id)) return `https://player.vimeo.com/video/${id}?dnt=1`;
-      return null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+function IntroVideo({ url }: { url: string }) {
+  const { data: slotVideo } = useVideoSlot("framing_intro");
+  const source = slotVideo?.video_url || url;
+  return <VideoPlayer url={source} title="So arbeitest du mit dem Tool" />;
 }
 
-function IntroVideo({ url }: { url: string }) {
-  const embed = toEmbedUrl(url);
-  return (
-    <div className="overflow-hidden rounded-lg border bg-background">
-      <AspectRatio ratio={16 / 9}>
-        {embed ? (
-          <iframe
-            src={embed}
-            title="So arbeitest du mit dem Tool"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            className="h-full w-full"
-          />
-        ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-muted/30 text-muted-foreground">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border">
-              <Play className="w-5 h-5" />
-            </div>
-            <span className="text-sm">Video folgt in Kürze</span>
-          </div>
-        )}
-      </AspectRatio>
-    </div>
-  );
-}
 
 function IntroSlide({ onNext }: { onNext?: () => void }) {
   return (
