@@ -2771,6 +2771,26 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
           </p>
         </div>
 
+        {/* Warum Problem Framing vor dem Design Sprint? – aufklappbar */}
+        <Collapsible>
+          <CollapsibleTrigger className="w-full flex items-center gap-2 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40">
+            <HelpCircle className="w-4 h-4 shrink-0" />
+            <span className="flex-1">Warum Problem Framing vor dem Design Sprint?</span>
+            <ChevronDown className="w-4 h-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="rounded-lg border border-t-0 bg-background p-4 text-sm text-foreground/80 leading-relaxed">
+              Ein Design Sprint liefert in wenigen Tagen einen getesteten Lösungsansatz, allerdings nur, wenn er am richtigen Problem arbeitet. Problem Framing klärt genau das vorab: Worum geht es wirklich, für wen, und woran erkennt ihr Erfolg? Du und dein Team bündelt euer Wissen, trennt Symptome von Ursachen und legt Annahmen, Risiken und Rahmenbedingungen offen. Am Ende steht eine gemeinsame Sprint-Frage mit einem Challenge Statement. Damit startet der Sprint mit einem klaren Ziel, und ihr verliert die ersten Stunden nicht mit Grundsatzdiskussionen.
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Video-Slot – So arbeitest du mit dem Tool */}
+        <div className="rounded-lg border bg-background p-4 space-y-3">
+          <div className="font-semibold">So arbeitest du mit dem Tool</div>
+          <IntroVideo url={INTRO_VIDEO_URL} />
+        </div>
+
         {/* Block 1 – Eigene Anmerkungen */}
         <div className="rounded-lg border bg-background p-4">
           <div className="flex items-center gap-2 font-semibold mb-2">
