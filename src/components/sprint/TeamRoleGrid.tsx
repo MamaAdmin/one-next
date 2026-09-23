@@ -131,7 +131,7 @@ export function TeamRoleGrid({ sprintId, emphasizeDeciderMissing = true }: Props
   const teamOverLimit = teamCount > RECOMMENDED_TEAM_SIZE;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 workshop-type">
 
 
       <div
