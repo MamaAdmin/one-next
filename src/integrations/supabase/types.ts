@@ -3295,6 +3295,42 @@ export type Database = {
         }
         Relationships: []
       }
+      video_library: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          provider: string
+          slot_key: string | null
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          provider?: string
+          slot_key?: string | null
+          title: string
+          updated_at?: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          provider?: string
+          slot_key?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       whiteboard_video_series: {
         Row: {
           created_at: string
