@@ -210,24 +210,18 @@ export default function FramingWorkspace() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr] gap-6 lg:gap-8">
-          <aside className="md:sticky md:top-24 md:self-start space-y-3">
-            <button
-              type="button"
-              onClick={() => setNavOpen((o) => !o)}
-              className="lg:hidden w-full flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-sm"
-              aria-expanded={navOpen}
-            >
-              <span className="truncate">
-                {showTeam
-                  ? "Team-Konstellation"
-                  : showCompletion
-                    ? "Abschluss · Challenge Statement"
-                    : `Schritt ${currentDef.index}: ${currentDef.title}`}
-              </span>
-              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${navOpen ? "rotate-180" : ""}`} />
-            </button>
-            <nav className={`space-y-1 ${navOpen ? "block" : "hidden"} lg:block`}>
+        <div className={workspaceGridClass(sidebar)}>
+          <WorkspaceSidebar
+            state={sidebar}
+            mobileLabel={
+              showTeam
+                ? "Team-Konstellation"
+                : showCompletion
+                  ? "Abschluss · Challenge Statement"
+                  : `Schritt ${currentDef.index}: ${currentDef.title}`
+            }
+          >
+
               <button
                 type="button"
                 onClick={openTeamView}
