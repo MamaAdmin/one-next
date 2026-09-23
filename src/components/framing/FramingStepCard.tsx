@@ -175,8 +175,8 @@ export default function FramingStepCard({
               Timebox {step.timeboxMin} Min · Schritt {step.index} von {realStepCount}
             </Badge>
 
-            <h2 className="text-xl sm:text-2xl font-bold">{step.title}</h2>
-            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
+            <h2 className="text-2xl sm:text-3xl font-bold">{step.title}</h2>
+            <p className="text-base sm:text-lg text-muted-foreground mt-1 inline-flex items-center gap-1.5 flex-wrap">
               <span>{step.frage}</span>
               {step.variant === "nuf" ? (
                 <a
