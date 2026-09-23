@@ -2829,10 +2829,12 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
 
         {/* Warum Problem Framing vor dem Design Sprint? – aufklappbar */}
         <Collapsible>
-          <CollapsibleTrigger className="w-full flex items-center gap-2 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40">
+          <CollapsibleTrigger className="group/intro w-full flex items-center gap-3 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40">
             <HelpCircle className="w-4 h-4 shrink-0" />
             <span className="flex-1">Warum Problem Framing vor dem Design Sprint?</span>
-            <ChevronDown className="w-4 h-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary transition-all duration-200 group-hover/intro:bg-primary/20 [[data-state=open]_&]:rotate-180">
+              <ChevronDown className="w-4 h-4" />
+            </span>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div className="rounded-lg border border-t-0 bg-background p-4 text-sm text-foreground/80 leading-relaxed">
