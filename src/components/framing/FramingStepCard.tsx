@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode, type DragEvent } from "react";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ChevronDown, Play } from "lucide-react";
+import { INTRO_VIDEO_URL } from "@/config/framingConfig";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -2752,6 +2756,62 @@ function VariantNextSteps({
 
 /* ---------- Intro / How-To slide ---------- */
 
+/** Wandelt YouTube-/Vimeo-URLs in Embed-URLs um. Ungültig → null. */
+function toEmbedUrl(raw: string): string | null {
+  const url = raw.trim();
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    // YouTube: youtube.com/watch?v=, youtu.be/
+    if (u.hostname.includes("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return `https://www.youtube-nocookie.com/embed/${v}`;
+      return null;
+    }
+    if (u.hostname === "youtu.be" || u.hostname === "www.youtu.be") {
+      const id = u.pathname.replace(/^\//, "");
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
+      return null;
+    }
+    // Vimeo: vimeo.com/ID
+    if (u.hostname.includes("vimeo.com")) {
+      const id = u.pathname.replace(/^\//, "").split("/")[0];
+      if (id && /^\d+$/.test(id)) return `https://player.vimeo.com/video/${id}?dnt=1`;
+      return null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function IntroVideo({ url }: { url: string }) {
+  const embed = toEmbedUrl(url);
+  return (
+    <div className="overflow-hidden rounded-lg border bg-background">
+      <AspectRatio ratio={16 / 9}>
+        {embed ? (
+          <iframe
+            src={embed}
+            title="So arbeitest du mit dem Tool"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="h-full w-full"
+          />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-muted/30 text-muted-foreground">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border">
+              <Play className="w-5 h-5" />
+            </div>
+            <span className="text-sm">Video folgt in Kürze</span>
+          </div>
+        )}
+      </AspectRatio>
+    </div>
+  );
+}
+
 function IntroSlide({ onNext }: { onNext?: () => void }) {
   return (
     <Card className="border-none shadow-xl">
@@ -2765,6 +2825,26 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
             Jeder Schritt trennt sauber zwischen deinen eigenen Gedanken und Vorschlägen der KI.
             Du entscheidest, was übernommen wird.
           </p>
+        </div>
+
+        {/* Warum Problem Framing vor dem Design Sprint? – aufklappbar */}
+        <Collapsible>
+          <CollapsibleTrigger className="w-full flex items-center gap-2 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40">
+            <HelpCircle className="w-4 h-4 shrink-0" />
+            <span className="flex-1">Warum Problem Framing vor dem Design Sprint?</span>
+            <ChevronDown className="w-4 h-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="rounded-lg border border-t-0 bg-background p-4 text-sm text-foreground/80 leading-relaxed">
+              Ein Design Sprint liefert in wenigen Tagen einen getesteten Lösungsansatz, allerdings nur, wenn er am richtigen Problem arbeitet. Problem Framing klärt genau das vorab: Worum geht es wirklich, für wen, und woran erkennt ihr Erfolg? Du und dein Team bündelt euer Wissen, trennt Symptome von Ursachen und legt Annahmen, Risiken und Rahmenbedingungen offen. Am Ende steht eine gemeinsame Sprint-Frage mit einem Challenge Statement. Damit startet der Sprint mit einem klaren Ziel, und ihr verliert die ersten Stunden nicht mit Grundsatzdiskussionen.
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Video-Slot – So arbeitest du mit dem Tool */}
+        <div className="rounded-lg border bg-background p-4 space-y-3">
+          <div className="font-semibold">So arbeitest du mit dem Tool</div>
+          <IntroVideo url={INTRO_VIDEO_URL} />
         </div>
 
         {/* Block 1 – Eigene Anmerkungen */}
