@@ -65,10 +65,10 @@ export function useWorkspaceSidebar(storageKey: string): SidebarState {
 }
 
 /** Grid template for the workspace: docked column only when open and pinned. */
-export function workspaceGridClass(state: SidebarState, width = "260px") {
+export function workspaceGridClass(state: SidebarState) {
   const docked = state.open && state.pinned;
   return docked
-    ? `grid md:grid-cols-[220px_1fr] lg:grid-cols-[${width}_1fr] gap-6 lg:gap-8`
+    ? "grid md:grid-cols-[220px_1fr] lg:grid-cols-[250px_1fr] gap-6 lg:gap-8"
     : "grid grid-cols-1 gap-6";
 }
 
@@ -76,10 +76,12 @@ type Props = {
   state: SidebarState;
   /** Label shown in the mobile accordion toggle */
   mobileLabel: ReactNode;
+  /** Always-visible block above the navigation (e.g. title) */
+  header?: ReactNode;
   children: ReactNode;
 };
 
-export function WorkspaceSidebar({ state, mobileLabel, children }: Props) {
+export function WorkspaceSidebar({ state, mobileLabel, header, children }: Props) {
   const { open, setOpen, pinned, setPinned, navOpen, setNavOpen } = state;
   const floating = !pinned && open;
 
@@ -115,6 +117,8 @@ export function WorkspaceSidebar({ state, mobileLabel, children }: Props) {
               : "lg:hidden space-y-3"
         }
       >
+        {header ? <div className={open ? "" : "lg:hidden"}>{header}</div> : null}
+
         {/* Mobile accordion toggle */}
         <button
           type="button"
