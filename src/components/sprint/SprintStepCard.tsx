@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy } from "lucide-react";
+import { Sparkles, Plus, Loader2, X, ExternalLink, Trophy, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SprintStepDef } from "@/features/sprint/steps";
@@ -20,6 +20,7 @@ import { MAP_LANES } from "@/features/sprint/types";
 import Crazy8sMiro from "@/components/sprint/Crazy8sMiro";
 import { buildFramingSeed } from "@/features/sprint/framingSeed";
 import { useFramingForSprint } from "@/hooks/useFramingForSprint";
+import { getSprintStepWarnings } from "@/features/sprint/validation";
 import {
   Select,
   SelectContent,
