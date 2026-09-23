@@ -2918,7 +2918,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
             </div>
             <div className="rounded-md border border-accent/60 bg-accent-soft p-3 text-foreground">
               <div className="font-medium mb-1 flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" /> One-Next-Akzent
+                <Sparkles className="w-3.5 h-3.5" /> Blau KI Generiert
               </div>
               <div>KI-Button, Vorschlagskarten und übernommene KI-Vorschläge.</div>
             </div>
