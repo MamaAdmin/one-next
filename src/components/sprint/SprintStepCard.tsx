@@ -565,7 +565,30 @@ export default function SprintStepCard({
 
         </div>
 
-        {/* 2a. Miro-Board für Crazy 8s – vorübergehend ausgeblendet, Code bleibt erhalten */}
+        {/* 2a. Daten aus früheren Schritten */}
+        {contextEntries.length > 0 ? (
+          <Accordion type="single" collapsible className="border rounded-lg">
+            <AccordionItem value="ctx" className="border-none">
+              <AccordionTrigger className="px-4">
+                Daten aus früheren Schritten
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-3 text-sm">
+                  {contextEntries.map((e) => (
+                    <li key={e.key}>
+                      <div className="font-semibold">{e.label}</div>
+                      <div className="text-muted-foreground whitespace-pre-wrap">
+                        {formatContextValue(e.value)}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        ) : null}
+
+        {/* 2b. Miro-Board für Crazy 8s – vorübergehend ausgeblendet, Code bleibt erhalten */}
         {false && step.variant === "crazy8s" ? (
           <Crazy8sMiro
             sprint={sprint}
@@ -587,7 +610,7 @@ export default function SprintStepCard({
           />
         ) : null}
 
-        {/* 2b. Deine Antworten auf die Frage */}
+        {/* 2c. Deine Antworten auf die Frage */}
         <div className="space-y-4 rounded-lg border-2 border-accent/40 bg-accent-soft p-5">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg">Deine Antworten</h3>
@@ -939,29 +962,6 @@ export default function SprintStepCard({
             rows={3}
           />
         </div>
-
-        {/* 5. Kontext-Panel */}
-        {contextEntries.length > 0 && step.variant !== "notes" ? (
-          <Accordion type="single" collapsible className="border rounded-lg">
-            <AccordionItem value="ctx" className="border-none">
-              <AccordionTrigger className="px-4">
-                Nutzt Daten aus früheren Schritten ({contextEntries.length})
-              </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
-                <ul className="space-y-3 text-sm">
-                  {contextEntries.map((e) => (
-                    <li key={e.key}>
-                      <div className="font-semibold">{e.label}</div>
-                      <div className="text-muted-foreground whitespace-pre-wrap">
-                        {formatContextValue(e.value)}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        ) : null}
 
         {warnings.length > 0 ? (
           <div className="rounded-lg border-l-4 border-l-amber-500 border border-amber-500/30 bg-amber-50 p-4 text-sm dark:bg-amber-950/30">
