@@ -67,6 +67,7 @@ export default function SprintStepCard({
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [aiRank, setAiRank] = useState<SprintStepData["aiRank"]>(initial.aiRank);
   const [saving, setSaving] = useState(false);
+  const [warnings, setWarnings] = useState<string[]>([]);
   const [herkunft, setHerkunft] = useState<NonNullable<SprintStepData["herkunft"]>>(
     initial.herkunft ?? {},
   );
@@ -95,6 +96,7 @@ export default function SprintStepCard({
     setAiRank(d.aiRank);
     setHerkunft(d.herkunft ?? {});
     setFramingSeeded(!!d.framingSeeded);
+    setWarnings([]);
     latestDataRef.current = {
       antworten: toAntwortenArray(d),
       vorschlaege: d.vorschlaege ?? [],
@@ -365,10 +367,27 @@ export default function SprintStepCard({
 
 
 
-  async function persist(completed: boolean) {
+  async function persist(completed: boolean, force = false) {
+    const data = latestDataRef.current;
+    if (completed) {
+      const w = getSprintStepWarnings(step, data);
+      setWarnings(w);
+      // Bei offenen Punkten speichern wir als abgeschlossen, bleiben aber stehen,
+      // damit der gelbe Hinweis sichtbar ist. Erst "Trotzdem weiter" navigiert.
+      if (w.length > 0 && !force) {
+        setSaving(true);
+        try {
+          await onSave(data, { completed: true });
+        } finally {
+          setSaving(false);
+        }
+        return;
+      }
+    } else {
+      setWarnings([]);
+    }
     setSaving(true);
     try {
-      const data = latestDataRef.current;
       await onSave(data, { completed });
       if (completed && onNext) onNext();
     } finally {
