@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode, type DragEvent } from "react";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ChevronDown, Play } from "lucide-react";
+import { INTRO_VIDEO_URL } from "@/config/framingConfig";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
