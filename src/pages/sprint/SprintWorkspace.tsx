@@ -244,8 +244,8 @@ export default function SprintWorkspace() {
                   </div>
                 );
               })}
-            </nav>
-          </aside>
+          </WorkspaceSidebar>
+
 
           {/* Step card or One Pager */}
           <div ref={contentRef} className="space-y-6 scroll-mt-20">
