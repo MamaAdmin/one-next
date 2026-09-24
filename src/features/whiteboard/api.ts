@@ -53,6 +53,7 @@ export interface ScriptOptions {
   scriptHint?: string;
   styleLabel?: string;
   language?: string;
+  imageDirection?: string;
 }
 
 export const generateScript = (
@@ -78,6 +79,8 @@ export interface ImageOptions {
   negativePrompt?: string | null;
   /** Erstes Bild der Serie als Stilreferenz. */
   styleRefUrl?: string | null;
+  /** Ergänzende, für das gesamte Video geltende Bildvorgabe. */
+  imageDirection?: string | null;
 }
 
 export const generateImage = (

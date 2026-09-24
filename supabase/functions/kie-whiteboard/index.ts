@@ -294,9 +294,10 @@ Deno.serve(async (req) => {
       const suffix = STYLE_SUFFIX[style] ?? STYLE_SUFFIX.whiteboard;
       const imageModel = String(payload.model ?? "nano-banana-2");
       const negative = String(payload.negativePrompt ?? "").trim();
+      const imageDirection = String(payload.imageDirection ?? "").trim().slice(0, 2000);
       const seed = Number(payload.seed);
       const input: Record<string, unknown> = {
-        prompt: `${prompt}. ${suffix}`,
+        prompt: `${prompt}.${imageDirection ? ` Verbindliche Bildvorgabe: ${imageDirection}.` : ""} ${suffix}`,
         aspect_ratio: "16:9",
         resolution: "2K",
         output_format: "png",

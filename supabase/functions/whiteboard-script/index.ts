@@ -46,15 +46,20 @@ function buildPrompt(
   scriptHint: string,
   styleLabel: string,
   language: string,
+  imageDirection: string,
 ) {
   const languageName = LANGUAGE_NAMES[language] ?? "Deutsch";
   const isGerman = languageName === "Deutsch";
+  const visualDirection = imageDirection
+    ? `\nVerbindliche Bildvorgabe für alle Abschnitte: "${imageDirection}"\nDie Bildbeschreibungen müssen diese Vorgabe konkret berücksichtigen, ohne sie nur wörtlich zu wiederholen.`
+    : "";
   return `Du bist Autor für Erklär- und Lernvideos (${languageName}${isGerman ? ", Schweizer Business-Kontext" : ""}).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
 WICHTIG: Sämtliche Texte (Titel, Überschriften, Sprechtext, Stichpunkte, Bild- und Bewegungsbeschreibungen) schreibst du vollständig auf ${languageName}.
 Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
 Visueller Stil: ${styleLabel}
+${visualDirection}
 Skriptart: ${scriptType}. ${scriptHint}
 Der erste Abschnitt ist ein Hook (Frage, Problem oder überraschende Aussage), der letzte fasst zusammen.
 
@@ -94,8 +99,9 @@ Deno.serve(async (req) => {
     const scriptHint = String(payload.scriptHint ?? "");
     const styleLabel = String(payload.styleLabel ?? "Whiteboard / Legetrick");
     const language = String(payload.language ?? "de").slice(0, 5);
+    const imageDirection = String(payload.imageDirection ?? "").trim().slice(0, 2000);
 
-    const prompt = buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel, language);
+    const prompt = buildPrompt(topic, sceneCount, title, scriptType, scriptHint, styleLabel, language, imageDirection);
     let lastError: { status: number; message: string } | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       try {

@@ -3381,6 +3381,7 @@ export type Database = {
           created_at: string
           error_message: string | null
           id: string
+          image_direction: string
           image_model: string
           language: string
           music_path: string | null
@@ -3393,6 +3394,7 @@ export type Database = {
           series_id: string | null
           status: string
           style: string
+          style_ref_path: string | null
           style_ref_url: string | null
           title: string
           topic: string
@@ -3407,6 +3409,7 @@ export type Database = {
           created_at?: string
           error_message?: string | null
           id?: string
+          image_direction?: string
           image_model?: string
           language?: string
           music_path?: string | null
@@ -3419,6 +3422,7 @@ export type Database = {
           series_id?: string | null
           status?: string
           style?: string
+          style_ref_path?: string | null
           style_ref_url?: string | null
           title?: string
           topic?: string
@@ -3433,6 +3437,7 @@ export type Database = {
           created_at?: string
           error_message?: string | null
           id?: string
+          image_direction?: string
           image_model?: string
           language?: string
           music_path?: string | null
@@ -3445,6 +3450,7 @@ export type Database = {
           series_id?: string | null
           status?: string
           style?: string
+          style_ref_path?: string | null
           style_ref_url?: string | null
           title?: string
           topic?: string

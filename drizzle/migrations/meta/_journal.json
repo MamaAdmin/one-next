@@ -57,6 +57,13 @@
       "when": 1790240596586,
       "tag": "0007_grant_video_library",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790248518658,
+      "tag": "0008_add_whiteboard_visual_briefing",
+      "breakpoints": true
     }
   ]
 }
