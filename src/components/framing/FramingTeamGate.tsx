@@ -1,13 +1,39 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, ArrowRight, AlertCircle } from "lucide-react";
+import { Users, ArrowRight, AlertCircle, HelpCircle, Lightbulb, Play, ChevronDown } from "lucide-react";
 import { TeamRoleGrid } from "@/components/sprint/TeamRoleGrid";
 import { useSprintMembers } from "@/hooks/useSprintTeam";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useVideoSlot } from "@/hooks/useVideoLibrary";
 
 interface Props {
   sprintId: string | null | undefined;
   onContinue: () => void;
+}
+
+const COLLAPSE_TRIGGER =
+  "group/intro w-full flex items-center gap-3 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40";
+const COLLAPSE_BADGE =
+  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary transition-all duration-200 group-hover/intro:bg-primary/20 [[data-state=open]_&]:rotate-180";
+
+function TeamVideo() {
+  const { data: slotVideo } = useVideoSlot("framing_team");
+  return (
+    <Collapsible>
+      <CollapsibleTrigger className={COLLAPSE_TRIGGER}>
+        <Play className="w-4 h-4 shrink-0" />
+        <span className="flex-1">So arbeitest du mit dem Tool</span>
+        <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="rounded-lg border border-t-0 bg-background p-4">
+          <VideoPlayer url={slotVideo?.video_url || ""} title="So arbeitest du mit dem Tool" />
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
 }
 
 /**
@@ -52,6 +78,38 @@ export default function FramingTeamGate({ sprintId, onContinue }: Props) {
               abgefragt, falls sie leer ist.
             </p>
           </div>
+
+          {/* Erklärung – aufgeklappt */}
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className={COLLAPSE_TRIGGER}>
+              <HelpCircle className="w-4 h-4 shrink-0" />
+              <span className="flex-1">Erklärung</span>
+              <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="rounded-lg border border-t-0 bg-background p-4 space-y-3">
+                <p className="text-base text-foreground/80">
+                  Trage hier ein, wer am Problem Framing teilnimmt, und weise jeder Person eine
+                  Rolle zu. Neue Teammitglieder lädst du direkt per E-Mail ein — sie erhalten
+                  einen Zugang zum Workshop.
+                </p>
+                <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+                  <div className="text-sm">
+                    <span className="font-medium text-primary">Warum jetzt? </span>
+                    <span className="text-foreground/80">
+                      Die richtigen Perspektiven entscheiden über die Qualität des Framings: Der
+                      Decider sorgt für verbindliche Entscheidungen, Fachexpert:innen liefern das
+                      nötige Hintergrundwissen.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Video – eingeklappt */}
+          <TeamVideo />
 
           <TeamRoleGrid sprintId={sprintId} emphasizeDeciderMissing={false} />
         </CardContent>
