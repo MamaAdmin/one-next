@@ -27,6 +27,7 @@ import {
   latestAsset, signedUrl, stepsForStyle, uploadProjectFile, waitForAsset,
   type AssetType, type LvAsset, type LvConfig, type LvProject, type LvScene,
 } from "@/features/lernvideo/api";
+import { TimelineStudio } from "@/features/lernvideo/TimelineStudio";
 
 type Pending = { sceneIds: string[]; credits: number } | null;
 
@@ -593,6 +594,11 @@ const LernvideoProjectEditor = () => {
             </div>
           </SortableContext>
         </DndContext>
+
+        {scenes.length > 0 && (
+          <TimelineStudio project={project} scenes={scenes} assets={assets}
+            onPatchScene={patchScene} onPatchProject={patchProject} />
+        )}
       </main>
 
       <AlertDialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>
