@@ -340,9 +340,11 @@ const WhiteboardVideoEditor = () => {
       return;
     }
     setStyleReferenceBusy(true);
+    let uploadedPath: string | null = null;
     try {
       const previousPath = styleReferencePath;
       const uploaded = await uploadStyleReference(videoId, file);
+      uploadedPath = uploaded.path;
       const { error } = await (supabase as any)
         .from("whiteboard_videos")
         .update({ style_ref_path: uploaded.path })
@@ -350,9 +352,11 @@ const WhiteboardVideoEditor = () => {
       if (error) throw new Error(error.message);
       setStyleReferencePath(uploaded.path);
       setStyleReferenceUrl(uploaded.url);
+      uploadedPath = null;
       if (previousPath) await deleteStyleReference(previousPath);
       toast({ title: "Referenzbild gespeichert" });
     } catch (error) {
+      if (uploadedPath) await deleteStyleReference(uploadedPath).catch(() => undefined);
       toast({
         title: "Referenzbild konnte nicht gespeichert werden",
         description: error instanceof Error ? error.message : "Unbekannter Fehler",
@@ -364,16 +368,23 @@ const WhiteboardVideoEditor = () => {
     }
   };
 
+  const currentStyleReferenceUrl = async () => {
+    if (!styleReferencePath) return styleReferenceUrl;
+    const freshUrl = await signedStyleReferenceUrl(styleReferencePath);
+    if (freshUrl) setStyleReferenceUrl(freshUrl);
+    return freshUrl;
+  };
+
   const removeStyleReference = async () => {
     if (!videoId) return;
     setStyleReferenceBusy(true);
     try {
-      if (styleReferencePath) await deleteStyleReference(styleReferencePath);
       const { error } = await (supabase as any)
         .from("whiteboard_videos")
         .update({ style_ref_path: null, style_ref_url: null })
         .eq("id", videoId);
       if (error) throw new Error(error.message);
+      if (styleReferencePath) await deleteStyleReference(styleReferencePath);
       setStyleReferencePath(null);
       setStyleReferenceUrl(null);
       toast({ title: "Referenzbild entfernt" });
@@ -563,7 +574,8 @@ const WhiteboardVideoEditor = () => {
       if (!prompt) continue;
       try {
         // Startwert und das erste Bild als Referenz halten den Look zusammen.
-        const styleRefUrl = styleReferenceUrl ?? next.find((s) => s.imageUrl)?.imageUrl ?? null;
+        const uploadedReferenceUrl = await currentStyleReferenceUrl();
+        const styleRefUrl = uploadedReferenceUrl ?? next.find((s) => s.imageUrl)?.imageUrl ?? null;
         const result = await generateImage(prompt, style, {
           model: imageModel,
           seed: project?.seed ?? null,
@@ -742,7 +754,8 @@ const WhiteboardVideoEditor = () => {
           imageModel,
         }),
       );
-      const styleRefUrl = styleReferenceUrl ?? scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
+      const uploadedReferenceUrl = await currentStyleReferenceUrl();
+      const styleRefUrl = uploadedReferenceUrl ?? scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
       const result = await generateImage(prompt, style, {
         model: imageModel,
         seed: project?.seed ?? null,
