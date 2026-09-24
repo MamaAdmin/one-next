@@ -197,6 +197,7 @@ const VOICE_IDS: Record<string, string> = {
   Liam: "TX3LPaxmHKxFdv7VOQHJ",
   Brian: "nPczCjzI2devNBz1zQrb",
   Felix: "Sq93GQT4X1lKDXsQcixO",
+  Nelly: "ssAtxnrElSw3BUSLNszL",
 };
 
 function resolveVoiceId(voice: string): string {
