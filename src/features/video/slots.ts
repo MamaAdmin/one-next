@@ -57,6 +57,9 @@ export const PROVIDER_LABEL: Record<VideoProvider, string> = {
   direct: "Direkte Datei",
 };
 
+/** Query params that keep YouTube captions off by default. */
+const YT_PARAMS = "cc_load_policy=0&cc_lang_pref=de&iv_load_policy=3&rel=0&modestbranding=1";
+
 /** Turns YouTube/Vimeo URLs into embed URLs. Invalid → null. */
 export function toEmbedUrl(raw: string): string | null {
   const url = raw.trim();
@@ -65,14 +68,14 @@ export function toEmbedUrl(raw: string): string | null {
     const u = new URL(url);
     if (u.hostname.includes("youtube.com")) {
       const v = u.searchParams.get("v");
-      if (v) return `https://www.youtube-nocookie.com/embed/${v}`;
+      if (v) return `https://www.youtube-nocookie.com/embed/${v}?${YT_PARAMS}`;
       const embedMatch = u.pathname.match(/^\/embed\/([\w-]+)/);
-      if (embedMatch) return `https://www.youtube-nocookie.com/embed/${embedMatch[1]}`;
+      if (embedMatch) return `https://www.youtube-nocookie.com/embed/${embedMatch[1]}?${YT_PARAMS}`;
       return null;
     }
     if (u.hostname === "youtu.be" || u.hostname === "www.youtu.be") {
       const id = u.pathname.replace(/^\//, "");
-      if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}?${YT_PARAMS}`;
       return null;
     }
     if (u.hostname.includes("vimeo.com")) {
