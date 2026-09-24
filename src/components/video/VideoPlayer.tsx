@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Play } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { isDirectVideoUrl, toEmbedUrl } from "@/features/video/slots";
@@ -15,18 +16,40 @@ export function VideoPlayer({
   title = "Video",
   placeholder = "Video folgt in Kürze",
 }: VideoPlayerProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const raw = (url ?? "").trim();
   const embed = toEmbedUrl(raw);
   const direct = !embed && isDirectVideoUrl(raw);
+
+  const disableYouTubeCaptions = () => {
+    if (!embed?.includes("youtube-nocookie.com")) return;
+
+    const turnOff = () => {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({
+          event: "command",
+          func: "setOption",
+          args: ["captions", "track", {}],
+        }),
+        "https://www.youtube-nocookie.com",
+      );
+    };
+
+    turnOff();
+    window.setTimeout(turnOff, 500);
+    window.setTimeout(turnOff, 1500);
+  };
 
   return (
     <div className="overflow-hidden rounded-lg border bg-background">
       <AspectRatio ratio={16 / 9}>
         {embed ? (
           <iframe
+            ref={iframeRef}
             src={embed}
             title={title}
             loading="lazy"
+            onLoad={disableYouTubeCaptions}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             className="h-full w-full"

@@ -58,7 +58,8 @@ export const PROVIDER_LABEL: Record<VideoProvider, string> = {
 };
 
 /** Query params that keep YouTube captions off by default. */
-const YT_PARAMS = "cc_load_policy=0&cc_lang_pref=de&iv_load_policy=3&rel=0&modestbranding=1";
+const YT_PARAMS =
+  "cc_load_policy=0&cc_lang_pref=de&iv_load_policy=3&rel=0&modestbranding=1&enablejsapi=1";
 
 /** Turns YouTube/Vimeo URLs into embed URLs. Invalid → null. */
 export function toEmbedUrl(raw: string): string | null {
