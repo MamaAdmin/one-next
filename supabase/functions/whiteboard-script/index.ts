@@ -58,7 +58,8 @@ function buildPrompt(
     : "";
   return `Du bist Autor für Erklär- und Lernvideos (${languageName}${isGerman ? ", Schweizer Business-Kontext" : ""}).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
-WICHTIG: Sämtliche Texte (Titel, Überschriften, Sprechtext, Stichpunkte, Bild- und Bewegungsbeschreibungen) schreibst du vollständig auf ${languageName}.
+  WICHTIG: Sämtliche Texte (Titel, Überschriften, Sprechtext, Stichpunkte, Bild- und Bewegungsbeschreibungen) schreibst du vollständig auf ${languageName}.
+  ${isGerman ? 'Für das Feld "narration" gilt deutsche Standardschreibung: Verwende bei jedem entsprechenden Wort konsequent „ß“ statt „ss“ (zum Beispiel „groß“, „Straße“, „heißt“, „außer“). Schreibe dort niemals die schweizerische ss-Schreibweise.' : ""}
 Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
 Visueller Stil: ${styleLabel}
@@ -69,7 +70,7 @@ Der erste Abschnitt ist ein Hook (Frage, Problem oder überraschende Aussage), d
 
 Antworte AUSSCHLIESSLICH mit JSON in genau dieser Form, ohne Markdown:
 {"title":"kurzer Videotitel","scenes":[{"heading":"max 5 Wörter","narration":"2-3 Sätze Sprechtext","bullets":["max 6 Wörter","..."],"imagePrompt":"Bildbeschreibung der Zeichnung, ein Satz, ohne Stilangaben","motionPrompt":"ein Satz, was sich im Bild bewegt (Kamera, Figuren, Objekte)","durationInSeconds":8}]}
-Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
+  Schreibe KI statt AI. Keine Anglizismen-Häufung. bullets: 2-3 Stück.`;
 }
 
 function geminiError(err: unknown): { status: number; message: string } {

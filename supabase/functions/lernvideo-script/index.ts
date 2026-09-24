@@ -65,14 +65,15 @@ Lernziel: ${p.learning_goal || "Verständnis des Themas"}
 Ziellänge: ${p.target_seconds} Sekunden gesprochener Text
 Stil: ${styleLabel}
 Skriptart (verbindliche Struktur): ${scriptType}
-Sprache: ${p.language === "de-CH" ? "Deutsch für die Schweiz (ss statt ß)" : p.language}
+  Sprache: ${p.language === "de-CH" ? "Deutsch" : p.language}
 ${characters.length ? `Figuren (nur mit diesen Namen verwenden): ${characters.map((c) => c.name).join(", ")}` : ""}
 
 Regeln:
 - Folge der Skriptart Schritt für Schritt; jeder Abschnitt der Struktur ergibt eine oder mehrere Szenen.
 - Rechne mit etwa 2,3 gesprochenen Wörtern pro Sekunde; die Summe der Szenendauern entspricht der Ziellänge.
 - Pro Szene 4 bis 15 Sekunden.
-- narration: gesprochener Sprechertext, natürlich, kurze Sätze, "KI" statt "AI".
+  - narration: gesprochener Sprechertext, natürlich, kurze Sätze, "KI" statt "AI".
+  - Für narration gilt bei deutschsprachigen Projekten immer deutsche Standardschreibung: Verwende konsequent „ß“ statt der schweizerischen ss-Schreibweise, zum Beispiel „groß“, „Straße“, „heißt“ und „außer“.
 - image_prompt: englische Bildbeschreibung ohne Stilangaben und ohne Text im Bild. Nenne Figuren mit Namen, wenn sie vorkommen.
 - overlay_texts: 0 bis 3 sehr kurze Einblendungen auf Deutsch (Schlagworte, Zahlen).
 - duration_seconds: geschätzte Dauer der Szene.`;
