@@ -40,10 +40,12 @@ type AssetRow = {
 const STYLE_LABELS: Record<string, string> = {
   flat_2d: "Flat 2D / Vektor",
   character_2d: "2D Character Animation",
-  iso_3d: "3D / Isometrisch",
+  isometric_3d: "3D / Isometrisch",
+  infografik: "Infografik",
+  screencast_plus: "Screencast plus Animation (erweitert)",
   whiteboard: "Whiteboard / Legetrick",
   motion_graphics: "Motion Graphics und Infografik",
-  kinetic_typography: "Kinetic Typography",
+  kinetic_typo: "Kinetic Typography",
   screencast: "Screencast plus Animation",
   avatar: "Avatar / Presenter",
 };

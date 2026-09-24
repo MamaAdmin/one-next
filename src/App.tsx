@@ -67,6 +67,8 @@ import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import WhiteboardVideoDashboard from "./pages/admin/WhiteboardVideoDashboard";
 import LernvideoModelConfig from "./pages/admin/LernvideoModelConfig";
+import LernvideoProjects from "./pages/admin/LernvideoProjects";
+import LernvideoProjectEditor from "./pages/admin/LernvideoProjectEditor";
 import WhiteboardVideoEditor from "./pages/admin/WhiteboardVideoEditor";
 import WhiteboardStudio from "./pages/admin/WhiteboardStudio";
 import WhiteboardSeriesDetail from "./pages/admin/WhiteboardSeriesDetail";
@@ -139,6 +141,8 @@ const App = () => (
           <Route path="/admin/design-system" element={<DesignSystem />} />
           <Route path="/admin/whiteboard-videos" element={<WhiteboardVideoDashboard />} />
           <Route path="/admin/lernvideo-modelle" element={<LernvideoModelConfig />} />
+          <Route path="/admin/lernvideos" element={<LernvideoProjects />} />
+          <Route path="/admin/lernvideos/:projectId" element={<LernvideoProjectEditor />} />
           <Route path="/admin/whiteboard-videos/serie/:seriesId" element={<WhiteboardSeriesDetail />} />
           <Route path="/admin/whiteboard-videos/:videoId" element={<WhiteboardVideoEditor />} />
           <Route path="/admin/whiteboard-videos/:videoId/studio" element={<WhiteboardStudio />} />
