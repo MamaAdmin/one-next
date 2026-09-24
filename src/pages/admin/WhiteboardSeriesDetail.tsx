@@ -60,7 +60,7 @@ import {
 } from "@/features/whiteboard/pricing";
 import { logJob } from "@/features/whiteboard/usage";
 
-const VOICES = ["Rachel", "Aria", "Bella", "Emma", "Hope", "Liam", "Brian", "Felix"];
+const VOICES = ["Rachel", "Aria", "Bella", "Emma", "Hope", "Liam", "Brian", "Felix", "Nelly"];
 const SCENES_PER_CLIP = 5;
 
 const statusLabel: Record<string, string> = {
