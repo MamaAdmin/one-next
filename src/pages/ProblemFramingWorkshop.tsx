@@ -103,6 +103,14 @@ const ProblemFramingWorkshop = () => {
               <>
                 <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
                 <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint</Link></Button>
+                <div className="w-full pt-4">
+                  <p className="mb-2 text-sm font-semibold text-muted-foreground">Was ist Problem Framing? – in 2 Minuten erklärt</p>
+                  <VideoPlayer
+                    url={introVideo.data?.video_url}
+                    title="Was ist Problem Framing"
+                    placeholder="Video folgt in Kürze"
+                  />
+                </div>
               </>
             }
             facts={[
