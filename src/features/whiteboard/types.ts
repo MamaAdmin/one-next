@@ -66,6 +66,8 @@ export interface WhiteboardVideoProject {
 
   seed: number | null;
   style_ref_url: string | null;
+  style_ref_path: string | null;
+  image_direction: string;
   created_at: string;
   updated_at: string;
 }
