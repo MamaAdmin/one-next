@@ -23,6 +23,11 @@ export const VIDEO_SLOTS: VideoSlotDef[] = [
     label: "Design Sprint · So arbeitest du mit dem Tool",
     hint: "Einführung im Design-Sprint-Arbeitsbereich",
   },
+  ...Array.from({ length: 10 }, (_, i) => ({
+    key: `framing_step_${i + 1}`,
+    label: `Problem Framing · Schritt ${i + 1}`,
+    hint: `Box „So arbeitest du mit dem Tool" in Schritt ${i + 1}`,
+  })),
 ];
 
 export const getVideoSlot = (key: string): VideoSlotDef | undefined =>
