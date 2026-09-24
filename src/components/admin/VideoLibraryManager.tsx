@@ -162,6 +162,12 @@ export function VideoLibraryManager() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!isLoading && videos.length === 0 && (
+            <p className="rounded-lg border border-dashed p-3 text-sm text-muted-foreground">
+              Füge zuerst unten über „Video hinzufügen“ ein Video hinzu – danach kannst du es hier
+              einem Einsatzort zuweisen.
+            </p>
+          )}
           {VIDEO_SLOTS.map((slot) => {
             const current = videos.find((v) => v.slot_key === slot.key);
             return (
