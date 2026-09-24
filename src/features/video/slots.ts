@@ -14,6 +14,11 @@ export interface VideoSlotDef {
 /** All places in the app that can show a library video. */
 export const VIDEO_SLOTS: VideoSlotDef[] = [
   {
+    key: "framing_landing",
+    label: "Was ist Problem Framing",
+    hint: "Video auf der öffentlichen Seite Problem-Framing-Workshop",
+  },
+  {
     key: "framing_intro",
     label: "Problem Framing · So arbeitest du mit dem Tool",
     hint: "Einführungsseite des Problem-Framing-Workshops",

@@ -27,6 +27,8 @@ import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useVideoSlot } from "@/hooks/useVideoLibrary";
 
 const preSteps = [
   { title: "Team-Konstellation", desc: "Decider optional, Rollen und Erwartungen klären.", icon: Users },
@@ -60,6 +62,7 @@ const outcomes = [
 ];
 
 const ProblemFramingWorkshop = () => {
+  const introVideo = useVideoSlot("framing_landing");
   const structuredData = [
     createEventSchema(
       "Problem-Framing-Workshop",
@@ -97,10 +100,20 @@ const ProblemFramingWorkshop = () => {
             titleAccent="Wenn Ihre Challenge noch unklar ist"
             description="1–2 Tage intensive Klärung, um Ihre Challenge präzise zu definieren, die Zielgruppe zu priorisieren und Ihr Team optimal auf den Design Sprint vorzubereiten."
             actions={
-              <>
-                <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
-                <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint</Link></Button>
-              </>
+              <div className="flex w-full flex-col gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
+                  <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint</Link></Button>
+                </div>
+                <div className="w-full pt-4">
+                  <p className="mb-2 text-sm font-semibold text-muted-foreground">Was ist Problem Framing? – in 2 Minuten erklärt</p>
+                  <VideoPlayer
+                    url={introVideo.data?.video_url}
+                    title="Was ist Problem Framing"
+                    placeholder="Video folgt in Kürze"
+                  />
+                </div>
+              </div>
             }
             facts={[
               { value: "1–2 Tage", label: "Dauer" },
