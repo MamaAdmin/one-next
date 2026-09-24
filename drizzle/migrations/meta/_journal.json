@@ -71,6 +71,13 @@
       "when": 1790249603059,
       "tag": "0009_lernvideo_pipeline",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790249938713,
+      "tag": "0010_lernvideo_scenes_flow",
+      "breakpoints": true
     }
   ]
 }
