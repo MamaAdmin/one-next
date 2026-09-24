@@ -121,28 +121,47 @@ export default function SprintDashboard() {
           <DashboardHeader title="Meine Design Sprints" description="Problem Framings und selbstgeführte Design Sprints mit KI-Unterstützung." />
 
           <section className="mb-10">
-            <Card className="border-l-4 border-l-primary">
-              <CardContent className="p-6 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Compass className="w-5 h-5 text-primary" />
-                  <h2 className="font-semibold text-lg">Neuen Sprint starten</h2>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Jeder Sprint beginnt mit einem kurzen <strong>Problem Framing</strong>
-                  {" "}(10 Schritte, ca. 3–4 h). So schärfst du Zielgruppe, Kontext,
-                  Risiken und Zielfragen – am Ende entsteht automatisch dein Sprint mit
-                  vorbefülltem Challenge Statement und klaren Sprint-Fragen.
-                </p>
-                <div className="pt-2">
-                  <Button asChild>
+            <h2 className="font-semibold text-lg mb-4">Neuen Sprint starten</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card className="border-l-4 border-l-primary flex flex-col">
+                <CardContent className="p-6 space-y-3 flex flex-col flex-1">
+                  <div className="flex items-center gap-2">
+                    <Compass className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-base">Mit Problem Framing</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground flex-1">
+                    Empfohlener Weg: In 10 Schritten (ca. 3–4 h) Zielgruppe, Kontext,
+                    Risiken und Zielfragen klären. Am Ende entsteht automatisch dein Sprint
+                    mit vorbefülltem Challenge Statement und klaren Sprint-Fragen.
+                  </p>
+                  <Button asChild className="w-full mt-2">
                     <Link to="/sprint/neu">
                       <Compass className="w-4 h-4 mr-2" />
                       Mit Problem Framing starten
                     </Link>
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+              <Card className="border-l-4 border-l-accent flex flex-col">
+                <CardContent className="p-6 space-y-3 flex flex-col flex-1">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-base">Direkt als Design Sprint</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground flex-1">
+                    Wenn deine Challenge bereits klar ist: Ohne vorgeschaltetes Framing
+                    direkt in den Design Sprint starten. Du kannst das Problem Framing
+                    später jederzeit nachholen.
+                  </p>
+                  <Button asChild variant="outline" className="w-full mt-2">
+                    <Link to="/sprint/neu?mode=sprint">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Direkt Sprint starten
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </section>
 
 
