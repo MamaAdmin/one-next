@@ -15,8 +15,8 @@ export interface VideoSlotDef {
 export const VIDEO_SLOTS: VideoSlotDef[] = [
   {
     key: "framing_landing",
-    label: "Was ist Problem Framing",
-    hint: "Video auf der öffentlichen Seite Problem-Framing-Workshop",
+    label: "Problem-Framing-Workshop · Einstieg",
+    hint: "Video unter dem Titel „Wenn Ihre Challenge noch unklar ist“ auf der öffentlichen Seite Problem-Framing-Workshop",
   },
   {
     key: "framing_intro",
