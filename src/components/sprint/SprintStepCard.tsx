@@ -567,7 +567,7 @@ export default function SprintStepCard({
         </div>
 
         {/* 2a. Daten aus früheren Schritten */}
-        <Accordion type="single" collapsible className="border rounded-lg">
+        <Accordion type="single" collapsible defaultValue="ctx" className="border rounded-lg">
           <AccordionItem value="ctx" className="border-none">
             <AccordionTrigger className="px-4">
               Daten aus früheren Schritten
