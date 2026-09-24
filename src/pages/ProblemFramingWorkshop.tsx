@@ -62,6 +62,7 @@ const outcomes = [
 ];
 
 const ProblemFramingWorkshop = () => {
+  const introVideo = useVideoSlot("framing_landing");
   const structuredData = [
     createEventSchema(
       "Problem-Framing-Workshop",
