@@ -1,9 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, ArrowRight, AlertCircle } from "lucide-react";
+import { Users, ArrowRight, AlertCircle, HelpCircle, Lightbulb, Play, ChevronDown } from "lucide-react";
 import { TeamRoleGrid } from "@/components/sprint/TeamRoleGrid";
 import { useSprintMembers } from "@/hooks/useSprintTeam";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useVideoSlot } from "@/hooks/useVideoLibrary";
 
 interface Props {
   sprintId: string | null | undefined;
