@@ -2,7 +2,14 @@
 // Costs are billed to the user's Google Cloud / AI Studio project (GEMINI_API_KEY),
 // not through the Lovable AI Gateway.
 
-export type GeminiMessage = { role: "system" | "user" | "assistant"; content: string };
+export type GeminiPart =
+  | { text: string }
+  | { inlineData: { mimeType: string; data: string } };
+
+export type GeminiMessage = {
+  role: "system" | "user" | "assistant";
+  content: string | GeminiPart[];
+};
 
 export interface CallGeminiOptions {
   model?: string; // native Gemini id, e.g. "gemini-2.5-flash". Accepts also "google/gemini-2.5-flash".
@@ -43,13 +50,15 @@ export async function callGemini(opts: CallGeminiOptions): Promise<CallGeminiRes
   // Roles: OpenAI "system" -> Gemini systemInstruction; "assistant" -> "model"; "user" -> "user".
   const systemParts = opts.messages
     .filter((m) => m.role === "system")
-    .map((m) => m.content)
-    .filter(Boolean);
+    .flatMap((m) => typeof m.content === "string" ? [m.content] : m.content
+      .filter((part): part is { text: string } => "text" in part)
+      .map((part) => part.text))
+    .filter((part) => Boolean(part));
   const contents = opts.messages
     .filter((m) => m.role !== "system")
     .map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.content }],
+      parts: typeof m.content === "string" ? [{ text: m.content }] : m.content,
     }));
 
   const generationConfig: Record<string, unknown> = {

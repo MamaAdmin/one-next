@@ -73,6 +73,7 @@ import {
 } from "@/features/whiteboard/types";
 import {
   checkVideo,
+  analyzeStyleReference,
   estimateDuration,
   fetchCredits,
   generateImage,
@@ -128,6 +129,9 @@ const WhiteboardVideoEditor = () => {
   const [styleReferencePath, setStyleReferencePath] = useState<string | null>(null);
   const [styleReferenceUrl, setStyleReferenceUrl] = useState<string | null>(null);
   const [styleReferenceBusy, setStyleReferenceBusy] = useState(false);
+  const [styleAnalysisBusy, setStyleAnalysisBusy] = useState(false);
+  const [replaceDirectionOpen, setReplaceDirectionOpen] = useState(false);
+  const [pendingImageDirection, setPendingImageDirection] = useState<string | null>(null);
   const [scriptType, setScriptType] = useState("problem_loesung");
   const [imageModel, setImageModel] = useState(DEFAULT_IMAGE_MODEL);
   const [voiceModel, setVoiceModel] = useState(DEFAULT_VOICE_MODEL);
@@ -373,6 +377,35 @@ const WhiteboardVideoEditor = () => {
     const freshUrl = await signedStyleReferenceUrl(styleReferencePath);
     if (freshUrl) setStyleReferenceUrl(freshUrl);
     return freshUrl;
+  };
+
+  const applyAnalyzedDirection = (direction: string) => {
+    setImageDirection(direction);
+    setPendingImageDirection(null);
+    setReplaceDirectionOpen(false);
+    toast({ title: "Bildvorgabe mit KI erstellt" });
+  };
+
+  const createDirectionFromReference = async () => {
+    if (!styleReferencePath) return;
+    setStyleAnalysisBusy(true);
+    try {
+      const direction = await analyzeStyleReference(styleReferencePath);
+      if (imageDirection.trim()) {
+        setPendingImageDirection(direction);
+        setReplaceDirectionOpen(true);
+      } else {
+        applyAnalyzedDirection(direction);
+      }
+    } catch (error) {
+      toast({
+        title: "Bildvorgabe konnte nicht erstellt werden",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setStyleAnalysisBusy(false);
+    }
   };
 
   const removeStyleReference = async () => {
@@ -1344,6 +1377,22 @@ const WhiteboardVideoEditor = () => {
                         <Button
                           type="button"
                           size="sm"
+                          variant="outline"
+                          disabled={styleAnalysisBusy || styleReferenceBusy}
+                          onClick={() => void createDirectionFromReference()}
+                        >
+                          {styleAnalysisBusy ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Sparkles className="mr-2 h-4 w-4" />
+                          )}
+                          Bildvorgabe mit KI erstellen
+                        </Button>
+                      )}
+                      {styleReferenceUrl && (
+                        <Button
+                          type="button"
+                          size="sm"
                           variant="ghost"
                           className="text-destructive"
                           disabled={styleReferenceBusy}
@@ -1618,6 +1667,26 @@ const WhiteboardVideoEditor = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+      <AlertDialog open={replaceDirectionOpen} onOpenChange={setReplaceDirectionOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bestehende Bildvorgabe ersetzen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Gemini hat aus dem Referenzbild eine neue Bildvorgabe erstellt. Der vorhandene Text wird ersetzt.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingImageDirection(null)}>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingImageDirection) applyAnalyzedDirection(pendingImageDirection);
+              }}
+            >
+              Ersetzen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
               {kieVideoUrl && (
                 <video src={kieVideoUrl} controls className="w-full rounded-lg border" />
               )}
