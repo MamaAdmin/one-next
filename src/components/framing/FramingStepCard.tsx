@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode, type DragEvent } from "react";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Play } from "lucide-react";
 
 import { INTRO_VIDEO_URL } from "@/config/framingConfig";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
@@ -2756,6 +2756,56 @@ function IntroVideo({ url }: { url: string }) {
   return <VideoPlayer url={source} title="So arbeitest du mit dem Tool" />;
 }
 
+
+const COLLAPSE_TRIGGER =
+  "group/intro w-full flex items-center gap-3 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40";
+const COLLAPSE_BADGE =
+  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary transition-all duration-200 group-hover/intro:bg-primary/20 [[data-state=open]_&]:rotate-180";
+
+function StepExplanation({ step }: { step: FramingStepDef }) {
+  if (!step.arbeit && !step.nutzen) return null;
+  return (
+    <Collapsible defaultOpen>
+      <CollapsibleTrigger className={COLLAPSE_TRIGGER}>
+        <HelpCircle className="w-4 h-4 shrink-0" />
+        <span className="flex-1">Erklärung</span>
+        <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="rounded-lg border border-t-0 bg-background p-4 space-y-3">
+          {step.arbeit ? <p className="text-base text-foreground/80">{step.arbeit}</p> : null}
+          {step.nutzen ? (
+            <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+              <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+              <div className="text-sm">
+                <span className="font-medium text-primary">Warum jetzt? </span>
+                <span className="text-foreground/80">{step.nutzen}</span>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+function StepVideo({ stepKey }: { stepKey: string }) {
+  const { data: slotVideo } = useVideoSlot(`framing_step_${stepKey}`);
+  return (
+    <Collapsible>
+      <CollapsibleTrigger className={COLLAPSE_TRIGGER}>
+        <Play className="w-4 h-4 shrink-0" />
+        <span className="flex-1">So arbeitest du mit dem Tool</span>
+        <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="rounded-lg border border-t-0 bg-background p-4">
+          <VideoPlayer url={slotVideo?.video_url || ""} title="So arbeitest du mit dem Tool" />
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
 
 function IntroSlide({ onNext }: { onNext?: () => void }) {
   return (
