@@ -472,7 +472,7 @@ const LernvideoProjectEditor = () => {
                 </Button>
               </div>
               <div className="space-y-2">
-                <Label>Aussprache-Wörterbuch</Label>
+                <Label className="block">Aussprache-Wörterbuch</Label>
                 {project.pronunciation.map((p, i) => (
                   <div key={i} className="flex gap-2">
                     <Input placeholder="Wort" value={p.from} onChange={(e) => {
@@ -528,7 +528,7 @@ const LernvideoProjectEditor = () => {
                 </div>
               )}
               <div className="space-y-2">
-                <Label>Figuren</Label>
+                <Label className="block">Figuren</Label>
                 {project.characters.map((c, i) => (
                   <div key={i} className="space-y-1 rounded-md border border-border p-2">
                     <div className="flex gap-2">
