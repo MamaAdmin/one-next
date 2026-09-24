@@ -11,6 +11,14 @@ import { MusicPicker } from "@/components/admin/MusicPicker";
 import { withFreshClipUrls } from "@/features/whiteboard/clips";
 import { signedMusicUrl } from "@/features/whiteboard/music";
 import {
+  buildTimeline,
+  serverExportStatus,
+  signedExportUrl,
+  startServerExport,
+  subtitleCues,
+  toSrt,
+} from "@/features/whiteboard/serverExport";
+import {
   deleteStyleReference,
   signedStyleReferenceUrl,
   uploadStyleReference,
@@ -141,6 +149,9 @@ const WhiteboardVideoEditor = () => {
   const [saving, setSaving] = useState(false);
   const [working, setWorking] = useState<string | null>(null);
   const [renderProgress, setRenderProgress] = useState<number | null>(null);
+  const [serverStatus, setServerStatus] = useState<string | null>(null);
+  const [serverExportPath, setServerExportPath] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [kieVideoUrl, setKieVideoUrl] = useState<string | null>(null);
   const [models, setModels] = useState<KieModel[]>([]);
   const [credits, setCredits] = useState<number | null>(null);
@@ -1093,6 +1104,80 @@ const WhiteboardVideoEditor = () => {
     }
   };
 
+  // Stand eines früheren Server-Exports übernehmen.
+  useEffect(() => {
+    if (!project) return;
+    const p = project as WhiteboardVideoProject & {
+      render_status?: string | null;
+      export_path?: string | null;
+      render_error?: string | null;
+    };
+    setServerStatus(p.render_status ?? null);
+    setServerExportPath(p.export_path ?? null);
+    setServerError(p.render_error ?? null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id]);
+
+  const serverBusy = !!serverStatus && !["succeeded", "failed", "none"].includes(serverStatus);
+
+  useEffect(() => {
+    if (!serverBusy || !videoId) return;
+    const timer = window.setInterval(async () => {
+      try {
+        const r = await serverExportStatus(videoId);
+        setServerStatus(r.status ?? null);
+        if (r.exportPath) setServerExportPath(r.exportPath);
+        if (r.status === "failed") setServerError(r.error ?? "Export fehlgeschlagen");
+        if (r.status === "succeeded") toast({ title: "Server-Export fertig", description: "Das MP4 kann jetzt heruntergeladen werden." });
+      } catch {
+        /* nächster Versuch */
+      }
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [serverBusy, videoId, toast]);
+
+  const startServer = async () => {
+    if (!videoId || scenes.length === 0) {
+      toast({ title: "Bitte zuerst ein Skript erstellen", variant: "destructive" });
+      return;
+    }
+    if (!window.confirm("Der Server-Export verbraucht Creatomate-Guthaben. Handzeichnung und Formen werden vereinfacht dargestellt. Jetzt starten?")) return;
+    setServerError(null);
+    setServerExportPath(null);
+    setServerStatus("planned");
+    try {
+      const timeline = buildTimeline({
+        title,
+        scenes,
+        style,
+        musicUrl: project?.music_url,
+        musicVolume: project?.music_volume ?? 0.18,
+      });
+      const r = await startServerExport(videoId, timeline, true);
+      setServerStatus(r.status ?? "planned");
+      toast({ title: "Server-Export gestartet", description: "Du kannst die Seite schliessen, das Ergebnis wird gespeichert." });
+    } catch (error) {
+      setServerStatus("failed");
+      setServerError(error instanceof Error ? error.message : "Unbekannter Fehler");
+    }
+  };
+
+  const downloadServerMp4 = async () => {
+    if (!serverExportPath) return;
+    const url = await signedExportUrl(serverExportPath);
+    if (url) window.open(url, "_blank", "noopener");
+  };
+
+  const downloadSrt = () => {
+    const blob = new Blob([toSrt(subtitleCues(scenes))], { type: "application/x-subrip;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${(title || "whiteboard-video").replace(/[^\w-]+/g, "-").toLowerCase()}.srt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const clipIndex = siblings.findIndex((clip) => clip.id === videoId);
   const previousClip = clipIndex > 0 ? siblings[clipIndex - 1] : null;
   const nextClip =
@@ -1588,10 +1673,36 @@ const WhiteboardVideoEditor = () => {
                   <p className="text-sm text-muted-foreground">MP4 wird erstellt… {renderProgress}%</p>
                 </div>
               )}
+              <div className="rounded-lg border p-4 space-y-3">
+                <p className="text-sm font-medium">Video exportieren</p>
+                <p className="text-xs text-muted-foreground">
+                  Im Browser: kostenlos, exakter Vorschau-Look, Seite muss offen bleiben. Auf dem Server (Creatomate):
+                  schneller, Seite darf geschlossen werden, verbraucht Creatomate-Guthaben, Handzeichnung vereinfacht.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button onClick={renderMp4} disabled={renderProgress !== null}>
+                    <Download className="w-4 h-4 mr-2" /> Im Browser exportieren
+                  </Button>
+                  <Button variant="outline" onClick={startServer} disabled={serverBusy}>
+                    {serverBusy ? "Server-Export läuft…" : "Auf dem Server exportieren"}
+                  </Button>
+                  {serverStatus === "succeeded" && serverExportPath && (
+                    <Button variant="outline" onClick={downloadServerMp4}>
+                      <Download className="w-4 h-4 mr-2" /> Server-MP4 herunterladen
+                    </Button>
+                  )}
+                  <Button variant="ghost" onClick={downloadSrt} disabled={scenes.length === 0}>
+                    Untertitel (SRT)
+                  </Button>
+                </div>
+                {serverBusy && (
+                  <p className="text-xs text-muted-foreground">Status: {serverStatus === "planned" ? "in Warteschlange" : "wird gerendert"}</p>
+                )}
+                {serverStatus === "failed" && serverError && (
+                  <p className="text-xs text-destructive">Server-Export fehlgeschlagen: {serverError}</p>
+                )}
+              </div>
               <div className="flex flex-wrap gap-3">
-                <Button onClick={renderMp4} disabled={renderProgress !== null}>
-                  <Download className="w-4 h-4 mr-2" /> Als MP4 herunterladen
-                </Button>
                 <div className="flex items-end gap-2">
                   <div className="space-y-1">
                     <Label htmlFor="clip-seconds" className="text-xs">

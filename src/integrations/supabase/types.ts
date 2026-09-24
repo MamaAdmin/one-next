@@ -3630,6 +3630,8 @@ export type Database = {
         Row: {
           created_at: string
           error_message: string | null
+          export_path: string | null
+          export_srt_path: string | null
           id: string
           image_direction: string
           image_model: string
@@ -3638,6 +3640,9 @@ export type Database = {
           music_url: string | null
           music_volume: number
           position: number | null
+          render_error: string | null
+          render_id: string | null
+          render_status: string | null
           scenes: Json
           script_type: string
           seed: number | null
@@ -3658,6 +3663,8 @@ export type Database = {
         Insert: {
           created_at?: string
           error_message?: string | null
+          export_path?: string | null
+          export_srt_path?: string | null
           id?: string
           image_direction?: string
           image_model?: string
@@ -3666,6 +3673,9 @@ export type Database = {
           music_url?: string | null
           music_volume?: number
           position?: number | null
+          render_error?: string | null
+          render_id?: string | null
+          render_status?: string | null
           scenes?: Json
           script_type?: string
           seed?: number | null
@@ -3686,6 +3696,8 @@ export type Database = {
         Update: {
           created_at?: string
           error_message?: string | null
+          export_path?: string | null
+          export_srt_path?: string | null
           id?: string
           image_direction?: string
           image_model?: string
@@ -3694,6 +3706,9 @@ export type Database = {
           music_url?: string | null
           music_volume?: number
           position?: number | null
+          render_error?: string | null
+          render_id?: string | null
+          render_status?: string | null
           scenes?: Json
           script_type?: string
           seed?: number | null

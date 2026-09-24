@@ -1,8 +1,8 @@
 import {
   AbsoluteFill,
   Img,
-  Video,
-  getRemotionEnvironment,
+
+
   interpolate,
   spring,
   useCurrentFrame,
@@ -184,8 +184,6 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
   const end = isAi ? undefined : scene.clipEndInSeconds;
   const startFrom = Math.round(start * 30);
   const endAt = end && end > start ? Math.round(end * 30) : undefined;
-  const rendering = getRemotionEnvironment().isRendering;
-
   return (
     <div
       style={{
@@ -196,25 +194,13 @@ export const ClipStage: React.FC<{ scene: WhiteboardScene; theme: VideoTheme; ra
         background: theme.ink,
       }}
     >
-      {rendering ? (
-        <MediaVideo
-          src={url}
-          muted
-          trimBefore={startFrom}
-          trimAfter={endAt}
-          style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
-        />
-      ) : (
-        <Video
-          src={url}
-          muted
-          startFrom={startFrom}
-          endAt={endAt}
-          // Ist die Aufnahme kürzer als der Abschnitt, bleibt das letzte Bild stehen.
-          pauseWhenBuffering
-          style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
-        />
-      )}
+      <MediaVideo
+        src={url}
+        muted
+        trimBefore={startFrom}
+        trimAfter={endAt}
+        style={{ width: "100%", height: "100%", objectFit: isAi ? "cover" : "contain" }}
+      />
 
     </div>
   );
