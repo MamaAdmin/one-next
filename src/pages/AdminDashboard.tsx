@@ -181,6 +181,16 @@ const AdminDashboard = () => {
                         <span>Whiteboard-Videos</span>
                       </Button>
                     </Link>
+
+                    <Link to="/admin/lernvideo-modelle" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      >
+                        <Clapperboard className="w-14 h-14 text-primary" />
+                        <span>Lernvideo-Modelle</span>
+                      </Button>
+                    </Link>
                   </div>
 
 
