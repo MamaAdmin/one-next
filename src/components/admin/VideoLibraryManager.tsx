@@ -25,6 +25,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { Pencil, Plus, Trash2, Video, X } from "lucide-react";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { YouTubeConnectionCard } from "@/features/video/YouTube";
 import { useVideoLibrary, type LibraryVideo } from "@/hooks/useVideoLibrary";
 import {
   PROVIDER_LABEL,
@@ -153,6 +154,7 @@ export function VideoLibraryManager() {
 
   return (
     <div className="space-y-6">
+      <YouTubeConnectionCard />
       {/* Einsatzorte */}
       <Card>
         <CardHeader>

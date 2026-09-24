@@ -2710,11 +2710,15 @@ export type Database = {
           style: string
           subtitles_enabled: boolean
           target_seconds: number
+          target_slot_key: string | null
           title: string
           topic: string
           updated_at: string
           user_id: string
           voice: string
+          youtube_error: string | null
+          youtube_status: string | null
+          youtube_video_id: string | null
         }
         Insert: {
           audience?: string
@@ -2739,11 +2743,15 @@ export type Database = {
           style: string
           subtitles_enabled?: boolean
           target_seconds?: number
+          target_slot_key?: string | null
           title: string
           topic?: string
           updated_at?: string
           user_id?: string
           voice?: string
+          youtube_error?: string | null
+          youtube_status?: string | null
+          youtube_video_id?: string | null
         }
         Update: {
           audience?: string
@@ -2768,11 +2776,15 @@ export type Database = {
           style?: string
           subtitles_enabled?: boolean
           target_seconds?: number
+          target_slot_key?: string | null
           title?: string
           topic?: string
           updated_at?: string
           user_id?: string
           voice?: string
+          youtube_error?: string | null
+          youtube_status?: string | null
+          youtube_video_id?: string | null
         }
         Relationships: []
       }
@@ -3651,6 +3663,7 @@ export type Database = {
           style: string
           style_ref_path: string | null
           style_ref_url: string | null
+          target_slot_key: string | null
           title: string
           topic: string
           updated_at: string
@@ -3659,6 +3672,9 @@ export type Database = {
           video_url: string | null
           voice: string
           voice_model: string
+          youtube_error: string | null
+          youtube_status: string | null
+          youtube_video_id: string | null
         }
         Insert: {
           created_at?: string
@@ -3684,6 +3700,7 @@ export type Database = {
           style?: string
           style_ref_path?: string | null
           style_ref_url?: string | null
+          target_slot_key?: string | null
           title?: string
           topic?: string
           updated_at?: string
@@ -3692,6 +3709,9 @@ export type Database = {
           video_url?: string | null
           voice?: string
           voice_model?: string
+          youtube_error?: string | null
+          youtube_status?: string | null
+          youtube_video_id?: string | null
         }
         Update: {
           created_at?: string
@@ -3717,6 +3737,7 @@ export type Database = {
           style?: string
           style_ref_path?: string | null
           style_ref_url?: string | null
+          target_slot_key?: string | null
           title?: string
           topic?: string
           updated_at?: string
@@ -3725,6 +3746,9 @@ export type Database = {
           video_url?: string | null
           voice?: string
           voice_model?: string
+          youtube_error?: string | null
+          youtube_status?: string | null
+          youtube_video_id?: string | null
         }
         Relationships: [
           {
@@ -3760,6 +3784,33 @@ export type Database = {
           created_at?: string | null
           id?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      youtube_connection: {
+        Row: {
+          channel_id: string | null
+          channel_title: string | null
+          connected_at: string
+          connected_by: string | null
+          id: number
+          refresh_token: string | null
+        }
+        Insert: {
+          channel_id?: string | null
+          channel_title?: string | null
+          connected_at?: string
+          connected_by?: string | null
+          id?: number
+          refresh_token?: string | null
+        }
+        Update: {
+          channel_id?: string | null
+          channel_title?: string | null
+          connected_at?: string
+          connected_by?: string | null
+          id?: number
+          refresh_token?: string | null
         }
         Relationships: []
       }

@@ -71,3 +71,6 @@ verify_jwt = true
 
 [functions.kie-whiteboard]
 verify_jwt = false
+
+[functions.youtube]
+verify_jwt = false

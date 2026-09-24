@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, Download, FileText, Film, Loader2, Music, Plus, RefreshCw, Trash2, Wand2 } from "lucide-react";
+import { YouTubePublishPanel } from "@/features/video/YouTube";
 import { latestAsset, signedUrl, uploadProjectFile, type LvAsset, type LvProject, type LvScene } from "./api";
 import {
   OVERLAY_LABELS, POSITION_LABELS, defaultOverlays, newOverlayId, subtitleCues, toSrt,
@@ -287,6 +288,19 @@ export const TimelineStudio = ({ project, scenes, assets, onPatchScene, onPatchP
             <FileText className="w-4 h-4 mr-2" />Untertitel als SRT
           </Button>
           {status === "failed" && project.render_error && <span className="text-sm text-destructive">{project.render_error}</span>}
+          <div className="w-full">
+            <YouTubePublishPanel
+              target="lernvideo"
+              id={project.id}
+              hasExport={!!project.export_path && status === "succeeded"}
+              defaultTitle={project.title}
+              slotKey={(project as any).target_slot_key ?? null}
+              youtubeVideoId={(project as any).youtube_video_id ?? null}
+              youtubeStatus={(project as any).youtube_status ?? null}
+              youtubeError={(project as any).youtube_error ?? null}
+              onSlotChange={(slot) => void onPatchProject({ target_slot_key: slot } as Partial<LvProject>)}
+            />
+          </div>
         </CardContent>
       </Card>
     </>
