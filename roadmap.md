@@ -69,3 +69,10 @@
 - [x] Abschluss-Panel, Definition of Done und Challenge Statement schärfen
 - [x] Direktsprung zu einem Schritt aus dem Abschluss-Panel
 - [x] KI-Funktionen aktualisieren, veröffentlichen und im Browser prüfen
+
+# Eigene Bildvorgabe im Video-Briefing
+
+- [x] Freitext-Vorgabe pro Video speichern
+- [x] Privates Referenzbild hochladen, ersetzen und entfernen
+- [x] Bildvorgabe mit Skript- und Bilderzeugung verbinden
+- [ ] Oberfläche und Erzeugungsfunktionen prüfen
