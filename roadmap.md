@@ -82,3 +82,9 @@
 - [x] Referenzbild serverseitig mit Gemini analysieren
 - [x] KI-Aktion und Bestätigung beim Überschreiben ergänzen
 - [x] Funktion veröffentlichen und in der Oberfläche prüfen
+
+# Sprechertexte mit ß
+
+- [x] Whiteboard-Skriptanweisung auf deutsche ß-Schreibweise umstellen
+- [x] Lernvideo-Skriptanweisung auf deutsche ß-Schreibweise umstellen
+- [ ] Betroffene Serverfunktionen aktualisieren
