@@ -43,7 +43,14 @@ export function VideoPlayer({
 
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== "https://www.youtube-nocookie.com") return;
-      disableYouTubeCaptions();
+      try {
+        const message = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        if (message?.event === "onReady" || message?.info?.playerState === 1) {
+          disableYouTubeCaptions();
+        }
+      } catch {
+        // Ignore unrelated player messages.
+      }
     };
 
     window.addEventListener("message", handleMessage);
