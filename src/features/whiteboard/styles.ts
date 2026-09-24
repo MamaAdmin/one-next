@@ -40,13 +40,13 @@ export const WHITEBOARD_STYLES: WhiteboardStyleOption[] = [
   {
     value: "flat_2d",
     label: "Flat 2D / Vektor",
-    merkmale: "Flächige Illustrationen, klare Farben, reduzierte Formen",
+    merkmale: "Flächige Illustrationen im one-next-Stil: Cremegrund, Schieferblau, ruhige Formen",
     eignung: "Lernmodule, Produktwissen, allgemeine Erklärungen",
     skriptart: "Hook–Kontext–Kernmodell–Zusammenfassung",
     beispielUrl: "https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q",
     beispielLabel: "Kurzgesagt",
     promptSuffix:
-      "Flat vector illustration, simple geometric shapes, limited muted color palette, clean light background, no text.",
+      "Calm, minimal flat 2D vector illustration in the one-next brand style. Strict limited palette: warm cream background (#F3EFE9), deep slate blue (#2F4254) as main color, dusty slate blue (#5A7A9A) as accent, light blue tint (#E3EBF3), warm taupe (#E6DDD2) and charcoal (#29231F) for thin details. Simple geometric shapes, soft rounded corners, thin even line work, generous whitespace, subtle flat shadows only, no gradients, no neon or saturated colors, no purple, editorial and professional mood, no text, no letters, no logos.",
     renderer: "flat",
     generierbar: true,
   },
