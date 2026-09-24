@@ -2772,17 +2772,9 @@ function StepExplanation({ step }: { step: FramingStepDef }) {
         <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="rounded-lg border border-t-0 bg-background p-4 space-y-3">
-          {step.arbeit ? <p className="text-sm text-foreground/80 leading-relaxed">{step.arbeit}</p> : null}
-          {step.nutzen ? (
-            <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-              <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />
-              <div className="text-sm">
-                <span className="font-medium text-primary">Warum jetzt? </span>
-                <span className="text-foreground/80">{step.nutzen}</span>
-              </div>
-            </div>
-          ) : null}
+        <div className="mt-2 rounded-lg border bg-background p-4 space-y-3 text-sm text-foreground/80 leading-relaxed">
+          {step.arbeit ? <p>{step.arbeit}</p> : null}
+          {step.nutzen ? <p>{step.nutzen}</p> : null}
         </div>
       </CollapsibleContent>
     </Collapsible>
