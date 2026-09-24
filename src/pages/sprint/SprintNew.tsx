@@ -69,7 +69,7 @@ export default function SprintNew() {
         sprint_leader: "",
       });
       toast({ title: "Design Sprint gestartet", description: "Starte mit der Team-Konstellation." });
-      navigate(`/sprint/${sprint.id}?view=team`);
+      navigate(`/sprint/${sprint.id}`);
     } catch (e) {
       toast({ title: "Konnte nicht gestartet werden", description: e instanceof Error ? e.message : "Unbekannter Fehler", variant: "destructive" });
     } finally {
