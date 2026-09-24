@@ -26,7 +26,7 @@ export const VIDEO_SLOTS: VideoSlotDef[] = [
   {
     key: "framing_team",
     label: "Problem Framing · Team-Konstellation",
-    hint: "Box „So arbeitest du mit dem Tool" auf der Seite Team-Konstellation",
+    hint: "Box „So arbeitest du mit dem Tool“ auf der Seite Team-Konstellation",
   },
   ...Array.from({ length: 10 }, (_, i) => ({
     key: `framing_step_${i + 1}`,
