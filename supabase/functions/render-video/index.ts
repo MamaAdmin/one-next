@@ -5,7 +5,6 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 
 const API = "https://api.creatomate.com/v2/renders";
-const BUCKET = "lernvideo-assets";
 const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
 const json = (body: unknown, status = 200) =>
@@ -53,9 +52,14 @@ const Timeline = z.object({
 type TL = z.infer<typeof Timeline>;
 type Ov = z.infer<typeof OverlayT>;
 
+const Target = z.enum(["lernvideo", "whiteboard"]).default("lernvideo");
+const TARGETS = {
+  lernvideo: { table: "projects", bucket: "lernvideo-assets" },
+  whiteboard: { table: "whiteboard_videos", bucket: "whiteboard-uploads" },
+} as const;
 const Body = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("start"), projectId: z.string().uuid(), timeline: Timeline, subtitles: z.boolean().default(true), dryRun: z.boolean().optional() }),
-  z.object({ action: z.literal("status"), projectId: z.string().uuid() }),
+  z.object({ action: z.literal("start"), target: Target, projectId: z.string().uuid(), timeline: Timeline, subtitles: z.boolean().default(true), dryRun: z.boolean().optional() }),
+  z.object({ action: z.literal("status"), target: Target, projectId: z.string().uuid() }),
 ]);
 
 // ---------- Layout (identisch zur Browser-Vorschau) ----------
@@ -242,6 +246,7 @@ Deno.serve(async (req) => {
     if (!key) return json({ error: "Der Creatomate-Schlüssel fehlt noch." }, 400);
     const headers = { Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
     const body = parsed.data;
+    const { table, bucket: BUCKET } = TARGETS[body.target];
 
     if (body.action === "start") {
       const script = toRenderScript(body.timeline, body.subtitles);
@@ -258,7 +263,7 @@ Deno.serve(async (req) => {
       if (body.timeline.subtitles.length) {
         await admin.storage.from(BUCKET).upload(srtPath, new Blob([toSrt(body.timeline.subtitles)], { type: "application/x-subrip; charset=utf-8" }), { upsert: true });
       }
-      await admin.from("projects").update({
+      await admin.from(table).update({
         render_id: render.id, render_status: render.status ?? "planned", render_error: null,
         export_srt_path: body.timeline.subtitles.length ? srtPath : null,
       }).eq("id", body.projectId);
@@ -266,14 +271,14 @@ Deno.serve(async (req) => {
     }
 
     // status
-    const { data: p } = await admin.from("projects").select("render_id, render_status, export_path").eq("id", body.projectId).single();
+    const { data: p } = await admin.from(table).select("render_id, render_status, export_path").eq("id", body.projectId).single();
     if (!p?.render_id) return json({ status: "none" });
     if (p.render_status === "succeeded" && p.export_path) return json({ status: "succeeded", exportPath: p.export_path });
     const res = await fetch(`${API}/${p.render_id}`, { headers });
     const r = await res.json().catch(() => ({}));
     if (!res.ok) return json({ status: p.render_status, error: r?.message ?? `Creatomate-Fehler ${res.status}` });
     if (r.status === "failed") {
-      await admin.from("projects").update({ render_status: "failed", render_error: r.error_message ?? "Render fehlgeschlagen" }).eq("id", body.projectId);
+      await admin.from(table).update({ render_status: "failed", render_error: r.error_message ?? "Render fehlgeschlagen" }).eq("id", body.projectId);
       return json({ status: "failed", error: r.error_message });
     }
     if (r.status === "succeeded" && r.url) {
@@ -282,10 +287,10 @@ Deno.serve(async (req) => {
       const path = `exports/${body.projectId}/${Date.now()}.mp4`;
       const { error } = await admin.storage.from(BUCKET).upload(path, await file.blob(), { contentType: "video/mp4", upsert: true });
       if (error) throw error;
-      await admin.from("projects").update({ render_status: "succeeded", export_path: path }).eq("id", body.projectId);
+      await admin.from(table).update({ render_status: "succeeded", export_path: path }).eq("id", body.projectId);
       return json({ status: "succeeded", exportPath: path });
     }
-    await admin.from("projects").update({ render_status: r.status }).eq("id", body.projectId);
+    await admin.from(table).update({ render_status: r.status }).eq("id", body.projectId);
     return json({ status: r.status });
   } catch (e) {
     console.error(e);
