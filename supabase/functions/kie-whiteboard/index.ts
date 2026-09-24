@@ -225,6 +225,38 @@ function voicePreview(voice: string): string {
   return `https://static.aiquickdraw.com/elevenlabs/voice/${voiceId}.mp3`;
 }
 
+// Stimmen, die Kie.ai nicht anbietet, laufen direkt über das eigene ElevenLabs-Konto.
+const DIRECT_ELEVENLABS = new Set(["Nelly"]);
+
+async function elevenLabsToStorage(text: string, voiceId: string, name: string): Promise<string> {
+  const key = Deno.env.get("ELEVENLABS_API_KEY");
+  if (!key) throw new Error("ElevenLabs ist nicht verbunden.");
+  const res = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
+    {
+      method: "POST",
+      headers: { "xi-api-key": key, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        model_id: "eleven_multilingual_v2",
+        voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0, use_speaker_boost: true, speed: 1 },
+      }),
+    },
+  );
+  if (!res.ok) {
+    const err = await res.text();
+    console.error(`[elevenlabs] ${res.status}: ${err.slice(0, 400)}`);
+    throw new Error(`ElevenLabs-Vertonung fehlgeschlagen (${res.status}): ${err.slice(0, 200)}`);
+  }
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  const path = `${name}.mp3`;
+  const { error } = await admin.storage.from(BUCKET).upload(path, bytes, { contentType: "audio/mpeg", upsert: true });
+  if (error) throw new Error(error.message);
+  const signed = await admin.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24 * 365);
+  if (!signed.data?.signedUrl) throw new Error("Signierte URL fehlgeschlagen");
+  return signed.data.signedUrl;
+}
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -238,6 +270,13 @@ Deno.serve(async (req) => {
 
     if (action === "voice_preview") {
       const voice = String(payload.voice ?? "Rachel");
+      if (DIRECT_ELEVENLABS.has(voice)) {
+        const name = `preview_${resolveVoiceId(voice)}`;
+        const existing = await admin.storage.from(BUCKET).createSignedUrl(`${name}.mp3`, 60 * 60 * 24 * 365);
+        if (existing.data?.signedUrl) return json({ url: existing.data.signedUrl });
+        const url = await elevenLabsToStorage(PREVIEW_TEXT, resolveVoiceId(voice), name);
+        return json({ url });
+      }
       const url = voicePreview(voice);
       return json({ url });
     }
@@ -276,17 +315,25 @@ Deno.serve(async (req) => {
     if (action === "voice_start") {
       const text = String(payload.text ?? "").trim().slice(0, 4800);
       if (!text) return json({ error: "Sprechtext fehlt." }, 400);
+      const voiceName = String(payload.voice ?? "Rachel");
+      if (DIRECT_ELEVENLABS.has(voiceName)) {
+        const taskId = `el_${crypto.randomUUID()}`;
+        await elevenLabsToStorage(text, resolveVoiceId(voiceName), taskId);
+        return json({ taskId });
+      }
       const voiceModel = String(payload.model ?? "elevenlabs/text-to-speech-multilingual-v2");
-      const taskId = await createJobTask(
-        voiceModel,
-        voiceInput(text, String(payload.voice ?? "Rachel")),
-      );
+      const taskId = await createJobTask(voiceModel, voiceInput(text, voiceName));
       return json({ taskId });
     }
 
     if (action === "voice_status") {
       const taskId = String(payload.taskId ?? "").trim();
       if (!taskId) return json({ error: "taskId fehlt." }, 400);
+      if (taskId.startsWith("el_")) {
+        const s = await admin.storage.from(BUCKET).createSignedUrl(`${taskId}.mp3`, 60 * 60 * 24 * 365);
+        if (!s.data?.signedUrl) return json({ status: "failed", error: "Audiodatei nicht gefunden" });
+        return json({ status: "done", url: s.data.signedUrl });
+      }
       const result = await checkJobTask(taskId);
       if (result.status !== "done" || !result.url) return json(result);
       const url = await mirrorToStorage(result.url, "mp3", taskId);
