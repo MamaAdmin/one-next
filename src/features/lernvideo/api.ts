@@ -24,6 +24,14 @@ export interface LvProject {
   characters: Character[];
   pronunciation: Pronunciation[];
   portrait_path: string | null;
+  music_path: string | null;
+  music_volume: number;
+  subtitles_enabled: boolean;
+  render_id: string | null;
+  render_status: string | null;
+  render_error: string | null;
+  export_path: string | null;
+  export_srt_path: string | null;
 }
 
 export interface LvScene {
@@ -35,6 +43,7 @@ export interface LvScene {
   overlay_texts: string[];
   duration_seconds: number;
   audio_seconds: number | null;
+  overlays: import("./timeline").Overlay[];
 }
 
 export type AssetType = "audio" | "image" | "video" | "avatar";
