@@ -113,7 +113,7 @@ const ProblemFramingWorkshop = () => {
                     placeholder="Video folgt in Kürze"
                   />
                 </div>
-              </>
+              </div>
             }
             facts={[
               { value: "1–2 Tage", label: "Dauer" },
