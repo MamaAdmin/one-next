@@ -20,6 +20,9 @@ const Body = z.discriminatedUnion("action", [
     imageUrl: z.string().url().optional(),
     audioUrl: z.string().url().optional(),
     referenceUrls: z.array(z.string().url()).max(8).optional(),
+    voice: z.string().max(80).optional(),
+    duration: z.number().min(1).max(60).optional(),
+    projectId: z.string().uuid().optional(),
   }),
   z.object({ action: z.literal("regenerate"), assetId: z.string().uuid() }),
   z.object({ action: z.literal("status"), assetId: z.string().uuid() }),
@@ -51,11 +54,15 @@ async function buildAndStart(assetId: string, req: CreateInput) {
   if (!cfg?.model_id) throw new KieError(`Für Stil „${req.style}“ ist bei „${step}“ kein Modell hinterlegt`, "invalid");
 
   // Kostenlimit des Projekts prüfen
-  if (req.sceneId) {
+  let projectId = req.projectId ?? null;
+  if (!projectId && req.sceneId) {
     const { data: scene } = await admin.from("scenes").select("project_id").eq("id", req.sceneId).maybeSingle();
-    if (scene) {
-      const { data: project } = await admin.from("projects").select("cost_limit_credits").eq("id", scene.project_id).single();
-      const { data: sceneIds } = await admin.from("scenes").select("id").eq("project_id", scene.project_id);
+    projectId = scene?.project_id ?? null;
+  }
+  {
+    if (projectId) {
+      const { data: project } = await admin.from("projects").select("cost_limit_credits").eq("id", projectId).single();
+      const { data: sceneIds } = await admin.from("scenes").select("id").eq("project_id", projectId);
       const { data: costs } = await admin.from("assets").select("cost_credits").in("scene_id", (sceneIds ?? []).map((s) => s.id));
       const spent = (costs ?? []).reduce((a, c) => a + Number(c.cost_credits ?? 0), 0);
       if (project && spent >= Number(project.cost_limit_credits)) {
@@ -68,12 +75,20 @@ async function buildAndStart(assetId: string, req: CreateInput) {
   const imageField = (params._image_field as string) ?? "image_urls";
   const refField = (params._reference_field as string) ?? "image_input";
   const suffix = (params._prompt_suffix as string) ?? "";
+  const fixedDuration = params._fixed_duration as number | undefined;
+  const minD = (params._duration_min as number | undefined) ?? 1;
+  const maxD = (params._duration_max as number | undefined) ?? 60;
+  // Nächstlängere erlaubte Cliplänge; gekürzt wird später in der Timeline.
+  let clipSeconds: number | null = null;
+  if (req.type === "video") {
+    clipSeconds = fixedDuration ?? Math.min(maxD, Math.max(minD, Math.ceil(req.duration ?? minD)));
+  }
   for (const k of Object.keys(params)) if (k.startsWith("_")) delete params[k];
 
   const prompt = [req.prompt, suffix].filter(Boolean).join("\n\n");
   let input: Record<string, unknown> = { ...params };
   if (req.type === "audio") {
-    const voice = (params.voice as string) ?? "Rachel";
+    const voice = req.voice || ((params.voice as string) ?? "Rachel");
     delete input.voice;
     input = { ...input, dialogue: [{ text: req.text ?? req.prompt, voice }] };
   } else if (req.type === "image") {
@@ -82,6 +97,8 @@ async function buildAndStart(assetId: string, req: CreateInput) {
   } else if (req.type === "video") {
     input = { ...input, prompt, aspect_ratio: req.format };
     if (req.imageUrl) input[imageField] = imageField.endsWith("s") ? [req.imageUrl] : req.imageUrl;
+    if (clipSeconds && !fixedDuration) input.duration = clipSeconds;
+    if (cfg.api === "veo") delete input.duration;
   } else {
     input = { ...input, prompt };
     if (req.imageUrl) input.image_url = req.imageUrl;
@@ -93,7 +110,7 @@ async function buildAndStart(assetId: string, req: CreateInput) {
   await admin.from("assets").update({
     model: cfg.model_id,
     api: cfg.api,
-    input_params: { ...req, _callback_token: token },
+    input_params: { ...req, _callback_token: token, _clip_seconds: clipSeconds },
     status: "queued",
     error_message: null,
     error_kind: null,
@@ -136,7 +153,7 @@ Deno.serve(async (req) => {
   if (body.action === "regenerate") {
     const { data: asset } = await admin.from("assets").select("id,input_params").eq("id", body.assetId).maybeSingle();
     if (!asset) return json({ error: "Asset nicht gefunden" }, 404);
-    const { _callback_token: _t, ...rest } = asset.input_params as Record<string, unknown>;
+    const { _callback_token: _t, _clip_seconds: _c, ...rest } = asset.input_params as Record<string, unknown>;
     const again = Body.safeParse({ ...rest, action: "create" });
     if (!again.success) return json({ error: "Ursprüngliche Eingaben ungültig" }, 400);
     assetId = asset.id;
