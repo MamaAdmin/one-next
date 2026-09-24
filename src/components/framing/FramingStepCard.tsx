@@ -2773,7 +2773,7 @@ function StepExplanation({ step }: { step: FramingStepDef }) {
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="rounded-lg border border-t-0 bg-background p-4 space-y-3">
-          {step.arbeit ? <p className="text-base text-foreground/80">{step.arbeit}</p> : null}
+          {step.arbeit ? <p className="text-sm text-foreground/80 leading-relaxed">{step.arbeit}</p> : null}
           {step.nutzen ? (
             <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
               <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />

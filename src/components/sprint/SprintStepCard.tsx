@@ -534,7 +534,7 @@ export default function SprintStepCard({
         </div>
 
         {/* 2. Anweisungsblock */}
-        <div className="rounded-lg bg-muted/40 p-5 space-y-3 text-sm">
+        <div className="rounded-lg bg-muted/40 p-5 space-y-3 text-sm text-foreground/80 leading-relaxed">
           <h3 className="font-semibold text-base">Anleitung</h3>
           <p>
             <span className="font-semibold">
