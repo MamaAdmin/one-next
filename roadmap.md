@@ -87,4 +87,4 @@
 
 - [x] Whiteboard-Skriptanweisung auf deutsche ß-Schreibweise umstellen
 - [x] Lernvideo-Skriptanweisung auf deutsche ß-Schreibweise umstellen
-- [ ] Betroffene Serverfunktionen aktualisieren
+- [x] Betroffene Serverfunktionen aktualisieren
