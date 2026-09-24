@@ -182,6 +182,74 @@ export type Database = {
           },
         ]
       }
+      assets: {
+        Row: {
+          api: string
+          cost_credits: number | null
+          created_at: string
+          created_by: string | null
+          error_kind: string | null
+          error_message: string | null
+          finished_at: string | null
+          id: string
+          input_params: Json
+          kie_task_id: string | null
+          model: string | null
+          scene_id: string | null
+          started_at: string | null
+          status: string
+          storage_path: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          api?: string
+          cost_credits?: number | null
+          created_at?: string
+          created_by?: string | null
+          error_kind?: string | null
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          input_params?: Json
+          kie_task_id?: string | null
+          model?: string | null
+          scene_id?: string | null
+          started_at?: string | null
+          status?: string
+          storage_path?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          api?: string
+          cost_credits?: number | null
+          created_at?: string
+          created_by?: string | null
+          error_kind?: string | null
+          error_message?: string | null
+          finished_at?: string | null
+          id?: string
+          input_params?: Json
+          kie_task_id?: string | null
+          model?: string | null
+          scene_id?: string | null
+          started_at?: string | null
+          status?: string
+          storage_path?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bmad_artifacts: {
         Row: {
           agent_type: Database["public"]["Enums"]["bmad_agent_type"]
@@ -2618,6 +2686,45 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          cost_limit_credits: number
+          created_at: string
+          format: string
+          id: string
+          language: string
+          status: string
+          style: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cost_limit_credits?: number
+          created_at?: string
+          format?: string
+          id?: string
+          language?: string
+          status?: string
+          style: string
+          title: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          cost_limit_credits?: number
+          created_at?: string
+          format?: string
+          id?: string
+          language?: string
+          status?: string
+          style?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       public_course_dates: {
         Row: {
           course_id: string
@@ -2834,6 +2941,53 @@ export type Database = {
           youtube_url?: string | null
         }
         Relationships: []
+      }
+      scenes: {
+        Row: {
+          created_at: string
+          duration_seconds: number
+          id: string
+          image_prompt: string
+          narration: string
+          overlay_texts: Json
+          position: number
+          project_id: string
+          step_status: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          image_prompt?: string
+          narration?: string
+          overlay_texts?: Json
+          position?: number
+          project_id: string
+          step_status?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          image_prompt?: string
+          narration?: string
+          overlay_texts?: Json
+          position?: number
+          project_id?: string
+          step_status?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_redirects: {
         Row: {
@@ -3176,6 +3330,42 @@ export type Database = {
           titel?: string
           updated_at?: string
           zielgruppe?: string
+        }
+        Relationships: []
+      }
+      style_model_config: {
+        Row: {
+          active: boolean
+          api: string
+          default_params: Json
+          id: string
+          model_id: string | null
+          notes: string
+          step: string
+          style: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          api?: string
+          default_params?: Json
+          id?: string
+          model_id?: string | null
+          notes?: string
+          step: string
+          style: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          api?: string
+          default_params?: Json
+          id?: string
+          model_id?: string | null
+          notes?: string
+          step?: string
+          style?: string
+          updated_at?: string
         }
         Relationships: []
       }

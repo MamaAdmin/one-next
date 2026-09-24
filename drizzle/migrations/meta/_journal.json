@@ -64,6 +64,13 @@
       "when": 1790248518658,
       "tag": "0008_add_whiteboard_visual_briefing",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790249603059,
+      "tag": "0009_lernvideo_pipeline",
+      "breakpoints": true
     }
   ]
 }
