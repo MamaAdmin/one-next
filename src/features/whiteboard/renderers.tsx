@@ -1,8 +1,8 @@
 import {
   AbsoluteFill,
   Img,
-  Video,
-  getRemotionEnvironment,
+
+
   interpolate,
   spring,
   useCurrentFrame,
