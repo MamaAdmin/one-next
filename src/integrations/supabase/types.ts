@@ -2688,40 +2688,67 @@ export type Database = {
       }
       projects: {
         Row: {
+          audience: string
+          characters: Json
           cost_limit_credits: number
           created_at: string
           format: string
           id: string
           language: string
+          learning_goal: string
+          portrait_path: string | null
+          pronunciation: Json
+          reference_paths: Json
           status: string
           style: string
+          target_seconds: number
           title: string
+          topic: string
           updated_at: string
           user_id: string
+          voice: string
         }
         Insert: {
+          audience?: string
+          characters?: Json
           cost_limit_credits?: number
           created_at?: string
           format?: string
           id?: string
           language?: string
+          learning_goal?: string
+          portrait_path?: string | null
+          pronunciation?: Json
+          reference_paths?: Json
           status?: string
           style: string
+          target_seconds?: number
           title: string
+          topic?: string
           updated_at?: string
           user_id?: string
+          voice?: string
         }
         Update: {
+          audience?: string
+          characters?: Json
           cost_limit_credits?: number
           created_at?: string
           format?: string
           id?: string
           language?: string
+          learning_goal?: string
+          portrait_path?: string | null
+          pronunciation?: Json
+          reference_paths?: Json
           status?: string
           style?: string
+          target_seconds?: number
           title?: string
+          topic?: string
           updated_at?: string
           user_id?: string
+          voice?: string
         }
         Relationships: []
       }
@@ -2944,6 +2971,7 @@ export type Database = {
       }
       scenes: {
         Row: {
+          audio_seconds: number | null
           created_at: string
           duration_seconds: number
           id: string
@@ -2956,6 +2984,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          audio_seconds?: number | null
           created_at?: string
           duration_seconds?: number
           id?: string
@@ -2968,6 +2997,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          audio_seconds?: number | null
           created_at?: string
           duration_seconds?: number
           id?: string
@@ -3338,6 +3368,7 @@ export type Database = {
           active: boolean
           api: string
           default_params: Json
+          est_credits: number
           id: string
           model_id: string | null
           notes: string
@@ -3349,6 +3380,7 @@ export type Database = {
           active?: boolean
           api?: string
           default_params?: Json
+          est_credits?: number
           id?: string
           model_id?: string | null
           notes?: string
@@ -3360,6 +3392,7 @@ export type Database = {
           active?: boolean
           api?: string
           default_params?: Json
+          est_credits?: number
           id?: string
           model_id?: string | null
           notes?: string
