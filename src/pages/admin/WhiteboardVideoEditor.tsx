@@ -1505,7 +1505,7 @@ const WhiteboardVideoEditor = () => {
                     id="count"
                     type="number"
                     min={2}
-                    max={10}
+                    max={15}
                     value={sceneCount}
                     onChange={(e) => setSceneCount(Number(e.target.value))}
                   />
