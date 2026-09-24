@@ -14,6 +14,9 @@ import {
   buildTimeline,
   serverExportStatus,
   signedExportUrl,
+} from "@/features/whiteboard/serverExport";
+import { YouTubePublishPanel } from "@/features/video/YouTube";
+import {
   startServerExport,
   subtitleCues,
   toSrt,
@@ -1700,6 +1703,23 @@ const WhiteboardVideoEditor = () => {
                 )}
                 {serverStatus === "failed" && serverError && (
                   <p className="text-xs text-destructive">Server-Export fehlgeschlagen: {serverError}</p>
+                )}
+                {project && videoId && (
+                  <YouTubePublishPanel
+                    target="whiteboard"
+                    id={videoId}
+                    hasExport={serverStatus === "succeeded" && !!serverExportPath}
+                    defaultTitle={title}
+                    defaultDescription={topic}
+                    slotKey={(project as any).target_slot_key ?? null}
+                    youtubeVideoId={(project as any).youtube_video_id ?? null}
+                    youtubeStatus={(project as any).youtube_status ?? null}
+                    youtubeError={(project as any).youtube_error ?? null}
+                    onSlotChange={(slot) => {
+                      setProject((prev) => (prev ? ({ ...prev, target_slot_key: slot } as typeof prev) : prev));
+                      void (supabase as any).from("whiteboard_videos").update({ target_slot_key: slot }).eq("id", videoId);
+                    }}
+                  />
                 )}
               </div>
               <div className="flex flex-wrap gap-3">
