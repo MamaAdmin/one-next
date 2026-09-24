@@ -10,6 +10,12 @@ import { SceneMediaEditor } from "@/components/admin/SceneMediaEditor";
 import { MusicPicker } from "@/components/admin/MusicPicker";
 import { withFreshClipUrls } from "@/features/whiteboard/clips";
 import { signedMusicUrl } from "@/features/whiteboard/music";
+import {
+  deleteStyleReference,
+  signedStyleReferenceUrl,
+  uploadStyleReference,
+  validateStyleReference,
+} from "@/features/whiteboard/styleReference";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +61,7 @@ import {
   Plus,
   Sparkles,
   Trash2,
+  Upload,
 } from "lucide-react";
 import { WhiteboardVideo } from "@/features/whiteboard/WhiteboardVideo";
 import {
@@ -117,6 +124,10 @@ const WhiteboardVideoEditor = () => {
   const [language, setLanguage] = useState("de");
   const [voice, setVoice] = useState("Rachel");
   const [style, setStyle] = useState("whiteboard");
+  const [imageDirection, setImageDirection] = useState("");
+  const [styleReferencePath, setStyleReferencePath] = useState<string | null>(null);
+  const [styleReferenceUrl, setStyleReferenceUrl] = useState<string | null>(null);
+  const [styleReferenceBusy, setStyleReferenceBusy] = useState(false);
   const [scriptType, setScriptType] = useState("problem_loesung");
   const [imageModel, setImageModel] = useState(DEFAULT_IMAGE_MODEL);
   const [voiceModel, setVoiceModel] = useState(DEFAULT_VOICE_MODEL);
@@ -152,6 +163,7 @@ const WhiteboardVideoEditor = () => {
   const [subtitles, setSubtitles] = useState(true);
   const [previewLoading, setPreviewLoading] = useState(false);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const styleReferenceInputRef = useRef<HTMLInputElement | null>(null);
   const pollRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -190,6 +202,13 @@ const WhiteboardVideoEditor = () => {
       setLanguage(loaded.language || "de");
       setVoice(VOICES.includes(loaded.voice) ? loaded.voice : "Rachel");
       setStyle(normalizeStyle(loaded.style));
+      setImageDirection(loaded.image_direction ?? "");
+      setStyleReferencePath(loaded.style_ref_path ?? null);
+      if (loaded.style_ref_path) {
+        void signedStyleReferenceUrl(loaded.style_ref_path).then(setStyleReferenceUrl);
+      } else {
+        setStyleReferenceUrl(loaded.style_ref_url ?? null);
+      }
       setScriptType(loaded.script_type || "problem_loesung");
       setImageModel(loaded.image_model || DEFAULT_IMAGE_MODEL);
       setVoiceModel(loaded.voice_model || DEFAULT_VOICE_MODEL);
@@ -295,6 +314,8 @@ const WhiteboardVideoEditor = () => {
           language,
           voice,
           style,
+          image_direction: imageDirection,
+          style_ref_path: styleReferencePath,
           script_type: scriptType,
           scenes,
           image_model: imageModel,
@@ -308,8 +329,64 @@ const WhiteboardVideoEditor = () => {
         toast({ title: "Speichern fehlgeschlagen", description: error.message, variant: "destructive" });
       }
     },
-    [videoId, title, topic, language, voice, style, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
+    [videoId, title, topic, language, voice, style, imageDirection, styleReferencePath, scriptType, scenes, imageModel, voiceModel, videoModel, toast],
   );
+
+  const handleStyleReference = async (file: File) => {
+    if (!videoId) return;
+    const problem = validateStyleReference(file);
+    if (problem) {
+      toast({ title: "Referenzbild nicht möglich", description: problem, variant: "destructive" });
+      return;
+    }
+    setStyleReferenceBusy(true);
+    try {
+      const previousPath = styleReferencePath;
+      const uploaded = await uploadStyleReference(videoId, file);
+      const { error } = await (supabase as any)
+        .from("whiteboard_videos")
+        .update({ style_ref_path: uploaded.path })
+        .eq("id", videoId);
+      if (error) throw new Error(error.message);
+      setStyleReferencePath(uploaded.path);
+      setStyleReferenceUrl(uploaded.url);
+      if (previousPath) await deleteStyleReference(previousPath);
+      toast({ title: "Referenzbild gespeichert" });
+    } catch (error) {
+      toast({
+        title: "Referenzbild konnte nicht gespeichert werden",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setStyleReferenceBusy(false);
+      if (styleReferenceInputRef.current) styleReferenceInputRef.current.value = "";
+    }
+  };
+
+  const removeStyleReference = async () => {
+    if (!videoId) return;
+    setStyleReferenceBusy(true);
+    try {
+      if (styleReferencePath) await deleteStyleReference(styleReferencePath);
+      const { error } = await (supabase as any)
+        .from("whiteboard_videos")
+        .update({ style_ref_path: null, style_ref_url: null })
+        .eq("id", videoId);
+      if (error) throw new Error(error.message);
+      setStyleReferencePath(null);
+      setStyleReferenceUrl(null);
+      toast({ title: "Referenzbild entfernt" });
+    } catch (error) {
+      toast({
+        title: "Referenzbild konnte nicht entfernt werden",
+        description: error instanceof Error ? error.message : "Unbekannter Fehler",
+        variant: "destructive",
+      });
+    } finally {
+      setStyleReferenceBusy(false);
+    }
+  };
 
   const updateScene = (id: string, patch: Partial<WhiteboardScene>) =>
     setScenes((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
@@ -393,6 +470,7 @@ const WhiteboardVideoEditor = () => {
         scriptHint: scriptTypeOption(scriptType).promptHinweis,
         styleLabel: styleOption(style).label,
         language,
+        imageDirection,
       });
       const next: WhiteboardScene[] = script.scenes.map((s, i) => ({
         ...createEmptyScene(i),
@@ -485,11 +563,12 @@ const WhiteboardVideoEditor = () => {
       if (!prompt) continue;
       try {
         // Startwert und das erste Bild als Referenz halten den Look zusammen.
-        const styleRefUrl = next.find((s) => s.imageUrl)?.imageUrl ?? null;
+        const styleRefUrl = styleReferenceUrl ?? next.find((s) => s.imageUrl)?.imageUrl ?? null;
         const result = await generateImage(prompt, style, {
           model: imageModel,
           seed: project?.seed ?? null,
           styleRefUrl,
+          imageDirection,
         });
         next[i] = { ...scene, imageUrl: result.url };
         created += 1;
@@ -663,11 +742,12 @@ const WhiteboardVideoEditor = () => {
           imageModel,
         }),
       );
-      const styleRefUrl = scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
+      const styleRefUrl = styleReferenceUrl ?? scenes.find((s) => s.imageUrl && s.id !== sceneId)?.imageUrl ?? null;
       const result = await generateImage(prompt, style, {
         model: imageModel,
         seed: project?.seed ?? null,
         styleRefUrl,
+        imageDirection,
       });
       const next = scenes.map((s) => (s.id === sceneId ? { ...s, imageUrl: result.url } : s));
       setScenes(next);
@@ -1207,6 +1287,67 @@ const WhiteboardVideoEditor = () => {
                       onChange={(e) => setTopic(e.target.value)}
                       placeholder="Worum geht es? Zielgruppe, Kernaussagen, gewünschter Ton."
                     />
+                  </div>
+                  <div className="space-y-3 border-t pt-4">
+                    <div>
+                      <Label htmlFor="image-direction">Bildvorgabe</Label>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Gilt für alle Bilder und ergänzt den gewählten Videostil.
+                      </p>
+                    </div>
+                    <Textarea
+                      id="image-direction"
+                      rows={3}
+                      value={imageDirection}
+                      onChange={(e) => setImageDirection(e.target.value)}
+                      placeholder="Zum Beispiel: Dieselbe freundliche Hauptfigur in jedem Bild, blaue Arbeitskleidung, helle Büroräume, Blick auf Augenhöhe und ruhige Farben."
+                    />
+                    <input
+                      ref={styleReferenceInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void handleStyleReference(file);
+                      }}
+                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={styleReferenceBusy}
+                        onClick={() => styleReferenceInputRef.current?.click()}
+                      >
+                        {styleReferenceBusy ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Upload className="mr-2 h-4 w-4" />
+                        )}
+                        {styleReferenceUrl ? "Referenzbild ersetzen" : "Referenzbild hochladen"}
+                      </Button>
+                      {styleReferenceUrl && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive"
+                          disabled={styleReferenceBusy}
+                          onClick={() => void removeStyleReference()}
+                        >
+                          <Trash2 className="mr-1 h-4 w-4" /> Referenzbild entfernen
+                        </Button>
+                      )}
+                      <span className="text-xs text-muted-foreground">JPG, PNG oder WebP, höchstens 10 MB</span>
+                    </div>
+                    {styleReferenceUrl && (
+                      <img
+                        src={styleReferenceUrl}
+                        alt="Referenz für das Aussehen aller Bilder"
+                        className="max-h-64 w-full rounded-lg border bg-muted object-contain"
+                      />
+                    )}
                   </div>
                 </>
               )}
