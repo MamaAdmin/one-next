@@ -195,20 +195,11 @@ export default function FramingStepCard({
               ) : null}
 
             </p>
-            <p className="text-base text-muted-foreground mt-2">{step.arbeit}</p>
-
-            {step.nutzen ? (
-              <div className="mt-3 flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-                <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />
-                <div className="text-sm">
-                  <span className="font-medium text-primary">Warum jetzt? </span>
-                  <span className="text-foreground/80">{step.nutzen}</span>
-                </div>
-              </div>
-            ) : null}
-
           </div>
         </div>
+
+        <StepExplanation step={step} />
+        <StepVideo stepKey={step.key} />
 
         <ExternalLlmBar />
 
