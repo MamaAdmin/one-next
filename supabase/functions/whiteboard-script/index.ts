@@ -59,7 +59,9 @@ function buildPrompt(
   return `Du bist Autor für Erklär- und Lernvideos (${languageName}${isGerman ? ", Schweizer Business-Kontext" : ""}).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
   WICHTIG: Sämtliche Texte (Titel, Überschriften, Sprechtext, Stichpunkte, Bild- und Bewegungsbeschreibungen) schreibst du vollständig auf ${languageName}.
-  ${isGerman ? 'Für das Feld "narration" gilt deutsche Standardschreibung: Verwende bei jedem entsprechenden Wort konsequent „ß“ statt „ss“ (zum Beispiel „groß“, „Straße“, „heißt“, „außer“). Schreibe dort niemals die schweizerische ss-Schreibweise.' : ""}
+  ${isGerman ? 'Sprich das Publikum durchgehend in der Ihr-Form an (ihr, euch, euer), zum Beispiel „Kennt ihr das?“. Verwende niemals die Sie-Form und nicht die Du-Form. Das gilt für narration, heading und bullets.' : ""}
+  ${isGerman ? 'Verwende Schweizer Schreibweise mit „ss“, niemals „ß“.' : ""}
+  Wenn das Briefing bereits ausformulierten Sprechtext enthält, übernimm ihn wörtlich in „narration" und formuliere ihn nicht um.
 Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
 Visueller Stil: ${styleLabel}
@@ -156,7 +158,7 @@ Deno.serve(async (req) => {
     }
     const topic = String(payload.topic ?? "").trim();
     if (topic.length < 5) return json({ error: "Bitte ein Thema beschreiben." }, 400);
-    const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 10);
+    const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 15);
     const title = String(payload.title ?? "");
     const scriptType = String(payload.scriptType ?? "Problem–Lösung");
     const scriptHint = String(payload.scriptHint ?? "");
