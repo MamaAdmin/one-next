@@ -353,7 +353,7 @@ const WhiteboardVideoEditor = () => {
       setStyleReferencePath(uploaded.path);
       setStyleReferenceUrl(uploaded.url);
       uploadedPath = null;
-      if (previousPath) await deleteStyleReference(previousPath);
+      if (previousPath) await deleteStyleReference(previousPath).catch(() => undefined);
       toast({ title: "Referenzbild gespeichert" });
     } catch (error) {
       if (uploadedPath) await deleteStyleReference(uploadedPath).catch(() => undefined);
