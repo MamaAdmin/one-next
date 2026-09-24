@@ -368,19 +368,21 @@ Deno.serve(async (req) => {
           ? prompt
           : `${prompt}. Whiteboard animation style, hand drawing black marker illustrations on white paper.`,
         model: requested,
-        generationType: imageUrl ? "IMAGE_2_VIDEO" : "TEXT_2_VIDEO",
-        aspect_ratio: "16:9",
-        duration,
+        generationType: imageUrl ? "FIRST_AND_LAST_FRAMES_2_VIDEO" : "TEXT_2_VIDEO",
+        aspectRatio: "16:9",
+        enableTranslation: true,
       };
+      void duration;
       if (imageUrl) body_.imageUrls = [imageUrl];
-      if (Number.isFinite(seed) && seed > 0) body_.seeds = Math.round(seed);
+      if (Number.isFinite(seed) && seed >= 10000 && seed <= 99999) body_.seeds = Math.round(seed);
       const res = await fetch(`${KIE_BASE}/api/v1/veo/generate`, {
         method: "POST",
         headers: kieHeaders(),
         body: JSON.stringify(body_),
       });
-      const body = await res.json();
+      const body = await res.json().catch(() => ({}));
       if (!res.ok || body?.code !== 200 || !body?.data?.taskId) {
+        console.error("[kie-whiteboard] veo generate abgelehnt:", res.status, JSON.stringify(body).slice(0, 500));
         return json({ error: body?.msg ?? `kie.ai Fehler (${res.status})` }, 502);
       }
       return json({ taskId: body.data.taskId });
@@ -392,16 +394,24 @@ Deno.serve(async (req) => {
       const res = await fetch(`${KIE_BASE}/api/v1/veo/record-info?taskId=${taskId}`, {
         headers: kieHeaders(),
       });
-      const body = await res.json();
-      const flag = body?.data?.successFlag;
+      const body = await res.json().catch(() => ({}));
+      const flag = Number(body?.data?.successFlag);
+      if (body?.code && body.code !== 200) {
+        console.error("[kie-whiteboard] veo status:", JSON.stringify(body).slice(0, 500));
+        if (body.code >= 400 && body.code < 500 && body.code !== 429) {
+          return json({ status: "failed", error: body?.msg ?? "Clip-Status nicht abrufbar" });
+        }
+      }
       if (flag === 1) {
-        const remoteUrl = body?.data?.response?.resultUrls?.[0];
+        let urls = body?.data?.response?.resultUrls ?? body?.data?.resultUrls;
+        if (typeof urls === "string") { try { urls = JSON.parse(urls); } catch { urls = [urls]; } }
+        const remoteUrl = Array.isArray(urls) ? urls[0] : undefined;
         if (!remoteUrl) return json({ status: "failed", error: "Kein Video erhalten" });
         const url = await mirrorToStorage(remoteUrl, "mp4", taskId);
         return json({ status: "done", url });
       }
       if (flag === 2 || flag === 3) {
-        return json({ status: "failed", error: body?.data?.errorMessage ?? "Video fehlgeschlagen" });
+        return json({ status: "failed", error: body?.data?.errorMessage ?? body?.msg ?? "Clip-Erzeugung fehlgeschlagen" });
       }
       return json({ status: "pending" });
     }
