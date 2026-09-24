@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info, HelpCircle, Lightbulb, AlertTriangle, Coffee } from "lucide-react";
+import { Sparkles, Loader2, Plus, X, PenLine, Search, ArrowRight, Info, HelpCircle, AlertTriangle, Coffee } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { FRAMING_STEPS, type FramingStepDef } from "@/features/framing/steps";
 import { getStepWarnings } from "@/features/framing/validation";
@@ -2791,7 +2791,7 @@ function StepVideo({ stepKey }: { stepKey: string }) {
         <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="rounded-lg border border-t-0 bg-background p-4">
+        <div className="mt-2 rounded-lg border bg-background p-4">
           <VideoPlayer url={slotVideo?.video_url || ""} title="So arbeitest du mit dem Tool" />
         </div>
       </CollapsibleContent>
@@ -2824,7 +2824,7 @@ function IntroSlide({ onNext }: { onNext?: () => void }) {
             </span>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="rounded-lg border border-t-0 bg-background p-4 text-sm text-foreground/80 leading-relaxed">
+            <div className="mt-2 rounded-lg border bg-background p-4 text-sm text-foreground/80 leading-relaxed">
               Ein Design Sprint liefert in wenigen Tagen einen getesteten Lösungsansatz, allerdings nur, wenn er am richtigen Problem arbeitet. Problem Framing klärt genau das vorab: Worum geht es wirklich, für wen, und woran erkennt ihr Erfolg? Du und dein Team bündelt euer Wissen, trennt Symptome von Ursachen und legt Annahmen, Risiken und Rahmenbedingungen offen. Am Ende steht eine gemeinsame Sprint-Frage mit einem Challenge Statement. Damit startet der Sprint mit einem klaren Ziel, und ihr verliert die ersten Stunden nicht mit Grundsatzdiskussionen.
             </div>
           </CollapsibleContent>

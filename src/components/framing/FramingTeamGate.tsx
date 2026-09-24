@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, ArrowRight, AlertCircle, HelpCircle, Lightbulb, Play, ChevronDown } from "lucide-react";
+import { Users, ArrowRight, AlertCircle, HelpCircle, Play, ChevronDown } from "lucide-react";
 import { TeamRoleGrid } from "@/components/sprint/TeamRoleGrid";
 import { useSprintMembers } from "@/hooks/useSprintTeam";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -28,7 +28,7 @@ function TeamVideo() {
         <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="rounded-lg border border-t-0 bg-background p-4">
+        <div className="mt-2 rounded-lg border bg-background p-4">
           <VideoPlayer url={slotVideo?.video_url || ""} title="So arbeitest du mit dem Tool" />
         </div>
       </CollapsibleContent>
