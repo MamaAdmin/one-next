@@ -13,6 +13,29 @@ interface Props {
   onContinue: () => void;
 }
 
+const COLLAPSE_TRIGGER =
+  "group/intro w-full flex items-center gap-3 rounded-lg border bg-background p-4 font-semibold text-left transition-colors hover:bg-muted/60 [&[data-state=open]]:border-primary/40";
+const COLLAPSE_BADGE =
+  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary transition-all duration-200 group-hover/intro:bg-primary/20 [[data-state=open]_&]:rotate-180";
+
+function TeamVideo() {
+  const { data: slotVideo } = useVideoSlot("framing_team");
+  return (
+    <Collapsible>
+      <CollapsibleTrigger className={COLLAPSE_TRIGGER}>
+        <Play className="w-4 h-4 shrink-0" />
+        <span className="flex-1">So arbeitest du mit dem Tool</span>
+        <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="rounded-lg border border-t-0 bg-background p-4">
+          <VideoPlayer url={slotVideo?.video_url || ""} title="So arbeitest du mit dem Tool" />
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
 /**
  * Team-Konstellation als erster Schritt des Problem Framings.
  * Nutzt die bestehende `sprint_members`-Infrastruktur (der zugehörige Sprint
