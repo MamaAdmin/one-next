@@ -2692,15 +2692,23 @@ export type Database = {
           characters: Json
           cost_limit_credits: number
           created_at: string
+          export_path: string | null
+          export_srt_path: string | null
           format: string
           id: string
           language: string
           learning_goal: string
+          music_path: string | null
+          music_volume: number
           portrait_path: string | null
           pronunciation: Json
           reference_paths: Json
+          render_error: string | null
+          render_id: string | null
+          render_status: string | null
           status: string
           style: string
+          subtitles_enabled: boolean
           target_seconds: number
           title: string
           topic: string
@@ -2713,15 +2721,23 @@ export type Database = {
           characters?: Json
           cost_limit_credits?: number
           created_at?: string
+          export_path?: string | null
+          export_srt_path?: string | null
           format?: string
           id?: string
           language?: string
           learning_goal?: string
+          music_path?: string | null
+          music_volume?: number
           portrait_path?: string | null
           pronunciation?: Json
           reference_paths?: Json
+          render_error?: string | null
+          render_id?: string | null
+          render_status?: string | null
           status?: string
           style: string
+          subtitles_enabled?: boolean
           target_seconds?: number
           title: string
           topic?: string
@@ -2734,15 +2750,23 @@ export type Database = {
           characters?: Json
           cost_limit_credits?: number
           created_at?: string
+          export_path?: string | null
+          export_srt_path?: string | null
           format?: string
           id?: string
           language?: string
           learning_goal?: string
+          music_path?: string | null
+          music_volume?: number
           portrait_path?: string | null
           pronunciation?: Json
           reference_paths?: Json
+          render_error?: string | null
+          render_id?: string | null
+          render_status?: string | null
           status?: string
           style?: string
+          subtitles_enabled?: boolean
           target_seconds?: number
           title?: string
           topic?: string
@@ -2978,6 +3002,7 @@ export type Database = {
           image_prompt: string
           narration: string
           overlay_texts: Json
+          overlays: Json
           position: number
           project_id: string
           step_status: Json
@@ -2991,6 +3016,7 @@ export type Database = {
           image_prompt?: string
           narration?: string
           overlay_texts?: Json
+          overlays?: Json
           position?: number
           project_id: string
           step_status?: Json
@@ -3004,6 +3030,7 @@ export type Database = {
           image_prompt?: string
           narration?: string
           overlay_texts?: Json
+          overlays?: Json
           position?: number
           project_id?: string
           step_status?: Json
