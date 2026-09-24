@@ -81,4 +81,4 @@
 
 - [x] Referenzbild serverseitig mit Gemini analysieren
 - [x] KI-Aktion und Bestätigung beim Überschreiben ergänzen
-- [ ] Funktion veröffentlichen und in der Oberfläche prüfen
+- [x] Funktion veröffentlichen und in der Oberfläche prüfen
