@@ -76,3 +76,9 @@
 - [x] Privates Referenzbild hochladen, ersetzen und entfernen
 - [x] Bildvorgabe mit Skript- und Bilderzeugung verbinden
 - [x] Oberfläche und Erzeugungsfunktionen prüfen
+
+# Bildvorgabe aus Referenzbild erstellen
+
+- [x] Referenzbild serverseitig mit Gemini analysieren
+- [x] KI-Aktion und Bestätigung beim Überschreiben ergänzen
+- [ ] Funktion veröffentlichen und in der Oberfläche prüfen

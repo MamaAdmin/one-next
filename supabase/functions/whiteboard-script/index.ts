@@ -14,6 +14,9 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 const admin = createClient(supabaseUrl, serviceKey);
+const STYLE_REFERENCE_BUCKET = "whiteboard-uploads";
+const MAX_REFERENCE_BYTES = 10 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 async function requireAdmin(req: Request): Promise<{ userId: string } | Response> {
   const authHeader = req.headers.get("Authorization") ?? "";
@@ -83,6 +86,50 @@ function geminiError(err: unknown): { status: number; message: string } {
   return { status: geminiErrorStatus(err), message: message || `KI-Fehler (${status})` };
 }
 
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+  return btoa(binary);
+}
+
+async function analyzeStyleReference(path: string): Promise<string> {
+  if (!path.startsWith("style-references/") || path.includes("..")) {
+    throw Object.assign(new Error("Ungültiger Pfad für das Referenzbild."), { status: 400 });
+  }
+  const { data, error } = await admin.storage.from(STYLE_REFERENCE_BUCKET).download(path);
+  if (error || !data) {
+    throw Object.assign(new Error("Das Referenzbild konnte nicht geladen werden."), { status: 404 });
+  }
+  if (data.size === 0 || data.size > MAX_REFERENCE_BYTES) {
+    throw Object.assign(new Error("Das Referenzbild ist leer oder grösser als 10 MB."), { status: 400 });
+  }
+  const extension = path.split(".").pop()?.toLowerCase();
+  const fallbackType = extension === "png" ? "image/png" : extension === "webp" ? "image/webp" : "image/jpeg";
+  const mimeType = ALLOWED_IMAGE_TYPES.has(data.type) ? data.type : fallbackType;
+  const imageData = bytesToBase64(new Uint8Array(await data.arrayBuffer()));
+  const result = await callGemini({
+    model: MODEL,
+    temperature: 0.3,
+    maxOutputTokens: 500,
+    thinkingBudget: 0,
+    messages: [{
+      role: "user",
+      content: [
+        {
+          text: `Analysiere dieses Referenzbild und formuliere daraus eine präzise deutsche Bildvorgabe für eine zusammenhängende Erklärvideo-Serie. Beschreibe nur übertragbare visuelle Eigenschaften: Farbwelt, Illustrations- oder Figurenstil, Perspektive, Licht, Formen, Linien, Materialien, Komposition und Stimmung. Übernimm keine konkreten Bildinhalte, Namen, Marken, Logos oder sichtbaren Texte als feste Vorgabe. Schreibe einen kompakten Absatz mit 60 bis 100 Wörtern, direkt als Anweisung für ein Bildmodell. Keine Überschrift, keine Aufzählung, kein Markdown.`,
+        },
+        { inlineData: { mimeType, data: imageData } },
+      ],
+    }],
+  });
+  const prompt = result.content.trim();
+  if (!prompt) throw Object.assign(new Error("Gemini hat keine Bildvorgabe zurückgegeben."), { status: 502 });
+  return prompt;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -91,6 +138,21 @@ Deno.serve(async (req) => {
     if (auth instanceof Response) return auth;
 
     const payload = await req.json().catch(() => ({}));
+    if (payload.action === "analyze_style_reference") {
+      const styleRefPath = String(payload.styleRefPath ?? "").trim();
+      if (!styleRefPath) return json({ error: "Bitte zuerst ein Referenzbild hochladen." }, 400);
+      try {
+        const imageDirection = await analyzeStyleReference(styleRefPath);
+        return json({ imageDirection });
+      } catch (error) {
+        const status = (error as { status?: number })?.status;
+        if (status === 400 || status === 404) {
+          return json({ error: error instanceof Error ? error.message : "Referenzbild ungültig" }, status);
+        }
+        const mapped = geminiError(error);
+        return json({ error: mapped.message }, mapped.status);
+      }
+    }
     const topic = String(payload.topic ?? "").trim();
     if (topic.length < 5) return json({ error: "Bitte ein Thema beschreiben." }, 400);
     const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 10);

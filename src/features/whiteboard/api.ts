@@ -69,6 +69,12 @@ export const generateScript = (
     ...options,
   }).then((r) => r.script);
 
+export const analyzeStyleReference = (styleRefPath: string) =>
+  invokeFn<{ imageDirection: string }>("whiteboard-script", {
+    action: "analyze_style_reference",
+    styleRefPath,
+  }).then((result) => result.imageDirection);
+
 export const previewVoice = (voice: string, model?: string) =>
   invoke<{ url: string }>({ action: "voice_preview", voice, model }).then((r) => r.url);
 
