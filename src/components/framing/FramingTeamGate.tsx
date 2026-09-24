@@ -56,6 +56,38 @@ export default function FramingTeamGate({ sprintId, onContinue }: Props) {
             </p>
           </div>
 
+          {/* Erklärung – aufgeklappt */}
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className={COLLAPSE_TRIGGER}>
+              <HelpCircle className="w-4 h-4 shrink-0" />
+              <span className="flex-1">Erklärung</span>
+              <span className={COLLAPSE_BADGE}><ChevronDown className="w-4 h-4" /></span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="rounded-lg border border-t-0 bg-background p-4 space-y-3">
+                <p className="text-base text-foreground/80">
+                  Trage hier ein, wer am Problem Framing teilnimmt, und weise jeder Person eine
+                  Rolle zu. Neue Teammitglieder lädst du direkt per E-Mail ein — sie erhalten
+                  einen Zugang zum Workshop.
+                </p>
+                <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <Lightbulb className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+                  <div className="text-sm">
+                    <span className="font-medium text-primary">Warum jetzt? </span>
+                    <span className="text-foreground/80">
+                      Die richtigen Perspektiven entscheiden über die Qualität des Framings: Der
+                      Decider sorgt für verbindliche Entscheidungen, Fachexpert:innen liefern das
+                      nötige Hintergrundwissen.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Video – eingeklappt */}
+          <TeamVideo />
+
           <TeamRoleGrid sprintId={sprintId} emphasizeDeciderMissing={false} />
         </CardContent>
       </Card>
