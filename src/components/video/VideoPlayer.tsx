@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Play } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { isDirectVideoUrl, toEmbedUrl } from "@/features/video/slots";
@@ -20,25 +20,42 @@ export function VideoPlayer({
   const raw = (url ?? "").trim();
   const embed = toEmbedUrl(raw);
   const direct = !embed && isDirectVideoUrl(raw);
+  const isYouTube = Boolean(embed?.includes("youtube-nocookie.com"));
+  const playerSrc = useMemo(() => {
+    if (!embed || !isYouTube || typeof window === "undefined") return embed;
+    return `${embed}&origin=${encodeURIComponent(window.location.origin)}`;
+  }, [embed, isYouTube]);
 
-  const disableYouTubeCaptions = () => {
-    if (!embed?.includes("youtube-nocookie.com")) return;
+  const disableYouTubeCaptions = useCallback(() => {
+    if (!isYouTube) return;
+    iframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: "setOption",
+        args: ["captions", "track", {}],
+      }),
+      "https://www.youtube-nocookie.com",
+    );
+  }, [isYouTube]);
 
-    const turnOff = () => {
-      iframeRef.current?.contentWindow?.postMessage(
-        JSON.stringify({
-          event: "command",
-          func: "setOption",
-          args: ["captions", "track", {}],
-        }),
-        "https://www.youtube-nocookie.com",
-      );
+  useEffect(() => {
+    if (!isYouTube) return;
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== "https://www.youtube-nocookie.com") return;
+      disableYouTubeCaptions();
     };
 
-    turnOff();
-    window.setTimeout(turnOff, 500);
-    window.setTimeout(turnOff, 1500);
-  };
+    window.addEventListener("message", handleMessage);
+    const intervals = [250, 750, 1500, 3000, 5000].map((delay) =>
+      window.setTimeout(disableYouTubeCaptions, delay),
+    );
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+      intervals.forEach(window.clearTimeout);
+    };
+  }, [disableYouTubeCaptions, isYouTube, playerSrc]);
 
   return (
     <div className="overflow-hidden rounded-lg border bg-background">
@@ -46,7 +63,7 @@ export function VideoPlayer({
         {embed ? (
           <iframe
             ref={iframeRef}
-            src={embed}
+            src={playerSrc ?? undefined}
             title={title}
             loading="lazy"
             onLoad={disableYouTubeCaptions}
