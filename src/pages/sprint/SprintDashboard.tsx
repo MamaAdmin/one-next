@@ -117,7 +117,7 @@ export default function SprintDashboard() {
         <Navigation />
         <AdminBreadcrumb items={[{ label: "Design Sprint", href: "/sprint", active: true }]} />
 
-        <DashboardPage contentClassName="max-w-none">
+        <DashboardPage contentClassName="max-w-6xl">
           <DashboardHeader title="Meine Design Sprints" description="Problem Framings und selbstgeführte Design Sprints mit KI-Unterstützung." />
 
           <section className="mb-10">
