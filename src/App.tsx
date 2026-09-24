@@ -66,6 +66,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import KursDetail from "./pages/KursDetail";
 import PublicCourseDashboard from "./pages/admin/PublicCourseDashboard";
 import WhiteboardVideoDashboard from "./pages/admin/WhiteboardVideoDashboard";
+import LernvideoModelConfig from "./pages/admin/LernvideoModelConfig";
 import WhiteboardVideoEditor from "./pages/admin/WhiteboardVideoEditor";
 import WhiteboardStudio from "./pages/admin/WhiteboardStudio";
 import WhiteboardSeriesDetail from "./pages/admin/WhiteboardSeriesDetail";
@@ -137,6 +138,7 @@ const App = () => (
           {/* Internal design reference — not linked from navigation */}
           <Route path="/admin/design-system" element={<DesignSystem />} />
           <Route path="/admin/whiteboard-videos" element={<WhiteboardVideoDashboard />} />
+          <Route path="/admin/lernvideo-modelle" element={<LernvideoModelConfig />} />
           <Route path="/admin/whiteboard-videos/serie/:seriesId" element={<WhiteboardSeriesDetail />} />
           <Route path="/admin/whiteboard-videos/:videoId" element={<WhiteboardVideoEditor />} />
           <Route path="/admin/whiteboard-videos/:videoId/studio" element={<WhiteboardStudio />} />
