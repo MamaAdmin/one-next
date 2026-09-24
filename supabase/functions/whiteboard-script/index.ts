@@ -59,7 +59,9 @@ function buildPrompt(
   return `Du bist Autor für Erklär- und Lernvideos (${languageName}${isGerman ? ", Schweizer Business-Kontext" : ""}).
 Erstelle ein Skript für ein Erklärvideo mit genau ${sceneCount} Abschnitten.
   WICHTIG: Sämtliche Texte (Titel, Überschriften, Sprechtext, Stichpunkte, Bild- und Bewegungsbeschreibungen) schreibst du vollständig auf ${languageName}.
-  ${isGerman ? 'Für das Feld "narration" gilt deutsche Standardschreibung: Verwende bei jedem entsprechenden Wort konsequent „ß“ statt „ss“ (zum Beispiel „groß“, „Straße“, „heißt“, „außer“). Schreibe dort niemals die schweizerische ss-Schreibweise.' : ""}
+  ${isGerman ? 'Sprich das Publikum durchgehend in der Ihr-Form an (ihr, euch, euer), zum Beispiel „Kennt ihr das?“. Verwende niemals die Sie-Form und nicht die Du-Form. Das gilt für narration, heading und bullets.' : ""}
+  ${isGerman ? 'Verwende Schweizer Schreibweise mit „ss“, niemals „ß“.' : ""}
+  Wenn das Briefing bereits ausformulierten Sprechtext enthält, übernimm ihn wörtlich in „narration" und formuliere ihn nicht um.
 Thema/Briefing: "${topic}"
 Arbeitstitel: "${title}"
 Visueller Stil: ${styleLabel}
