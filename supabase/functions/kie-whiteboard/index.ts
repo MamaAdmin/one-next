@@ -225,8 +225,9 @@ function voicePreview(voice: string): string {
   return `https://static.aiquickdraw.com/elevenlabs/voice/${voiceId}.mp3`;
 }
 
-// Stimmen, die Kie.ai nicht anbietet, laufen direkt über das eigene ElevenLabs-Konto.
-const DIRECT_ELEVENLABS = new Set(["Nelly"]);
+// Alle Stimmen laufen direkt über das eigene ElevenLabs-Konto (schnell, ~2 s).
+// Kie.ai dient nur als Rückfallebene, wenn kein Schlüssel hinterlegt ist.
+const hasElevenLabsKey = () => Boolean(Deno.env.get("ELEVENLABS_API_KEY"));
 
 async function elevenLabsToStorage(text: string, voiceId: string, name: string): Promise<string> {
   const key = Deno.env.get("ELEVENLABS_API_KEY");
@@ -270,7 +271,7 @@ Deno.serve(async (req) => {
 
     if (action === "voice_preview") {
       const voice = String(payload.voice ?? "Rachel");
-      if (DIRECT_ELEVENLABS.has(voice)) {
+      if (hasElevenLabsKey()) {
         const name = `preview_${resolveVoiceId(voice)}`;
         const existing = await admin.storage.from(BUCKET).createSignedUrl(`${name}.mp3`, 60 * 60 * 24 * 365);
         if (existing.data?.signedUrl) return json({ url: existing.data.signedUrl });
@@ -317,7 +318,7 @@ Deno.serve(async (req) => {
       const text = String(payload.text ?? "").trim().slice(0, 4800);
       if (!text) return json({ error: "Sprechtext fehlt." }, 400);
       const voiceName = String(payload.voice ?? "Rachel");
-      if (DIRECT_ELEVENLABS.has(voiceName)) {
+      if (hasElevenLabsKey()) {
         const taskId = `el_${crypto.randomUUID()}`;
         await elevenLabsToStorage(text, resolveVoiceId(voiceName), taskId);
         return json({ taskId });
