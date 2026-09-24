@@ -158,7 +158,7 @@ Deno.serve(async (req) => {
     }
     const topic = String(payload.topic ?? "").trim();
     if (topic.length < 5) return json({ error: "Bitte ein Thema beschreiben." }, 400);
-    const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 10);
+    const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 15);
     const title = String(payload.title ?? "");
     const scriptType = String(payload.scriptType ?? "Problem–Lösung");
     const scriptHint = String(payload.scriptHint ?? "");
