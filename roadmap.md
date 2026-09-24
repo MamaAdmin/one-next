@@ -75,4 +75,4 @@
 - [x] Freitext-Vorgabe pro Video speichern
 - [x] Privates Referenzbild hochladen, ersetzen und entfernen
 - [x] Bildvorgabe mit Skript- und Bilderzeugung verbinden
-- [ ] Oberfläche und Erzeugungsfunktionen prüfen
+- [x] Oberfläche und Erzeugungsfunktionen prüfen
