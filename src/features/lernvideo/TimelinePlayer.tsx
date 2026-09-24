@@ -17,7 +17,6 @@ function appear(local: number, duration: number): CSSProperties {
 
 const OverlayView = ({ o, local, format }: { o: Overlay; local: number; format: Timeline["format"] }) => {
   const box = overlayBox(o.type, o.position, format);
-  const p = local / Math.max(0.1, o.duration);
   const grow = ease(local / Math.min(1.2, o.duration * 0.6));
   const base: CSSProperties = {
     position: "absolute", left: `${box.x}%`, top: `${box.y}%`, width: `${box.w}%`, height: `${box.h}%`,
@@ -124,7 +123,6 @@ const OverlayView = ({ o, local, format }: { o: Overlay; local: number; format: 
         </div>
       );
   }
-  void p;
 };
 
 const Visual = ({ scene, local, playing }: { scene: TimelineScene; local: number; playing: boolean }) => {
