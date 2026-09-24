@@ -1844,6 +1844,25 @@ const WhiteboardVideoEditor = () => {
                           )}
                           Zeichnung neu erzeugen
                         </Button>
+                        {scene.imageUrl && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={sceneBusy !== null || working !== null}
+                            onClick={() => {
+                              if (!window.confirm("Diese Zeichnung wirklich löschen?")) return;
+                              const next = scenes.map((s) =>
+                                s.id === scene.id ? { ...s, imageUrl: null, aiClipUrl: null, aiClipTaskId: null } : s,
+                              );
+                              setScenes(next);
+                              void save({ scenes: next });
+                              toast({ title: "Zeichnung gelöscht" });
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Zeichnung löschen
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
