@@ -88,7 +88,7 @@ export default function FramingTeamGate({ sprintId, onContinue }: Props) {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="rounded-lg border border-t-0 bg-background p-4 space-y-3">
-                <p className="text-base text-foreground/80">
+                <p className="text-sm text-foreground/80 leading-relaxed">
                   Trage hier ein, wer am Problem Framing teilnimmt, und weise jeder Person eine
                   Rolle zu. Neue Teammitglieder lädst du direkt per E-Mail ein — sie erhalten
                   einen Zugang zum Workshop.
