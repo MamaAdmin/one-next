@@ -7,6 +7,7 @@ export type OfferProcessStep = {
   result: string;
   href: string;
   linkLabel: string;
+  alternativeLinks?: { href: string; label: string }[];
   example: string;
 };
 
@@ -31,6 +32,9 @@ export const offerProcessSteps: OfferProcessStep[] = [
     result: "Ein getesteter Lösungsansatz mit belegten Erkenntnissen.",
     href: "/sprint-uebersicht",
     linkLabel: "Sprintform wählen",
+    alternativeLinks: [
+      { href: "/sprint-uebersicht/online", label: "Online KI-Sprint-Tool ansehen" },
+    ],
     example: "Ein Assistent findet freigegebene Produktinformationen und erstellt einen Angebotsentwurf. Versendet wird noch nichts automatisch.",
   },
   {

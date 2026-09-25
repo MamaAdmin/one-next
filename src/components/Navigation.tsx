@@ -41,6 +41,7 @@ const fallbackItems: NavbarItem[] = [
     children: [
       { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop", ...serviceMeta["/problem-framing-workshop"] },
       { id: "design-sprint", label: "KI Design Sprint", href: "/sprint-uebersicht", ...serviceMeta["/sprint-uebersicht"] },
+      { id: "online-sprint-tool", label: "Online KI-Sprint-Tool", href: "/sprint-uebersicht/online", ...serviceMeta["/sprint-uebersicht/online"] },
       { id: "ki-entwicklung", label: "KI-Arbeitsablauf entwickeln", href: "/custom-ai-development", ...serviceMeta["/custom-ai-development"] },
       { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services", ...serviceMeta["/ai-consulting-services"] },
       { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit", ...serviceMeta["/data-quality-audit"] },

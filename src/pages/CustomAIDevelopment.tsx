@@ -46,10 +46,12 @@ const processSteps = [
     number: "02",
     icon: BrainCircuit,
     title: "KI-unterstützter Design Sprint",
-    description: "Der priorisierte Lösungsansatz, Prototyp und gewonnene Erkenntnisse machen die Richtung greifbar und überprüfbar.",
+    description: "Der priorisierte Lösungsansatz, Prototyp und gewonnene Erkenntnisse machen die Richtung greifbar und überprüfbar – moderiert oder selbstgeführt.",
     result: "Ein gemeinsam bewerteter Lösungsansatz.",
     href: "/design-sprint-workshop",
     linkLabel: "Zum Design Sprint",
+    alternativeHref: "/sprint-uebersicht/online",
+    alternativeLinkLabel: "Zum Online KI-Sprint-Tool",
   },
   {
     number: "03",
@@ -209,7 +211,12 @@ const CustomAIDevelopment = () => {
                         <h3 className="mt-5 font-workshop-heading text-xl font-semibold">{step.title}</h3>
                         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
                         <p className="mt-5 border-l-2 border-border-accent pl-4 text-sm"><strong>Ergebnis:</strong> {step.result}</p>
-                        {"href" in step && step.href ? <Button variant="link" className="mt-4 h-auto p-0" asChild><Link to={step.href}>{step.linkLabel}<ArrowRight className="ml-2 size-4" /></Link></Button> : null}
+                        {"href" in step && step.href ? (
+                          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                            <Button variant="link" className="h-auto p-0" asChild><Link to={step.href}>{step.linkLabel}<ArrowRight className="ml-2 size-4" /></Link></Button>
+                            {"alternativeHref" in step && step.alternativeHref ? <Button variant="link" className="h-auto p-0" asChild><Link to={step.alternativeHref}>{step.alternativeLinkLabel}<ArrowRight className="ml-2 size-4" /></Link></Button> : null}
+                          </div>
+                        ) : null}
                       </article>
                     );
                   })}

@@ -50,7 +50,7 @@ export const WorkshopFlowDiagram = () => {
 
                   <div className="mb-4 border-t border-border pt-4">
                     <p className="text-sm font-semibold">
-                      Dann weiter zum Design Sprint →
+                      Dann weiter zum moderierten oder <Link to="/sprint-uebersicht/online" className="text-primary hover:underline">selbstgeführten Design Sprint</Link> →
                     </p>
                   </div>
                   
