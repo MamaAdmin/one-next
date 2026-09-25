@@ -164,7 +164,6 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
             </div>
           </div>
         </div>
-        </div>
       </div>
     </section>
   );
