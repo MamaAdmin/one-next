@@ -51,13 +51,13 @@ const offers = [
   {
     icon: Laptop,
     label: "Flexible Alternative",
-    title: "Online Design Sprint",
+    title: "Online KI-Sprint-Tool",
     fit: "Wenn Sie flexibel und selbstgeführt arbeiten möchten",
     mode: "Selbstgeführt · modular",
     points: ["Problem Framing optional auswählen", "Design-Sprint-Module selbst zusammenstellen", "Allein oder im Team arbeiten"],
     result: "Einen individuell zusammengestellten Sprint",
     href: "/sprint-uebersicht/online",
-    cta: "Online Sprint ansehen",
+    cta: "Online KI-Sprint-Tool ansehen",
   },
 ];
 
@@ -90,7 +90,7 @@ const AIDesignSprint = () => {
   const structuredData = [
     createServiceSchema(
       "KI Design Sprint – die passende Sprintform wählen",
-      "Problem Framing, moderierter KI Design Sprint oder modularer Online Design Sprint: Finden Sie den passenden Weg für Ihre Ausgangslage.",
+      "Problem Framing, moderierter KI Design Sprint oder selbstgeführtes Online KI-Sprint-Tool: Finden Sie den passenden Weg für Ihre Ausgangslage.",
       "https://one-next.de/sprint-uebersicht",
     ),
     createBreadcrumbSchema([
@@ -108,8 +108,8 @@ const AIDesignSprint = () => {
         answer: "Wenn die Challenge klar ist und ein moderiertes Team in 1–4 Tagen einen priorisierten und getesteten Lösungsansatz entwickeln möchte.",
       },
       {
-        question: "Was enthält der Online Design Sprint?",
-        answer: "Der Online Design Sprint ist selbstgeführt und modular. Sie wählen ein nicht moderiertes Problem Framing, den Design-Sprint-Prozess oder beide Module als durchgängigen Weg.",
+        question: "Was enthält das Online KI-Sprint-Tool?",
+        answer: "Das Online KI-Sprint-Tool ist selbstgeführt und modular. Sie wählen ein nicht moderiertes Problem Framing, den Design-Sprint-Prozess oder beide Module als durchgängigen Weg.",
       },
     ]),
   ];
@@ -118,8 +118,8 @@ const AIDesignSprint = () => {
     <>
       <SEO
         title="Sprintübersicht | Den passenden KI Design Sprint wählen | one-next"
-        description="Vergleichen Sie Problem Framing, moderierten KI Design Sprint und modularen Online Design Sprint und wählen Sie den passenden Weg für Ihre Challenge."
-        keywords="KI Design Sprint, Problem Framing, Design Sprint Workshop, Online Design Sprint, Entscheidungshilfe"
+        description="Vergleichen Sie Problem Framing, moderierten KI Design Sprint und das selbstgeführte Online KI-Sprint-Tool und wählen Sie den passenden Weg für Ihre Challenge."
+        keywords="KI Design Sprint, Problem Framing, Design Sprint Workshop, Online KI-Sprint-Tool, Entscheidungshilfe"
         canonical="https://one-next.de/sprint-uebersicht"
         structuredData={structuredData}
       />
@@ -142,7 +142,7 @@ const AIDesignSprint = () => {
             descriptionSlot={
               <div className="mt-6 max-w-2xl">
                 <InlineTextArea
-                  value={content.hero_description || "Problem Framing, moderierter KI Design Sprint oder flexibler Online Design Sprint: Wählen Sie den Aufbau, der zu Ihrer Ausgangslage, Ihrem Team und Ihrer gewünschten Arbeitsweise passt."}
+                  value={content.hero_description || "Problem Framing, moderierter KI Design Sprint oder selbstgeführtes Online KI-Sprint-Tool: Wählen Sie den Aufbau, der zu Ihrer Ausgangslage, Ihrem Team und Ihrer gewünschten Arbeitsweise passt."}
                   onSave={(value) => updateContent("hero_description", value)}
                   isEditMode={isEditMode}
                   className="text-lg leading-relaxed text-muted-foreground md:text-xl"
@@ -236,7 +236,7 @@ const AIDesignSprint = () => {
                   <p className="mb-3 text-sm font-bold uppercase text-primary">Selbstgeführt und modular</p>
                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Der Online Design Sprint passt sich Ihrem Weg an</h2>
                   <p className="mt-5 leading-relaxed text-muted-foreground">Sie stellen selbst zusammen, welche Module Sie benötigen, und bearbeiten diese ohne Moderation in Ihrem eigenen Tempo – allein oder gemeinsam im Team.</p>
-                  <Button className="mt-8" variant="outline" asChild><Link to="/sprint-uebersicht/online">Online Sprint entdecken <ArrowRight /></Link></Button>
+                  <Button className="mt-8" variant="outline" asChild><Link to="/sprint-uebersicht/online">Online KI-Sprint-Tool entdecken <ArrowRight /></Link></Button>
                 </div>
                 <div className="grid gap-6 sm:grid-cols-3">
                   {[
