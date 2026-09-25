@@ -159,6 +159,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
                 </Link>
               ))}
             </div>
+            </div>
           </div>
         </div>
       </div>
