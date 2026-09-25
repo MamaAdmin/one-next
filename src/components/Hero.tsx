@@ -31,6 +31,8 @@ const pillars: Pillar[] = [
     claim: "Innovation mit Methode",
     description:
       "Wir klären das richtige Problem und testen Lösungen klein, bevor viel investiert wird – strukturiert, nachvollziehbar und mit echten Nutzenden.",
+    image: expertiseImage,
+    imageAlt: "Hände arbeiten an einer Post-it-Wand während eines Workshops",
     offers: [
       { label: "Problem Framing", href: "/problem-framing-workshop" },
       { label: "KI Design Sprint", href: "/sprint-uebersicht" },
