@@ -45,6 +45,8 @@ const pillars: Pillar[] = [
     claim: "Innovation beschleunigen",
     description:
       "Aus dem getesteten Ansatz wird ein sicherer KI-Arbeitsablauf mit klaren Rollen, Datenquellen, Prüfungen und menschlicher Freigabe.",
+    image: efficiencyImage,
+    imageAlt: "Arbeitstisch mit Skizzen zu einem KI-Arbeitsablauf",
     offers: [
       { label: "KI-Arbeitsablauf entwickeln", href: "/custom-ai-development" },
       { label: "KI-Beratung", href: "/ai-consulting-services" },
