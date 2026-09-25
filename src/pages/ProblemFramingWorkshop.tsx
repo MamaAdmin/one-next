@@ -86,8 +86,8 @@ const ProblemFramingWorkshop = () => {
     <>
       <SEO
         title="Problem-Framing-Workshop | Challenge definieren | one-next"
-        description="1-2 Tage intensive Challenge-Klärung. Definieren Sie Ihre Herausforderung präzise und machen Sie Ihr Team Design Sprint-ready für den Design Sprint."
-        keywords="Problem Framing, Challenge Definition, Workshop, Design Sprint Vorbereitung, Stakeholder Alignment"
+        description="Klären Sie in 1–2 Tagen das richtige Geschäftsproblem, Zielgruppe, Scope und messbare Erfolgskriterien als Grundlage für den KI Design Sprint."
+        keywords="Problem Framing, Geschäftsproblem klären, Challenge Definition, KI Design Sprint Vorbereitung, Erfolgskriterien"
         canonical="https://one-next.de/problem-framing-workshop"
         structuredData={structuredData}
       />

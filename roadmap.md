@@ -91,8 +91,8 @@
 
 # Leistungsangebot als KI-Lernprozess
 
-- [ ] Gemeinsame Prozessdarstellung und KMU-Beispiel auf der Startseite
-- [ ] Leistungsmenü in Kernweg und begleitende Bausteine ordnen
-- [ ] Alle Leistungsseiten in den Gesamtprozess einordnen
-- [ ] Metadaten und Auffindbarkeit angleichen
-- [ ] Desktop, Smartphone, Links und App-Start prüfen
+- [x] Gemeinsame Prozessdarstellung und KMU-Beispiel auf der Startseite
+- [x] Leistungsmenü in Kernweg und begleitende Bausteine ordnen
+- [x] Alle Leistungsseiten in den Gesamtprozess einordnen
+- [x] Metadaten und Auffindbarkeit angleichen
+- [x] Desktop, Smartphone, Links und App-Start prüfen

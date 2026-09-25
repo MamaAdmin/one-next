@@ -72,8 +72,8 @@ const DesignSprintWorkshop = () => {
     <>
       <SEO
         title="KI-unterstützter Design Sprint | 1–4 Tage | one-next"
-        description="Moderierter KI-unterstützter Design Sprint über 1–4 Tage. Mit ChatGPT und Claude schneller von der klaren Challenge zum getesteten Lösungsansatz."
-        keywords="KI-unterstützter Design Sprint, KI Design Sprint, ChatGPT Workshop, Claude Workshop, Prototyping"
+        description="Testen Sie in einem moderierten KI Design Sprint über 1–4 Tage eine kleine Lösung, bevor Sie in die sichere KI-Entwicklung investieren."
+        keywords="KI Design Sprint, Lösung klein testen, Prototyp, Nutzertest, KI-unterstützter Workshop"
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
       />

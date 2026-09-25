@@ -80,7 +80,7 @@ const OnlineSprintLanding = () => {
     <>
       <SEO
         title="Online Problem Framing & Design Sprint | Eigenes KI-Tool | one-next"
-        description="Unser selbstentwickeltes Online-Tool: zuerst Problem Framing, dann KI-gestützter Design Sprint – ohne externen Moderator, das spart Kosten und Zeit."
+        description="Im selbstgeführten Online-Tool klären Sie zuerst das Geschäftsproblem und testen danach eine kleine Lösung im KI Design Sprint – ohne externe Moderation."
         keywords="Online Design Sprint, Problem Framing online, KI Design Sprint, ohne Moderator, Remote Sprint Tool"
         canonical="https://one-next.de/sprint-uebersicht/online"
         structuredData={structuredData}

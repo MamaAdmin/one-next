@@ -104,7 +104,7 @@ const AIConsultingServices = () => {
     <>
       <SEO
         title="KI Consulting Services | Persönliche KI-Beratung | one-next"
-        description="Persönliche KI-Beratung für Ihr Unternehmen: Potenzialanalyse, Strategie und Umsetzungsbegleitung. Für Spezialthemen vermitteln wir Fachleute aus unserem Netzwerk."
+        description="Persönliche KI-Beratung begleitet Ihren Weg vom Geschäftsproblem bis zur belegten Wirkung – mit Priorisierung, Governance, Veränderung und Skalierung."
         keywords="KI Consulting, KI-Beratung, KI Strategie, Künstliche Intelligenz Beratung, KI Transformation, Innovation Consulting"
         canonical="https://one-next.de/ai-consulting-services"
         structuredData={structuredData}

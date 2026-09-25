@@ -182,7 +182,7 @@ export default function DataQualityAuditPage() {
     <>
       <SEO
         title="Data Quality Audit | Datenqualität professionell prüfen | one-next"
-        description="Professionelles Data Quality Audit für KI-Projekte. Systematische Bewertung nach Vollständigkeit, Konsistenz, Aktualität und Validität."
+        description="Prüfen Sie bedarfsabhängig, ob Ihre Daten für einen verlässlichen KI-Test oder die spätere Umsetzung geeignet sind."
         keywords="Data Quality Audit, Datenqualität, Data Audit, KI-Datenprüfung, Data Quality Assessment"
         canonical="https://one-next.de/data-quality-audit"
         structuredData={structuredData}

@@ -98,8 +98,8 @@ const CustomAIDevelopment = () => {
     <>
       <SEO
         title="Individuelle KI-Entwicklung mit BMAD | one-next"
-        description="Problem Framing und Design Sprint werden zum High-Level-Plan: BMAD strukturiert Business Alignment, Architektur, Roadmap und Milestones für Ihre KI-Lösung."
-        keywords="Individuelle KI-Entwicklung, BMAD, KI-Lösung, High-Level-Plan, Business Alignment, Roadmap, Jira, Confluence Cloud"
+        description="Vom getesteten Lösungsansatz zum sicheren KI-Arbeitsablauf: BMAD strukturiert Daten, Rollen, menschliche Freigaben, Architektur und Erprobung."
+        keywords="Individuelle KI-Entwicklung, sicherer KI-Arbeitsablauf, BMAD, menschliche Freigabe, KI-Erprobung, Roadmap"
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
