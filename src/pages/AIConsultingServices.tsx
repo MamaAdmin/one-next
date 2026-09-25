@@ -65,7 +65,6 @@ const industries = [
 const nextSteps = [
   { title: "Problem-Framing-Workshop", desc: "Wenn die Challenge noch unklar ist: Problemstellung schärfen, Zielgruppe priorisieren, Erfolgskriterien definieren.", to: "/problem-framing-workshop" },
   { title: "KI-unterstützter Design Sprint", desc: "Wenn die Challenge steht: Lösungsansatz entwickeln, Prototyp bauen und mit Nutzenden testen.", to: "/design-sprint-workshop" },
-  { title: "Online Design Sprint", desc: "Wenn Sie flexibel und selbstgeführt arbeiten möchten: modularer Online Design Sprint mit KI-Unterstützung.", to: "/sprint-uebersicht/online" },
   { title: "Online KI-Sprint-Tool", desc: "Wenn Sie selbstgeführt arbeiten möchten: Problem Framing und Design Sprint flexibel im Tool durchlaufen.", to: "/sprint-uebersicht/online" },
   { title: "KI-Arbeitsablauf", desc: "Wenn der Lösungsansatz validiert ist: sicherer Arbeitsablauf mit Rollen, Daten, Prüfungen und menschlicher Freigabe – geplant mit BMAD.", to: "/custom-ai-development" },
 ];
