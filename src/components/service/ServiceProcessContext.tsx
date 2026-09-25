@@ -33,7 +33,7 @@ const ProcessTeaser = ({ activeStep, supportingOffer }: Pick<ServiceProcessConte
                     )}
                   >
                     <span className="font-workshop-heading font-bold text-border-strong">{step.number}</span> {step.service}
-                    {isActive && <span className="ml-2 font-bold uppercase text-primary">Sie sind hier</span>}
+                    {isActive && <span className="ml-2 font-bold uppercase text-primary"></span>}
                   </span>
                 </li>
               );
