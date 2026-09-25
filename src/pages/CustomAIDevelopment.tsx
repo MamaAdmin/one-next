@@ -46,7 +46,7 @@ const processSteps = [
     number: "02",
     icon: BrainCircuit,
     title: "KI-unterstützter Design Sprint",
-    description: "Der priorisierte Lösungsansatz, Prototyp und gewonnene Erkenntnisse machen die Richtung greifbar und überprüfbar.",
+    description: "Der priorisierte Lösungsansatz, Prototyp und gewonnene Erkenntnisse machen die Richtung greifbar und überprüfbar – moderiert oder selbstgeführt.",
     result: "Ein gemeinsam bewerteter Lösungsansatz.",
     href: "/design-sprint-workshop",
     linkLabel: "Zum Design Sprint",

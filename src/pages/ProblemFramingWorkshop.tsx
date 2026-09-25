@@ -87,7 +87,7 @@ const ProblemFramingWorkshop = () => {
       <SEO
         title="Problem-Framing-Workshop | Challenge definieren | one-next"
         description="Klären Sie in 1–2 Tagen das richtige Geschäftsproblem, Zielgruppe, Scope und messbare Erfolgskriterien als Grundlage für den KI Design Sprint."
-        keywords="Problem Framing, Geschäftsproblem klären, Challenge Definition, KI Design Sprint Vorbereitung, Erfolgskriterien"
+        keywords="Problem Framing, Geschäftsproblem klären, Challenge Definition, KI Design Sprint, Online Design Sprint, Erfolgskriterien"
         canonical="https://one-next.de/problem-framing-workshop"
         structuredData={structuredData}
       />
@@ -104,6 +104,7 @@ const ProblemFramingWorkshop = () => {
               <div className="flex w-full flex-col gap-3">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button size="lg" asChild><Link to="/workshop-registration">Workshop Assessment starten <ArrowRight /></Link></Button>
+                  <Button size="lg" variant="ghost" asChild className="sm:w-auto w-full"><Link to="/sprint-uebersicht/online">Online KI-Sprint-Tool</Link></Button>
                   <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Direkt zum Design Sprint</Link></Button>
                 </div>
                 <div className="w-full pt-4">
