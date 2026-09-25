@@ -10,6 +10,7 @@ import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 import { Button } from "@/components/ui/button";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import auditImage from "@/assets/workshop-table.jpg";
 
 export default function DataQualityAuditPage() {
@@ -232,6 +233,8 @@ export default function DataQualityAuditPage() {
         image={auditImage}
         imageAlt="Team analysiert Datenqualität gemeinsam am Arbeitstisch"
       />
+
+      <ServiceProcessContext supportingOffer="data" />
 
       <section className="py-14 border-t border-border">
         <div className="mx-auto max-w-7xl px-4 grid gap-10 md:grid-cols-2 md:items-start">

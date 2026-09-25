@@ -32,7 +32,7 @@ export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample
           {offerProcessSteps.map((step, index) => {
             const isActive = activeStep === index + 1;
             return (
-              <article key={step.number} className={cn("border-b border-border py-8 md:px-8 md:first:pl-0 md:nth-[2]:pr-0", isActive && "bg-accent-soft/50")}>
+              <article key={step.number} className={cn("border-b border-border py-8 md:px-8 md:first:pl-0", isActive && "bg-accent-soft/50")}>
                 <div className="flex items-start gap-5">
                   <span className="font-workshop-heading text-3xl font-bold text-border-strong">{step.number}</span>
                   <div className="min-w-0">

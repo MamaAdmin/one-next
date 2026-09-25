@@ -1,10 +1,10 @@
 # one-next
 
-> KI-Entwicklung, KI Design Sprints und Innovations-Workshops. Wir helfen Unternehmen, KI-Potenziale zu identifizieren, Prototypen in wenigen Tagen zu validieren und maßgeschneiderte KI-Lösungen produktiv zu nutzen.
+> Vom echten Geschäftsproblem zur belegten Wirkung: one-next verbindet Problem Framing, KI Design Sprints, sichere KI-Arbeitsabläufe sowie messbare Verbesserung und Skalierung. KI-Beratung und Datenqualitäts-Audits begleiten den Prozess bei Bedarf.
 
 ## Pages
 
-- [Startseite](/): Überblick über one-next, Leistungen und Sprint-Angebote.
+- [Startseite](/): Der one-next-Prozess vom Problem Framing über den KI Design Sprint und die individuelle KI-Entwicklung bis zur belegten Wirkung.
 - [KI Design Sprint](/sprint-uebersicht): 2-tägiges Sprint-Format zur Validierung von KI-Use-Cases.
 - [Online Sprint](/sprint-uebersicht/online): Vollständig remote durchgeführter KI Design Sprint.
 - [Problem Framing Workshop](/problem-framing-workshop): Workshop zur klaren Definition geschäftlicher Probleme vor einer KI-Initiative.

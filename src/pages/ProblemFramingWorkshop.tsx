@@ -27,6 +27,7 @@ import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { useVideoSlot } from "@/hooks/useVideoLibrary";
 
@@ -123,6 +124,8 @@ const ProblemFramingWorkshop = () => {
             image={workshopImage}
             imageAlt="Team bei einem kollaborativen Problem-Framing-Workshop"
           />
+
+          <ServiceProcessContext activeStep={1} />
 
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">

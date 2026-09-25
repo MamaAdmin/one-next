@@ -34,6 +34,7 @@ import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createServiceSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import consultingImage from "@/assets/ai-consulting-strategy.jpg";
 
 const approach = [
@@ -150,6 +151,8 @@ const AIConsultingServices = () => {
             image={consultingImage}
             imageAlt="Beratungsteam entwickelt eine KI-Roadmap an einer Wandübersicht"
           />
+
+          <ServiceProcessContext supportingOffer="consulting" />
 
           {/* Ausgangslage und Ziel */}
           <section className="py-16 md:py-24">
@@ -327,9 +330,9 @@ const AIConsultingServices = () => {
               <div className="mx-auto max-w-6xl">
                 <div className="mb-12 max-w-2xl">
                   <p className="mb-3 text-sm font-bold uppercase text-primary">Der nächste Schritt</p>
-                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Wie Beratung und Workshops zusammenspielen</h2>
+                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Wie Beratung den gesamten Prozess begleitet</h2>
                   <p className="mt-5 leading-relaxed text-muted-foreground">
-                    Die Beratung ordnet ein und priorisiert. Für die Umsetzung stehen anschliessend drei aufeinander aufbauende Formate bereit.
+                     Die Beratung ordnet ein, priorisiert und begleitet Entscheidungen vor, während oder nach den Kernphasen. Die drei Formate bauen aufeinander auf, sind aber kein starrer Pflichtpfad.
                   </p>
                 </div>
                 <div className="grid gap-6 md:grid-cols-3">
