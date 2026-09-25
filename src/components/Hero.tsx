@@ -91,7 +91,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
         </div>
       </div>
 
-      <div className="bg-background">
+      <div className="bg-white">
         <div className="container mx-auto px-6 py-16 md:py-24 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div role="tablist" aria-label="Unsere drei Bausteine" className="flex flex-col border-t border-border">
             {pillars.map((p, i) => (
@@ -134,7 +134,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
           <div
             key={current.key}
             role="tabpanel"
-            className="animate-fade-in overflow-hidden rounded-2xl border border-border bg-background/70 flex flex-col justify-between"
+            className="animate-fade-in overflow-hidden rounded-2xl border border-border bg-white flex flex-col justify-between"
           >
             <img
               src={current.image}
