@@ -4,6 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { cn } from "@/lib/utils";
+import expertiseImage from "@/assets/workshop-stickynotes-blue.jpg";
+import efficiencyImage from "@/assets/custom-ai-development.jpg";
+import successImage from "@/assets/workshop-collaboration.jpg";
 
 interface HeroProps {
   isEditMode?: boolean;
