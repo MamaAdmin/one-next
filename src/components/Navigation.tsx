@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BarChart3, ChevronDown, Code2, Database, Focus, LogOut, Rocket, User, type LucideIcon } from "lucide-react";
+import { ChevronDown, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import logo from "@/assets/one-next-logo-new.png";
@@ -15,12 +15,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigation, type NavigationItem } from "@/hooks/useNavigation";
 import { useUserRoles } from "@/hooks/useUserRoles";
 
-const serviceMeta: Record<string, { description: string; icon: LucideIcon }> = {
-  "/ai-consulting-services": { description: "Strategie und Roadmap", icon: BarChart3 },
-  "/custom-ai-development": { description: "Von der Idee zur Lösung", icon: Code2 },
-  "/data-quality-audit": { description: "Fundament für verlässliche KI", icon: Database },
-  "/problem-framing-workshop": { description: "Die richtige Challenge definieren", icon: Focus },
-  "/design-sprint-workshop": { description: "KI-unterstützt zur getesteten Lösung", icon: Rocket },
+const serviceMeta: Record<string, { description: string }> = {
+  "/problem-framing-workshop": { description: "1 · Das richtige Problem klären" },
+  "/sprint-uebersicht": { description: "2 · Die passende Sprintform wählen" },
+  "/design-sprint-workshop": { description: "2 · Eine Lösung klein testen" },
+  "/sprint-uebersicht/online": { description: "2 · Selbstgeführt testen" },
+  "/custom-ai-development": { description: "3 · Einen sicheren KI-Arbeitsablauf entwickeln" },
+  "/ai-consulting-services": { description: "Begleitung · Orientierung, Governance und Skalierung" },
+  "/data-quality-audit": { description: "Grundlage · Verlässliche Daten für Test und Umsetzung" },
 };
 
 const flattenChildren = (item: NavigationItem, depth = 0): NavbarItem["children"] =>
@@ -37,11 +39,11 @@ const fallbackItems: NavbarItem[] = [
     id: "leistungen",
     label: "Leistungen",
     children: [
-      { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services", ...serviceMeta["/ai-consulting-services"] },
-      { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development", ...serviceMeta["/custom-ai-development"] },
-      { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit", ...serviceMeta["/data-quality-audit"] },
       { id: "problem-framing", label: "Problem Framing Workshop", href: "/problem-framing-workshop", ...serviceMeta["/problem-framing-workshop"] },
-      { id: "design-sprint", label: "KI Design Sprint", href: "/design-sprint-workshop", ...serviceMeta["/design-sprint-workshop"] },
+      { id: "design-sprint", label: "KI Design Sprint", href: "/sprint-uebersicht", ...serviceMeta["/sprint-uebersicht"] },
+      { id: "ki-entwicklung", label: "Individuelle KI-Entwicklung", href: "/custom-ai-development", ...serviceMeta["/custom-ai-development"] },
+      { id: "ki-beratung", label: "KI-Beratung", href: "/ai-consulting-services", ...serviceMeta["/ai-consulting-services"] },
+      { id: "datenqualitaet", label: "Datenqualitäts-Audit", href: "/data-quality-audit", ...serviceMeta["/data-quality-audit"] },
     ],
   },
   {

@@ -21,6 +21,7 @@ import workshopImage from "@/assets/design-sprint-workshop.jpg";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 
 const roles = [
   ["Decider", "Entscheidungsbefugt für Sprint-Ziele"],
@@ -71,8 +72,8 @@ const DesignSprintWorkshop = () => {
     <>
       <SEO
         title="KI-unterstützter Design Sprint | 1–4 Tage | one-next"
-        description="Moderierter KI-unterstützter Design Sprint über 1–4 Tage. Mit ChatGPT und Claude schneller von der klaren Challenge zum getesteten Lösungsansatz."
-        keywords="KI-unterstützter Design Sprint, KI Design Sprint, ChatGPT Workshop, Claude Workshop, Prototyping"
+        description="Testen Sie in einem moderierten KI Design Sprint über 1–4 Tage eine kleine Lösung, bevor Sie in die sichere KI-Entwicklung investieren."
+        keywords="KI Design Sprint, Lösung klein testen, Prototyp, Nutzertest, KI-unterstützter Workshop"
         canonical="https://one-next.de/design-sprint-workshop"
         structuredData={structuredData}
       />
@@ -99,6 +100,8 @@ const DesignSprintWorkshop = () => {
             image={workshopImage}
             imageAlt="KI Design Sprint Workshop mit Teilnehmern und Moderator bei der Entwicklung eines Prototyps"
           />
+
+          <ServiceProcessContext activeStep={2} />
 
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">
@@ -215,7 +218,7 @@ const DesignSprintWorkshop = () => {
                 <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Starten Sie mit einem moderierten 1–4-Tage-Workshop oder wählen Sie für einfachere Challenges den selbstgeführten Online Sprint.</p>
                 <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
                   <Button size="lg" asChild><Link to="/workshop-registration">Jetzt Workshop anfragen <ArrowRight /></Link></Button>
-                  <Button size="lg" variant="outline" asChild><Link to="/sprint-uebersicht/online">Mehr zum Online Sprint</Link></Button>
+                  <Button size="lg" variant="outline" asChild><Link to="/custom-ai-development">Weiter zur KI-Entwicklung</Link></Button>
                 </div>
               </div>
             </div>

@@ -18,8 +18,8 @@ const Index = () => {
     <>
       <SEO
         title="one-next | KI-Entwicklung & KI Design Sprints"
-        description="Entdecken Sie KI-Potenziale mit innovativen Design Sprints und individueller KI-Entwicklung. Von der Idee zum getesteten Prototyp in 2 Tagen."
-        keywords="KI-Entwicklung, KI Design Sprint, Design Thinking, Innovation Workshop, Künstliche Intelligenz, KI Consulting"
+        description="Vom echten Geschäftsproblem zur belegten Wirkung: Problem Framing, KI Design Sprint, sichere KI-Entwicklung sowie messbare Verbesserung und Skalierung."
+        keywords="KI-Entwicklung, KI Design Sprint, Problem Framing, KI-Arbeitsablauf, KI-Beratung, Datenqualität"
         canonical="https://one-next.de/"
         structuredData={organizationSchema}
       />

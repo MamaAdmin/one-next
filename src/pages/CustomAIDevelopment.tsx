@@ -21,6 +21,7 @@ import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -97,8 +98,8 @@ const CustomAIDevelopment = () => {
     <>
       <SEO
         title="Individuelle KI-Entwicklung mit BMAD | one-next"
-        description="Problem Framing und Design Sprint werden zum High-Level-Plan: BMAD strukturiert Business Alignment, Architektur, Roadmap und Milestones für Ihre KI-Lösung."
-        keywords="Individuelle KI-Entwicklung, BMAD, KI-Lösung, High-Level-Plan, Business Alignment, Roadmap, Jira, Confluence Cloud"
+        description="Vom getesteten Lösungsansatz zum sicheren KI-Arbeitsablauf: BMAD strukturiert Daten, Rollen, menschliche Freigaben, Architektur und Erprobung."
+        keywords="Individuelle KI-Entwicklung, sicherer KI-Arbeitsablauf, BMAD, menschliche Freigabe, KI-Erprobung, Roadmap"
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
@@ -154,6 +155,8 @@ const CustomAIDevelopment = () => {
             image={developmentImage}
             imageAlt="Entwicklungsteam bespricht einen High-Level-Plan für eine individuelle KI-Lösung"
           />
+
+          <ServiceProcessContext activeStep={3} />
 
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">
@@ -326,10 +329,10 @@ const CustomAIDevelopment = () => {
             <div className="container px-4 md:px-6">
               <div className="mx-auto max-w-4xl text-center">
                 <h2 className="font-workshop-heading text-3xl font-bold md:text-5xl">Bereit für Ihren BMAD-Blueprint?</h2>
-                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Nutzen Sie die Ergebnisse aus Problem Framing und Design Sprint, um Ihre KI-Lösung strukturiert für die Umsetzung vorzubereiten.</p>
+                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Nutzen Sie die Ergebnisse aus Problem Framing und Design Sprint, um einen sicheren KI-Arbeitsablauf mit klaren Rollen, Prüfungen und messbarer Erprobung vorzubereiten.</p>
                 <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
                   <CalendarBookingDialog buttonText="Jetzt Erstgespräch buchen" buttonSize="lg" />
-                  <Button size="lg" variant="outline" asChild><Link to="/design-sprint-workshop">Design Sprint ansehen</Link></Button>
+                  <Button size="lg" variant="outline" asChild><Link to="/ai-consulting-services">Begleitung für Erprobung und Skalierung</Link></Button>
                 </div>
               </div>
             </div>

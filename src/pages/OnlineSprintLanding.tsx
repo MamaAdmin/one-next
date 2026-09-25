@@ -29,6 +29,7 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import onlineSprintImage from "@/assets/online-sprint.jpg";
 
 const framingPhases = [
@@ -79,7 +80,7 @@ const OnlineSprintLanding = () => {
     <>
       <SEO
         title="Online Problem Framing & Design Sprint | Eigenes KI-Tool | one-next"
-        description="Unser selbstentwickeltes Online-Tool: zuerst Problem Framing, dann KI-gestützter Design Sprint – ohne externen Moderator, das spart Kosten und Zeit."
+        description="Im selbstgeführten Online-Tool klären Sie zuerst das Geschäftsproblem und testen danach eine kleine Lösung im KI Design Sprint – ohne externe Moderation."
         keywords="Online Design Sprint, Problem Framing online, KI Design Sprint, ohne Moderator, Remote Sprint Tool"
         canonical="https://one-next.de/sprint-uebersicht/online"
         structuredData={structuredData}
@@ -111,6 +112,8 @@ const OnlineSprintLanding = () => {
             image={onlineSprintImage}
             imageAlt="Team arbeitet remote am Laptop im Online-Sprint-Tool von one-next"
           />
+
+          <ServiceProcessContext activeStep={2} />
 
           {/* Ausgangslage und Ziel */}
           <section className="py-16 md:py-24">
@@ -453,7 +456,7 @@ const OnlineSprintLanding = () => {
                     <Link to="/sprint">Jetzt im Tool starten <ArrowRight /></Link>
                   </Button>
                   <Button size="lg" variant="outline" asChild>
-                    <Link to="/kontakt">Angebot anfragen</Link>
+                    <Link to="/custom-ai-development">Weiter zur KI-Entwicklung</Link>
                   </Button>
                 </div>
               </div>

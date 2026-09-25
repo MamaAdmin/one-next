@@ -18,6 +18,7 @@ import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { EditToggleButton } from "@/components/blog/EditToggleButton";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import { SEO } from "@/components/SEO";
 import { usePageContent } from "@/hooks/usePageContent";
 import { useContentManager } from "@/hooks/useContentManager";
@@ -159,6 +160,8 @@ const AIDesignSprint = () => {
             image={sprintImage}
             imageAlt="Sprint-Team arbeitet an einem Whiteboard mit Skizzen und Haftnotizen"
           />
+
+          <ServiceProcessContext activeStep={2} />
 
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">

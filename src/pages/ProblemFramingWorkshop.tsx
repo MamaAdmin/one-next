@@ -27,6 +27,7 @@ import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { SEO } from "@/components/SEO";
 import { createEventSchema, createBreadcrumbSchema, createFAQSchema } from "@/config/seoConfig";
 import { ServicePageHero } from "@/components/service/ServicePageHero";
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { useVideoSlot } from "@/hooks/useVideoLibrary";
 
@@ -85,8 +86,8 @@ const ProblemFramingWorkshop = () => {
     <>
       <SEO
         title="Problem-Framing-Workshop | Challenge definieren | one-next"
-        description="1-2 Tage intensive Challenge-Klärung. Definieren Sie Ihre Herausforderung präzise und machen Sie Ihr Team Design Sprint-ready für den Design Sprint."
-        keywords="Problem Framing, Challenge Definition, Workshop, Design Sprint Vorbereitung, Stakeholder Alignment"
+        description="Klären Sie in 1–2 Tagen das richtige Geschäftsproblem, Zielgruppe, Scope und messbare Erfolgskriterien als Grundlage für den KI Design Sprint."
+        keywords="Problem Framing, Geschäftsproblem klären, Challenge Definition, KI Design Sprint Vorbereitung, Erfolgskriterien"
         canonical="https://one-next.de/problem-framing-workshop"
         structuredData={structuredData}
       />
@@ -123,6 +124,8 @@ const ProblemFramingWorkshop = () => {
             image={workshopImage}
             imageAlt="Team bei einem kollaborativen Problem-Framing-Workshop"
           />
+
+          <ServiceProcessContext activeStep={1} />
 
           <section className="py-16 md:py-24">
             <div className="container px-4 md:px-6">
