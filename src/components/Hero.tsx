@@ -15,6 +15,8 @@ type Pillar = {
   title: string;
   claim: string;
   description: string;
+  image: string;
+  imageAlt: string;
   offers: { label: string; href: string }[];
 };
 
