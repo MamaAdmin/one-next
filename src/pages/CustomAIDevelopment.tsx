@@ -11,6 +11,7 @@ import {
   Layers,
   Map,
   Settings,
+  ShieldCheck,
   Target,
   Users,
 } from "lucide-react";
@@ -52,10 +53,10 @@ const processSteps = [
   },
   {
     number: "03",
-    icon: GitBranch,
-    title: "BMAD-Integration",
-    description: "Die Ergebnisse beider Workshops werden zu einem fachlichen und technischen High-Level-Plan für die Umsetzung verbunden.",
-    result: "Ein abgestimmter BMAD-Blueprint für die nächsten Schritte.",
+    icon: ShieldCheck,
+    title: "KI-Arbeitsablauf planen",
+    description: "Die Ergebnisse beider Workshops werden mit BMAD zu einem fachlichen und technischen Plan für den sicheren Arbeitsablauf verbunden.",
+    result: "Ein abgestimmter Plan mit Rollen, Daten, Prüfungen und Roadmap.",
   },
 ] as const;
 
@@ -83,23 +84,23 @@ const CustomAIDevelopment = () => {
 
   const structuredData = [
     createServiceSchema(
-      "Individuelle KI-Entwicklung mit BMAD",
-      "Vom validierten Lösungsansatz zum umsetzungsreifen High-Level-Plan: one-next überführt die Ergebnisse aus Problem Framing und Design Sprint in einen strukturierten BMAD-Blueprint.",
+      "KI-Arbeitsablauf entwickeln",
+      "Vom validierten Lösungsansatz zum sicheren KI-Arbeitsablauf: one-next überführt die Ergebnisse aus Problem Framing und Design Sprint in einen Ablauf mit Daten, Rollen, Prüfungen und menschlicher Freigabe – geplant mit BMAD.",
       "https://one-next.de/custom-ai-development",
     ),
     createBreadcrumbSchema([
       { name: "Home", url: "https://one-next.de/" },
       { name: "Leistungen", url: "https://one-next.de/#services" },
-      { name: "Individuelle KI-Entwicklung", url: "https://one-next.de/custom-ai-development" },
+      { name: "KI-Arbeitsablauf entwickeln", url: "https://one-next.de/custom-ai-development" },
     ]),
   ];
 
   return (
     <>
       <SEO
-        title="Individuelle KI-Entwicklung mit BMAD | one-next"
-        description="Vom getesteten Lösungsansatz zum sicheren KI-Arbeitsablauf: BMAD strukturiert Daten, Rollen, menschliche Freigaben, Architektur und Erprobung."
-        keywords="Individuelle KI-Entwicklung, sicherer KI-Arbeitsablauf, BMAD, menschliche Freigabe, KI-Erprobung, Roadmap"
+        title="Sicherer KI-Arbeitsablauf entwickeln | one-next"
+        description="Wir überführen den validierten Lösungsansatz in einen sicheren KI-Arbeitsablauf mit Daten, Rollen, Prüfungen und menschlicher Freigabe – geplant mit BMAD."
+        keywords="KI-Arbeitsablauf, sicherer KI-Arbeitsablauf, menschliche Freigabe, Rollen, Daten, Prüfungen, BMAD, KI-Erprobung, Roadmap"
         canonical="https://one-next.de/custom-ai-development"
         structuredData={structuredData}
       />
@@ -113,25 +114,25 @@ const CustomAIDevelopment = () => {
         <main className="overflow-hidden pt-16">
           <ServicePageHero
             badge="Der nächste Schritt"
-            badgeIcon={GitBranch}
+            badgeIcon={ShieldCheck}
             titleSlot={
               <div>
                 <InlineTextField
-                  value={content.hero_title || "Individuelle KI-Entwicklung mit BMAD"}
+                  value={content.hero_title || "Einen sicheren KI-Arbeitsablauf entwickeln"}
                   onSave={(value) => updateContent("hero_title", value, "text")}
                   isEditMode={isEditMode}
                   as="h1"
                   className="font-workshop-heading text-4xl font-bold leading-tight md:text-6xl"
                 />
                 <p className="mt-3 font-workshop-heading text-2xl font-semibold text-primary-glow md:text-3xl">
-                  Vom validierten Lösungsansatz zum umsetzungsreifen High-Level-Plan
+                  Daten, Rollen, Prüfungen und menschliche Freigabe
                 </p>
               </div>
             }
             descriptionSlot={
               <div className="mt-6 max-w-2xl">
                 <InlineTextArea
-                  value={content.hero_description || "Nach Problem Framing und KI-unterstütztem Design Sprint überführen wir die erarbeiteten Ergebnisse in einen strukturierten BMAD-Blueprint. So erhalten Sie einen verständlichen Überblick über die Zukunft Ihrer KI-Systeme und eine belastbare Grundlage für die weitere Umsetzung."}
+                  value={content.hero_description || "Wir überführen den validierten Lösungsansatz in einen umsetzbaren Arbeitsablauf: mit klaren Datenquellen, Rollen, Prüfungen und menschlicher Freigabe. BMAD strukturiert die Planung – von Anforderungen bis Roadmap –, damit die Erprobung verlässlich vorbereitet ist."}
                   onSave={(value) => updateContent("hero_description", value, "text")}
                   isEditMode={isEditMode}
                   className="text-lg leading-relaxed text-muted-foreground md:text-xl"
@@ -148,12 +149,12 @@ const CustomAIDevelopment = () => {
               </>
             }
             facts={[
-              { value: "BMAD", label: "Methode" },
-              { value: "High-Level", label: "Planung" },
-              { value: "Jira & Confluence", label: "Übergabe" },
+              { value: "Rollen & Freigabe", label: "Verantwortung" },
+              { value: "Daten & Prüfungen", label: "Sicherheit" },
+              { value: "Roadmap & Übergabe", label: "Planung" },
             ]}
             image={developmentImage}
-            imageAlt="Entwicklungsteam bespricht einen High-Level-Plan für eine individuelle KI-Lösung"
+            imageAlt="Team entwickelt einen sicheren KI-Arbeitsablauf mit Rollen, Daten und Freigaben"
           />
 
           <ServiceProcessContext activeStep={3} />
@@ -196,8 +197,8 @@ const CustomAIDevelopment = () => {
               <div className="mx-auto max-w-6xl">
                 <div className="mb-12 max-w-2xl">
                   <p className="mb-3 text-sm font-bold uppercase text-primary">Ein zusammenhängender Prozess</p>
-                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Drei Schritte von der Challenge zur Umsetzung</h2>
-                  <p className="mt-5 leading-relaxed text-muted-foreground">BMAD setzt nicht wieder bei null an. Die bereits getroffenen Entscheidungen und erarbeiteten Ergebnisse werden konsequent weitergeführt.</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Drei Schritte von der Challenge zum Arbeitsablauf</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">Der Arbeitsablauf setzt nicht wieder bei null an. Die bereits getroffenen Entscheidungen und erarbeiteten Ergebnisse werden konsequent weitergeführt.</p>
                 </div>
                 <div className="grid gap-x-12 md:grid-cols-3">
                   {processSteps.map((step) => {
@@ -221,9 +222,9 @@ const CustomAIDevelopment = () => {
             <div className="container px-4 md:px-6">
               <div className="mx-auto max-w-6xl">
                 <div className="mb-12 max-w-2xl">
-                  <p className="mb-3 text-sm font-bold uppercase text-primary">Was ist BMAD?</p>
-                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Eine Methode für umsetzungsreife KI-Planung</h2>
-                  <p className="mt-5 leading-relaxed text-muted-foreground">BMAD (Breakthrough Method of Agile AI-Driven Development) ist eine strukturierte Methode, die fachliche und technische Anforderungen zu einem vollständigen Spezifikations-Paket verbindet. Ein nach der BMAD-Methode erstellter Blueprint ist ein in Markdown-Dokumenten festgehaltenes Paket, das alle folgenden Phasen der Entwicklung trägt.</p>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Planung mit BMAD</p>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Die Methode hinter der Planung des Arbeitsablaufs</h2>
+                  <p className="mt-5 leading-relaxed text-muted-foreground">BMAD (Breakthrough Method of Agile AI-Driven Development) ist die Methode, mit der wir den sicheren KI-Arbeitsablauf planen. Sie verbindet fachliche und technische Anforderungen zu einem vollständigen Spezifikations-Paket. Ein nach der BMAD-Methode erstellter Blueprint ist ein in Markdown-Dokumenten festgehaltenes Paket, das alle folgenden Phasen der Entwicklung trägt.</p>
                 </div>
 
                 <div className="grid gap-0 border-t border-border md:grid-cols-3">
@@ -258,9 +259,9 @@ const CustomAIDevelopment = () => {
             <div className="container px-4 md:px-6">
               <div className="mx-auto max-w-6xl">
                 <div className="mb-12 text-center">
-                  <p className="mb-3 text-sm font-bold uppercase text-primary">BMAD-Blueprint</p>
+                  <p className="mb-3 text-sm font-bold uppercase text-primary">Planungsbausteine mit BMAD</p>
                   <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Vom Business Alignment zur Roadmap</h2>
-                  <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Sieben aufeinander abgestimmte Bausteine schaffen einen verständlichen Überblick über die geplante KI-Lösung.</p>
+                  <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Sieben aufeinander abgestimmte Bausteine strukturieren den Plan für Ihren KI-Arbeitsablauf.</p>
                 </div>
 
                 <div className="hidden grid-cols-2 gap-x-16 md:grid">
@@ -328,8 +329,8 @@ const CustomAIDevelopment = () => {
           <section className="border-t border-border bg-muted/40 py-20 md:py-28">
             <div className="container px-4 md:px-6">
               <div className="mx-auto max-w-4xl text-center">
-                <h2 className="font-workshop-heading text-3xl font-bold md:text-5xl">Bereit für Ihren BMAD-Blueprint?</h2>
-                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Nutzen Sie die Ergebnisse aus Problem Framing und Design Sprint, um einen sicheren KI-Arbeitsablauf mit klaren Rollen, Prüfungen und messbarer Erprobung vorzubereiten.</p>
+                <h2 className="font-workshop-heading text-3xl font-bold md:text-5xl">Bereit für Ihren sicheren KI-Arbeitsablauf?</h2>
+                <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Nutzen Sie die Ergebnisse aus Problem Framing und Design Sprint, um einen Arbeitsablauf mit klaren Rollen, Daten, Prüfungen und menschlicher Freigabe vorzubereiten – geplant mit BMAD.</p>
                 <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
                   <CalendarBookingDialog buttonText="Jetzt Erstgespräch buchen" buttonSize="lg" />
                   <Button size="lg" variant="outline" asChild><Link to="/ai-consulting-services">Begleitung für Erprobung und Skalierung</Link></Button>
