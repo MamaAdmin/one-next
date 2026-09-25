@@ -34,9 +34,7 @@ const pillars: Pillar[] = [
     image: expertiseImage,
     imageAlt: "Hände arbeiten an einer Post-it-Wand während eines Workshops",
     offers: [
-      { label: "Problem Framing", href: "/problem-framing-workshop" },
-      { label: "KI Design Sprint", href: "/sprint-uebersicht" },
-      { label: "Online KI-Sprint-Tool", href: "/sprint-uebersicht/online" },
+      { label: "Sprintübersicht", href: "/sprint-uebersicht" },
     ],
   },
   {
