@@ -15,40 +15,45 @@ interface ServiceProcessContextProps {
 const ProcessTeaser = ({ activeStep, supportingOffer }: Pick<ServiceProcessContextProps, "activeStep" | "supportingOffer">) => {
   const activeSupporting = supportingOffers.find((_, index) => supportingOffer === (index === 0 ? "consulting" : "data"));
   return (
-    <section className="border-y border-border bg-white py-10 md:py-12">
+    <section className="border-b border-border bg-white">
       <div className="container px-4 md:px-6">
-        <div className="mx-auto max-w-5xl">
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <p className="text-sm font-bold uppercase text-primary">Der one-next-Prozess</p>
-            <Button variant="link" className="h-auto p-0" asChild>
-              <Link to="/#services">Gesamten Prozess ansehen<ArrowRight className="ml-2 size-4" /></Link>
-            </Button>
-          </div>
-          <h2 className="mt-2 font-workshop-heading text-xl font-semibold md:text-2xl">Vom echten Geschäftsproblem zur belegten Wirkung</h2>
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 py-3">
+          <p className="text-xs font-bold uppercase tracking-wide text-primary">one-next-Prozess</p>
 
-          <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1">
             {offerProcessSteps.map((step, index) => {
               const isActive = activeStep === index + 1;
               return (
-                <li key={step.number} className={cn("border border-border px-4 py-3", isActive ? "border-primary bg-accent-soft/60" : "bg-white")}>
-                  <p className="font-workshop-heading text-sm font-bold text-border-strong">{step.number}</p>
-                  <p className="mt-1 text-sm font-semibold leading-snug">{step.service}</p>
-                  {isActive && <p className="mt-1 text-xs font-bold uppercase text-primary">Sie sind hier</p>}
+                <li key={step.number} className="flex items-center gap-2">
+                  {index > 0 && <ArrowRight className="size-3 shrink-0 text-border-strong" aria-hidden="true" />}
+                  <span
+                    className={cn(
+                      "whitespace-nowrap px-2 py-1 text-xs",
+                      isActive ? "border border-primary bg-accent-soft/60 font-semibold text-foreground" : "text-muted-foreground",
+                    )}
+                  >
+                    <span className="font-workshop-heading font-bold text-border-strong">{step.number}</span> {step.service}
+                    {isActive && <span className="ml-2 font-bold uppercase text-primary">Sie sind hier</span>}
+                  </span>
                 </li>
               );
             })}
+            {activeSupporting && (
+              <li className="whitespace-nowrap px-2 py-1 text-xs text-muted-foreground">
+                Begleitend: <strong className="font-semibold text-foreground">{activeSupporting.title}</strong> · <span className="font-bold uppercase text-primary">Sie sind hier</span>
+              </li>
+            )}
           </ol>
 
-          {activeSupporting && (
-            <p className="mt-5 border-l-2 border-primary pl-4 text-sm text-muted-foreground">
-              Begleitender Baustein: <strong className="text-foreground">{activeSupporting.title}</strong> · Sie sind hier
-            </p>
-          )}
+          <Button variant="link" className="h-auto p-0 text-xs" asChild>
+            <Link to="/#services">Gesamter Prozess<ArrowRight className="ml-1 size-3" /></Link>
+          </Button>
         </div>
       </div>
     </section>
   );
 };
+
 
 export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample = false, variant = "teaser" }: ServiceProcessContextProps) => variant === "teaser" ? (
   <ProcessTeaser activeStep={activeStep} supportingOffer={supportingOffer} />
