@@ -79,8 +79,8 @@ const OnlineSprintLanding = () => {
   return (
     <>
       <SEO
-        title="Online Problem Framing & Design Sprint | Eigenes KI-Tool | one-next"
-        description="Im selbstgeführten Online-Tool klären Sie zuerst das Geschäftsproblem und testen danach eine kleine Lösung im KI Design Sprint – ohne externe Moderation."
+        title="KI-Sprint-Tool für Problem Framing & Design Sprint | one-next"
+        description="Die selbstgeführte Web-Applikation führt Ihr Team vom Geschäftsproblem zum getesteten Prototyp – vollständig ohne externe Moderation."
         keywords="Online Design Sprint, Problem Framing online, KI Design Sprint, ohne Moderator, Remote Sprint Tool"
         canonical="https://one-next.de/sprint-uebersicht/online"
         structuredData={structuredData}
@@ -89,11 +89,11 @@ const OnlineSprintLanding = () => {
         <Navigation />
         <main className="overflow-hidden pt-16">
           <ServicePageHero
-            badge="Unser eigenes Online-Tool"
+            badge="Interaktive Web-Applikation · Selbstgeführt"
             badgeIcon={Sparkles}
-            title="Online Problem Framing & Design Sprint"
-            titleAccent="Erst die richtige Challenge, dann die getestete Lösung"
-            description="Ein von uns selbst entwickeltes Tool, in dem Ihr Team beides online durchläuft – geführt von KI statt von einem externen Moderator. Das spart Kosten und Zeit."
+            title="Das KI-Sprint-Tool für"
+            titleAccent="Problem Framing & Design Sprint"
+            description="Die geführte Software für Ihr Team: Schritt für Schritt von der Problemdefinition zum getesteten Prototyp – vollständig ohne externe Moderation."
             actions={
               <>
                 <Button size="lg" asChild>
