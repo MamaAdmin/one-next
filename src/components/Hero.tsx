@@ -36,6 +36,7 @@ const pillars: Pillar[] = [
     offers: [
       { label: "Problem Framing", href: "/problem-framing-workshop" },
       { label: "KI Design Sprint", href: "/sprint-uebersicht" },
+      { label: "Online KI-Sprint-Tool", href: "/sprint-uebersicht/online" },
     ],
   },
   {
