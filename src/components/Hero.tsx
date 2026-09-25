@@ -1,53 +1,135 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
+import { cn } from "@/lib/utils";
 
 interface HeroProps {
   isEditMode?: boolean;
 }
 
+type Pillar = {
+  key: string;
+  number: string;
+  title: string;
+  claim: string;
+  description: string;
+  offers: { label: string; href: string }[];
+};
+
+const pillars: Pillar[] = [
+  {
+    key: "expertise",
+    number: "01",
+    title: "Expertise",
+    claim: "Innovation mit Methode",
+    description:
+      "Wir klären das richtige Problem und testen Lösungen klein, bevor viel investiert wird – strukturiert, nachvollziehbar und mit echten Nutzenden.",
+    offers: [
+      { label: "Problem Framing", href: "/problem-framing-workshop" },
+      { label: "KI Design Sprint", href: "/sprint-uebersicht" },
+    ],
+  },
+  {
+    key: "effizienz",
+    number: "02",
+    title: "Effizienz",
+    claim: "Innovation beschleunigen",
+    description:
+      "Aus dem getesteten Ansatz wird ein sicherer KI-Arbeitsablauf mit klaren Rollen, Datenquellen, Prüfungen und menschlicher Freigabe.",
+    offers: [
+      { label: "KI-Arbeitsablauf entwickeln", href: "/custom-ai-development" },
+      { label: "KI-Beratung", href: "/ai-consulting-services" },
+    ],
+  },
+  {
+    key: "erfolg",
+    number: "03",
+    title: "Erfolg",
+    claim: "Individuelle KI-Qualität",
+    description:
+      "Wir messen Wirkung an realen Fällen, prüfen die Datenbasis und entscheiden auf belegter Grundlage über Anpassung oder Ausbau.",
+    offers: [
+      { label: "Datenqualitäts-Audit", href: "/data-quality-audit" },
+      { label: "Wirkung messen und skalieren", href: "/ai-consulting-services" },
+    ],
+  },
+];
+
 const Hero = ({ isEditMode = false }: HeroProps) => {
-  const { content, updateContent } = usePageContent('index');
+  const { content, updateContent } = usePageContent("index");
+  const [active, setActive] = useState(0);
+  const current = pillars[active];
+
   return (
-    <section className="relative flex items-center bg-gradient-hero pt-20 border-b border-border/60">
+    <section className="relative bg-gradient-hero pt-20 border-b border-border/60">
       <div className="container mx-auto px-6 py-12 md:py-16">
-        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-16 items-center">
-          <div className="space-y-8 animate-fade-in">
-            <span className="inline-block text-sm md:text-base uppercase tracking-[0.22em] text-muted-foreground font-medium">
-              VON DER IDEE ZUR FERTIGEN LÖSUNG · END-TO-END KI-ENTWICKLUNG & SCHULUNGEN
-            </span>
-            <InlineTextField
-              value={content.hero_title || 'we define your way forward'}
-              onSave={(value) => updateContent('hero_title', value)}
-              isEditMode={isEditMode}
-              className="text-6xl lg:text-8xl font-light leading-tight lowercase"
-              placeholder="Titel des Hero-Bereichs"
-              as="h1"
-            />
+        <div className="space-y-8 animate-fade-in max-w-5xl">
+          <span className="inline-block text-sm md:text-base uppercase tracking-[0.22em] text-muted-foreground font-medium">
+            Von der Idee zur fertigen Lösung · End-to-End KI-Entwicklung & Schulungen
+          </span>
+          <InlineTextField
+            value={content.hero_title || "we define your way forward"}
+            onSave={(value) => updateContent("hero_title", value)}
+            isEditMode={isEditMode}
+            className="text-6xl lg:text-8xl font-light leading-tight lowercase"
+            placeholder="Titel des Hero-Bereichs"
+            as="h1"
+          />
+        </div>
+
+        <div className="mt-12 md:mt-16 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+          <div role="tablist" aria-label="Unsere drei Bausteine" className="flex flex-col border-t border-border">
+            {pillars.map((p, i) => (
+              <button
+                key={p.key}
+                role="tab"
+                aria-selected={active === i}
+                onMouseEnter={() => setActive(i)}
+                onFocus={() => setActive(i)}
+                onClick={() => setActive(i)}
+                className={cn(
+                  "group flex items-baseline gap-6 border-b border-border py-5 text-left transition-colors",
+                  active === i ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <span className="text-sm tabular-nums">{p.number}</span>
+                <span className="text-3xl md:text-4xl font-light tracking-tight">{p.title}</span>
+                <span
+                  className={cn(
+                    "ml-auto hidden text-sm md:inline transition-opacity",
+                    active === i ? "opacity-100" : "opacity-0 group-hover:opacity-60",
+                  )}
+                >
+                  {p.claim}
+                </span>
+              </button>
+            ))}
           </div>
 
-          <div className="relative animate-fade-in-up flex justify-center lg:justify-end">
-            <div className="w-56 h-56 md:w-64 md:h-64 relative opacity-90">
-              <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-slow origin-center">
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const angle = (i * 360) / 24;
-                  const x1 = 100 + Math.cos((angle * Math.PI) / 180) * 40;
-                  const y1 = 100 + Math.sin((angle * Math.PI) / 180) * 40;
-                  const x2 = 100 + Math.cos((angle * Math.PI) / 180) * 100;
-                  const y2 = 100 + Math.sin((angle * Math.PI) / 180) * 100;
-                  return (
-                    <line
-                      key={i}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="text-foreground"
-                    />
-                  );
-                })}
-              </svg>
+          <div
+            key={current.key}
+            role="tabpanel"
+            className="animate-fade-in rounded-2xl border border-border bg-background/70 p-8 md:p-10 flex flex-col justify-between gap-8"
+          >
+            <div className="space-y-4">
+              <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                {current.title} · {current.claim}
+              </span>
+              <p className="text-lg md:text-xl leading-relaxed text-foreground/85">{current.description}</p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              {current.offers.map((o) => (
+                <Link
+                  key={o.label}
+                  to={o.href}
+                  className="inline-flex items-center justify-between gap-3 border border-border-accent px-4 py-3 text-sm hover:bg-accent-soft transition-colors"
+                >
+                  {o.label}
+                  <ArrowRight className="size-4" />
+                </Link>
+              ))}
             </div>
           </div>
         </div>
