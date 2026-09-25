@@ -59,6 +59,8 @@ const pillars: Pillar[] = [
     claim: "Individuelle KI-Qualität",
     description:
       "Wir messen Wirkung an realen Fällen, prüfen die Datenbasis und entscheiden auf belegter Grundlage über Anpassung oder Ausbau.",
+    image: successImage,
+    imageAlt: "Team bespricht gemeinsam sichtbare Ergebnisse",
     offers: [
       { label: "Datenqualitäts-Audit", href: "/data-quality-audit" },
       { label: "Wirkung messen und skalieren", href: "/ai-consulting-services" },
