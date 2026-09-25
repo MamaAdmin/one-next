@@ -42,7 +42,12 @@ export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
                     <p className="mt-4 flex gap-2 text-sm"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" /><span><strong>Ergebnis:</strong> {step.result}</span></p>
                     {showExample && <p className="mt-4 border-l-2 border-border-accent pl-4 text-sm italic text-muted-foreground">{step.example}</p>}
-                    <Button variant="link" className="mt-4 h-auto p-0" asChild><Link to={step.href}>{step.linkLabel}<ArrowRight className="ml-2 size-4" /></Link></Button>
+                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                      <Button variant="link" className="h-auto p-0" asChild><Link to={step.href}>{step.linkLabel}<ArrowRight className="ml-2 size-4" /></Link></Button>
+                      {step.alternativeLinks?.map((link) => (
+                        <Button key={link.href} variant="link" className="h-auto p-0" asChild><Link to={link.href}>{link.label}<ArrowRight className="ml-2 size-4" /></Link></Button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </article>

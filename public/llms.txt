@@ -6,7 +6,7 @@
 
 - [Startseite](/): Der one-next-Prozess vom Problem Framing über den KI Design Sprint und die individuelle KI-Entwicklung bis zur belegten Wirkung.
 - [KI Design Sprint](/sprint-uebersicht): 2-tägiges Sprint-Format zur Validierung von KI-Use-Cases.
-- [Online Sprint](/sprint-uebersicht/online): Vollständig remote durchgeführter KI Design Sprint.
+- [Online KI-Sprint-Tool](/sprint-uebersicht/online): Selbstgeführte Web-Applikation für Problem Framing und Design Sprint ohne externe Moderation.
 - [Problem Framing Workshop](/problem-framing-workshop): Workshop zur klaren Definition geschäftlicher Probleme vor einer KI-Initiative.
 - [Design Sprint Workshop](/design-sprint-workshop): Klassischer Design Sprint zur schnellen Lösungsentwicklung.
 - [KI-Arbeitsablauf entwickeln](/custom-ai-development): Vom validierten Lösungsansatz zum sicheren KI-Arbeitsablauf mit Rollen, Daten, Prüfungen und menschlicher Freigabe.

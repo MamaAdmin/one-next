@@ -65,6 +65,7 @@ const industries = [
 const nextSteps = [
   { title: "Problem-Framing-Workshop", desc: "Wenn die Challenge noch unklar ist: Problemstellung schärfen, Zielgruppe priorisieren, Erfolgskriterien definieren.", to: "/problem-framing-workshop" },
   { title: "KI-unterstützter Design Sprint", desc: "Wenn die Challenge steht: Lösungsansatz entwickeln, Prototyp bauen und mit Nutzenden testen.", to: "/design-sprint-workshop" },
+  { title: "Online KI-Sprint-Tool", desc: "Wenn Sie selbstgeführt arbeiten möchten: Problem Framing und Design Sprint flexibel im Tool durchlaufen.", to: "/sprint-uebersicht/online" },
   { title: "KI-Arbeitsablauf", desc: "Wenn der Lösungsansatz validiert ist: sicherer Arbeitsablauf mit Rollen, Daten, Prüfungen und menschlicher Freigabe – geplant mit BMAD.", to: "/custom-ai-development" },
 ];
 
@@ -335,7 +336,7 @@ const AIConsultingServices = () => {
                      Die Beratung ordnet ein, priorisiert und begleitet Entscheidungen vor, während oder nach den Kernphasen. Die drei Formate bauen aufeinander auf, sind aber kein starrer Pflichtpfad.
                   </p>
                 </div>
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                   {nextSteps.map((step, index) => (
                     <Link
                       key={step.title}
