@@ -65,7 +65,7 @@ const industries = [
 const nextSteps = [
   { title: "Problem-Framing-Workshop", desc: "Wenn die Challenge noch unklar ist: Problemstellung schärfen, Zielgruppe priorisieren, Erfolgskriterien definieren.", to: "/problem-framing-workshop" },
   { title: "KI-unterstützter Design Sprint", desc: "Wenn die Challenge steht: Lösungsansatz entwickeln, Prototyp bauen und mit Nutzenden testen.", to: "/design-sprint-workshop" },
-  { title: "Individuelle KI-Entwicklung", desc: "Wenn der Lösungsansatz validiert ist: BMAD-Blueprint und umsetzungsreifer High-Level-Plan.", to: "/custom-ai-development" },
+  { title: "KI-Arbeitsablauf", desc: "Wenn der Lösungsansatz validiert ist: sicherer Arbeitsablauf mit Rollen, Daten, Prüfungen und menschlicher Freigabe – geplant mit BMAD.", to: "/custom-ai-development" },
 ];
 
 const AIConsultingServices = () => {

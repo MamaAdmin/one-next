@@ -218,7 +218,7 @@ const DesignSprintWorkshop = () => {
                 <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">Starten Sie mit einem moderierten 1–4-Tage-Workshop oder wählen Sie für einfachere Challenges den selbstgeführten Online Sprint.</p>
                 <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
                   <Button size="lg" asChild><Link to="/workshop-registration">Jetzt Workshop anfragen <ArrowRight /></Link></Button>
-                  <Button size="lg" variant="outline" asChild><Link to="/custom-ai-development">Weiter zur KI-Entwicklung</Link></Button>
+                  <Button size="lg" variant="outline" asChild><Link to="/custom-ai-development">Weiter zum KI-Arbeitsablauf</Link></Button>
                 </div>
               </div>
             </div>

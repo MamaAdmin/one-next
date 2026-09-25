@@ -36,12 +36,12 @@ export const offerProcessSteps: OfferProcessStep[] = [
   {
     number: "03",
     title: "Einen sicheren KI-Arbeitsablauf entwickeln",
-    service: "Individuelle KI-Entwicklung",
+    service: "KI-Arbeitsablauf",
     question: "Wie arbeiten Menschen und KI verlässlich zusammen?",
     description: "Wir überführen den validierten Ansatz in einen umsetzbaren Ablauf mit Datenquellen, Rollen, Prüfungen und menschlicher Freigabe.",
     result: "Ein erprobbarer KI-Arbeitsablauf mit klarer Verantwortung.",
     href: "/custom-ai-development",
-    linkLabel: "KI-Entwicklung ansehen",
+    linkLabel: "KI-Arbeitsablauf ansehen",
     example: "Die KI erstellt den Entwurf, der Verkauf prüft Bedarf und Ton, eine verantwortliche Person bestätigt Preise und Zusagen.",
   },
   {
