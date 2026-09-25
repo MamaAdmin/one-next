@@ -132,8 +132,15 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
           <div
             key={current.key}
             role="tabpanel"
-            className="animate-fade-in rounded-2xl border border-border bg-background/70 p-8 md:p-10 flex flex-col justify-between gap-8"
+            className="animate-fade-in overflow-hidden rounded-2xl border border-border bg-background/70 flex flex-col justify-between"
           >
+            <img
+              src={current.image}
+              alt={current.imageAlt}
+              loading="lazy"
+              className="h-44 md:h-56 w-full object-cover"
+            />
+            <div className="flex flex-col justify-between gap-8 p-8 md:p-10">
             <div className="space-y-4">
               <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
                 {current.title} · {current.claim}
