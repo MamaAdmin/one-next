@@ -12,7 +12,7 @@ interface ServiceProcessContextProps {
 }
 
 export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample = false }: ServiceProcessContextProps) => (
-  <section className="border-y border-border bg-muted/35 py-16 md:py-24">
+  <section className="border-y border-border bg-white py-16 md:py-24">
     <div className="container px-4 md:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-3xl">
