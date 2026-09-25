@@ -101,7 +101,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
                 className={cn(
-                  "group flex items-baseline gap-6 border-b border-border py-5 text-left transition-colors",
+                  "group flex items-center gap-5 border-b border-border py-5 text-left transition-colors",
                   active === i ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
