@@ -4,6 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { cn } from "@/lib/utils";
+import expertiseImage from "@/assets/workshop-stickynotes-blue.jpg";
+import efficiencyImage from "@/assets/custom-ai-development.jpg";
+import successImage from "@/assets/workshop-collaboration.jpg";
 
 interface HeroProps {
   isEditMode?: boolean;
@@ -15,6 +18,8 @@ type Pillar = {
   title: string;
   claim: string;
   description: string;
+  image: string;
+  imageAlt: string;
   offers: { label: string; href: string }[];
 };
 
@@ -26,6 +31,8 @@ const pillars: Pillar[] = [
     claim: "Innovation mit Methode",
     description:
       "Wir klären das richtige Problem und testen Lösungen klein, bevor viel investiert wird – strukturiert, nachvollziehbar und mit echten Nutzenden.",
+    image: expertiseImage,
+    imageAlt: "Hände arbeiten an einer Post-it-Wand während eines Workshops",
     offers: [
       { label: "Problem Framing", href: "/problem-framing-workshop" },
       { label: "KI Design Sprint", href: "/sprint-uebersicht" },
@@ -38,6 +45,8 @@ const pillars: Pillar[] = [
     claim: "Innovation beschleunigen",
     description:
       "Aus dem getesteten Ansatz wird ein sicherer KI-Arbeitsablauf mit klaren Rollen, Datenquellen, Prüfungen und menschlicher Freigabe.",
+    image: efficiencyImage,
+    imageAlt: "Arbeitstisch mit Skizzen zu einem KI-Arbeitsablauf",
     offers: [
       { label: "KI-Arbeitsablauf entwickeln", href: "/custom-ai-development" },
       { label: "KI-Beratung", href: "/ai-consulting-services" },
@@ -50,6 +59,8 @@ const pillars: Pillar[] = [
     claim: "Individuelle KI-Qualität",
     description:
       "Wir messen Wirkung an realen Fällen, prüfen die Datenbasis und entscheiden auf belegter Grundlage über Anpassung oder Ausbau.",
+    image: successImage,
+    imageAlt: "Team bespricht gemeinsam sichtbare Ergebnisse",
     offers: [
       { label: "Datenqualitäts-Audit", href: "/data-quality-audit" },
       { label: "Wirkung messen und skalieren", href: "/ai-consulting-services" },
@@ -90,12 +101,22 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
                 className={cn(
-                  "group flex items-baseline gap-6 border-b border-border py-5 text-left transition-colors",
+                  "group flex items-center gap-5 border-b border-border py-5 text-left transition-colors",
                   active === i ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <span className="text-sm tabular-nums">{p.number}</span>
-                <span className="text-3xl md:text-4xl font-light tracking-tight">{p.title}</span>
+                <span className="text-sm tabular-nums self-center">{p.number}</span>
+                <img
+                  src={p.image}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  className={cn(
+                    "size-12 md:size-14 shrink-0 self-center rounded-xl object-cover transition-all duration-500",
+                    active === i ? "opacity-100 grayscale-0" : "opacity-60 grayscale",
+                  )}
+                />
+                <span className="text-3xl md:text-4xl font-light tracking-tight self-center">{p.title}</span>
                 <span
                   className={cn(
                     "ml-auto hidden text-sm md:inline transition-opacity",
@@ -111,8 +132,15 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
           <div
             key={current.key}
             role="tabpanel"
-            className="animate-fade-in rounded-2xl border border-border bg-background/70 p-8 md:p-10 flex flex-col justify-between gap-8"
+            className="animate-fade-in overflow-hidden rounded-2xl border border-border bg-background/70 flex flex-col justify-between"
           >
+            <img
+              src={current.image}
+              alt={current.imageAlt}
+              loading="lazy"
+              className="h-44 md:h-56 w-full object-cover"
+            />
+            <div className="flex flex-col justify-between gap-8 p-8 md:p-10">
             <div className="space-y-4">
               <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
                 {current.title} · {current.claim}
@@ -130,6 +158,7 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
                   <ArrowRight className="size-4" />
                 </Link>
               ))}
+            </div>
             </div>
           </div>
         </div>
