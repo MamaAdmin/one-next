@@ -89,8 +89,10 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
             as="h1"
           />
         </div>
+      </div>
 
-        <div className="mt-12 md:mt-16 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+      <div className="bg-background">
+        <div className="container mx-auto px-6 py-16 md:py-24 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div role="tablist" aria-label="Unsere drei Bausteine" className="flex flex-col border-t border-border">
             {pillars.map((p, i) => (
               <button
