@@ -456,7 +456,7 @@ const OnlineSprintLanding = () => {
                     <Link to="/sprint">Jetzt im Tool starten <ArrowRight /></Link>
                   </Button>
                   <Button size="lg" variant="outline" asChild>
-                    <Link to="/custom-ai-development">Weiter zur KI-Entwicklung</Link>
+                    <Link to="/custom-ai-development">Weiter zum KI-Arbeitsablauf</Link>
                   </Button>
                 </div>
               </div>

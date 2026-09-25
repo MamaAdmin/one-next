@@ -179,7 +179,7 @@ Ziele: ${data.goals}
     { id: "ai-design-sprint", label: "KI Design Sprint" },
     { id: "problem-framing", label: "Problem-Framing Workshop" },
     { id: "data-audit", label: "KI Datenaudit & Governance" },
-    { id: "custom-ai", label: "Individuelle KI-Entwicklung" },
+    { id: "custom-ai", label: "KI-Arbeitsablauf entwickeln" },
     { id: "ai-consulting", label: "KI-Beratung & Strategie" },
     { id: "ai-training", label: "KI Trainings & Enablement" },
   ];
