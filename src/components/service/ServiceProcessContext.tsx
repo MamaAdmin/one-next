@@ -9,9 +9,50 @@ interface ServiceProcessContextProps {
   activeStep?: number;
   supportingOffer?: "consulting" | "data";
   showExample?: boolean;
+  variant?: "full" | "teaser";
 }
 
-export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample = false }: ServiceProcessContextProps) => (
+const ProcessTeaser = ({ activeStep, supportingOffer }: Pick<ServiceProcessContextProps, "activeStep" | "supportingOffer">) => {
+  const activeSupporting = supportingOffers.find((_, index) => supportingOffer === (index === 0 ? "consulting" : "data"));
+  return (
+    <section className="border-y border-border bg-white py-10 md:py-12">
+      <div className="container px-4 md:px-6">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <p className="text-sm font-bold uppercase text-primary">Der one-next-Prozess</p>
+            <Button variant="link" className="h-auto p-0" asChild>
+              <Link to="/#services">Gesamten Prozess ansehen<ArrowRight className="ml-2 size-4" /></Link>
+            </Button>
+          </div>
+          <h2 className="mt-2 font-workshop-heading text-xl font-semibold md:text-2xl">Vom echten Geschäftsproblem zur belegten Wirkung</h2>
+
+          <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {offerProcessSteps.map((step, index) => {
+              const isActive = activeStep === index + 1;
+              return (
+                <li key={step.number} className={cn("border border-border px-4 py-3", isActive ? "border-primary bg-accent-soft/60" : "bg-white")}>
+                  <p className="font-workshop-heading text-sm font-bold text-border-strong">{step.number}</p>
+                  <p className="mt-1 text-sm font-semibold leading-snug">{step.service}</p>
+                  {isActive && <p className="mt-1 text-xs font-bold uppercase text-primary">Sie sind hier</p>}
+                </li>
+              );
+            })}
+          </ol>
+
+          {activeSupporting && (
+            <p className="mt-5 border-l-2 border-primary pl-4 text-sm text-muted-foreground">
+              Begleitender Baustein: <strong className="text-foreground">{activeSupporting.title}</strong> · Sie sind hier
+            </p>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample = false, variant = "teaser" }: ServiceProcessContextProps) => variant === "teaser" ? (
+  <ProcessTeaser activeStep={activeStep} supportingOffer={supportingOffer} />
+) : (
   <section className="border-y border-border bg-white py-16 md:py-24">
     <div className="container px-4 md:px-6">
       <div className="mx-auto max-w-6xl">
@@ -27,6 +68,7 @@ export const ServiceProcessContext = ({ activeStep, supportingOffer, showExample
             <p className="mt-2 max-w-4xl leading-relaxed text-muted-foreground">Ein Betrieb mit 45 Mitarbeitenden erstellt massgeschneiderte Angebote. Kundinnen warten im Schnitt fünf Arbeitstage. Die Geschäftsführung möchte diese Zeit halbieren, ohne falsche Preise oder unzulässige Datennutzung zu riskieren.</p>
           </div>
         )}
+
 
         <div className="grid border-t border-border md:grid-cols-2">
           {offerProcessSteps.map((step, index) => {
