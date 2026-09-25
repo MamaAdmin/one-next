@@ -88,3 +88,11 @@
 - [x] Whiteboard-Skriptanweisung auf deutsche ß-Schreibweise umstellen
 - [x] Lernvideo-Skriptanweisung auf deutsche ß-Schreibweise umstellen
 - [x] Betroffene Serverfunktionen aktualisieren
+
+# Leistungsangebot als KI-Lernprozess
+
+- [ ] Gemeinsame Prozessdarstellung und KMU-Beispiel auf der Startseite
+- [ ] Leistungsmenü in Kernweg und begleitende Bausteine ordnen
+- [ ] Alle Leistungsseiten in den Gesamtprozess einordnen
+- [ ] Metadaten und Auffindbarkeit angleichen
+- [ ] Desktop, Smartphone, Links und App-Start prüfen
