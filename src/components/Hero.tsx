@@ -105,8 +105,18 @@ const Hero = ({ isEditMode = false }: HeroProps) => {
                   active === i ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <span className="text-sm tabular-nums">{p.number}</span>
-                <span className="text-3xl md:text-4xl font-light tracking-tight">{p.title}</span>
+                <span className="text-sm tabular-nums self-center">{p.number}</span>
+                <img
+                  src={p.image}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  className={cn(
+                    "size-12 md:size-14 shrink-0 self-center rounded-xl object-cover transition-all duration-500",
+                    active === i ? "opacity-100 grayscale-0" : "opacity-60 grayscale",
+                  )}
+                />
+                <span className="text-3xl md:text-4xl font-light tracking-tight self-center">{p.title}</span>
                 <span
                   className={cn(
                     "ml-auto hidden text-sm md:inline transition-opacity",
