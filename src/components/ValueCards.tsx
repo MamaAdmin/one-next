@@ -1,9 +1,11 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import workshopPostits from "@/assets/workshop-stickynotes-blue.jpg";
-import workshopTable from "@/assets/workshop-table.jpg";
+import customAiDevelopment from "@/assets/custom-ai-development.jpg";
+import workshopCollaboration from "@/assets/workshop-collaboration.jpg";
 import { CalendarBookingDialog } from "./CalendarBookingDialog";
 
 interface ValueCardsProps {
@@ -11,27 +13,33 @@ interface ValueCardsProps {
 }
 
 const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
-  const { content, updateContent } = usePageContent('value-cards');
+  const { content, updateContent } = usePageContent("value-cards");
 
   return (
     <section className="py-16 md:py-28 bg-background">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:auto-rows-[380px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 lg:auto-rows-[380px]">
 
-          {/* Expertise – Text-Karte */}
-          <div className="bg-secondary rounded-2xl p-8 md:p-10 md:col-span-2 lg:col-span-1 h-full flex flex-col justify-between text-foreground">
+          {/* 01 Expertise – Text */}
+          <div className="bg-secondary rounded-2xl p-8 md:p-10 h-full flex flex-col justify-between text-foreground">
             <div className="space-y-5">
+              <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                01 · Innovation mit Methode
+              </span>
               <InlineTextField
-                value={content.expertise_title || 'Expertise'}
-                onSave={(value) => updateContent('expertise_title', value)}
+                value={content.expertise_title || "Expertise"}
+                onSave={(value) => updateContent("expertise_title", value)}
                 isEditMode={isEditMode}
                 className="text-2xl md:text-3xl font-light tracking-tight"
                 placeholder="Titel des Expertise-Abschnitts"
                 as="h2"
               />
               <InlineTextArea
-                value={content.expertise_description || 'Wir verbinden Menschen, Technologie und Prozesse. Mit agilen Methoden wie dem Design Sprint entwickeln und testen wir Ideen in wenigen Tagen – für schnellere, bessere Entscheidungen. Unser Fokus: Strategie, Coaching und digitale Kompetenz.'}
-                onSave={(value) => updateContent('expertise_description', value)}
+                value={
+                  content.expertise_description ||
+                  "Wir klären zuerst die richtige Problemstellung im Problem Framing und testen Lösungsansätze schnell mit echten Nutzenden – strukturiert und nachvollziehbar."
+                }
+                onSave={(value) => updateContent("expertise_description", value)}
                 isEditMode={isEditMode}
                 className="text-sm md:text-base text-foreground/75 leading-relaxed"
                 placeholder="Beschreibung des Expertise-Abschnitts"
@@ -40,53 +48,59 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
             </div>
             <div className="pt-8 md:pt-0">
               <CalendarBookingDialog
-                buttonText={content.expertise_button || 'Kostenlose Beratung vereinbaren'}
+                buttonText={content.expertise_button || "Kostenlose Beratung vereinbaren"}
                 buttonSize="lg"
                 buttonClassName="rounded-none border border-border-accent bg-background text-foreground hover:bg-background/90"
               />
             </div>
           </div>
 
-          {/* Bild 1 – Workshop, Post-its (großformatig, span 2 auf desktop) */}
-          <div className="rounded-2xl overflow-hidden group md:col-span-2 lg:col-span-2 h-64 md:h-full">
+          {/* 01 Expertise – Bild */}
+          <div className="rounded-2xl overflow-hidden group h-64 lg:h-full">
             <img
               src={workshopPostits}
-              alt="Hände arbeiten an einer Post-it-Wand während eines Design Sprints"
+              alt="Hände arbeiten an einer Post-it-Wand während eines Workshops"
               loading="lazy"
               width={1280}
               height={1280}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              style={{ filter: 'saturate(0.9)' }}
+              style={{ filter: "saturate(0.9)" }}
             />
           </div>
 
-          {/* Bild 2 – Arbeitstisch */}
-          <div className="rounded-2xl overflow-hidden group md:col-span-2 lg:col-span-1 h-64 md:h-full">
+          {/* 02 Effizienz – Bild */}
+          <div className="rounded-2xl overflow-hidden group h-64 lg:h-full lg:order-none order-2">
             <img
-              src={workshopTable}
-              alt="Zwei Personen arbeiten gemeinsam an Wireframes und Skizzen"
+              src={customAiDevelopment}
+              alt="Arbeitstisch mit Skizzen zu einem KI-Arbeitsablauf"
               loading="lazy"
               width={1280}
               height={1280}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              style={{ filter: 'saturate(0.9)' }}
+              style={{ filter: "saturate(0.9)" }}
             />
           </div>
 
-          {/* Effizienz – schwarze Karte */}
-          <div className="bg-foreground text-background rounded-2xl p-8 md:p-10 lg:col-span-1 h-full flex flex-col justify-between">
+          {/* 02 Effizienz – Text */}
+          <div className="bg-foreground text-background rounded-2xl p-8 md:p-10 h-full flex flex-col justify-between order-1 lg:order-none">
             <div className="space-y-5">
+              <span className="text-xs uppercase tracking-[0.22em] text-background/60">
+                02 · Innovation beschleunigen
+              </span>
               <InlineTextField
-                value={content.efficiency_title || 'Effizienz'}
-                onSave={(value) => updateContent('efficiency_title', value)}
+                value={content.efficiency_title || "Effizienz"}
+                onSave={(value) => updateContent("efficiency_title", value)}
                 isEditMode={isEditMode}
                 className="text-2xl md:text-3xl font-light text-background tracking-tight"
                 placeholder="Titel des Effizienz-Abschnitts"
                 as="h2"
               />
               <InlineTextArea
-                value={content.efficiency_description || 'Mit modernsten Technologien und Automatisierungen reduzieren wir Aufwände, beschleunigen Prozesse und schaffen Freiräume für wertschöpfende Tätigkeiten.'}
-                onSave={(value) => updateContent('efficiency_description', value)}
+                value={
+                  content.efficiency_description ||
+                  "Aus dem getesteten Ansatz wird ein sicherer KI-Arbeitsablauf mit klaren Rollen, Datenquellen, Prüfungen und menschlicher Freigabe."
+                }
+                onSave={(value) => updateContent("efficiency_description", value)}
                 isEditMode={isEditMode}
                 className="text-sm md:text-base text-background/75 leading-relaxed"
                 placeholder="Beschreibung des Effizienz-Abschnitts"
@@ -94,36 +108,39 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               />
             </div>
             <div className="pt-8 md:pt-0">
-              <Button variant="outline" size="lg" className="rounded-none border-background/40 hover:bg-background/10 text-background hover:text-background">
-                {isEditMode ? (
-                  <InlineTextField
-                    value={content.efficiency_button || 'Neuesten Bericht lesen'}
-                    onSave={(value) => updateContent('efficiency_button', value)}
-                    isEditMode={isEditMode}
-                    placeholder="Button-Text"
-                    as="span"
-                  />
-                ) : (
-                  content.efficiency_button || 'Neuesten Bericht lesen'
-                )}
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="rounded-none border-background/40 hover:bg-background/10 text-background hover:text-background"
+              >
+                <Link to="/custom-ai-development">
+                  {content.efficiency_button || "KI-Arbeitsablauf entwickeln"}
+                </Link>
               </Button>
             </div>
           </div>
 
-          {/* Erfolg – ruhige, gedämpfte Karte */}
-          <div className="rounded-2xl p-8 md:p-10 bg-muted lg:col-span-1 h-full flex flex-col justify-between md:col-span-2">
+          {/* 03 Erfolg – Text */}
+          <div className="rounded-2xl p-8 md:p-10 bg-muted h-full flex flex-col justify-between order-3 lg:order-none">
             <div className="space-y-5">
+              <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                03 · Individuelle KI-Qualität
+              </span>
               <InlineTextField
-                value={content.success_title || 'Erfolg'}
-                onSave={(value) => updateContent('success_title', value)}
+                value={content.success_title || "Erfolg"}
+                onSave={(value) => updateContent("success_title", value)}
                 isEditMode={isEditMode}
                 className="text-2xl md:text-3xl font-light tracking-tight"
                 placeholder="Titel des Erfolgs-Abschnitts"
                 as="h2"
               />
               <InlineTextArea
-                value={content.success_description || 'Erst wenn unsere Kunden erfolgreich sind, sind wir zufrieden. Mit Beratung, Coaching und agilen Methoden sorgen wir dafür, dass unsere Umsetzungen Wirkung zeigen.'}
-                onSave={(value) => updateContent('success_description', value)}
+                value={
+                  content.success_description ||
+                  "Wir messen die Wirkung an realen Aufgaben, prüfen die Datenqualität und schaffen eine belastbare Grundlage für die Entscheidung zum Ausbau."
+                }
+                onSave={(value) => updateContent("success_description", value)}
                 isEditMode={isEditMode}
                 className="text-sm md:text-base text-foreground/75 leading-relaxed"
                 placeholder="Beschreibung des Erfolgs-Abschnitts"
@@ -131,20 +148,23 @@ const ValueCards = ({ isEditMode = false }: ValueCardsProps) => {
               />
             </div>
             <div className="pt-8 md:pt-0">
-              <Button variant="outline" size="lg" className="rounded-none border-border-accent hover:bg-accent-soft">
-                {isEditMode ? (
-                  <InlineTextField
-                    value={content.success_button || 'Unsere Lösungen'}
-                    onSave={(value) => updateContent('success_button', value)}
-                    isEditMode={isEditMode}
-                    placeholder="Button-Text"
-                    as="span"
-                  />
-                ) : (
-                  content.success_button || 'Unsere Lösungen'
-                )}
+              <Button asChild variant="outline" size="lg" className="rounded-none border-border-accent hover:bg-accent-soft">
+                <Link to="/data-quality-audit">{content.success_button || "Datenqualitäts-Audit ansehen"}</Link>
               </Button>
             </div>
+          </div>
+
+          {/* 03 Erfolg – Bild */}
+          <div className="rounded-2xl overflow-hidden group h-64 lg:h-full order-4 lg:order-none">
+            <img
+              src={workshopCollaboration}
+              alt="Team bespricht gemeinsam sichtbare Ergebnisse"
+              loading="lazy"
+              width={1280}
+              height={1280}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              style={{ filter: "saturate(0.9)" }}
+            />
           </div>
         </div>
       </div>
