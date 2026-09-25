@@ -26,7 +26,7 @@ export const offerProcessSteps: OfferProcessStep[] = [
   {
     number: "02",
     title: "Eine Lösung klein testen",
-    service: "KI Design Sprint",
+    service: "Design Sprint",
     question: "Welche kleine Lösung lässt sich prüfen, bevor viel investiert wird?",
     description: "Im moderierten oder selbstgeführten Sprint entwickeln wir mehrere Ansätze, bauen einen einfachen Prototyp und testen ihn mit echten Nutzenden.",
     result: "Ein getesteter Lösungsansatz mit belegten Erkenntnissen.",
