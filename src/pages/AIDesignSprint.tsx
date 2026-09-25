@@ -234,7 +234,7 @@ const AIDesignSprint = () => {
               <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.8fr_1.2fr]">
                 <div>
                   <p className="mb-3 text-sm font-bold uppercase text-primary">Selbstgeführt und modular</p>
-                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Der Online Design Sprint passt sich Ihrem Weg an</h2>
+                  <h2 className="font-workshop-heading text-3xl font-bold md:text-4xl">Das Online KI-Sprint-Tool passt sich Ihrem Weg an</h2>
                   <p className="mt-5 leading-relaxed text-muted-foreground">Sie stellen selbst zusammen, welche Module Sie benötigen, und bearbeiten diese ohne Moderation in Ihrem eigenen Tempo – allein oder gemeinsam im Team.</p>
                   <Button className="mt-8" variant="outline" asChild><Link to="/sprint-uebersicht/online">Online KI-Sprint-Tool entdecken <ArrowRight /></Link></Button>
                 </div>
