@@ -141,9 +141,9 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">Willkommen zum AI Design Sprint!</h1>
-          <p>Hallo ${member.name},</p>
-          <p>Sie wurden zum <strong>${teamName}</strong> hinzugefügt.</p>
-          <p>Ihre Rolle: <strong>${member.role}</strong></p>
+          <p>Hallo ${escapeHtml(member.name)},</p>
+          <p>Sie wurden zum <strong>${escapeHtml(teamName)}</strong> hinzugefügt.</p>
+          <p>Ihre Rolle: <strong>${escapeHtml(member.role)}</strong></p>
           <p style="margin: 30px 0;">
             <a href="${dashboardUrl}" 
                style="background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%); 
@@ -218,8 +218,8 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">Einladung als Experte zum AI Design Sprint</h1>
-          <p>Hallo ${expert.name},</p>
-          <p>Sie wurden als <strong>Experte</strong> für ${expert.expertise} zum <strong>${teamName}</strong> eingeladen.</p>
+          <p>Hallo ${escapeHtml(expert.name)},</p>
+          <p>Sie wurden als <strong>Experte</strong> für ${escapeHtml(expert.expertise)} zum <strong>${escapeHtml(teamName)}</strong> eingeladen.</p>
           <p>Ihre Teilnahme ist geplant für: <strong>${expertDays}</strong></p>
           <p style="margin: 30px 0;">
             <a href="${expertUrl}" 
