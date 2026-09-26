@@ -112,24 +112,26 @@ export const useQuizAttempts = (enrollmentId?: string, quizId?: string) => {
 
   const submitAttempt = async (
     attemptId: string,
-    score: number,
-    isPassed: boolean,
+    _score: number,
+    _isPassed: boolean,
     timeSpentSeconds: number
   ) => {
     try {
-      const { error } = await supabase
-        .from("lms_quiz_attempts")
-        .update({
-          completed_at: new Date().toISOString(),
-          score,
-          is_passed: isPassed,
-          time_spent_seconds: timeSpentSeconds,
-        })
-        .eq("id", attemptId);
+      // Score and pass status are computed server-side – never trust client values.
+      const attempt = currentAttempt || attempts.find(a => a.id === attemptId);
+      if (!attempt) throw new Error("Attempt not found");
+
+      const { data, error } = await supabase.rpc("grade_quiz_attempt", {
+        p_attempt_id: attemptId,
+        p_quiz_id: attempt.quiz_id,
+        p_answers: attempt.answers ?? {},
+        p_time_spent_seconds: timeSpentSeconds,
+      });
 
       if (error) throw error;
 
-      toast.success(isPassed ? "Quiz bestanden!" : "Quiz nicht bestanden");
+      const result = Array.isArray(data) ? data[0] : data;
+      toast.success(result?.is_passed ? "Quiz bestanden!" : "Quiz nicht bestanden");
       setCurrentAttempt(null);
       await loadAttempts();
     } catch (error) {
