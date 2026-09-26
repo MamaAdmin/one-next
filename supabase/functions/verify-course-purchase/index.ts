@@ -71,6 +71,11 @@ serve(async (req) => {
     if (sessionCustomerId && purchase.customer_id && sessionCustomerId !== purchase.customer_id) {
       throw new Error("Session customer mismatch");
     }
+    // The session must be the one stored when checkout was created
+    if (purchase.payment_id && purchase.payment_id !== sessionId) {
+      console.warn("Stored payment_id mismatch on verify", { purchaseId });
+      throw new Error("Session does not match the stored checkout session");
+    }
 
     // Update purchase status
     await supabaseClient

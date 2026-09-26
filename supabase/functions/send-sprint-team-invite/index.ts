@@ -90,7 +90,18 @@ serve(async (req) => {
       });
     }
 
-    const inviteUrl = `${parsed.data.origin}/sprint/invite/${invitation.token}`;
+    // Only allow invitation links on our own domains
+    const ALLOWED_ORIGINS = new Set([
+      "https://one-next.com",
+      "https://www.one-next.com",
+      "https://one-next.lovable.app",
+      "http://localhost:8080",
+      "http://localhost:5173",
+    ]);
+    const origin = ALLOWED_ORIGINS.has(parsed.data.origin)
+      ? parsed.data.origin
+      : "https://one-next.com";
+    const inviteUrl = `${origin}/sprint/invite/${invitation.token}`;
     const roleLabel = ROLE_LABEL[invitation.role_type] ?? invitation.role_type;
     const greetingName = invitation.full_name || invitation.email;
 

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Code, FileText } from "lucide-react";
 import { TemplateRenderer } from "./TemplateRenderer";
+import { sanitizeHtml } from "@/lib/html";
 
 interface Tool {
   id: string;
@@ -96,7 +97,7 @@ export function ToolCard({ tool, enrollmentId, moduleId }: ToolCardProps) {
         {tool.tool_type === 'embedded' && tool.embed_code && (
           <div 
             className="border rounded-lg p-4 bg-muted"
-            dangerouslySetInnerHTML={{ __html: tool.embed_code }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(tool.embed_code) }}
           />
         )}
         

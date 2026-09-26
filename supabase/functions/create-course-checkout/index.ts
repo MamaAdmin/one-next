@@ -13,10 +13,16 @@ serve(async (req) => {
   }
 
   try {
-    const { courseId, customerId, licenses = 1 } = await req.json();
+    const { courseId, customerId, licenses: rawLicenses = 1 } = await req.json();
 
     if (!courseId || !customerId) {
       throw new Error("courseId and customerId are required");
+    }
+
+    // Server-side validation: licenses must be a positive integer within a sane range
+    const licenses = Number(rawLicenses);
+    if (!Number.isInteger(licenses) || licenses < 1 || licenses > 100) {
+      throw new Error("Invalid license quantity");
     }
 
     const supabaseClient = createClient(

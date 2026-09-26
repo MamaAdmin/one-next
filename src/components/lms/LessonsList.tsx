@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { sanitizeHtml } from "@/lib/html";
 
 const getLessonTypeLabel = (type: string): string => {
   const labels: Record<string, string> = {
@@ -183,7 +184,7 @@ export const LessonsList = ({
 
             {currentLesson.content_text && (
               <div className="prose prose-sm max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: currentLesson.content_text }} />
+                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(currentLesson.content_text) }} />
               </div>
             )}
 

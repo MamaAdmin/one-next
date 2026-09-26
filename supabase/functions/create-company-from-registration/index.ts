@@ -53,11 +53,10 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingCustomer) {
+      // Do not leak the existing customer ID to anonymous callers.
       return new Response(
         JSON.stringify({
           success: true,
-          customerId: existingCustomer.id,
-          userId: null,
           existing: true,
         }),
         {

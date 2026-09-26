@@ -85,9 +85,27 @@ const Body = z.discriminatedUnion("action", [
   }),
 ]);
 
+const ALLOWED_RETURN_ORIGINS = new Set([
+  "https://one-next.com",
+  "https://www.one-next.com",
+  "https://one-next.lovable.app",
+  "http://localhost:8080",
+  "http://localhost:5173",
+]);
+const safeReturnUrl = (u: unknown): string => {
+  if (typeof u !== "string") return "/";
+  try {
+    const parsed = new URL(u, "https://one-next.com");
+    if (u.startsWith("/")) return u;
+    return ALLOWED_RETURN_ORIGINS.has(parsed.origin) ? u : "/";
+  } catch {
+    return "/";
+  }
+};
+
 async function handleCallback(url: URL) {
   const state = await readState(url.searchParams.get("state") ?? "");
-  const ret = state?.ret ?? "/";
+  const ret = safeReturnUrl(state?.ret);
   const back = (q: string) => Response.redirect(`${ret}${ret.includes("?") ? "&" : "?"}${q}`, 302);
   if (!state) return new Response("Ungültige Anfrage", { status: 400 });
   const code = url.searchParams.get("code");

@@ -101,7 +101,10 @@ serve(async (req) => {
       };
 
       const message = statusMessages[newStatus] || 'aktualisiert';
-      const title = content.title || content.question || 'Inhalt';
+      const escapeHtml = (v: unknown): string =>
+        String(v ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string));
+      const title = escapeHtml(content.title || content.question || 'Inhalt');
+      const safeStatus = escapeHtml(newStatus);
 
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -116,7 +119,7 @@ serve(async (req) => {
           html: `
             <h2>Workflow Status Update</h2>
             <p>Der Inhalt "<strong>${title}</strong>" wurde ${message}.</p>
-            <p><strong>Neuer Status:</strong> ${newStatus}</p>
+            <p><strong>Neuer Status:</strong> ${safeStatus}</p>
             <p><a href="${supabaseUrl}/admin">Zum Dashboard</a></p>
           `,
         }),
