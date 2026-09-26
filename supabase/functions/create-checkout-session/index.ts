@@ -75,6 +75,16 @@ serve(async (req) => {
       );
     }
 
+    // Never trust a client-supplied price: enforce a sane positive amount.
+    const priceChf = Number(booking.price_chf);
+    if (!Number.isFinite(priceChf) || priceChf < 1 || priceChf > 100000) {
+      console.error("Invalid booking price:", booking.price_chf);
+      return new Response(
+        JSON.stringify({ error: "Invalid booking price" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
@@ -97,7 +107,7 @@ serve(async (req) => {
               name: `Online Design Sprint - ${booking.recommended_sprint_type}`,
               description: `${booking.team_size} Teilnehmer`,
             },
-            unit_amount: booking.price_chf * 100,
+            unit_amount: Math.round(priceChf * 100),
           },
           quantity: 1,
         },
