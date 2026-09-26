@@ -169,7 +169,7 @@ export function PublicCourseView({
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">Was Sie lernen</h2>
             <div
               className="prose prose-neutral max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(descriptionHtml) }}
             />
           </div>
         </section>
@@ -279,7 +279,7 @@ function ModuleSection({ module: mod, index }: { module: PublicCourseViewModule;
           {mod.content_html && (
             <div
               className="prose prose-neutral max-w-2xl text-muted-foreground mb-8"
-              dangerouslySetInnerHTML={{ __html: mod.content_html }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(mod.content_html) }}
             />
           )}
 

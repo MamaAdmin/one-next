@@ -183,7 +183,7 @@ export const LessonsList = ({
 
             {currentLesson.content_text && (
               <div className="prose prose-sm max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: currentLesson.content_text }} />
+                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(currentLesson.content_text) }} />
               </div>
             )}
 
