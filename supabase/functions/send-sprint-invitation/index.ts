@@ -33,6 +33,15 @@ interface InvitationRequest {
   kickoffDates: Record<number, string>;
 }
 
+const escapeHtml = (value: unknown): string =>
+  String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[ch] as string));
+
 const dayNames = [
   "Problem Framing",
   "Map",
