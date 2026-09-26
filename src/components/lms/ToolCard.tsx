@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Code, FileText } from "lucide-react";
 import { TemplateRenderer } from "./TemplateRenderer";
+import { sanitizeHtml } from "@/lib/html";
 
 interface Tool {
   id: string;

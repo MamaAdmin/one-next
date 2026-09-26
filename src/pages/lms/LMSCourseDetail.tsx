@@ -17,6 +17,7 @@ import { PublicCourseView } from "@/components/course/PublicCourseView";
 import { LessonsList } from "@/components/lms/LessonsList";
 import { QuizView } from "@/components/lms/QuizView";
 import { categoryLabels } from "@/lib/categoryMappings";
+import { sanitizeHtml } from "@/lib/html";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LMSCourseDetail() {

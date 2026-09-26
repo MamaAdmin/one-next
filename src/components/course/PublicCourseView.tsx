@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, MapPin, ChevronRight } from "lucide-react";
+import { sanitizeHtml } from "@/lib/html";
 
 export interface PublicCourseViewCourse {
   title: string;
