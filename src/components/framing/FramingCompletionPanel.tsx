@@ -154,7 +154,7 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const zielgruppeOk = (step3?.primaereZielgruppe?.trim().length ?? 0) > 0;
   const ursacheOk =
     !!step5?.ursachen?.some((u) => u.adressierbar && u.text.trim().length > 0) ||
-    !!step5?.kiUrsachen?.some((t) => t.trim().length > 0);
+    !!(step5 as { kiUrsachen?: string[] } | undefined)?.kiUrsachen?.some((t: string) => t.trim().length > 0);
   const sprintFrageOk =
     ((step8 as { sprintFragen?: string[]; kiSprintFragen?: string[] } | undefined)?.sprintFragen
       ?.length ?? 0) +
