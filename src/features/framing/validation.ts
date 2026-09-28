@@ -30,7 +30,7 @@ export function getStepWarnings(stepKey: string, d: FramingStepData): string[] {
       if (leer(d.symptom)) w.push("Kein Startsymptom – die Warum-Kette hängt dann in der Luft.");
       if (((d.fiveWhys?.length ?? 0) + (d.kiFiveWhys?.length ?? 0)) < 3)
         w.push("Weniger als drei Warum-Ebenen.");
-      if (!d.ursachen?.some((u) => u.adressierbar)) w.push("Keine adressierbare Ursache markiert.");
+      if (!d.ursachen?.some((u) => u.adressierbar) && !d.kiUrsachen?.length) w.push("Keine adressierbare Ursache markiert.");
       break;
     case "6":
       if ((d.annahmen?.length ?? 0) < 3) w.push("Weniger als drei Annahmen erfasst.");

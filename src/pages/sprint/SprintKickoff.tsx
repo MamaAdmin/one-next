@@ -15,6 +15,7 @@ import { TeamRoleGrid } from "@/components/sprint/TeamRoleGrid";
 import SprintBasicsEditDialog from "@/components/sprint/SprintBasicsEditDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useFramingForSprint } from "@/hooks/useFramingForSprint";
 
 export default function SprintKickoff() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +23,7 @@ export default function SprintKickoff() {
   const sprintQ = useSprint(id);
   const membersQ = useSprintMembers(id);
   const confirmKickoff = useConfirmSprintKickoff(id ?? "");
+  const framingQ = useFramingForSprint(id);
   const [editOpen, setEditOpen] = useState(false);
   const currentUserQ = useQuery({
     queryKey: ["auth", "current-user-id"],
@@ -61,7 +63,8 @@ export default function SprintKickoff() {
 
   const isOwner = !!currentUserQ.data && currentUserQ.data === sprint.owner_id;
   const hasModerator = members.some((m) => m.rolle === "moderator");
-  const handoverConfirmed = sprint.challenge_statement.trim().length > 0;
+  const fromFraming = !!framingQ.data;
+  const handoverConfirmed = !fromFraming || sprint.challenge_statement.trim().length > 0;
   const canStart = isOwner && hasModerator && handoverConfirmed;
 
   const blockedReason = !isOwner

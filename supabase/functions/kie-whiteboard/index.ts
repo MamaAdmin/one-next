@@ -83,7 +83,7 @@ async function createJobTask(model: string, input: Record<string, unknown>): Pro
   return body.data.taskId as string;
 }
 
-async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string> {
+async function pollJobTask(taskId: string, timeoutMs = 120_000): Promise<string> {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
     await new Promise((r) => setTimeout(r, 3000));
@@ -103,7 +103,7 @@ async function pollJobTask(taskId: string, timeoutMs = 170_000): Promise<string>
       throw new Error(body?.data?.failMsg ?? "Generierung fehlgeschlagen");
     }
   }
-  throw new Error("Zeitüberschreitung bei der Generierung");
+  throw new Error("Die Bilderzeugung dauert ungewöhnlich lange. Bitte gleich erneut versuchen.");
 }
 
 async function checkJobTask(taskId: string): Promise<{
