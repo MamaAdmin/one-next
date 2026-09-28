@@ -103,7 +103,7 @@ async function pollJobTask(taskId: string, timeoutMs = 120_000): Promise<string>
       throw new Error(body?.data?.failMsg ?? "Generierung fehlgeschlagen");
     }
   }
-  throw new Error("Zeitüberschreitung bei der Generierung");
+  throw new Error("Die Bilderzeugung dauert ungewöhnlich lange. Bitte gleich erneut versuchen.");
 }
 
 async function checkJobTask(taskId: string): Promise<{
