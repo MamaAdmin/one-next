@@ -152,7 +152,9 @@ export default function FramingCompletionPanel({ session, steps }: Props) {
   const NEW_SESSION_CUTOFF = Date.parse("2026-09-22T00:00:00Z");
   const isNewSession = Date.parse(session.created_at) >= NEW_SESSION_CUTOFF;
   const zielgruppeOk = (step3?.primaereZielgruppe?.trim().length ?? 0) > 0;
-  const ursacheOk = !!step5?.ursachen?.some((u) => u.adressierbar && u.text.trim().length > 0);
+  const ursacheOk =
+    !!step5?.ursachen?.some((u) => u.adressierbar && u.text.trim().length > 0) ||
+    !!step5?.kiUrsachen?.some((t) => t.trim().length > 0);
   const sprintFrageOk =
     ((step8 as { sprintFragen?: string[]; kiSprintFragen?: string[] } | undefined)?.sprintFragen
       ?.length ?? 0) +
