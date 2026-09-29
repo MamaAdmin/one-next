@@ -63,13 +63,19 @@ export default function SprintKickoff() {
 
   const isOwner = !!currentUserQ.data && currentUserQ.data === sprint.owner_id;
   const hasModerator = members.some((m) => m.rolle === "moderator");
+  const framingChecked = framingQ.isSuccess;
   const fromFraming = !!framingQ.data;
-  const handoverConfirmed = !fromFraming || sprint.challenge_statement.trim().length > 0;
+  const handoverConfirmed =
+    framingChecked && (!fromFraming || sprint.challenge_statement.trim().length > 0);
   const canStart = isOwner && hasModerator && handoverConfirmed;
 
   const blockedReason = !isOwner
     ? "Nur der Moderator kann den Sprint starten."
-    : !handoverConfirmed
+    : framingQ.isError
+      ? "Die Prüfung des Problem-Framing-Handovers ist fehlgeschlagen. Bitte Seite neu laden."
+      : !framingChecked
+        ? "Handover wird geprüft …"
+        : !handoverConfirmed
       ? "Bestätige zuerst den Handover aus dem Problem Framing."
       : !hasModerator
         ? "Moderator fehlt – bitte Seite neu laden."
