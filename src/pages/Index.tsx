@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import { WerkstattTeaser } from "@/components/WerkstattTeaser";
 import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 import { useContentManager } from "@/hooks/useContentManager";
@@ -27,6 +28,7 @@ const Index = () => {
         <main>
           <Hero isEditMode={isEditMode} />
           <About isEditMode={isEditMode} />
+          <WerkstattTeaser />
           <Services />
         </main>
         <Footer isEditMode={isEditMode} />

@@ -4,7 +4,6 @@ import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { WerkstattTeaser } from "@/components/WerkstattTeaser";
 
 interface AboutProps {
   isEditMode?: boolean;
@@ -39,7 +38,6 @@ const About = ({ isEditMode = false }: AboutProps) => {
             </Button>
           </div>
         </div>
-        <WerkstattTeaser />
       </div>
     </section>
   );
