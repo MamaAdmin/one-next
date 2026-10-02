@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConsentBanner } from "@/components/ConsentBanner";
+import { lazy, Suspense } from "react";
+const Werkstatt = lazy(() => import("./pages/Werkstatt"));
 import { HelmetProvider } from 'react-helmet-async';
 
 import ScrollToTop from "./components/ScrollToTop";
@@ -173,6 +175,7 @@ const App = () => (
           <Route path="/company/profile" element={<CompanyProfile />} />
            <Route path="/voice-bot" element={<VoiceBot />} />
           <Route path="/kontakt" element={<Contact />} />
+          <Route path="/werkstatt" element={<Suspense fallback={null}><Werkstatt /></Suspense>} />
           <Route path="/analyse" element={<Analysis />} />
           <Route path="/kurse" element={<Kurse />} />
           <Route path="/kurse/:slug" element={<KursDetail />} />
