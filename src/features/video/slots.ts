@@ -2,6 +2,15 @@
 
 export type VideoProvider = "youtube" | "vimeo" | "direct";
 
+export type VideoSlotGroup = "website" | "framing" | "sprint" | "custom";
+
+export const SLOT_GROUP_LABEL: Record<VideoSlotGroup, string> = {
+  website: "Webseite",
+  framing: "Problem-Framing-Workshop",
+  sprint: "Design Sprint",
+  custom: "Eigene Einsatzorte",
+};
+
 export interface VideoSlotDef {
   /** Stable key stored in video_library.slot_key */
   key: string;
@@ -9,35 +18,41 @@ export interface VideoSlotDef {
   label: string;
   /** Short hint where exactly it appears */
   hint: string;
+  group: VideoSlotGroup;
 }
 
-/** All places in the app that can show a library video. */
+/** Built-in places in the app that can show a library video. */
 export const VIDEO_SLOTS: VideoSlotDef[] = [
   {
     key: "framing_landing",
     label: "Problem-Framing-Workshop · Einstieg",
-    hint: "Video unter dem Titel „Wenn Ihre Challenge noch unklar ist“ auf der öffentlichen Seite Problem-Framing-Workshop",
+    hint: "Seite /problem-framing-workshop, unter dem Titel „Wenn Ihre Challenge noch unklar ist“",
+    group: "website",
   },
   {
     key: "framing_intro",
     label: "Problem Framing · So arbeitest du mit dem Tool",
     hint: "Einführungsseite des Problem-Framing-Workshops",
-  },
-  {
-    key: "sprint_intro",
-    label: "Design Sprint · So arbeitest du mit dem Tool",
-    hint: "Einführung im Design-Sprint-Arbeitsbereich",
+    group: "framing",
   },
   {
     key: "framing_team",
     label: "Problem Framing · Team-Konstellation",
     hint: "Box „So arbeitest du mit dem Tool“ auf der Seite Team-Konstellation",
+    group: "framing",
   },
   ...Array.from({ length: 10 }, (_, i) => ({
     key: `framing_step_${i + 1}`,
     label: `Problem Framing · Schritt ${i + 1}`,
     hint: `Box „So arbeitest du mit dem Tool" in Schritt ${i + 1}`,
+    group: "framing" as const,
   })),
+  {
+    key: "sprint_intro",
+    label: "Design Sprint · So arbeitest du mit dem Tool",
+    hint: "Einführung im Design-Sprint-Arbeitsbereich",
+    group: "sprint",
+  },
 ];
 
 export const getVideoSlot = (key: string): VideoSlotDef | undefined =>
