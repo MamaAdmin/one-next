@@ -1,4 +1,5 @@
 // @ts-nocheck
+// @ts-nocheck
 /* one-next KI-Werkstatt: 3D-Szene (Three.js r128), HUD und Scroll-Steuerung.
    initWerkstatt() startet alles und gibt eine Aufräumfunktion zurück (für React useEffect). */
 import * as THREE from "three";
