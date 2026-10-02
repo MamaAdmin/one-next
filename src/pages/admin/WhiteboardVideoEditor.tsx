@@ -1711,7 +1711,14 @@ const WhiteboardVideoEditor = () => {
                     hasExport={serverStatus === "succeeded" && !!serverExportPath}
                     defaultTitle={title}
                     defaultDescription={topic}
-                    aiContent={[`Thema: ${topic}`, ...scenes.map((s, i) => `${i + 1}. ${s.heading}: ${s.narration}`)].join("\n")}
+                    aiContent={[
+                      `Thema: ${topic || title}`,
+                      ...scenes.map((s, i) =>
+                        [`Szene ${i + 1}: ${s.heading ?? ""}`, s.narration ?? "", (s.bullets ?? []).join("; ")]
+                          .filter(Boolean)
+                          .join(" – "),
+                      ),
+                    ].join("\n")}
                     slotKey={(project as any).target_slot_key ?? null}
                     youtubeVideoId={(project as any).youtube_video_id ?? null}
                     youtubeStatus={(project as any).youtube_status ?? null}
