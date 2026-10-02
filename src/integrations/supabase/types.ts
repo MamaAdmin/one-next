@@ -486,6 +486,39 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_inquiries: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          services: string[]
+          timing: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          services?: string[]
+          timing?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          services?: string[]
+          timing?: string | null
+        }
+        Relationships: []
+      }
       content_versions: {
         Row: {
           change_summary: string | null
