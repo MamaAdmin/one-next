@@ -31,7 +31,7 @@ import {
   CompassIcon,
   LinkIcon
 } from "@/components/ui/custom-icons";
-import { Clapperboard, FileText, UserPlus, Video } from "lucide-react";
+import { Clapperboard, FileText, Images, UserPlus, Video } from "lucide-react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { DashboardHeader, DashboardPage } from "@/components/admin/DashboardPage";
 
@@ -171,6 +171,16 @@ const AdminDashboard = () => {
                       <Video className="w-14 h-14 text-primary" />
                       <span>Video-Bibliothek</span>
                     </Button>
+
+                    <Link to="/admin/bildbibliothek" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="w-full h-24 flex flex-col items-center justify-center gap-2"
+                      >
+                        <Images className="w-14 h-14 text-primary" />
+                        <span>Bildbibliothek</span>
+                      </Button>
+                    </Link>
 
                     <Link to="/admin/whiteboard-videos" className="w-full">
                       <Button

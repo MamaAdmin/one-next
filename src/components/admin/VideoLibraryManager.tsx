@@ -27,9 +27,10 @@ import { Pencil, Plus, Trash2, Video, X } from "lucide-react";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { YouTubeConnectionCard } from "@/features/video/YouTube";
 import { useVideoLibrary, type LibraryVideo } from "@/hooks/useVideoLibrary";
+import { useAllVideoSlots } from "@/hooks/useVideoPlacements";
+import { SlotSelectItems } from "@/components/video/SlotSelectItems";
 import {
   PROVIDER_LABEL,
-  VIDEO_SLOTS,
   detectProvider,
   isPlayableVideoUrl,
 } from "@/features/video/slots";
@@ -39,6 +40,7 @@ const NONE = "__none__";
 export function VideoLibraryManager() {
   const { videos, isLoading, createVideo, updateVideo, deleteVideo, assignSlot } =
     useVideoLibrary();
+  const allSlots = useAllVideoSlots();
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<LibraryVideo | null>(null);
@@ -160,7 +162,7 @@ export function VideoLibraryManager() {
         <CardHeader>
           <CardTitle className="text-lg">Einsatzorte</CardTitle>
           <CardDescription>
-            Lege fest, welches Video an welcher Stelle erscheint. Änderungen wirken sofort.
+            Lege fest, welches Video an welcher Stelle erscheint. Neue Einsatzorte legst du direkt auf der jeweiligen Seite über den Knopf «Video-Einsatzort» an.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
