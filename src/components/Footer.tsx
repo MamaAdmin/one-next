@@ -89,6 +89,13 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
             <Link to="/agb" className="text-background/60 hover:text-background transition-colors">
               AGB
             </Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))}
+              className="text-background/60 hover:text-background transition-colors"
+            >
+              Cookie-Einstellungen
+            </button>
           </div>
         </div>
       </div>
