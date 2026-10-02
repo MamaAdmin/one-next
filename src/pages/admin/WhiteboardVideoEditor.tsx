@@ -16,6 +16,9 @@ import {
   signedExportUrl,
 } from "@/features/whiteboard/serverExport";
 import { YouTubePublishPanel } from "@/features/video/YouTube";
+import { ImageLibraryGrid } from "@/components/admin/ImageLibraryGrid";
+import { addLibraryImage } from "@/services/ImageLibrary";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   startServerExport,
   subtitleCues,
@@ -140,6 +143,7 @@ const WhiteboardVideoEditor = () => {
   const [styleReferencePath, setStyleReferencePath] = useState<string | null>(null);
   const [styleReferenceUrl, setStyleReferenceUrl] = useState<string | null>(null);
   const [styleReferenceBusy, setStyleReferenceBusy] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [styleAnalysisBusy, setStyleAnalysisBusy] = useState(false);
   const [replaceDirectionOpen, setReplaceDirectionOpen] = useState(false);
   const [pendingImageDirection, setPendingImageDirection] = useState<string | null>(null);
@@ -370,6 +374,7 @@ const WhiteboardVideoEditor = () => {
       if (error) throw new Error(error.message);
       setStyleReferencePath(uploaded.path);
       setStyleReferenceUrl(uploaded.url);
+      void addLibraryImage({ url: uploaded.url, storage_path: uploaded.path, prompt: `Referenzbild: ${file.name}`, source: "upload", video_id: videoId, video_title: title || null, scene_index: null, style: null });
       uploadedPath = null;
       if (previousPath) await deleteStyleReference(previousPath).catch(() => undefined);
       toast({ title: "Referenzbild gespeichert" });
@@ -384,6 +389,22 @@ const WhiteboardVideoEditor = () => {
       setStyleReferenceBusy(false);
       if (styleReferenceInputRef.current) styleReferenceInputRef.current.value = "";
     }
+  };
+
+  const useLibraryImageAsReference = async (url: string) => {
+    if (!videoId) return;
+    const { error } = await (supabase as any)
+      .from("whiteboard_videos")
+      .update({ style_ref_path: null, style_ref_url: url })
+      .eq("id", videoId);
+    if (error) {
+      toast({ title: "Referenzbild nicht gesetzt", description: error.message, variant: "destructive" });
+      return;
+    }
+    setStyleReferencePath(null);
+    setStyleReferenceUrl(url);
+    setLibraryOpen(false);
+    toast({ title: "Referenzbild aus der Bibliothek übernommen" });
   };
 
   const currentStyleReferenceUrl = async () => {
@@ -630,6 +651,7 @@ const WhiteboardVideoEditor = () => {
           imageDirection,
         });
         next[i] = { ...scene, imageUrl: result.url };
+        void addLibraryImage({ url: result.url, storage_path: null, prompt, source: "whiteboard", video_id: videoId, video_title: title || null, scene_index: i, style });
         created += 1;
         actual += perImage;
         setScenes([...next]);
@@ -810,6 +832,7 @@ const WhiteboardVideoEditor = () => {
         imageDirection,
       });
       const next = scenes.map((s) => (s.id === sceneId ? { ...s, imageUrl: result.url } : s));
+      void addLibraryImage({ url: result.url, storage_path: null, prompt, source: "whiteboard", video_id: videoId, video_title: title || null, scene_index: index, style });
       setScenes(next);
       await save({ scenes: next });
       await logJob({
@@ -1461,7 +1484,19 @@ const WhiteboardVideoEditor = () => {
                         )}
                         {styleReferenceUrl ? "Referenzbild ersetzen" : "Referenzbild hochladen"}
                       </Button>
-                      {styleReferenceUrl && (
+                      <Button type="button" size="sm" variant="outline" onClick={() => setLibraryOpen(true)}>
+                        Aus Bibliothek wählen
+                      </Button>
+                      <Dialog open={libraryOpen} onOpenChange={setLibraryOpen}>
+                        <DialogContent className="max-h-[85vh] max-w-5xl overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>Referenzbild aus der Bibliothek</DialogTitle>
+                            <DialogDescription>Klicken Sie auf ein Bild, um es als Referenzbild für dieses Video zu verwenden.</DialogDescription>
+                          </DialogHeader>
+                          <ImageLibraryGrid onSelect={(img) => void useLibraryImageAsReference(img.url)} />
+                        </DialogContent>
+                      </Dialog>
+                      {styleReferencePath && (
                         <Button
                           type="button"
                           size="sm"
