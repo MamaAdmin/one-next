@@ -74,3 +74,6 @@ verify_jwt = false
 
 [functions.youtube]
 verify_jwt = false
+
+[functions.submit-contact-inquiry]
+verify_jwt = false
