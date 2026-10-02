@@ -1,9 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { ContactInquiryForm } from "@/components/ContactInquiryForm";
 import { Mail, MapPin } from "lucide-react";
 import { HirzelGlobe } from "@/components/HirzelGlobe";
 import { localBusinessSchema } from "@/config/seoConfig";
@@ -28,24 +26,8 @@ const Contact = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h2 className="text-2xl font-semibold mb-6">Kontaktformular</h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Name</label>
-                    <Input placeholder="Ihr Name" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">E-Mail</label>
-                    <Input type="email" placeholder="ihre@email.de" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Nachricht</label>
-                    <Textarea placeholder="Ihre Nachricht..." rows={6} />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Nachricht senden
-                  </Button>
-                </form>
+                <h2 className="text-2xl font-semibold mb-6">Anfrage stellen</h2>
+                <ContactInquiryForm />
               </div>
 
               <div>
