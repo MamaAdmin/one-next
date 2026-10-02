@@ -8,15 +8,16 @@ const HIRZEL: [number, number] = [47.2167, 8.6036];
 type Ziel = { id: string; name: string; land: string; loc: [number, number] };
 
 const ZIELE: Ziel[] = [
-  { id: "milano", name: "Milano", land: "IT", loc: [45.4642, 9.19] },
-  { id: "genf", name: "Genève", land: "CH", loc: [46.2044, 6.1432] },
-  { id: "innsbruck", name: "Innsbruck", land: "AT", loc: [47.2692, 11.4041] },
-  { id: "muenchen", name: "München", land: "DE", loc: [48.1351, 11.582] },
-  { id: "torino", name: "Torino", land: "IT", loc: [45.0703, 7.6869] },
-  { id: "lyon", name: "Lyon", land: "FR", loc: [45.764, 4.8357] },
-  { id: "nizza", name: "Nice", land: "FR", loc: [43.7102, 7.262] },
-  { id: "ljubljana", name: "Ljubljana", land: "SI", loc: [46.0569, 14.5058] },
-  { id: "wien", name: "Wien", land: "AT", loc: [48.2082, 16.3738] },
+  { id: "london", name: "London", land: "UK", loc: [51.5074, -0.1278] },
+  { id: "berlin", name: "Berlin", land: "DE", loc: [52.52, 13.405] },
+  { id: "newyork", name: "New York", land: "US", loc: [40.7128, -74.006] },
+  { id: "sanfrancisco", name: "San Francisco", land: "US", loc: [37.7749, -122.4194] },
+  { id: "rio", name: "Rio de Janeiro", land: "BR", loc: [-22.9068, -43.1729] },
+  { id: "kapstadt", name: "Kapstadt", land: "ZA", loc: [-33.9249, 18.4241] },
+  { id: "dubai", name: "Dubai", land: "AE", loc: [25.2048, 55.2708] },
+  { id: "singapur", name: "Singapur", land: "SG", loc: [1.3521, 103.8198] },
+  { id: "tokio", name: "Tokio", land: "JP", loc: [35.6762, 139.6503] },
+  { id: "sydney", name: "Sydney", land: "AU", loc: [-33.8688, 151.2093] },
 ];
 
 type Stufe = "alpenraum" | "welt";
@@ -45,7 +46,7 @@ const RICHTUNG = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
 const kompass = (grad: number) => RICHTUNG[Math.round(grad / 45) % 8];
 
 export function HirzelGlobe() {
-  const [stufe, setStufe] = useState<Stufe>("alpenraum");
+  const [stufe, setStufe] = useState<Stufe>("welt");
   const [aktiv, setAktiv] = useState<string | null>(null);
   const globeSettings = ZOOM[stufe];
 
@@ -91,7 +92,7 @@ export function HirzelGlobe() {
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
         <div className="min-w-0">
           <div className="mb-3 flex gap-2" role="group" aria-label="Ansicht wählen">
-            {(["alpenraum", "welt"] as Stufe[]).map((option) => (
+            {(["welt", "alpenraum"] as Stufe[]).map((option) => (
               <Button
                 key={option}
                 type="button"
@@ -138,7 +139,7 @@ export function HirzelGlobe() {
                 </span>
                 <span className="text-right tabular-nums text-foreground">{ziel.km.toFixed(0)} km</span>
                 <span className="text-xs tabular-nums text-muted-foreground">
-                  {ziel.loc[0].toFixed(4)}° N, {ziel.loc[1].toFixed(4)}° E
+                  {Math.abs(ziel.loc[0]).toFixed(4)}° {ziel.loc[0] >= 0 ? "N" : "S"}, {Math.abs(ziel.loc[1]).toFixed(4)}° {ziel.loc[1] >= 0 ? "E" : "W"}
                 </span>
                 <span className="text-right text-xs tabular-nums text-muted-foreground">
                   {ziel.grad.toFixed(0)}° {kompass(ziel.grad)}
