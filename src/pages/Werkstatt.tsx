@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import WerkstattScene from "@/features/werkstatt/Werkstatt";
 import { SEO } from "@/components/SEO";
+import Navigation from "@/components/Navigation";
 
 const Werkstatt = () => {
   useEffect(() => {
@@ -16,6 +17,7 @@ const Werkstatt = () => {
         canonical="https://one-next.com/werkstatt"
       />
       <div className="werkstatt-root">
+        <div className="werkstatt-nav"><Navigation /></div>
         <WerkstattScene />
       </div>
     </>
