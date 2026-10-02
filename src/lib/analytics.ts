@@ -8,8 +8,48 @@ declare global {
 }
 
 let measurementId: string | null = null;
+let started = false;
+const CONSENT_KEY = "one-next-analytics-consent";
+
+export type Consent = "granted" | "denied";
+
+export function getConsent(): Consent | null {
+  try {
+    const v = localStorage.getItem(CONSENT_KEY);
+    return v === "granted" || v === "denied" ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setConsent(value: Consent): void {
+  try {
+    localStorage.setItem(CONSENT_KEY, value);
+  } catch {
+    /* ignore */
+  }
+  if (value === "granted") {
+    void initAnalytics();
+    return;
+  }
+  // Widerruf: Tracking abschalten, GA-Cookies löschen und neu laden, damit gtag entfernt ist
+  if (measurementId) (window as unknown as Record<string, boolean>)[`ga-disable-${measurementId}`] = true;
+  const host = location.hostname;
+  const domains = ["", host, `.${host}`, `.${host.split(".").slice(-2).join(".")}`];
+  document.cookie.split(";").forEach((c) => {
+    const name = c.split("=")[0].trim();
+    if (name === "_ga" || name.startsWith("_ga_") || name === "_gid") {
+      domains.forEach((d) => {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ""}`;
+      });
+    }
+  });
+  if (started) location.reload();
+}
 
 export async function initAnalytics(): Promise<void> {
+  if (started || getConsent() !== "granted") return;
+  started = true;
   try {
     const { data } = await supabase.functions.invoke<{ id: string }>("ga-config", { method: "GET" });
     const id = data?.id?.trim();
