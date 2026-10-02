@@ -14,6 +14,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigation, type NavigationItem } from "@/hooks/useNavigation";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { PagePlacements } from "@/components/video/PagePlacements";
 
 const serviceMeta: Record<string, { description: string }> = {
   "/problem-framing-workshop": { description: "1 · Das richtige Problem klären" },
@@ -134,7 +135,12 @@ const Navigation = () => {
     <Button className="w-full" asChild><Link to="/auth">Anmelden</Link></Button>
   );
 
-  return <Navbar5 logoSrc={logo} logoAlt="One Next" items={items} account={account} mobileAccount={mobileAccount} scrolled={isScrolled} />;
+  return (
+    <>
+      <Navbar5 logoSrc={logo} logoAlt="One Next" items={items} account={account} mobileAccount={mobileAccount} scrolled={isScrolled} />
+      <PagePlacements position="top" />
+    </>
+  );
 };
 
 export default Navigation;

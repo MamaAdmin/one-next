@@ -27,9 +27,10 @@ import { Pencil, Plus, Trash2, Video, X } from "lucide-react";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { YouTubeConnectionCard } from "@/features/video/YouTube";
 import { useVideoLibrary, type LibraryVideo } from "@/hooks/useVideoLibrary";
+import { useAllVideoSlots } from "@/hooks/useVideoPlacements";
+import { SlotSelectItems } from "@/components/video/SlotSelectItems";
 import {
   PROVIDER_LABEL,
-  VIDEO_SLOTS,
   detectProvider,
   isPlayableVideoUrl,
 } from "@/features/video/slots";
@@ -39,6 +40,7 @@ const NONE = "__none__";
 export function VideoLibraryManager() {
   const { videos, isLoading, createVideo, updateVideo, deleteVideo, assignSlot } =
     useVideoLibrary();
+  const allSlots = useAllVideoSlots();
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<LibraryVideo | null>(null);
@@ -160,7 +162,7 @@ export function VideoLibraryManager() {
         <CardHeader>
           <CardTitle className="text-lg">Einsatzorte</CardTitle>
           <CardDescription>
-            Lege fest, welches Video an welcher Stelle erscheint. Änderungen wirken sofort.
+            Lege fest, welches Video an welcher Stelle erscheint. Neue Einsatzorte legst du direkt auf der jeweiligen Seite über den Knopf «Video-Einsatzort» an.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -170,7 +172,7 @@ export function VideoLibraryManager() {
               einem Einsatzort zuweisen.
             </p>
           )}
-          {VIDEO_SLOTS.map((slot) => {
+          {allSlots.map((slot) => {
             const current = videos.find((v) => v.slot_key === slot.key);
             return (
               <div
@@ -253,11 +255,7 @@ export function VideoLibraryManager() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={NONE}>Kein Einsatzort</SelectItem>
-                    {VIDEO_SLOTS.map((s) => (
-                      <SelectItem key={s.key} value={s.key}>
-                        {s.label}
-                      </SelectItem>
-                    ))}
+                    <SlotSelectItems slots={allSlots} />
                   </SelectContent>
                 </Select>
               </div>
@@ -318,7 +316,7 @@ export function VideoLibraryManager() {
           ) : (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {videos.map((video) => {
-                const slot = VIDEO_SLOTS.find((s) => s.key === video.slot_key);
+                const slot = allSlots.find((s) => s.key === video.slot_key);
                 return (
                   <div key={video.id} className="space-y-3 rounded-lg border p-4">
                     <VideoPlayer url={video.video_url} title={video.title} />

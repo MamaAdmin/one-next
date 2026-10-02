@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { Sparkles as SparklesIcon } from "lucide-react";
 import { ExternalLink, Loader2, Youtube } from "lucide-react";
-import { VIDEO_SLOTS } from "@/features/video/slots";
+import { useAllVideoSlots } from "@/hooks/useVideoPlacements";
+import { SlotSelectItems } from "@/components/video/SlotSelectItems";
 
 const NONE = "__none__";
 
@@ -110,6 +111,8 @@ export function YouTubePublishPanel({ target, id, hasExport, defaultTitle, defau
   const [ytId, setYtId] = useState(youtubeVideoId);
   const [err, setErr] = useState(youtubeStatus === "failed" ? youtubeError : null);
 
+  const allSlots = useAllVideoSlots();
+
   const describeWithAi = async () => {
     if (description.trim() && !window.confirm("Bestehende Beschreibung durch einen KI-Vorschlag ersetzen?")) return;
     setAiBusy(true);
@@ -153,12 +156,12 @@ export function YouTubePublishPanel({ target, id, hasExport, defaultTitle, defau
       <p className="font-medium flex items-center gap-2"><Youtube className="w-4 h-4" /> Auf YouTube veröffentlichen</p>
       <div className="grid gap-3 md:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-xs">Einsatzort im Workshop</Label>
+          <Label className="text-xs">Einsatzort</Label>
           <Select value={slotKey ?? NONE} onValueChange={(v) => onSlotChange(v === NONE ? null : v)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value={NONE}>Kein Einsatzort</SelectItem>
-              {VIDEO_SLOTS.map((s) => <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>)}
+              <SlotSelectItems slots={allSlots} />
             </SelectContent>
           </Select>
         </div>

@@ -1113,6 +1113,45 @@ export type Database = {
           },
         ]
       }
+      image_library: {
+        Row: {
+          created_at: string
+          id: string
+          prompt: string | null
+          scene_index: number | null
+          source: string
+          storage_path: string | null
+          style: string | null
+          url: string
+          video_id: string | null
+          video_title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prompt?: string | null
+          scene_index?: number | null
+          source?: string
+          storage_path?: string | null
+          style?: string | null
+          url: string
+          video_id?: string | null
+          video_title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prompt?: string | null
+          scene_index?: number | null
+          source?: string
+          storage_path?: string | null
+          style?: string | null
+          url?: string
+          video_id?: string | null
+          video_title?: string | null
+        }
+        Relationships: []
+      }
       kie_catalog_sync_runs: {
         Row: {
           created_at: string
@@ -3623,6 +3662,39 @@ export type Database = {
           title?: string
           updated_at?: string
           video_url?: string
+        }
+        Relationships: []
+      }
+      video_placements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          label: string
+          page_path: string
+          position: string
+          slot_key: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label: string
+          page_path: string
+          position?: string
+          slot_key: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string
+          page_path?: string
+          position?: string
+          slot_key?: string
+          updated_at?: string
         }
         Relationships: []
       }

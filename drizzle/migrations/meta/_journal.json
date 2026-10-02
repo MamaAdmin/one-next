@@ -113,6 +113,20 @@
       "when": 1790403392701,
       "tag": "0015_protect_quiz_scores_and_booking_prices",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1790957886252,
+      "tag": "0016_video_placements_image_library",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1790958036473,
+      "tag": "0017_image_library_backfill",
+      "breakpoints": true
     }
   ]
 }
