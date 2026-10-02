@@ -2,6 +2,8 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { CalendarBookingDialog } from "@/components/CalendarBookingDialog";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface AboutProps {
   isEditMode?: boolean;
@@ -29,7 +31,12 @@ const About = ({ isEditMode = false }: AboutProps) => {
             placeholder="Beschreibung des Abschnitts"
             minRows={4}
           />
-          <CalendarBookingDialog />
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <CalendarBookingDialog />
+            <Button asChild size="lg" variant="outline">
+              <Link to="/kontakt">Kontaktanfrage</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
