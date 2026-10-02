@@ -95,8 +95,8 @@ export default function Werkstatt() {
         <div className="content">
           <section className="sec" id="leistungen">
             <div className="wrap">
-              <p className="eyebrow">LEISTUNGEN</p>
-              <h2 className="sec-title">Ihr Weg zu KI, die wirkt</h2>
+              <p className="eyebrow">DER ONE-NEXT-PROZESS</p>
+              <h2 className="sec-title">Vom echten Geschäftsproblem zur belegten Wirkung</h2>
               <p className="lede">Wir starten beim echten Geschäftsproblem, nicht bei der Technologie. Jede Leistung ist ein Baustein auf dem Weg zur belegten Wirkung, einzeln buchbar oder als durchgängiger Prozess.</p>
               <div className="products">
                 <a className="product" href="/problem-framing-workshop">
