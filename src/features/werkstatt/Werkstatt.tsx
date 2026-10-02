@@ -1,3 +1,4 @@
+import { ServiceProcessContext } from "@/components/service/ServiceProcessContext";
 import { useEffect } from "react";
 import "./werkstatt.css";
 import { initWerkstatt } from "./engine";
@@ -93,58 +94,7 @@ export default function Werkstatt() {
         </div>
 
         <div className="content">
-          <section className="sec" id="leistungen">
-            <div className="wrap">
-              <p className="eyebrow">DER ONE-NEXT-PROZESS</p>
-              <h2 className="sec-title">Vom echten Geschäftsproblem zur belegten Wirkung</h2>
-              <p className="lede">Wir starten beim echten Geschäftsproblem, nicht bei der Technologie. Jede Leistung ist ein Baustein auf dem Weg zur belegten Wirkung, einzeln buchbar oder als durchgängiger Prozess.</p>
-              <div className="products">
-                <a className="product" href="/problem-framing-workshop">
-                  <svg viewBox="0 0 52 52" aria-hidden="true"><rect x="5" y="5" width="42" height="42" rx="10" fill="#304255"/><path d="M14 19v-5h5M33 14h5v5M38 33v5h-5M19 38h-5v-5" fill="none" stroke="#F8F5F2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="26" cy="26" r="6" fill="#D09125"/></svg>
-                  <h3>Problem Framing Workshop</h3>
-                  <p>Wir definieren gemeinsam das geschäftliche Problem, bevor eine KI-Initiative startet: klar, messbar und von allen Beteiligten getragen.</p>
-                  <dl className="meta"><div><dt>Format</dt><dd>Workshop</dd></div><div><dt>Schritt</dt><dd>01</dd></div></dl>
-                  <span className="more">Mehr erfahren →</span>
-                </a>
-                <a className="product" href="/sprint-uebersicht">
-                  <svg viewBox="0 0 52 52" aria-hidden="true"><rect x="4" y="9" width="44" height="36" rx="10" fill="#304255"/><rect x="9" y="17" width="16" height="23" rx="4" fill="#FAF8F5"/><rect x="27" y="17" width="16" height="23" rx="4" fill="#FAF8F5"/><rect x="13" y="5" width="3" height="8" rx="1.5" fill="#5B7D9A"/><rect x="36" y="5" width="3" height="8" rx="1.5" fill="#5B7D9A"/><rect x="12" y="21" width="10" height="6" rx="2" fill="#D09125"/><rect x="30" y="21" width="10" height="6" rx="2" fill="#5E8F6E"/><rect x="12" y="30" width="7" height="3" rx="1.5" fill="#D8D1CB"/><rect x="30" y="30" width="7" height="3" rx="1.5" fill="#D8D1CB"/></svg>
-                  <h3>Design Sprint</h3>
-                  <p>Zwei Tage, ein validierter Use Case: Ideen entwickeln, entscheiden, einen Prototyp bauen und mit echten Nutzerinnen und Nutzern testen.</p>
-                  <dl className="meta"><div><dt>Format</dt><dd>2 Tage, moderiert</dd></div><div><dt>Schritt</dt><dd>02</dd></div></dl>
-                  <span className="more">Mehr erfahren →</span>
-                </a>
-                <a className="product" href="/sprint-uebersicht/online">
-                  <svg viewBox="0 0 52 52" aria-hidden="true"><rect x="3" y="7" width="46" height="38" rx="9" fill="#304255"/><rect x="7" y="16" width="38" height="25" rx="5" fill="#FAF8F5"/><circle cx="10" cy="11.5" r="1.8" fill="#77A1C5"/><circle cx="15" cy="11.5" r="1.8" fill="#D09125"/><rect x="11" y="20" width="9" height="9" rx="2" fill="#D09125"/><rect x="22" y="20" width="9" height="9" rx="2" fill="#A9B3CF"/><rect x="33" y="20" width="8" height="9" rx="2" fill="#A9CDB8"/><rect x="11" y="32" width="20" height="3" rx="1.5" fill="#D8D1CB"/></svg>
-                  <h3>Online Sprint-Tool</h3>
-                  <p>Selbstgeführte Web-Applikation für Problem Framing und Design Sprint, ganz ohne externe Moderation.</p>
-                  <dl className="meta"><div><dt>Format</dt><dd>Online, selbstgeführt</dd></div><div><dt>Schritt</dt><dd>01–02</dd></div></dl>
-                  <span className="more">Mehr erfahren →</span>
-                </a>
-                <a className="product" href="/custom-ai-development">
-                  <svg viewBox="0 0 52 52" aria-hidden="true"><rect x="3" y="7" width="46" height="38" rx="9" fill="#304255"/><path d="M18 24l5-5M18 28l5 5M29 19l5 5M29 33l5-5" stroke="#F8F5F2" strokeWidth="2" strokeLinecap="round"/><circle cx="14" cy="26" r="5" fill="#D09125"/><circle cx="26" cy="17" r="4" fill="#77A1C5"/><circle cx="26" cy="35" r="4" fill="#77A1C5"/><circle cx="38" cy="26" r="5" fill="#8FC4A2"/></svg>
-                  <h3>Arbeitsablauf entwickeln</h3>
-                  <p>Vom validierten Lösungsansatz zum sicheren KI-Arbeitsablauf mit Rollen, Daten, Prüfungen und menschlicher Freigabe.</p>
-                  <dl className="meta"><div><dt>Format</dt><dd>Entwicklung nach BMAD</dd></div><div><dt>Schritt</dt><dd>03–04</dd></div></dl>
-                  <span className="more">Mehr erfahren →</span>
-                </a>
-                <a className="product" href="/ai-consulting-services">
-                  <svg viewBox="0 0 52 52" aria-hidden="true"><rect x="3" y="7" width="46" height="38" rx="9" fill="#304255"/><path d="M11 36C19 36 17 19 26 19S33 31 41 17" fill="none" stroke="#F8F5F2" strokeWidth="2.5" strokeLinecap="round"/><circle cx="11" cy="36" r="3.5" fill="#D09125"/><circle cx="26" cy="19" r="3.5" fill="#77A1C5"/><circle cx="41" cy="17" r="3.5" fill="#8FC4A2"/></svg>
-                  <h3>KI-Beratung</h3>
-                  <p>Beratung zu KI-Strategie, zur Auswahl der richtigen Use Cases und zu einer Roadmap, die zu Ihrem Unternehmen passt.</p>
-                  <dl className="meta"><div><dt>Format</dt><dd>Beratung</dd></div><div><dt>Schritt</dt><dd>begleitend</dd></div></dl>
-                  <span className="more">Mehr erfahren →</span>
-                </a>
-                <a className="product" href="/data-quality-audit">
-                  <svg viewBox="0 0 52 52" aria-hidden="true"><ellipse cx="22" cy="12" rx="14" ry="5" fill="#5B7D9A"/><path d="M8 12v24c0 2.8 6.3 5 14 5s14-2.2 14-5V12c0 2.8-6.3 5-14 5S8 14.8 8 12z" fill="#304255"/><path d="M8 24c0 2.8 6.3 5 14 5s14-2.2 14-5" fill="none" stroke="#5B7D9A" strokeWidth="2"/><circle cx="38" cy="37" r="9" fill="#367851"/><path d="M34 37l3 3 5-6" fill="none" stroke="#F8F5F2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  <h3>Datenqualitäts-Audit</h3>
-                  <p>Analyse Ihrer Datenbasis als Grundlage für KI-Projekte: Quellen, Qualität, Lücken und konkrete Massnahmen.</p>
-                  <dl className="meta"><div><dt>Format</dt><dd>Audit</dd></div><div><dt>Schritt</dt><dd>bei Bedarf</dd></div></dl>
-                  <span className="more">Mehr erfahren →</span>
-                </a>
-              </div>
-              <p className="also">Ausserdem: <a href="/design-sprint-workshop">Design Sprint Workshop</a> · <a href="/kurse">Kurse</a> · <a href="/faq">FAQ</a></p>
-            </div>
-          </section>
+          <div id="leistungen" className="werkstatt-process"><ServiceProcessContext variant="full" showExample /></div>
 
           <section className="sec">
             <div className="wrap">
