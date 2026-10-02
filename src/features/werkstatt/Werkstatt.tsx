@@ -44,7 +44,7 @@ export default function Werkstatt() {
           <a className="logo ui" href="/" aria-label="one-next Startseite"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#on-icon"/></svg>one-next</a>
           <nav className="top-actions ui" aria-label="Hauptnavigation">
             <a className="pill pill-ghost" href="#leistungen">Leistungen</a>
-            <a className="pill pill-primary" href="#kontakt">Erstgespräch vereinbaren</a>
+            <a className="pill pill-primary" href="/kontakt">Erstgespräch vereinbaren</a>
           </nav>
         </header>
 
@@ -68,7 +68,7 @@ export default function Werkstatt() {
             <div className="term-line"><span className="term-prompt">❯</span><span id="termCmd"></span><span className="caret"></span></div>
             <div className="term-out" id="termOut"></div>
           </div>
-          <a className="pill pill-primary card-cta" id="cardCta" href="#kontakt" hidden>Erstgespräch vereinbaren</a>
+          <a className="pill pill-primary card-cta" id="cardCta" href="/kontakt" hidden>Erstgespräch vereinbaren</a>
           <div className="segs" id="segs"></div>
         </aside>
 
