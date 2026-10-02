@@ -17,7 +17,9 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
   
   // Filter top-level items (categories like "Leistungen", "Unternehmen")
   const topLevelItems = footerItems.filter(item => !item.parent_id && item.is_active);
-  return <footer className="bg-foreground text-background py-16">
+  return <>
+    <PagePlacements position="bottom" />
+    <footer className="bg-foreground text-background py-16">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2">
