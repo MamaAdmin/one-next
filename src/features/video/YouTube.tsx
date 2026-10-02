@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { Sparkles as SparklesIcon } from "lucide-react";
 import { ExternalLink, Loader2, Youtube } from "lucide-react";
 import { VIDEO_SLOTS } from "@/features/video/slots";
 
@@ -93,9 +94,11 @@ export function YouTubeConnectionCard() {
 }
 
 /** Slot choice + publish button, shown next to a finished server export. */
-export function YouTubePublishPanel({ target, id, hasExport, defaultTitle, defaultDescription, slotKey, youtubeVideoId, youtubeStatus, youtubeError, onSlotChange, onPublished }: {
+export function YouTubePublishPanel({ target, id, hasExport, defaultTitle, defaultDescription, aiContent, slotKey, youtubeVideoId, youtubeStatus, youtubeError, onSlotChange, onPublished }: {
   target: "whiteboard" | "lernvideo"; id: string; hasExport: boolean;
   defaultTitle: string; defaultDescription?: string;
+  /** Inhalt des Videos (z. B. Sprechertexte), aus dem die KI eine Beschreibung erstellt. */
+  aiContent?: string;
   slotKey: string | null; youtubeVideoId: string | null; youtubeStatus: string | null; youtubeError: string | null;
   onSlotChange: (slot: string | null) => void;
   onPublished?: (videoId: string) => void;
@@ -103,8 +106,28 @@ export function YouTubePublishPanel({ target, id, hasExport, defaultTitle, defau
   const [title, setTitle] = useState(defaultTitle.slice(0, 100));
   const [description, setDescription] = useState(defaultDescription ?? "");
   const [busy, setBusy] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
   const [ytId, setYtId] = useState(youtubeVideoId);
   const [err, setErr] = useState(youtubeStatus === "failed" ? youtubeError : null);
+
+  const describeWithAi = async () => {
+    if (description.trim() && !window.confirm("Bestehende Beschreibung durch einen KI-Vorschlag ersetzen?")) return;
+    setAiBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("whiteboard-script", {
+        body: { action: "describe_video", title: title.trim(), content: aiContent },
+      });
+      let msg = (data as { error?: string } | null)?.error;
+      if (error && !msg && error instanceof FunctionsHttpError) {
+        msg = ((await error.context.json().catch(() => null)) as { error?: string } | null)?.error;
+      }
+      if (error || msg) throw new Error(msg ?? error?.message);
+      setDescription((data as { description: string }).description);
+      toast({ title: "Beschreibung erstellt", description: "Bitte prüfen und bei Bedarf anpassen." });
+    } catch (e) {
+      toast({ title: "Beschreibung nicht möglich", description: (e as Error).message, variant: "destructive" });
+    } finally { setAiBusy(false); }
+  };
 
   const publish = async () => {
     if (!window.confirm("Video jetzt öffentlich auf YouTube veröffentlichen?")) return;
@@ -145,8 +168,16 @@ export function YouTubePublishPanel({ target, id, hasExport, defaultTitle, defau
         </div>
       </div>
       <div className="space-y-1">
-        <Label className="text-xs">Beschreibung</Label>
-        <Textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+        <div className="flex items-center justify-between gap-2">
+          <Label className="text-xs">Beschreibung</Label>
+          {aiContent && (
+            <Button type="button" size="sm" variant="outline" onClick={describeWithAi} disabled={aiBusy}>
+              {aiBusy ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <SparklesIcon className="w-3 h-3 mr-1" />}
+              Mit KI erstellen
+            </Button>
+          )}
+        </div>
+        <Textarea rows={6} value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <Button onClick={publish} disabled={busy || !hasExport || !title.trim()}>

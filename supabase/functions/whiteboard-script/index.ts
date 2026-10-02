@@ -156,6 +156,30 @@ Deno.serve(async (req) => {
         return json({ error: mapped.message }, mapped.status);
       }
     }
+    if (payload.action === "describe_video") {
+      const content = String(payload.content ?? "").slice(0, 20000).trim();
+      const videoTitle = String(payload.title ?? "").slice(0, 200);
+      if (content.length < 10) return json({ error: "Zu wenig Inhalt für eine Beschreibung." }, 400);
+      try {
+        const result = await callGemini({
+          model: "gemini-2.5-flash",
+          thinkingBudget: 0,
+          temperature: 0.6,
+          messages: [
+            {
+              role: "system",
+              content:
+                "Du schreibst Videobeschreibungen für YouTube auf Deutsch (Schweizer Rechtschreibung mit «ss», Ihr-Form, kein Denglisch, «KI» statt «AI»). Gib nur den Beschreibungstext zurück: 1–2 Einleitungssätze, danach 3–6 kurze Stichpunkte mit «– » zu den Inhalten, zum Schluss ein Satz mit Hinweis auf one-next.com. Maximal 900 Zeichen, keine Hashtags, kein Markdown.",
+            },
+            { role: "user", content: `Titel: ${videoTitle}\n\nInhalt des Videos:\n${content}` },
+          ],
+        });
+        return json({ description: result.content.trim().slice(0, 4900) });
+      } catch (error) {
+        const mapped = geminiError(error);
+        return json({ error: mapped.message }, mapped.status);
+      }
+    }
     const topic = String(payload.topic ?? "").trim();
     if (topic.length < 5) return json({ error: "Bitte ein Thema beschreiben." }, 400);
     const sceneCount = Math.min(Math.max(Number(payload.sceneCount ?? 5), 2), 15);
