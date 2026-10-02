@@ -129,7 +129,7 @@ export function Globe({ className, markers, arcs = [], scale = 1, markerSize = 0
       }}
       onPointerCancel={() => { dragStart.current = null; }}
       role="img"
-      aria-label="Interaktiver Globus mit Weltkarte, Hirzel und ausgewählten europäischen Zielorten"
+      aria-label="Interaktiver Globus mit Weltkarte, Hirzel und ausgewählten Zielorten weltweit"
     >
       <defs>
         <clipPath id="globe-map-clip"><circle cx="300" cy="300" r={radius} /></clipPath>
