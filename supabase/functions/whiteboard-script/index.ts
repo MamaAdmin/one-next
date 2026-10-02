@@ -169,7 +169,7 @@ Deno.serve(async (req) => {
             {
               role: "system",
               content:
-                "Du schreibst Videobeschreibungen für YouTube auf Deutsch (Schweizer Rechtschreibung mit «ss», Ihr-Form, kein Denglisch, «KI» statt «AI»). Gib nur den Beschreibungstext zurück: 1–2 Einleitungssätze, danach 3–6 kurze Stichpunkte mit «– » zu den Inhalten, zum Schluss ein Satz mit Hinweis auf one-next.com. Maximal 900 Zeichen, keine Hashtags, kein Markdown.",
+                "Du schreibst Videobeschreibungen für YouTube auf Deutsch (Schweizer Rechtschreibung mit «ss», Ihr-Form, kein Denglisch, «KI» statt «AI»). Gib nur den Beschreibungstext zurück: genau 3 vollständige Sätze als ein Absatz, die den roten Faden aller Szenen zusammenfassen – Ausgangslage, Vorgehen und Ergebnis. Keine Stichpunkte, keine Hashtags, kein Markdown, keine Überschrift.",
             },
             { role: "user", content: `Titel: ${videoTitle}\n\nInhalt des Videos:\n${content}` },
           ],
