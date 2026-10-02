@@ -4,6 +4,7 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { InlineTextField } from "@/components/blog/InlineTextField";
 import { InlineTextArea } from "@/components/blog/InlineTextArea";
 import { useNavigation } from "@/hooks/useNavigation";
+import { PagePlacements } from "@/components/video/PagePlacements";
 
 interface FooterProps {
   isEditMode?: boolean;
@@ -101,6 +102,7 @@ const Footer = ({ isEditMode = false }: FooterProps) => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  </>;
 };
 export default Footer;

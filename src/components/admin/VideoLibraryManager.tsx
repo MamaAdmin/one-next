@@ -170,7 +170,7 @@ export function VideoLibraryManager() {
               einem Einsatzort zuweisen.
             </p>
           )}
-          {VIDEO_SLOTS.map((slot) => {
+          {allSlots.map((slot) => {
             const current = videos.find((v) => v.slot_key === slot.key);
             return (
               <div
@@ -253,11 +253,7 @@ export function VideoLibraryManager() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={NONE}>Kein Einsatzort</SelectItem>
-                    {VIDEO_SLOTS.map((s) => (
-                      <SelectItem key={s.key} value={s.key}>
-                        {s.label}
-                      </SelectItem>
-                    ))}
+                    <SlotSelectItems slots={allSlots} />
                   </SelectContent>
                 </Select>
               </div>
@@ -318,7 +314,7 @@ export function VideoLibraryManager() {
           ) : (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {videos.map((video) => {
-                const slot = VIDEO_SLOTS.find((s) => s.key === video.slot_key);
+                const slot = allSlots.find((s) => s.key === video.slot_key);
                 return (
                   <div key={video.id} className="space-y-3 rounded-lg border p-4">
                     <VideoPlayer url={video.video_url} title={video.title} />

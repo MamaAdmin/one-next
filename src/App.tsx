@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConsentBanner } from "@/components/ConsentBanner";
+import { PlacementWidget } from "@/components/video/PlacementWidget";
+import ImageLibrary from "./pages/admin/ImageLibrary";
 import { lazy, Suspense } from "react";
 const Werkstatt = lazy(() => import("./pages/Werkstatt"));
 import { HelmetProvider } from 'react-helmet-async';
@@ -152,6 +154,7 @@ const App = () => (
           <Route path="/admin/whiteboard-videos/:videoId/studio" element={<WhiteboardStudio />} />
           <Route path="/admin/ki-modelle" element={<KieModelCatalog />} />
           <Route path="/admin/stilbibliothek" element={<StyleLibrary />} />
+          <Route path="/admin/bildbibliothek" element={<ImageLibrary />} />
             <Route path="/admin/bmad/session/:sessionId" element={<BMADSessionDetail />} />
             <Route path="/admin/bmad/artifacts" element={<BMADArtifactDashboard />} />
             <Route path="/admin/bmad/analytics" element={<BMADAnalytics />} />
@@ -196,6 +199,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
         <FeedbackWidget />
+        <PlacementWidget />
       </BrowserRouter>
         </TooltipProvider>
       

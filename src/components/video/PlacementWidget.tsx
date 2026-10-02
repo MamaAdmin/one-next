@@ -52,7 +52,7 @@ export function PlacementWidget() {
       <Button
         variant="outline"
         size="sm"
-        className="fixed bottom-4 right-4 z-40 bg-background shadow-md"
+        className="fixed bottom-4 left-4 z-40 bg-background shadow-md"
         onClick={() => setOpen(true)}
       >
         <Video className="mr-2 h-4 w-4" /> Video-Einsatzort
