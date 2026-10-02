@@ -87,7 +87,7 @@ export default function Werkstatt() {
           <section id="top"><h2 className="sr">Vom echten Geschäftsproblem zur belegten Wirkung</h2></section>
           <section><h2 className="sr">Schritt 1: Problem Framing</h2></section>
           <section><h2 className="sr">Schritt 2: Design Sprint</h2></section>
-          <section><h2 className="sr">Schritt 3: KI-Arbeitsablauf entwickeln</h2></section>
+          <section><h2 className="sr">Schritt 3: Arbeitsablauf entwickeln</h2></section>
           <section><h2 className="sr">Schritt 4: Prüfen &amp; Freigeben</h2></section>
           <section><h2 className="sr">Schritt 5: Wirkung &amp; Skalierung</h2></section>
         </div>
@@ -122,7 +122,7 @@ export default function Werkstatt() {
                 </a>
                 <a className="product" href="/custom-ai-development">
                   <svg viewBox="0 0 52 52" aria-hidden="true"><rect x="3" y="7" width="46" height="38" rx="9" fill="#304255"/><path d="M18 24l5-5M18 28l5 5M29 19l5 5M29 33l5-5" stroke="#F8F5F2" strokeWidth="2" strokeLinecap="round"/><circle cx="14" cy="26" r="5" fill="#D09125"/><circle cx="26" cy="17" r="4" fill="#77A1C5"/><circle cx="26" cy="35" r="4" fill="#77A1C5"/><circle cx="38" cy="26" r="5" fill="#8FC4A2"/></svg>
-                  <h3>KI-Arbeitsablauf entwickeln</h3>
+                  <h3>Arbeitsablauf entwickeln</h3>
                   <p>Vom validierten Lösungsansatz zum sicheren KI-Arbeitsablauf mit Rollen, Daten, Prüfungen und menschlicher Freigabe.</p>
                   <dl className="meta"><div><dt>Format</dt><dd>Entwicklung nach BMAD</dd></div><div><dt>Schritt</dt><dd>03–04</dd></div></dl>
                   <span className="more">Mehr erfahren →</span>
