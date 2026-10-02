@@ -131,13 +131,6 @@ export default function Werkstatt() {
                   <a className="pill pill-light" href="/kontakt">Erstgespräch vereinbaren</a>
                   <a className="pill pill-outline" href="/sprint-uebersicht/online">Online-Sprint-Tool ausprobieren</a>
                 </div>
-                <div className="parade">
-                  <svg className="bot" viewBox="0 0 40 46" aria-hidden="true"><use href="#bot"/></svg>
-                  <svg className="bot" viewBox="0 0 40 46" aria-hidden="true"><use href="#bot"/></svg>
-                  <svg className="bot" viewBox="0 0 40 46" aria-hidden="true"><use href="#bot"/></svg>
-                  <svg className="bot" viewBox="0 0 40 46" aria-hidden="true"><use href="#bot"/></svg>
-                  <svg className="bot" viewBox="0 0 40 46" aria-hidden="true"><use href="#bot"/></svg>
-                </div>
               </div>
             </div>
           </section>
