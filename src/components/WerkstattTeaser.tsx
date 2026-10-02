@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import preview from "@/assets/werkstatt-preview.jpg";
 
-const steps = ["Problem Framing", "Design Sprint", "KI-Arbeitsablauf entwickeln", "Prüfen und freigeben", "Wirkung messen und skalieren"];
+const steps = ["Problem Framing", "Design Sprint", "Arbeitsablauf entwickeln", "Prüfen und freigeben", "Wirkung messen und skalieren"];
 
 export function WerkstattTeaser() {
   return (
