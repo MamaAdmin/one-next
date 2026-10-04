@@ -9,6 +9,8 @@ import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ImageLibraryGrid } from "@/components/admin/ImageLibraryGrid";
+import { PromptLibraryManager } from "@/components/admin/PromptLibraryManager";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { deleteLibraryImage, type LibraryImage } from "@/services/ImageLibrary";
 
@@ -48,6 +50,12 @@ const ImageLibrary = () => {
           Alle erzeugten Zeichnungen und hochgeladenen Referenzbilder. Im Video-Editor lässt sich jedes Bild über
           «Aus Bibliothek wählen» als Referenzbild für ein neues Video verwenden.
         </p>
+        <Tabs defaultValue="bilder">
+          <TabsList className="mb-6">
+            <TabsTrigger value="bilder">Bilder</TabsTrigger>
+            <TabsTrigger value="vorgaben">Bildvorgaben</TabsTrigger>
+          </TabsList>
+          <TabsContent value="bilder">
         <ImageLibraryGrid
           onSelect={setActive}
           showUsage
@@ -64,6 +72,11 @@ const ImageLibrary = () => {
             </div>
           )}
         />
+          </TabsContent>
+          <TabsContent value="vorgaben">
+            <PromptLibraryManager />
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
       <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>

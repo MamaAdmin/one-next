@@ -1,3 +1,4 @@
+import { PromptLibraryManager } from "@/components/admin/PromptLibraryManager";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Player } from "@remotion/player";
@@ -140,6 +141,7 @@ const WhiteboardVideoEditor = () => {
   const [voice, setVoice] = useState("Rachel");
   const [style, setStyle] = useState("whiteboard");
   const [imageDirection, setImageDirection] = useState("");
+  const [promptLibOpen, setPromptLibOpen] = useState(false);
   const [styleReferencePath, setStyleReferencePath] = useState<string | null>(null);
   const [styleReferenceUrl, setStyleReferenceUrl] = useState<string | null>(null);
   const [styleReferenceBusy, setStyleReferenceBusy] = useState(false);
@@ -1459,6 +1461,21 @@ const WhiteboardVideoEditor = () => {
                       onChange={(e) => setImageDirection(e.target.value)}
                       placeholder="Zum Beispiel: Dieselbe freundliche Hauptfigur in jedem Bild, blaue Arbeitskleidung, helle Büroräume, Blick auf Augenhöhe und ruhige Farben."
                     />
+                    <Button type="button" size="sm" variant="outline" onClick={() => setPromptLibOpen(true)}>
+                      Bildvorgaben-Bibliothek
+                    </Button>
+                    <Dialog open={promptLibOpen} onOpenChange={setPromptLibOpen}>
+                      <DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Bildvorgaben-Bibliothek</DialogTitle>
+                          <DialogDescription>Vorlage übernehmen oder die aktuelle Bildvorgabe als Vorlage speichern.</DialogDescription>
+                        </DialogHeader>
+                        <PromptLibraryManager
+                          initialPrompt={imageDirection}
+                          onPick={(t) => { setImageDirection(t.prompt); setPromptLibOpen(false); }}
+                        />
+                      </DialogContent>
+                    </Dialog>
                     <input
                       ref={styleReferenceInputRef}
                       type="file"
