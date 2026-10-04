@@ -1152,6 +1152,30 @@ export type Database = {
         }
         Relationships: []
       }
+      image_prompt_library: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          prompt: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          prompt: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          prompt?: string
+          title?: string
+        }
+        Relationships: []
+      }
       kie_catalog_sync_runs: {
         Row: {
           created_at: string
