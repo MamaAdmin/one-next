@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Copy, ExternalLink } from "lucide-react";
+import { Copy, ExternalLink, Trash2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAdmin } from "@/hooks/useAdmin";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ImageLibraryGrid } from "@/components/admin/ImageLibraryGrid";
 import { toast } from "@/hooks/use-toast";
-import type { LibraryImage } from "@/services/ImageLibrary";
+import { deleteLibraryImage, type LibraryImage } from "@/services/ImageLibrary";
 
 const ImageLibrary = () => {
   const { isAdmin, loading } = useAdmin();
@@ -19,6 +20,18 @@ const ImageLibrary = () => {
   useEffect(() => {
     if (!loading && !isAdmin) navigate("/auth");
   }, [loading, isAdmin, navigate]);
+
+  const qc = useQueryClient();
+  const remove = async (img: LibraryImage) => {
+    if (!window.confirm("Dieses nicht verwendete Bild endgültig löschen?")) return;
+    try {
+      await deleteLibraryImage(img);
+      toast({ title: "Bild gelöscht" });
+      void qc.invalidateQueries({ queryKey: ["image-library"] });
+    } catch {
+      toast({ title: "Löschen fehlgeschlagen", variant: "destructive" });
+    }
+  };
 
   const copy = (url: string) => {
     void navigator.clipboard.writeText(url);
@@ -37,10 +50,18 @@ const ImageLibrary = () => {
         </p>
         <ImageLibraryGrid
           onSelect={setActive}
-          renderActions={(img) => (
-            <Button variant="ghost" size="sm" className="-ml-2" onClick={() => copy(img.url)}>
-              <Copy className="mr-2 h-3.5 w-3.5" /> Link kopieren
-            </Button>
+          showUsage
+          renderActions={(img, used) => (
+            <div className="flex flex-wrap gap-1">
+              <Button variant="ghost" size="sm" className="-ml-2" onClick={() => copy(img.url)}>
+                <Copy className="mr-2 h-3.5 w-3.5" /> Link kopieren
+              </Button>
+              {!used && (
+                <Button variant="ghost" size="sm" className="text-destructive" onClick={() => void remove(img)}>
+                  <Trash2 className="mr-2 h-3.5 w-3.5" /> Löschen
+                </Button>
+              )}
+            </div>
           )}
         />
       </main>
