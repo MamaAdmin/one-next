@@ -376,7 +376,8 @@ const WhiteboardVideoEditor = () => {
       setStyleReferenceUrl(uploaded.url);
       void addLibraryImage({ url: uploaded.url, storage_path: uploaded.path, prompt: `Referenzbild: ${file.name}`, source: "upload", video_id: videoId, video_title: title || null, scene_index: null, style: null });
       uploadedPath = null;
-      if (previousPath) await deleteStyleReference(previousPath).catch(() => undefined);
+      // Previous file stays: it is still referenced by the image library.
+      void previousPath;
       toast({ title: "Referenzbild gespeichert" });
     } catch (error) {
       if (uploadedPath) await deleteStyleReference(uploadedPath).catch(() => undefined);
@@ -391,17 +392,17 @@ const WhiteboardVideoEditor = () => {
     }
   };
 
-  const useLibraryImageAsReference = async (url: string) => {
+  const useLibraryImageAsReference = async (url: string, path: string | null) => {
     if (!videoId) return;
     const { error } = await (supabase as any)
       .from("whiteboard_videos")
-      .update({ style_ref_path: null, style_ref_url: url })
+      .update({ style_ref_path: path, style_ref_url: path ? null : url })
       .eq("id", videoId);
     if (error) {
       toast({ title: "Referenzbild nicht gesetzt", description: error.message, variant: "destructive" });
       return;
     }
-    setStyleReferencePath(null);
+    setStyleReferencePath(path);
     setStyleReferenceUrl(url);
     setLibraryOpen(false);
     toast({ title: "Referenzbild aus der Bibliothek übernommen" });
@@ -452,7 +453,6 @@ const WhiteboardVideoEditor = () => {
         .update({ style_ref_path: null, style_ref_url: null })
         .eq("id", videoId);
       if (error) throw new Error(error.message);
-      if (styleReferencePath) await deleteStyleReference(styleReferencePath);
       setStyleReferencePath(null);
       setStyleReferenceUrl(null);
       toast({ title: "Referenzbild entfernt" });
@@ -1493,7 +1493,7 @@ const WhiteboardVideoEditor = () => {
                             <DialogTitle>Referenzbild aus der Bibliothek</DialogTitle>
                             <DialogDescription>Klicken Sie auf ein Bild, um es als Referenzbild für dieses Video zu verwenden.</DialogDescription>
                           </DialogHeader>
-                          <ImageLibraryGrid onSelect={(img) => void useLibraryImageAsReference(img.url)} />
+                          <ImageLibraryGrid onSelect={(img) => void useLibraryImageAsReference(img.url, img.storage_path)} />
                         </DialogContent>
                       </Dialog>
                       {styleReferencePath && (

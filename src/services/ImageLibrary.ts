@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { STYLE_REFERENCE_BUCKET } from "@/features/whiteboard/styleReference";
 
 export interface LibraryImage {
   id: string;
@@ -20,7 +21,15 @@ export const listLibraryImages = async (): Promise<LibraryImage[]> => {
     .order("created_at", { ascending: false })
     .limit(1000);
   if (error) throw error;
-  return (data ?? []) as LibraryImage[];
+  const rows = (data ?? []) as LibraryImage[];
+  // Uploaded files live in a private bucket: refresh their expiring links.
+  const paths = rows.map((r) => r.storage_path).filter(Boolean) as string[];
+  if (!paths.length) return rows;
+  const { data: signed } = await supabase.storage
+    .from(STYLE_REFERENCE_BUCKET)
+    .createSignedUrls(paths, 60 * 60 * 6);
+  const fresh = new Map((signed ?? []).filter((s) => s.signedUrl).map((s) => [s.path, s.signedUrl]));
+  return rows.map((r) => (r.storage_path && fresh.get(r.storage_path) ? { ...r, url: fresh.get(r.storage_path)! } : r));
 };
 
 /** Stores a generated or uploaded image; duplicates are ignored. Never throws. */
