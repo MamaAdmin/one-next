@@ -38,7 +38,7 @@ const Timeline = z.object({
     start: z.number().min(0),
     duration: z.number().min(0.1),
     visual: z.object({
-      kind: z.enum(["video", "image", "fallback", "whiteboard", "kinetic", "none"]),
+      kind: z.enum(["video", "image", "fallback", "whiteboard", "kinetic", "intro", "none"]),
       videoUrl: z.string().url().optional(),
       imageUrl: z.string().url().optional(),
       clipSeconds: z.number().optional(),
@@ -190,6 +190,13 @@ function toRenderScript(tl: TL, withSubtitles: boolean): El {
     } else if (v.kind === "whiteboard" && v.imageUrl) {
       els.push({ type: "image", track: 1, source: v.imageUrl, fit: "contain", duration: null,
         animations: [{ type: "wipe", time: 0, duration: Math.max(1, s.duration * 0.7), direction: 0, easing: "linear" }] });
+    } else if (v.kind === "intro") {
+      els.push({ type: "shape", track: 1, path: "M 0 0 L 100 0 L 100 100 L 0 100 Z", fill_color: C.accent, opacity: "8%",
+        x: "0%", y: "0%", width: "100%", height: "100%", duration: null,
+        animations: [{ type: "scale", start_scale: "100%", end_scale: "105%", fade: false, easing: "linear" }] });
+      els.push({ type: "shape", track: 2, path: "M 0 0 L 100 0 L 100 100 L 0 100 Z", fill_color: C.accent,
+        x: "0%", y: "0%", width: "100%", height: "1.5%", duration: null,
+        animations: [{ type: "scale", axis: "x", x_anchor: "0%", start_scale: "0%", duration: s.duration, fade: false, easing: "linear" }] });
     } else if (v.kind === "kinetic") {
       if (v.imageUrl) els.push({ type: "image", track: 1, source: v.imageUrl, duration: null, opacity: "20%" });
       els.push({ type: "text", track: 2, text: s.narration, font_family: FONT, font_weight: "700", fill_color: C.slate,
