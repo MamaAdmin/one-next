@@ -89,10 +89,11 @@ const Background: React.FC<{ theme: VideoTheme; seed: number }> = ({ theme, seed
   );
 };
 
-const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boolean }> = ({
+const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boolean; subtitle?: string }> = ({
   title,
   theme,
   handwritten,
+  subtitle,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -119,6 +120,20 @@ const TitleCard: React.FC<{ title: string; theme: VideoTheme; handwritten: boole
         <div style={{ marginTop: 18 }}>
           <DrawnUnderline width={760} delay={14} color={theme.accent} />
         </div>
+        {subtitle ? (
+          <div
+            style={{
+              marginTop: 40,
+              maxWidth: 1300,
+              fontSize: 44,
+              lineHeight: 1.35,
+              color: theme.muted,
+              opacity: interpolate(frame, [20, 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+            }}
+          >
+            {subtitle}
+          </div>
+        ) : null}
       </div>
     </AbsoluteFill>
   );
@@ -177,7 +192,10 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({
   musicUrl,
   musicVolume = 0.18,
   subtitles = true,
+  intro,
 }) => {
+  const opening = openingFrames(title, intro);
+  const introText = intro?.enabled ? intro.text.trim() : "";
   const theme = themeFor(style);
   const renderer = rendererFor(style);
   const SceneView = SCENE_RENDERERS[renderer];
@@ -190,12 +208,12 @@ export const WhiteboardVideo: React.FC<WhiteboardVideoProps> = ({
       <Background theme={theme} seed={seed} />
       {musicUrl ? <Audio src={musicUrl} volume={musicVolume} loop /> : null}
       <TransitionSeries>
-        {title ? (
-          <TransitionSeries.Sequence durationInFrames={TITLE_FRAMES}>
-            <TitleCard title={title} theme={theme} handwritten={renderer === "whiteboard"} />
+        {opening ? (
+          <TransitionSeries.Sequence durationInFrames={opening}>
+            <TitleCard title={title} subtitle={introText} theme={theme} handwritten={renderer === "whiteboard"} />
           </TransitionSeries.Sequence>
         ) : null}
-        {title && scenes.length > 0 ? (
+        {opening && scenes.length > 0 ? (
           <TransitionSeries.Transition presentation={fade()} timing={timing} />
         ) : null}
         {scenes.flatMap((scene, index) => {
