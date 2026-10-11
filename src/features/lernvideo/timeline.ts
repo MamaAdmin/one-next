@@ -19,7 +19,7 @@ export interface Overlay {
   duration: number;
 }
 
-export type VisualKind = "video" | "image" | "fallback" | "whiteboard" | "kinetic" | "none";
+export type VisualKind = "video" | "image" | "fallback" | "whiteboard" | "kinetic" | "intro" | "none";
 
 export interface TimelineScene {
   id: string;

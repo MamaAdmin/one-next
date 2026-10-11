@@ -134,6 +134,13 @@
       "when": 1791123284949,
       "tag": "0018_image_prompt_library",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791724065086,
+      "tag": "0019_lernvideo_intro_fields",
+      "breakpoints": true
     }
   ]
 }
