@@ -34,6 +34,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -1015,7 +1016,19 @@ const WhiteboardVideoEditor = () => {
   };
 
   // Übergänge überlappen, deshalb ist das Video kürzer als die Summe der Abschnitte.
-  const durationInFrames = useMemo(() => compositionFrames(title, scenes), [scenes, title]);
+  const intro = useMemo(
+    () => ({
+      enabled: Boolean(project?.intro_enabled),
+      text: project?.intro_text ?? "",
+      seconds: Number(project?.intro_seconds) || 3,
+    }),
+    [project?.intro_enabled, project?.intro_text, project?.intro_seconds],
+  );
+  const durationInFrames = useMemo(() => compositionFrames(title, scenes, intro), [scenes, title, intro]);
+  const patchIntro = (patch: Partial<WhiteboardVideoProject>, persist = true) => {
+    setProject((prev) => (prev ? { ...prev, ...patch } : prev));
+    if (persist) void save(patch);
+  };
 
   const inputProps = useMemo(
     () => ({
@@ -1025,8 +1038,9 @@ const WhiteboardVideoEditor = () => {
       musicUrl: project?.music_url ?? null,
       musicVolume: project?.music_volume ?? 0.18,
       subtitles,
+      intro,
     }),
-    [title, scenes, style, project?.music_url, project?.music_volume, subtitles],
+    [title, scenes, style, project?.music_url, project?.music_volume, subtitles, intro],
   );
 
   /** Aus der fertigen Zeichnung einen bewegten Clip machen (Bild zu Video). */
@@ -1182,6 +1196,7 @@ const WhiteboardVideoEditor = () => {
         style,
         musicUrl: project?.music_url,
         musicVolume: project?.music_volume ?? 0.18,
+        intro,
       });
       const r = await startServerExport(videoId, timeline, true);
       setServerStatus(r.status ?? "planned");
@@ -1701,6 +1716,42 @@ const WhiteboardVideoEditor = () => {
                     </Button>
                   </div>
                 </div>
+              </div>
+              <div className="rounded-lg border p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="wb-intro"
+                    checked={intro.enabled}
+                    onCheckedChange={(v) => patchIntro({ intro_enabled: v })}
+                  />
+                  <Label htmlFor="wb-intro">Intro-Seite</Label>
+                </div>
+                {intro.enabled && (
+                  <div className="grid gap-3 sm:grid-cols-[1fr_8rem] items-end">
+                    <div className="space-y-1">
+                      <Label>Intro-Text (optional, erscheint unter dem Titel)</Label>
+                      <Textarea
+                        rows={2}
+                        value={intro.text}
+                        placeholder="z. B. Serie, Folge oder kurze Beschreibung"
+                        onChange={(e) => patchIntro({ intro_text: e.target.value }, false)}
+                        onBlur={(e) => patchIntro({ intro_text: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Dauer Sek.</Label>
+                      <Input
+                        type="number"
+                        min={2}
+                        max={15}
+                        step={0.5}
+                        value={intro.seconds}
+                        onChange={(e) => patchIntro({ intro_seconds: Number(e.target.value) }, false)}
+                        onBlur={(e) => patchIntro({ intro_seconds: Number(e.target.value) || 3 })}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex justify-end">
                 <Button

@@ -1,0 +1,1 @@
+ALTER TABLE public.whiteboard_videos ADD COLUMN IF NOT EXISTS intro_enabled boolean NOT NULL DEFAULT false, ADD COLUMN IF NOT EXISTS intro_text text NOT NULL DEFAULT '', ADD COLUMN IF NOT EXISTS intro_seconds numeric NOT NULL DEFAULT 3;

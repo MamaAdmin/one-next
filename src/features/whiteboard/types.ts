@@ -68,6 +68,9 @@ export interface WhiteboardVideoProject {
   style_ref_url: string | null;
   style_ref_path: string | null;
   image_direction: string;
+  intro_enabled?: boolean;
+  intro_text?: string;
+  intro_seconds?: number;
   created_at: string;
   updated_at: string;
 }

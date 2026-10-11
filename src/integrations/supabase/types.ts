@@ -3785,6 +3785,9 @@ export type Database = {
           id: string
           image_direction: string
           image_model: string
+          intro_enabled: boolean
+          intro_seconds: number
+          intro_text: string
           language: string
           music_path: string | null
           music_url: string | null
@@ -3822,6 +3825,9 @@ export type Database = {
           id?: string
           image_direction?: string
           image_model?: string
+          intro_enabled?: boolean
+          intro_seconds?: number
+          intro_text?: string
           language?: string
           music_path?: string | null
           music_url?: string | null
@@ -3859,6 +3865,9 @@ export type Database = {
           id?: string
           image_direction?: string
           image_model?: string
+          intro_enabled?: boolean
+          intro_seconds?: number
+          intro_text?: string
           language?: string
           music_path?: string | null
           music_url?: string | null
