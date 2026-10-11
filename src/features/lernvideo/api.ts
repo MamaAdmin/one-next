@@ -27,6 +27,9 @@ export interface LvProject {
   music_path: string | null;
   music_volume: number;
   subtitles_enabled: boolean;
+  intro_enabled: boolean;
+  intro_text: string | null;
+  intro_seconds: number;
   render_id: string | null;
   render_status: string | null;
   render_error: string | null;

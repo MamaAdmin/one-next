@@ -139,6 +139,16 @@ const Visual = ({ scene, local, playing }: { scene: TimelineScene; local: number
   }, [local, playing, visual.clipSeconds]);
 
   const img = visual.imageUrl;
+  if (visual.kind === "intro") {
+    const p = ease(local / 0.6);
+    return (
+      <div className="absolute inset-0 bg-background flex items-center justify-center">
+        <div className="absolute inset-x-0 top-0 h-1.5 bg-accent" style={{ transform: `scaleX(${Math.min(1, local / Math.max(1, scene.duration))})`, transformOrigin: "left" }} />
+        <div className="absolute inset-0 opacity-[0.06] bg-accent" style={{ transform: `scale(${1 + 0.05 * Math.min(1, local / Math.max(1, scene.duration))})` }} />
+        <div style={{ opacity: p, transform: `translateY(${(1 - p) * 16}px)` }} className="text-accent text-sm font-semibold tracking-widest uppercase">Intro</div>
+      </div>
+    );
+  }
   if (visual.kind === "video" && visual.videoUrl) {
     return (
       <>
@@ -275,7 +285,7 @@ export const TimelinePlayer = ({ timeline, showSubtitles = true }: { timeline: T
       </div>
       <div className="flex h-2 gap-px rounded overflow-hidden">
         {timeline.scenes.map((s) => (
-          <button key={s.id} type="button" onClick={() => seek(s.start)} title={`Szene ${s.index + 1}`}
+          <button key={s.id} type="button" onClick={() => seek(s.start)} title={s.index < 0 ? "Intro" : `Szene ${s.index + 1}`}
             className={`${s.visual.kind === "fallback" || s.visual.kind === "none" ? "bg-destructive/60" : s.id === scene?.id ? "bg-primary" : "bg-accent/40"}`}
             style={{ flex: s.duration }} />
         ))}

@@ -23,8 +23,22 @@ const VIDEO_STYLES_WITHOUT_CLIP = new Set(["whiteboard", "kinetic_typo", "kineti
 
 async function buildTimeline(project: LvProject, scenes: LvScene[], assets: LvAsset[]): Promise<Timeline> {
   const portrait = project.format === "9:16";
+  const introSeconds = project.intro_enabled ? Math.max(2, Number(project.intro_seconds) || 4) : 0;
   let t = 0;
   const out: TimelineScene[] = [];
+  if (introSeconds > 0) {
+    const overlays: Overlay[] = [
+      { id: "intro-title", type: "title", text: project.title, position: "center", start: 0, duration: introSeconds },
+    ];
+    if (project.intro_text?.trim()) {
+      overlays.push({ id: "intro-text", type: "term", text: project.intro_text.trim(), position: "bottom", start: 0.4, duration: introSeconds - 0.4 });
+    }
+    out.push({
+      id: "intro", index: -1, start: 0, duration: introSeconds, narration: "",
+      visual: { kind: "intro" }, overlays,
+    });
+    t = introSeconds;
+  }
   for (const [index, s] of scenes.entries()) {
     const audio = latestAsset(assets, s.id, "audio");
     const image = latestAsset(assets, s.id, "image");
@@ -241,6 +255,11 @@ export const TimelineStudio = ({ project, scenes, assets, onPatchScene, onPatchP
               <Label htmlFor="subs">Untertitel</Label>
             </div>
             <div className="flex items-center gap-2">
+              <Switch id="intro" checked={project.intro_enabled}
+                onCheckedChange={(v) => { void onPatchProject({ intro_enabled: v }); setTimeline(null); }} />
+              <Label htmlFor="intro">Intro-Seite</Label>
+            </div>
+            <div className="flex items-center gap-2">
               <input ref={musicInput} type="file" accept="audio/*" className="hidden" onChange={(e) => void onMusic(e.target.files?.[0])} />
               <Button variant="outline" size="sm" onClick={() => musicInput.current?.click()}>
                 <Music className="w-4 h-4 mr-1" />{project.music_path ? "Musik ersetzen" : "Hintergrundmusik"}
@@ -255,6 +274,20 @@ export const TimelineStudio = ({ project, scenes, assets, onPatchScene, onPatchP
               </div>
             )}
           </div>
+          {project.intro_enabled && (
+            <div className="grid gap-4 md:grid-cols-[1fr_8rem] items-end rounded-md border border-border p-3">
+              <div className="space-y-1">
+                <Label>Intro-Text (optional, erscheint unter dem Titel)</Label>
+                <Textarea rows={2} value={project.intro_text ?? ""} placeholder="z. B. Kursname, Modul oder Kurzbeschreibung"
+                  onChange={(e) => void onPatchProject({ intro_text: e.target.value })} onBlur={() => setTimeline(null)} />
+              </div>
+              <div className="space-y-1">
+                <Label>Dauer Sek.</Label>
+                <Input type="number" min={2} max={15} step={0.5} value={Number(project.intro_seconds) || 4}
+                  onChange={(e) => void onPatchProject({ intro_seconds: Number(e.target.value) })} onBlur={() => setTimeline(null)} />
+              </div>
+            </div>
+          )}
           {fallbacks.length > 0 && (
             <div className="flex gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm">
               <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />

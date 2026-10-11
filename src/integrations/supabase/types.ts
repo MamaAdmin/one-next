@@ -2792,6 +2792,9 @@ export type Database = {
           export_srt_path: string | null
           format: string
           id: string
+          intro_enabled: boolean
+          intro_seconds: number
+          intro_text: string | null
           language: string
           learning_goal: string
           music_path: string | null
@@ -2825,6 +2828,9 @@ export type Database = {
           export_srt_path?: string | null
           format?: string
           id?: string
+          intro_enabled?: boolean
+          intro_seconds?: number
+          intro_text?: string | null
           language?: string
           learning_goal?: string
           music_path?: string | null
@@ -2858,6 +2864,9 @@ export type Database = {
           export_srt_path?: string | null
           format?: string
           id?: string
+          intro_enabled?: boolean
+          intro_seconds?: number
+          intro_text?: string | null
           language?: string
           learning_goal?: string
           music_path?: string | null
