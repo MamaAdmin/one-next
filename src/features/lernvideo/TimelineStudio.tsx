@@ -255,6 +255,11 @@ export const TimelineStudio = ({ project, scenes, assets, onPatchScene, onPatchP
               <Label htmlFor="subs">Untertitel</Label>
             </div>
             <div className="flex items-center gap-2">
+              <Switch id="intro" checked={project.intro_enabled}
+                onCheckedChange={(v) => { void onPatchProject({ intro_enabled: v }); setTimeline(null); }} />
+              <Label htmlFor="intro">Intro-Seite</Label>
+            </div>
+            <div className="flex items-center gap-2">
               <input ref={musicInput} type="file" accept="audio/*" className="hidden" onChange={(e) => void onMusic(e.target.files?.[0])} />
               <Button variant="outline" size="sm" onClick={() => musicInput.current?.click()}>
                 <Music className="w-4 h-4 mr-1" />{project.music_path ? "Musik ersetzen" : "Hintergrundmusik"}
