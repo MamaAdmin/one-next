@@ -1111,6 +1111,8 @@ const WhiteboardVideoEditor = () => {
         },
         inputProps: inputProps as never,
         container: "mp4",
+        videoBitrate: 15_000_000,
+        audioBitrate: 192_000,
         onProgress: (p) => setRenderProgress(Math.round(p.progress * 100)),
       });
       const blob = await result.getBlob();
