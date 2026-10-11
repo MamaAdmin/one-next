@@ -23,8 +23,22 @@ const VIDEO_STYLES_WITHOUT_CLIP = new Set(["whiteboard", "kinetic_typo", "kineti
 
 async function buildTimeline(project: LvProject, scenes: LvScene[], assets: LvAsset[]): Promise<Timeline> {
   const portrait = project.format === "9:16";
+  const introSeconds = project.intro_enabled ? Math.max(2, Number(project.intro_seconds) || 4) : 0;
   let t = 0;
   const out: TimelineScene[] = [];
+  if (introSeconds > 0) {
+    const overlays: Overlay[] = [
+      { id: "intro-title", type: "title", text: project.title, position: "center", start: 0, duration: introSeconds },
+    ];
+    if (project.intro_text?.trim()) {
+      overlays.push({ id: "intro-text", type: "term", text: project.intro_text.trim(), position: "bottom", start: 0.4, duration: introSeconds - 0.4 });
+    }
+    out.push({
+      id: "intro", index: -1, start: 0, duration: introSeconds, narration: "",
+      visual: { kind: "intro" }, overlays,
+    });
+    t = introSeconds;
+  }
   for (const [index, s] of scenes.entries()) {
     const audio = latestAsset(assets, s.id, "audio");
     const image = latestAsset(assets, s.id, "image");
