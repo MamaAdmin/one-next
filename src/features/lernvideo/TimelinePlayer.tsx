@@ -285,7 +285,7 @@ export const TimelinePlayer = ({ timeline, showSubtitles = true }: { timeline: T
       </div>
       <div className="flex h-2 gap-px rounded overflow-hidden">
         {timeline.scenes.map((s) => (
-          <button key={s.id} type="button" onClick={() => seek(s.start)} title={`Szene ${s.index + 1}`}
+          <button key={s.id} type="button" onClick={() => seek(s.start)} title={s.index < 0 ? "Intro" : `Szene ${s.index + 1}`}
             className={`${s.visual.kind === "fallback" || s.visual.kind === "none" ? "bg-destructive/60" : s.id === scene?.id ? "bg-primary" : "bg-accent/40"}`}
             style={{ flex: s.duration }} />
         ))}
