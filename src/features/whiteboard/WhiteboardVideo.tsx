@@ -37,14 +37,33 @@ export interface WhiteboardVideoProps {
   musicVolume?: number;
   /** Sprechtext wortweise als Untertitel einblenden. */
   subtitles?: boolean;
+  /** Eigene Intro-Seite statt der kurzen Titelkarte. */
+  intro?: IntroSettings | null;
+}
+
+export interface IntroSettings {
+  enabled: boolean;
+  text: string;
+  seconds: number;
 }
 
 const sceneFrames = (scene: WhiteboardScene) =>
   Math.max(FPS, Math.round((scene.durationInSeconds || 6) * FPS));
 
+/** Length of the opening card: custom intro when enabled, otherwise the short title card. */
+export const openingFrames = (title: string, intro?: IntroSettings | null): number => {
+  if (intro?.enabled) return Math.round(Math.min(15, Math.max(2, intro.seconds || 3)) * FPS);
+  return title ? TITLE_FRAMES : 0;
+};
+
 /** Gesamtlänge inklusive Titel und abzüglich der Überblendungen. */
-export const compositionFrames = (title: string, scenes: WhiteboardScene[]): number => {
-  const blocks = (title ? [TITLE_FRAMES] : []).concat(scenes.map(sceneFrames));
+export const compositionFrames = (
+  title: string,
+  scenes: WhiteboardScene[],
+  intro?: IntroSettings | null,
+): number => {
+  const opening = openingFrames(title, intro);
+  const blocks = (opening ? [opening] : []).concat(scenes.map(sceneFrames));
   if (blocks.length === 0) return FPS;
   const total = blocks.reduce((a, b) => a + b, 0);
   const overlaps = Math.max(0, blocks.length - 1) * TRANSITION_FRAMES;
