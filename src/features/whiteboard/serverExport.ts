@@ -46,9 +46,11 @@ export const buildTimeline = (opts: {
   style: string;
   musicUrl?: string | null;
   musicVolume: number;
+  intro?: { enabled: boolean; text: string; seconds: number } | null;
 }) => {
-  let t = 0;
-  const scenes = opts.scenes.map((s, index) => {
+  const introSeconds = opts.intro?.enabled ? Math.min(15, Math.max(2, opts.intro.seconds || 3)) : 0;
+  let t = introSeconds;
+  const sceneItems = opts.scenes.map((s, index) => {
     const duration = sceneSeconds(s);
     const start = t;
     t += duration;
@@ -61,7 +63,7 @@ export const buildTimeline = (opts: {
         : { kind: "none" as const };
     const audio = httpUrl(s.audioUrl);
     const overlays =
-      index === 0 && opts.title
+      index === 0 && opts.title && !introSeconds
         ? [{ id: "title", type: "title", text: opts.title.slice(0, 500), position: "top", start: 0, duration: Math.min(3, duration) }]
         : [];
     return {
@@ -75,6 +77,27 @@ export const buildTimeline = (opts: {
       overlays,
     };
   });
+  const introText = opts.intro?.text.trim() ?? "";
+  const scenes = introSeconds
+    ? [
+        {
+          id: "intro",
+          index: -1,
+          start: 0,
+          duration: introSeconds,
+          visual: { kind: "intro" as const },
+          audio: undefined,
+          narration: "",
+          overlays: [
+            { id: "intro-title", type: "title", text: opts.title.slice(0, 500), position: "center", start: 0, duration: introSeconds },
+            ...(introText
+              ? [{ id: "intro-text", type: "term", text: introText.slice(0, 500), position: "bottom", start: 0.4, duration: introSeconds - 0.4 }]
+              : []),
+          ],
+        },
+        ...sceneItems,
+      ]
+    : sceneItems;
   const music = httpUrl(opts.musicUrl);
   return {
     version: 1 as const,
@@ -85,7 +108,7 @@ export const buildTimeline = (opts: {
     duration: Math.max(1, t),
     music: music ? { url: music, volume: opts.musicVolume, duckFactor: 0.4 } : undefined,
     scenes,
-    subtitles: subtitleCues(opts.scenes),
+    subtitles: subtitleCues(opts.scenes).map((c) => ({ ...c, start: c.start + introSeconds, end: c.end + introSeconds })),
   };
 };
 
