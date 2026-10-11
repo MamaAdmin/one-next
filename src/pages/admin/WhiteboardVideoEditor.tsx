@@ -1125,7 +1125,11 @@ const WhiteboardVideoEditor = () => {
         },
         inputProps: inputProps as never,
         container: "mp4",
-        videoBitrate: 15_000_000,
+        videoCodec: "h264",
+        // Hardware-Encoder ignorieren die Bitrate oft und liefern verwaschene Bilder
+        hardwareAcceleration: "prefer-software",
+        videoBitrate: 20_000_000,
+        keyframeIntervalInSeconds: 2,
         audioBitrate: 192_000,
         onProgress: (p) => setRenderProgress(Math.round(p.progress * 100)),
       });
